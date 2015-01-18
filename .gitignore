@@ -1,5 +1,8 @@
 Build
 Bin/Data
 Bin/CoreData
+Bin/Extra
+*.bat
+*.sh
 *.exe
 *.log

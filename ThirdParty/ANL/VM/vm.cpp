@@ -367,6 +367,26 @@ namespace anl
                     cache[index].set(std::atan(s1));
                     return;
                 } break;
+			case OP_Tiers:
+				{
+					int numsteps=(int)evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[1],coord);
+					double val=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[0],coord);
+					double Tb=std::floor(val*(double)numsteps);
+					evaluated[index]=true;
+                    cache[index].set(Tb);
+				} break;
+			case OP_SmoothTiers:
+				{
+					int numsteps=(int)evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[1],coord)-1;
+					double val=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[0],coord);
+					double Tb=std::floor(val*(double)numsteps);
+					double Tt=Tb+1.0;
+					double t=quintic_blend(val*(double)numsteps-Tb);
+					Tb/=(double)numsteps;
+					Tt/=(double)numsteps;
+					evaluated[index]=true;
+                    cache[index].set(Tb+t*(Tt-Tb));
+				} break;
             case OP_ScaleDomain:
                 {
                     CCoordinate scale(1,1,1,1,1,1);

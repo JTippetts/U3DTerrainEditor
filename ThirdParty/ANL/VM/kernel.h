@@ -69,6 +69,9 @@ namespace anl
         CInstructionIndex acos(CInstructionIndex src);
         CInstructionIndex asin(CInstructionIndex src);
         CInstructionIndex atan(CInstructionIndex src);
+		
+		CInstructionIndex tiers(CInstructionIndex src, CInstructionIndex numtiers);
+		CInstructionIndex smoothTiers(CInstructionIndex src, CInstructionIndex numtiers);
 
         CInstructionIndex x();
         CInstructionIndex y();

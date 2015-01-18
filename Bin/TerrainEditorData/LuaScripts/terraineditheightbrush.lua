@@ -274,7 +274,6 @@ function TerrainBrush:ApplySmooth(terrainx, terrainz, radius, max, power, hardne
 				
 				if usemask then
 					local m=mask:GetPixelBilinear(hx/hmap:GetWidth(), hz/hmap:GetHeight()).r
-					--print(hx,hmap:GetWidth(),hz,hmap:GetHeight(),hx/hmap:GetWidth(), hz/hmap:GetHeight(),m)
 					i=i*(m)
 				end
 				
@@ -309,8 +308,6 @@ end
 function TerrainBrush:ApplyMask(terrainx, terrainz, radius, max, power, hardness, mode,usemask, dt)
 	local world=Vector3(terrainx,0,terrainz)
 	local normalized=WorldToNormalized(world)
-	
-	--local ht=terrain:WorldToHeightMap(world)
 	
 	local ratio=((mask:GetWidth())/(hmap:GetWidth()))
 	

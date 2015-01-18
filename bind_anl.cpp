@@ -1,6 +1,6 @@
 /*
 ** Lua binding: bind_anl
-** Generated automatically by tolua++-1.0.93 on 01/17/15 16:27:34.
+** Generated automatically by tolua++-1.0.93 on 01/18/15 13:01:07.
 */
 
 #ifndef __cplusplus
@@ -3620,6 +3620,98 @@ static int tolua_bind_anl_CKernel_atan00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: tiers of class  CKernel */
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_tiers00
+static int tolua_bind_anl_CKernel_tiers00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"CKernel",0,&tolua_err) ||
+     (tolua_isvaluenil(tolua_S,2,&tolua_err) || !tolua_isusertype(tolua_S,2,"CInstructionIndex",0,&tolua_err)) ||
+     (tolua_isvaluenil(tolua_S,3,&tolua_err) || !tolua_isusertype(tolua_S,3,"CInstructionIndex",0,&tolua_err)) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  CKernel* self = (CKernel*)  tolua_tousertype(tolua_S,1,0);
+  CInstructionIndex src = *((CInstructionIndex*)  tolua_tousertype(tolua_S,2,0));
+  CInstructionIndex numtiers = *((CInstructionIndex*)  tolua_tousertype(tolua_S,3,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'tiers'", NULL);
+#endif
+  {
+   CInstructionIndex tolua_ret = (CInstructionIndex)  self->tiers(src,numtiers);
+   {
+#ifdef __cplusplus
+    void* tolua_obj = Mtolua_new((CInstructionIndex)(tolua_ret));
+     tolua_pushusertype(tolua_S,tolua_obj,"CInstructionIndex");
+    tolua_register_gc(tolua_S,lua_gettop(tolua_S));
+#else
+    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(CInstructionIndex));
+     tolua_pushusertype(tolua_S,tolua_obj,"CInstructionIndex");
+    tolua_register_gc(tolua_S,lua_gettop(tolua_S));
+#endif
+   }
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'tiers'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: smoothTiers of class  CKernel */
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_smoothTiers00
+static int tolua_bind_anl_CKernel_smoothTiers00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"CKernel",0,&tolua_err) ||
+     (tolua_isvaluenil(tolua_S,2,&tolua_err) || !tolua_isusertype(tolua_S,2,"CInstructionIndex",0,&tolua_err)) ||
+     (tolua_isvaluenil(tolua_S,3,&tolua_err) || !tolua_isusertype(tolua_S,3,"CInstructionIndex",0,&tolua_err)) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  CKernel* self = (CKernel*)  tolua_tousertype(tolua_S,1,0);
+  CInstructionIndex src = *((CInstructionIndex*)  tolua_tousertype(tolua_S,2,0));
+  CInstructionIndex numtiers = *((CInstructionIndex*)  tolua_tousertype(tolua_S,3,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'smoothTiers'", NULL);
+#endif
+  {
+   CInstructionIndex tolua_ret = (CInstructionIndex)  self->smoothTiers(src,numtiers);
+   {
+#ifdef __cplusplus
+    void* tolua_obj = Mtolua_new((CInstructionIndex)(tolua_ret));
+     tolua_pushusertype(tolua_S,tolua_obj,"CInstructionIndex");
+    tolua_register_gc(tolua_S,lua_gettop(tolua_S));
+#else
+    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(CInstructionIndex));
+     tolua_pushusertype(tolua_S,tolua_obj,"CInstructionIndex");
+    tolua_register_gc(tolua_S,lua_gettop(tolua_S));
+#endif
+   }
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'smoothTiers'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: x of class  CKernel */
 #ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_x00
 static int tolua_bind_anl_CKernel_x00(lua_State* tolua_S)
@@ -4932,6 +5024,8 @@ TOLUA_API int tolua_bind_anl_open (lua_State* tolua_S)
    tolua_function(tolua_S,"acos",tolua_bind_anl_CKernel_acos00);
    tolua_function(tolua_S,"asin",tolua_bind_anl_CKernel_asin00);
    tolua_function(tolua_S,"atan",tolua_bind_anl_CKernel_atan00);
+   tolua_function(tolua_S,"tiers",tolua_bind_anl_CKernel_tiers00);
+   tolua_function(tolua_S,"smoothTiers",tolua_bind_anl_CKernel_smoothTiers00);
    tolua_function(tolua_S,"x",tolua_bind_anl_CKernel_x00);
    tolua_function(tolua_S,"y",tolua_bind_anl_CKernel_y00);
    tolua_function(tolua_S,"z",tolua_bind_anl_CKernel_z00);

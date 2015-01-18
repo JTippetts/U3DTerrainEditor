@@ -51,6 +51,8 @@ namespace anl
         OP_ATan,
 		OP_Bias,
 		OP_Gain,
+		OP_Tiers,
+		OP_SmoothTiers,
 
         OP_X,
         OP_Y,

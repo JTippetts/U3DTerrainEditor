@@ -216,6 +216,26 @@ CInstructionIndex CKernel::atan(CInstructionIndex sindex)
     return lastIndex();
 }
 
+CInstructionIndex CKernel::tiers(CInstructionIndex s1, CInstructionIndex s2)
+{
+	anl::SInstruction i;
+	i.opcode_=anl::OP_Tiers;
+	i.sources_[0]=s1.index_;
+	i.sources_[1]=s2.index_;
+    kernel_.push_back(i);
+    return lastIndex();
+}
+
+CInstructionIndex CKernel::smoothTiers(CInstructionIndex s1, CInstructionIndex s2)
+{
+	anl::SInstruction i;
+	i.opcode_=anl::OP_SmoothTiers;
+	i.sources_[0]=s1.index_;
+	i.sources_[1]=s2.index_;
+    kernel_.push_back(i);
+    return lastIndex();
+}
+
 CInstructionIndex CKernel::scaleDomain(CInstructionIndex srcindex, CInstructionIndex xindex, CInstructionIndex yindex)
 {
     anl::SInstruction i;

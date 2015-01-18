@@ -9,8 +9,6 @@ require "LuaScripts/thirdpersoncamera"
 require "LuaScripts/terraineditUI"
 require "LuaScripts/terraineditheightbrush"
 
-require "LuaScripts/testisland"
-
 function HtToRG(ht)
 	local expht=math.floor(ht*255)
 	local rm=ht*255-expht
@@ -27,99 +25,8 @@ function ColorToHeight(col)
 	return (col.r+col.g/256)
 end
 
-blendlayer=1
-blendbrush=false
 
-function applyBlendBrush(x,z,layer,radius,power,dt)
-	local world=Vector3(x,0,z)
-	local ht=terrain:WorldToHeightMap(world)
-	local ix=math.floor((ht.x/hmap:GetWidth())*blend:GetWidth())
-	local iy=math.floor((ht.y/hmap:GetHeight())*blend:GetHeight())
-	
-	local sz=math.floor(radius)+1
-	local hx,hz
-	for hx=ix-sz,ix+sz,1 do
-		for hz=iy-sz,iy+sz,1 do
-			if hx>=0 and hx<blend:GetWidth() and hz>=0 and hz<blend:GetHeight() then
-				local dx=hx-ix
-				local dz=hz-iy
-				local d=math.sqrt(dx*dx+dz*dz)
-				local i=((radius-d)/radius)*dt*power
-				i=math.max(0,math.min(1,i))
-				
-				local col=blend:GetPixel(hx,hz)
-				if layer==0 then
-					col.r=col.r+i*(1-col.r)
-					col.r=math.min(1,col.r)
-					local others=col.g+col.b
-					col.g=(col.g/others)*(1-col.r)
-					col.b=(col.b/others)*(1-col.r)
-				elseif layer==1 then
-					col.g=col.g+i*(1-col.g)
-					col.g=math.min(1,col.g)
-					local others=col.r+col.b
-					col.r=(col.r/others)*(1-col.g)
-					col.b=(col.b/others)*(1-col.g)
-				else
-					col.b=col.b+i*(1-col.b)
-					col.b=math.min(1,col.b)
-					local others=col.r+col.g
-					col.r=(col.r/others)*(1-col.b)
-					col.g=(col.g/others)*(1-col.b)
-				end
-				blend:SetPixel(hx,hz,col)
-			end
-		end
-	end
-	
-	blendtex:SetData(blend)
-end
 
-function applyHeightBrush(x,z,radius,max,power,dt)
-	local world=Vector3(x,0,z)
-	local ht=terrain:WorldToHeightMap(world)
-	--print("Image coords: "..ht.x..","..ht.y)
-	local comp=hmap:GetComponents()
-	
-	local hx,hz
-	local sz=math.floor(radius)+1
-	for hx=ht.x-sz,ht.x+sz,1 do
-		for hz=ht.y-sz,ht.y+sz,1 do
-			if hx>=0 and hx<hmap:GetWidth() and hz>=0 and hz<hmap:GetHeight() then
-				local dx=hx-ht.x
-				local dz=hz-ht.y
-				local d=math.sqrt(dx*dx+dz*dz)
-				local i=((radius-d)/radius)*dt*power
-				i=math.max(0,math.min(1,i))
-				--print(i)
-				local color=hmap:GetPixel(hx,hz)
-				local hval=0
-				if comp==1 then
-					hval=color.r
-				else
-					hval=color.r+color.g/256.0
-				end
-				--print("Old h: "..hval)
-				local newhval=hval + (max-hval)*i
-				--print("New h: "..newhval)
-				--local newhval=hval+i
-				local newcolor
-				if comp==1 then
-					newcolor=Color(newhval,newhval,newhval)
-				else
-					local r,g=HtToRG(newhval)
-					newcolor=Color(r,g,0)
-				end
-				hmap:SetPixel(hx,hz,newcolor)
-				--print("Old h: "..hval.." New h:"..newhval)
-				
-			end
-		end
-	end
-	
-	terrain:ApplyHeightMap()
-	
-end
 
 function Start()
     -- Execute the common startup for samples
@@ -137,27 +44,10 @@ function Start()
 
     -- Hook up to the frame update event
     SubscribeToEvents()
-	
-	local dirs=cache.resourceDirs
-	if dirs then
-		print("Resource dirs:")
-		local c
-		for c=1,#dirs,1 do
-			print(dirs[c])
-		end
-	end
-	
 end
 
 function CreateScene()
     scene_ = Scene()
-	
-	--[[cursor=Cursor:new(context)
-	cursor:DefineShape(CS_NORMAL, cache:GetResource("Image", "Textures/buttons.png"), IntRect(960,64,1023,127), IntVector2(20,15))
-	cursor:SetStyleAuto(ui.root.defaultStyle)
-	ui.cursor=cursor
-	ui.cursor.visible=true
-	ui.cursor:SetPosition(ui.root.width/2, ui.root.height/2)]]
 	CreateCursor()
 
     -- Create octree, use default volume (-1000, -1000, -1000) to (1000, 1000, 1000)
@@ -201,7 +91,7 @@ function CreateScene()
     terrain.spacing = Vector3(0.20, 0.08, 0.20) -- Spacing between vertices and vertical resolution of the height map
     terrain.smoothing = true
 	hmap=Image:new(context)
-	hmap:SetSize(513,513,3)
+	hmap:SetSize(1025,1025,3)
     terrain.heightMap = hmap
     terrain.material = cache:GetResource("Material", "Materials/TerrainEdit.xml")
     -- The terrain consists of large triangles, which fits well for occlusion rendering, as a hill can occlude all
@@ -252,16 +142,7 @@ function CreateScene()
 end
 
 function CreateInstructions()
-    -- Construct new Text object, set string to display and font to use
-    local instructionText = ui.root:CreateChild("Text")
-    instructionText:SetText("Use WASD keys and mouse to move")
-    instructionText:SetFont(cache:GetResource("Font", "Fonts/Anonymous Pro.ttf"), 15)
-    instructionText.textAlignment = HA_CENTER
-
-    -- Position the text relative to the screen center
-    instructionText.horizontalAlignment = HA_CENTER
-    instructionText.verticalAlignment = VA_CENTER
-    instructionText:SetPosition(0, ui.root.height / 4)
+    
 end
 
 function SubscribeToEvents()
@@ -273,30 +154,6 @@ function HandleUpdate(eventType, eventData)
     -- Take the frame time step, which is stored as a float
     local timeStep = eventData:GetFloat("TimeStep")
 	
-	local mousepos
-	if input.mouseVisible then
-		mousepos=input:GetMousePosition()
-	else
-		mousepos=ui:GetCursorPosition()
-	end
-	
-	if input:GetMouseButtonDown(MOUSEB_LEFT) and ui:GetElementAt(mousepos.x, mousepos.y)==nil then
-		local ground
-		if projecttozero==false then ground=cam:PickGround(mousepos.x, mousepos.y)
-		else ground=cam:GetScreenGround(mousepos.x, mousepos.y)
-		end
-		if ground~=nil then
-			local gx,gz=ground.x,ground.z
-			--local gx,gz=cam:GetMouseGround()
-			--print("Mouse ground: "..gx..","..gz)
-			--if blendbrush==false then applyHeightBrush(gx,gz,48,0.5,2,timeStep)
-			--else applyBlendBrush(gx,gz,blendlayer,48,2,timeStep)
-			--end
-			--tbrush:execute(gx,gz,timeStep)
-			--editbrush:Execute(gx,gz,timeStep)
-			
-		end
-	end
 	
 	if input:GetKeyPress(KEY_S) then
 		hmap:SavePNG("terrain.png")
@@ -312,12 +169,4 @@ function HandleUpdate(eventType, eventData)
 		img:SavePNG("screen.png")
 	end
 	
-	if input:GetKeyPress(KEY_I) then
-		doIsland()
-	end
-	
-	--if input:GetKeyPress(KEY_R) then blendbrush=false elseif input:GetKeyPress(KEY_T) then blendbrush=true end
-	--if input:GetKeyPress(KEY_Q) then blendlayer=0 elseif input:GetKeyPress(KEY_W) then blendlayer=1 elseif input:GetKeyPress(KEY_E) then blendlayer=2 end
-	
-	--cam.offset=terrain:GetHeight(cameraNode.position)
 end
