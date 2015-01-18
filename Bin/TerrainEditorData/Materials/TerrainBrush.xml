@@ -1,0 +1,5 @@
+<material>
+    <technique name="Techniques/DiffAdd.xml" />
+	<cull value="none" />
+	<depthbias constant="-0.00001" slopescaled="0" />
+</material>

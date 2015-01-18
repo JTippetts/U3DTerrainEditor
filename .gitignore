@@ -1,5 +1,5 @@
 Build
-Data
-CoreData
-Bin
+Bin/Data
+Bin/CoreData
 *.exe
+*.log

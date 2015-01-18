@@ -1,0 +1,519 @@
+-- Terrain Editor UI
+
+TerrainEditUI=ScriptObject()
+
+uiStyle = cache:GetResource("XMLFile", "UI/DefaultStyle.xml")
+ui.root.defaultStyle = uiStyle;
+iconStyle = cache:GetResource("XMLFile", "UI/EditorIcons.xml");
+
+function CreateCursor()
+    local cursor = Cursor:new()
+    cursor.defaultStyle=uiStyle
+	cursor.style=AUTO_STYLE
+    cursor:SetPosition(graphics.width / 2, graphics.height / 2)
+    ui.cursor = cursor
+
+end
+
+function TerrainEditUI:Start()
+	self.heightbrush=ui:LoadLayout(cache:GetResource("XMLFile", "UI/TerrainEditHeightBrush.xml"))
+	self.blendbrush=ui:LoadLayout(cache:GetResource("XMLFile", "UI/TerrainEditBlendBrush.xml"))
+	self.maskbrush=ui:LoadLayout(cache:GetResource("XMLFile", "UI/TerrainEditMaskBrush.xml"))
+	self.smoothbrush=ui:LoadLayout(cache:GetResource("XMLFile", "UI/TerrainEditSmoothBrush.xml"))
+	self.newterrain=ui:LoadLayout(cache:GetResource("XMLFile", "UI/TerrainEditNewTerrain.xml"))
+	self.toolbar=ui:LoadLayout(cache:GetResource("XMLFile", "UI/TerrainEditToolbar.xml"))
+	self.filterui=ui:LoadLayout(cache:GetResource("XMLFile", "UI/TerrainEditFilters.xml"))
+	self.filterlist=self.filterui:GetChild("FilterList", true)
+	self.filteroptions=self.filterui:GetChild("FilterOptions", true)
+	
+	local content=Window:new(context)
+	content.style=uiStyle
+	self.filteroptions.contentElement=content
+	
+	self.heightbrush.defaultStyle=uiStyle
+	self.blendbrush.defaultStyle=uiStyle
+	self.maskbrush.defaultStyle=uiStyle
+	self.newterrain.defaultStyle=uiStyle
+	self.toolbar.defaultStyle=uiStyle
+	self.smoothbrush.defaultStyle=uiStyle
+	self.filterui.defaultStyle=uiStyle
+	
+	
+	self.heightbrush.style=uiStyle
+	self.blendbrush.style=uiStyle
+	self.maskbrush.style=uiStyle
+	self.newterrain.style=uiStyle
+	self.toolbar.style=uiStyle
+	self.smoothbrush.style=uiStyle
+	self.filterui.style=uiStyle
+	
+	self.brushpreview=Image(context)
+	self.brushpreview:SetSize(64,64,3)
+	self.brushtex=Texture2D:new(context)
+	self.brushtex:SetSize(0,0,0,TEXTURE_DYNAMIC)
+	
+	self.heightbrush:GetChild("BrushPreview",true).texture=self.brushtex
+	self.blendbrush:GetChild("BrushPreview",true).texture=self.brushtex
+	self.maskbrush:GetChild("BrushPreview",true).texture=self.brushtex
+	self.smoothbrush:GetChild("BrushPreview",true).texture=self.brushtex
+	
+	ui.root:AddChild(self.heightbrush)
+	ui.root:AddChild(self.blendbrush)
+	ui.root:AddChild(self.maskbrush)
+	ui.root:AddChild(self.smoothbrush)
+	ui.root:AddChild(self.newterrain)
+	ui.root:AddChild(self.toolbar)
+	ui.root:AddChild(self.filterui)
+	
+	
+	self.mode=0
+	self.blendbrush.visible=false
+	self.maskbrush.visible=false
+	self.newterrain.visible=false
+	self.smoothbrush.visible=false
+	self.filterui.visible=false
+	
+	
+	self:SubscribeToEvent("Pressed", "TerrainEditUI:HandleButtonPress")
+	self:SubscribeToEvent("SliderChanged", "TerrainEditUI:HandleSliderChanged")
+	self:SubscribeToEvent("Toggled", "TerrainEditUI:HandleToggled")
+	self:SubscribeToEvent("ItemSelected", "TerrainEditUI:HandleItemSelected")
+	
+	self.edit=scene_:GetScriptObject("TerrainBrush")
+	self.terrain=scene_:GetComponent("Terrain")
+	
+	self.brushcursornode=scene_:CreateChild()
+	self.brushcursor=self.brushcursornode:CreateComponent("CustomGeometry")
+	self.brushcursor:SetNumGeometries(1)
+	self.brushmat=cache:GetResource("Material", "Materials/TerrainBrush.xml")
+	self.brushmat:SetTexture(0, self.brushtex)
+	self.brushcursor:SetMaterial(self.brushmat)
+	
+	self.mode=0
+	self:ActivateHeightBrush()
+	
+	self:PopulateFilterList()
+end
+
+function TerrainEditUI:BuildFilterOptions(filter)
+	local options=self.filteroptions:GetChild("OptionsWindow", true)
+	local name=self.filteroptions:GetChild("FilterName", true)
+	local desc=self.filteroptions:GetChild("FilterDescription", true)
+	name.text=filter.name
+	desc.text=filter.description
+	
+	options:RemoveAllChildren()
+	
+	if filter.options==nil then print("No options") return end
+	local c
+	local maxx,maxy=0,0
+	for _,c in ipairs(filter.options) do
+		print("Option: "..c.name)
+		local window=Window:new(context)
+		window.defaultStyle=uiStyle
+		window.style=uiStyle
+		window.layoutMode=LM_HORIZONTAL
+		window.layoutBorder=IntRect(5,5,5,5)
+		local title=Text:new(context)
+		title.text=c.name
+		title.defaultStyle=uiStyle
+		title.style=uiStyle
+		--title.maxSize=IntVector2(64,0)
+		window:AddChild(title)
+		
+		if c.type=="flag" then
+			local check=CheckBox:new(context)
+			check.name=c.name
+			check.defaultStyle=uiStyle
+			check.style=uiStyle
+			if c.value==true then check.checked=true
+			else check.checked=false
+			end
+			window:AddChild(check)
+			window.size=IntVector2(title.size.x+check.size.x, 15)
+		elseif c.type=="value" then
+			local edit=LineEdit:new(context)
+			edit.name=c.name
+			edit.defaultStyle=uiStyle
+			edit.style=uiStyle
+			edit.textElement.text=tostring(c.value)
+			window:AddChild(edit)
+			window.size=IntVector2(title.size.x+edit.size.x, 15)
+		end
+		--if window.size.x > maxx then maxx=window.size.x end
+		window.maxSize=IntVector2(10000,25)
+		options:AddChild(window)
+	end
+	
+	--options.size.x=maxx
+	self.filteroptions.visible=true
+end
+
+function TerrainEditUI:PopulateFilterList()
+	self.filters={}
+	self.selectedfilter=nil
+	local options=self.filteroptions:GetChild("OptionsWindow", true)
+	options:RemoveAllChildren()
+	
+	local list=self.filterlist:GetChild("List", true)
+	if list==nil then return end
+	list:RemoveAllItems()
+	
+	local filters=fileSystem:ScanDir(fileSystem:GetProgramDir().."/TerrainEditFilters", "*.lua", SCAN_FILES, false)
+	if filters==nil then print("Uh oh")
+	else
+		local c
+		for _,c in ipairs(filters) do
+			local filter=dofile("TerrainEditFilters/"..c)
+			print(c)
+			self.filters[c]=filter
+			local uielement=Text:new(context)
+			uielement.style="EditorEnumAttributeText"
+			uielement.text=c
+			uielement.name=c
+			list:AddItem(uielement)
+		end
+	end
+end
+
+function TerrainEditUI:HandleItemSelected(eventType, eventData)
+	local which=eventData:GetPtr("ListView", "Element")
+	local selected=eventData:GetInt("Selection")
+	local entry=which:GetItem(selected)
+	if entry==nil then return end
+	local name=entry:GetName()
+	print("Selected: "..name)
+	
+	self:BuildFilterOptions(self.filters[name])
+	self.selectedfilter=self.filters[name]
+	
+	--if self.filters[name] then
+		--self.filters[name]:execute()
+	--end
+end
+
+function TerrainEditUI:GetBrushSettings(brush)
+	local power,max,radius,hardness=0,0,0,0
+	local usemask=false
+	
+	local slider
+	slider=brush:GetChild("PowerSlider", true)
+	if slider then power=(slider.value/slider.range)*5 end
+	
+	slider=brush:GetChild("MaxSlider", true)
+	if slider then max=(slider.value/slider.range) end
+	
+	slider=brush:GetChild("RadiusSlider", true)
+	if slider then radius=math.floor((slider.value/slider.range)*30) end
+	
+	slider=brush:GetChild("HardnessSlider", true)
+	if slider then hardness=(slider.value/slider.range)*0.5+0.5 end
+	
+	local button=brush:GetChild("MaskCheck", true)
+	if button then usemask=button.checked end
+	
+	return power,max,radius,math.min(0.9999,hardness),usemask
+end
+
+function TerrainEditUI:BuildCursorMesh(radius)
+	self.brushcursor:BeginGeometry(0,TRIANGLE_LIST)
+	self.brushcursor:SetDynamic(true)
+	--self.brushcursor:SetMaterial(0, self.brushmat)
+	
+	local spacing=terrain:GetSpacing()
+	local spacingx=spacing.x
+	local spacingz=spacing.z
+	local meshsize=math.floor(radius)*2+2
+	local originx=(-meshsize/2)*spacingx
+	local originz=(-meshsize/2)*spacingx
+	
+	local uvspacing=1/(meshsize-1)
+	
+	local x,z
+	for x=0,meshsize-2,1 do
+		for z=0,meshsize-2,1 do
+			self.brushcursor:DefineVertex(Vector3(originx+x*spacingx, 0, originz+z*spacingz))
+			self.brushcursor:DefineTexCoord(Vector2(x*uvspacing, z*uvspacing))
+			
+			self.brushcursor:DefineVertex(Vector3(originx+(x+1)*spacingx, 0, originz+(z+1)*spacingz))
+			self.brushcursor:DefineTexCoord(Vector2((x+1)*uvspacing, (z+1)*uvspacing))
+			
+			self.brushcursor:DefineVertex(Vector3(originx+x*spacingx, 0, originz+(z+1)*spacingz))
+			self.brushcursor:DefineTexCoord(Vector2(x*uvspacing, (z+1)*uvspacing))
+			
+			self.brushcursor:DefineVertex(Vector3(originx+x*spacingx, 0, originz+z*spacingz))
+			self.brushcursor:DefineTexCoord(Vector2(x*uvspacing, z*uvspacing))
+			
+			self.brushcursor:DefineVertex(Vector3(originx+(x+1)*spacingx, 0, originz+z*spacingz))
+			self.brushcursor:DefineTexCoord(Vector2((x+1)*uvspacing, z*uvspacing))
+			
+			self.brushcursor:DefineVertex(Vector3(originx+(x+1)*spacingx, 0, originz+(z+1)*spacingz))
+			self.brushcursor:DefineTexCoord(Vector2((x+1)*uvspacing, (z+1)*uvspacing))
+		end
+	end
+	
+	self.brushcursor:Commit()
+	
+	self.brushcursor:SetMaterial(0, self.brushmat)
+end
+
+function TerrainEditUI:SetBrushCursorHeight()
+	local mousepos
+	if input.mouseVisible then
+		mousepos=input:GetMousePosition()
+	else
+		mousepos=ui:GetCursorPosition()
+	end
+	
+	local ground=cam:GetScreenGround(mousepos.x, mousepos.y)
+	
+	local numverts=self.brushcursor:GetNumVertices(0)
+	
+	local v
+	for v=0,numverts-1,1 do
+		local vert=self.brushcursor:GetVertex(0,v).position
+		local ht=terrain:GetHeight(Vector3(vert.x+ground.x,0,vert.z+ground.z))
+		vert.y=ht
+	end
+	
+	self.brushcursor:Commit()
+end
+
+function TerrainEditUI:ActivateHeightBrush()
+	self.power, self.max, self.radius, self.hardness, self.usemask=self:GetBrushSettings(self.heightbrush)
+	
+	self:BuildCursorMesh(self.radius)
+	self:GenerateBrushPreview(self.hardness)
+	self.heightbrush:GetChild("BrushPreview",true):SetTexture(self.brushtex)
+	self.heightbrush:GetChild("BrushPreview",true):SetImageRect(IntRect(0,0,63,63))
+	self.heightbrush.visible=true
+	self.blendbrush.visible=false
+	self.maskbrush.visible=false
+	self.smoothbrush.visible=false
+	
+	self.activebrush=self.heightbrush
+	
+	local text=self.activebrush:GetChild("PowerText", true)
+	if text then text.text=string.format("%.1f", self.power) end
+	text=self.activebrush:GetChild("RadiusText", true)
+	if text then text.text=tostring(math.floor(self.radius)) end
+	text=self.activebrush:GetChild("MaxText", true)
+	if text then text.text=string.format("%.1f", self.max) end
+	text=self.activebrush:GetChild("HardnessText", true)
+	if text then text.text=string.format("%.2f", self.hardness) end
+	
+end
+
+function TerrainEditUI:ActivateBlendBrush()
+	self.power, self.max, self.radius, self.hardness, self.usemask=self:GetBrushSettings(self.blendbrush)
+	
+	self:BuildCursorMesh(self.radius)
+	self:GenerateBrushPreview(self.hardness)
+	self.blendbrush:GetChild("BrushPreview",true):SetTexture(self.brushtex)
+	self.blendbrush:GetChild("BrushPreview",true):SetImageRect(IntRect(0,0,63,63))
+	self.heightbrush.visible=false
+	self.blendbrush.visible=true
+	self.maskbrush.visible=false
+	self.smoothbrush.visible=false
+	
+	self.activebrush=self.blendbrush
+	local text=self.activebrush:GetChild("PowerText", true)
+	if text then text.text=string.format("%.1f", self.power) end
+	text=self.activebrush:GetChild("RadiusText", true)
+	if text then text.text=tostring(math.floor(self.radius)) end
+	text=self.activebrush:GetChild("MaxText", true)
+	if text then text.text=string.format("%.1f", self.max) end
+	text=self.activebrush:GetChild("HardnessText", true)
+	if text then text.text=string.format("%.2f", self.hardness) end
+end
+
+function TerrainEditUI:ActivateSmoothBrush()
+	self.power, self.max, self.radius, self.hardness, self.usemask=self:GetBrushSettings(self.smoothbrush)
+	
+	self:BuildCursorMesh(self.radius)
+	self:GenerateBrushPreview(self.hardness)
+	self.blendbrush:GetChild("BrushPreview",true):SetTexture(self.brushtex)
+	self.blendbrush:GetChild("BrushPreview",true):SetImageRect(IntRect(0,0,63,63))
+	self.heightbrush.visible=false
+	self.blendbrush.visible=false
+	self.maskbrush.visible=false
+	self.smoothbrush.visible=true
+	
+	self.activebrush=self.smoothbrush
+	local text=self.activebrush:GetChild("PowerText", true)
+	if text then text.text=string.format("%.1f", self.power) end
+	text=self.activebrush:GetChild("RadiusText", true)
+	if text then text.text=tostring(math.floor(self.radius)) end
+	text=self.activebrush:GetChild("MaxText", true)
+	if text then text.text=string.format("%.1f", self.max) end
+	text=self.activebrush:GetChild("HardnessText", true)
+	if text then text.text=string.format("%.2f", self.hardness) end
+end
+
+function TerrainEditUI:ActivateMaskBrush()
+	self.power, self.max, self.radius, self.hardness, self.usemask=self:GetBrushSettings(self.maskbrush)
+	
+	self:BuildCursorMesh(self.radius)
+	self:GenerateBrushPreview(self.hardness)
+	self.blendbrush:GetChild("BrushPreview",true):SetTexture(self.brushtex)
+	self.blendbrush:GetChild("BrushPreview",true):SetImageRect(IntRect(0,0,63,63))
+	self.heightbrush.visible=false
+	self.blendbrush.visible=false
+	self.maskbrush.visible=true
+	self.newterrain.visible=false
+	self.smoothbrush.visible=false
+	
+	self.activebrush=self.maskbrush
+	local text=self.activebrush:GetChild("PowerText", true)
+	if text then text.text=string.format("%.1f", self.power) end
+	text=self.activebrush:GetChild("RadiusText", true)
+	if text then text.text=tostring(math.floor(self.radius)) end
+	text=self.activebrush:GetChild("MaxText", true)
+	if text then text.text=string.format("%.1f", self.max) end
+	text=self.activebrush:GetChild("HardnessText", true)
+	if text then text.text=string.format("%.2f", self.hardness) end
+end
+
+
+
+function TerrainEditUI:Update(dt)
+	local mousepos
+	if input.mouseVisible then
+		mousepos=input:GetMousePosition()
+	else
+		mousepos=ui:GetCursorPosition()
+	end
+	
+	local ground=cam:GetScreenGround(mousepos.x, mousepos.y)
+	
+	local world=Vector3(ground.x,0,ground.z)
+	self.brushcursornode:SetPosition(world)
+	
+	self.power, self.max, self.radius, self.hardness, self.usemask=self:GetBrushSettings(self.activebrush)
+	
+	self:SetBrushCursorHeight()
+
+	
+	if input:GetMouseButtonDown(MOUSEB_LEFT) and ui:GetElementAt(mousepos.x, mousepos.y)==nil then
+		local ground=cam:GetScreenGround(mousepos.x, mousepos.y)
+		if ground~=nil and self.edit~=nil then
+			local gx,gz=ground.x,ground.z
+			
+			self.edit:ApplyBrush(gx,gz, self.radius, self.max, self.power, self.hardness, self.mode, self.usemask, dt)
+			
+		end
+	end
+end
+
+function TerrainEditUI:GenerateBrushPreview(sharpness)
+	local w,h=self.brushpreview:GetWidth(), self.brushpreview:GetHeight()
+	local rad=w/2
+	local x,y
+	for x=0,w-1,1 do
+		for y=0,h-1,1 do
+			local dx=x-w/2
+			local dy=y-h/2
+			local d=math.sqrt(dx*dx+dy*dy)
+			local i=(rad-d)/rad
+			i=math.max(0, math.min(1,i))
+			i=bias(sharpness, i)
+			local max=self.max
+				
+			self.brushpreview:SetPixel(x,y,Color(i,i,i))
+		end
+	end
+	
+	self.brushtex:SetData(self.brushpreview, false)
+end
+
+function TerrainEditUI:HandleButtonPress(eventType, eventData)
+	local which=eventData:GetPtr("UIElement", "Element")
+	local name=which:GetName()
+	if name=="HeightButton" then
+		self.mode=0		
+		self:ActivateHeightBrush()
+		
+	elseif name=="SmoothButton" then
+		self.mode=5
+		self:ActivateSmoothBrush()
+	
+	elseif name=="Terrain1Button" then
+		self.mode=1
+		self:ActivateBlendBrush()
+	
+	elseif name=="Terrain2Button" then
+		self.mode=2
+		self:ActivateBlendBrush()
+	
+	elseif name=="Terrain3Button" then
+		self.mode=3
+		self:ActivateBlendBrush()
+	
+	elseif name=="Terrain4Button" then
+		self.mode=4
+		self:ActivateBlendBrush()
+	
+	elseif name=="MaskButton" then
+		self.mode=6
+		self:ActivateMaskBrush()
+	
+	elseif name=="FilterButton" then
+		if self.filterui.visible==true then self.filterui.visible=false
+		else
+			print("Showing filters")
+			self:PopulateFilterList()
+			self.filterui.visible=true
+		end
+	elseif name=="ExecuteButton" then
+		if self.selectedfilter then
+			-- Grab options
+			if self.selectedfilter.options ~= nil then
+				local c
+				for _,c in ipairs(self.selectedfilter.options) do
+					local element=self.filteroptions:GetChild(c.name, true)
+					if element then
+						if c.type=="value" then c.value=tonumber(element.textElement.text)
+						elseif c.type=="flag" then c.value=element.checked
+						end
+					end
+				end
+			end
+			self.selectedfilter:execute()
+		end
+	elseif name=="RescanFilters" then
+		self:PopulateFilterList()
+	elseif name=="ClearMask" then
+		mask:Clear(Color(1,1,1))
+		masktex:SetData(mask)
+	end
+	
+end
+
+function TerrainEditUI:HandleSliderChanged(eventType, eventData)
+	local which=eventData:GetPtr("UIElement", "Element")
+	if which==nil then return end
+	
+	self.power, self.max, self.radius, self.hardness, self.usemask=self:GetBrushSettings(self.activebrush)
+	self:BuildCursorMesh(self.radius)
+	self:GenerateBrushPreview(self.hardness)
+	
+	if which==self.activebrush:GetChild("PowerSlider", true) then
+		local text=self.activebrush:GetChild("PowerText", true)
+		if text then text.text=string.format("%.1f", self.power) end
+	elseif which==self.activebrush:GetChild("RadiusSlider", true) then
+		local text=self.activebrush:GetChild("RadiusText", true)
+		if text then text.text=tostring(math.floor(self.radius)) end
+	elseif which==self.activebrush:GetChild("MaxSlider", true) then
+		local text=self.activebrush:GetChild("MaxText", true)
+		if text then text.text=string.format("%.1f", self.max) end
+	elseif which==self.activebrush:GetChild("HardnessSlider", true) then
+		local text=self.activebrush:GetChild("HardnessText", true)
+		if text then text.text=string.format("%.2f", self.hardness) end
+	end
+end
+
+function TerrainEditUI:HandleToggled(eventType, eventData)
+	local which=eventData:GetPtr("UIElement", "Element")
+	if which==nil then return end
+		
+end

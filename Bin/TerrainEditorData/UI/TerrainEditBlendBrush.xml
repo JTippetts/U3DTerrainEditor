@@ -1,0 +1,122 @@
+<?xml version="1.0"?>
+<element type="Window">
+	<attribute name="Position" value="349 603" />
+	<attribute name="Size" value="191 179" />
+	<attribute name="Layout Mode" value="Vertical" />
+	<attribute name="Layout Border" value="5 5 5 5" />
+	<attribute name="Is Movable" value="true" />
+	<element type="Text">
+		<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+		<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+		<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+		<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+		<attribute name="Font Size" value="12" />
+		<attribute name="Text" value="Terrain Brush" />
+		<attribute name="Text Alignment" value="Center" />
+	</element>
+	<element type="Window">
+		<attribute name="Layout Mode" value="Horizontal" />
+		<element type="Text">
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Font Size" value="10" />
+			<attribute name="Text" value="Power" />
+		</element>
+		<element type="Slider">
+			<attribute name="Name" value="PowerSlider" />
+			<attribute name="Range" value="100" />
+			<attribute name="Value" value="65.4545" />
+			<element type="BorderImage" internal="true" style="none" />
+		</element>
+		<element type="Text">
+			<attribute name="Name" value="PowerText" />
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Font Size" value="10" />
+			<attribute name="Text" value="10" />
+			<attribute name="Text Alignment" value="Center" />
+		</element>
+	</element>
+	<element type="Window">
+		<attribute name="Layout Mode" value="Horizontal" />
+		<element type="Text">
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Font Size" value="10" />
+			<attribute name="Text" value="Radius" />
+		</element>
+		<element type="Slider">
+			<attribute name="Name" value="RadiusSlider" />
+			<attribute name="Range" value="100" />
+			<attribute name="Value" value="30" />
+			<element type="BorderImage" internal="true" style="none" />
+		</element>
+		<element type="Text">
+			<attribute name="Name" value="RadiusText" />
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Font Size" value="10" />
+			<attribute name="Text" value="30" />
+			<attribute name="Text Alignment" value="Center" />
+		</element>
+	</element>
+	<element type="Window">
+		<attribute name="Layout Mode" value="Horizontal" />
+		<element type="Text">
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Font Size" value="10" />
+			<attribute name="Text" value="Hardness" />
+		</element>
+		<element type="Slider">
+			<attribute name="Name" value="HardnessSlider" />
+			<attribute name="Range" value="99" />
+			<element type="BorderImage" internal="true" style="none" />
+		</element>
+		<element type="Text">
+			<attribute name="Name" value="HardnessText" />
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Font Size" value="10" />
+			<attribute name="Text" value="0" />
+			<attribute name="Text Alignment" value="Center" />
+		</element>
+	</element>
+	<element type="BorderImage">
+		<attribute name="Name" value="BrushPreview" />
+		<attribute name="Min Size" value="64 64" />
+		<attribute name="Max Size" value="64 64" />
+		<attribute name="Horiz Alignment" value="Center" />
+		<attribute name="Image Rect" value="0 0 63 63" />
+	</element>
+	<element type="Window">
+		<attribute name="Min Size" value="0 15" />
+	</element>
+	<element type="Window">
+		<attribute name="Layout Mode" value="Horizontal" />
+		<element type="CheckBox">
+			<attribute name="Name" value="MaskCheck" />
+		</element>
+		<element type="Text">
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Font Size" value="10" />
+			<attribute name="Text" value="Use Mask" />
+			<attribute name="Text Alignment" value="Center" />
+		</element>
+	</element>
+</element>
