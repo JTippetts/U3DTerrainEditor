@@ -198,7 +198,7 @@ function TerrainEditUI:GetBrushSettings(brush)
 	
 	local slider
 	slider=brush:GetChild("PowerSlider", true)
-	if slider then power=(slider.value/slider.range)*5 end
+	if slider then power=(slider.value/slider.range)*4 end
 	
 	slider=brush:GetChild("MaxSlider", true)
 	if slider then max=(slider.value/slider.range) end
@@ -207,12 +207,12 @@ function TerrainEditUI:GetBrushSettings(brush)
 	if slider then radius=math.floor((slider.value/slider.range)*30) end
 	
 	slider=brush:GetChild("HardnessSlider", true)
-	if slider then hardness=(slider.value/slider.range)*0.5+0.5 end
+	if slider then hardness=(slider.value/slider.range) end
 	
 	local button=brush:GetChild("MaskCheck", true)
 	if button then usemask=button.checked end
 	
-	return power,max,radius,math.min(0.9999,hardness),usemask
+	return power,max,radius,math.min(1,hardness),usemask
 end
 
 function TerrainEditUI:BuildCursorMesh(radius)
@@ -414,9 +414,10 @@ function TerrainEditUI:GenerateBrushPreview(sharpness)
 			local dx=x-w/2
 			local dy=y-h/2
 			local d=math.sqrt(dx*dx+dy*dy)
-			local i=(rad-d)/rad
+			--local i=(rad-d)/rad
+			local i=(d-rad)/(sharpness*rad-rad)
 			i=math.max(0, math.min(1,i))
-			i=bias(sharpness, i)
+			--i=bias(sharpness, i)
 			local max=self.max
 				
 			self.brushpreview:SetPixel(x,y,Color(i,i,i))

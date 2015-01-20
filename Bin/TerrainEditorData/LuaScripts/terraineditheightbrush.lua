@@ -6,7 +6,9 @@ function bias(b,v)
 	return math.pow(v, math.log(b)/math.log(0.5))
 end
 
-
+function quintic_blend(t)
+    return t*t*t*(t*(t*6-15)+10);
+end
 
 function TerrainBrush:Start()
 	
@@ -41,9 +43,11 @@ function TerrainBrush:ApplyHeight(terrainx, terrainz, radius, max, power, hardne
 				local dx=hx-ht.x
 				local dz=hz-ht.y
 				local d=math.sqrt(dx*dx+dz*dz)
-				local i=((radius-d)/radius)
+				--local i=((radius-d)/radius)
+				local i=((d-radius)/(hardness*radius-radius))
 				i=math.max(0,math.min(1,i))
-				i=bias(hardness,i)*dt*power
+				i=(i*dt*power)
+				--i=bias(hardness,i)*dt*power
 				
 				if usemask then
 					local m=mask:GetPixelBilinear(hx/hmap:GetWidth(), hz/hmap:GetHeight()).r
@@ -147,9 +151,11 @@ function TerrainBrush:ApplyBlend(terrainx, terrainz, radius, max, power, hardnes
 				local dx=hx-ix
 				local dz=hz-iy
 				local d=math.sqrt(dx*dx+dz*dz)
-				local i=((radius-d)/radius)
+				--local i=((radius-d)/radius)
+				local i=((d-radius)/(hardness*radius-radius))
 				i=math.max(0,math.min(1,i))
-				i=bias(hardness,i)*dt*power
+				i=i*dt*power
+				--i=bias(hardness,i)*dt*power
 				if usemask then
 					local m=mask:GetPixelBilinear(hx/hmap:GetWidth(), hz/hmap:GetHeight()).r
 					--print(hx,hmap:GetWidth(),hz,hmap:GetHeight(),hx/hmap:GetWidth(), hz/hmap:GetHeight(),m)
@@ -268,9 +274,11 @@ function TerrainBrush:ApplySmooth(terrainx, terrainz, radius, max, power, hardne
 				local dx=hx-ht.x
 				local dz=hz-ht.y
 				local d=math.sqrt(dx*dx+dz*dz)
-				local i=((radius-d)/radius)
+				--local i=((radius-d)/radius)
+				local i=((d-radius)/(hardness*radius-radius))
 				i=math.max(0,math.min(1,i))
-				i=bias(hardness,i)*dt*power
+				i=i*dt*power
+				--i=bias(hardness,i)*dt*power
 				
 				if usemask then
 					local m=mask:GetPixelBilinear(hx/hmap:GetWidth(), hz/hmap:GetHeight()).r
@@ -326,9 +334,11 @@ function TerrainBrush:ApplyMask(terrainx, terrainz, radius, max, power, hardness
 				local dx=hx-ix
 				local dz=hz-iy
 				local d=math.sqrt(dx*dx+dz*dz)
-				local i=((radius-d)/radius)
+				--local i=((radius-d)/radius)
+				local i=(d-radius)/(hardness*radius-radius)
 				i=math.max(0,math.min(1,i))
-				i=bias(hardness,i)*dt*power
+				i=i*dt*power
+				--i=bias(hardness,i)*dt*power
 				
 				local col=mask:GetPixel(hx,hz)
 				col.r=col.r+i*((1-max)-col.r)

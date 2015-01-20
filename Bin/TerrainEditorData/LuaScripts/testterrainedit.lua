@@ -166,7 +166,9 @@ function HandleUpdate(eventType, eventData)
 	if input:GetKeyPress(KEY_A) then
 		local img=Image(context)
 		graphics:TakeScreenShot(img)
-		img:SavePNG("screen.png")
+		local t=os.date("*t")
+		local filename="screen-"..tostring(t.year).."-"..tostring(t.month).."-"..tostring(t.day).."-"..tostring(t.hour).."-"..tostring(t.min).."-"..tostring(t.sec)..".png"
+		img:SavePNG(filename)
 	end
 	
 end
