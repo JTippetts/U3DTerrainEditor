@@ -96,7 +96,7 @@ void PS()
     // Get material diffuse albedo
     vec4 weights = texture2D(sWeightMap0, vTexCoord).rgba;
     float sumWeights = weights.r + weights.g + weights.b + weights.a;
-	float mask=tex2D(sMask, iTexCoord).r;
+	float mask=tex2D(sMask, vTexCoord).r;
     weights /= sumWeights;
     vec4 diffColor = cMatDiffColor * (
         weights.r * texture2D(sDetailMap1, vDetailTexCoord) +
@@ -104,7 +104,7 @@ void PS()
         weights.b * texture2D(sDetailMap3, vDetailTexCoord) +
 		weights.a * texture2D(sDetailMap4, vDetailTexCoord)
     );
-	diffColor=mix(float4(1,0.5,0.3, diffColor.a), diffColor, mask);
+	diffColor=mix(vec4(1,0.5,0.3, diffColor.a), diffColor, mask);
 
     // Get material specular albedo
     vec3 specColor = cMatSpecColor.rgb;
