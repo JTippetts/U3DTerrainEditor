@@ -8,3 +8,5 @@ Bin/*.png
 *.sh
 *.exe
 *.log
+*.ps3
+*.vs3
