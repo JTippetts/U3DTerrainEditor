@@ -20,6 +20,7 @@
 // THE SOFTWARE.
 //
 
+#include <Urho3D/Urho3D.h>
 #include "Urho3D/Engine/Engine.h"
 #include "Urho3D/IO/FileSystem.h"
 #include "Urho3D/IO/Log.h"
@@ -131,6 +132,7 @@ void Urho3DPlayer::Setup()
 
 void Urho3DPlayer::Start()
 {
+	RegisterCustomComponents(context_);
 	GetSubsystem<ResourceCache>()->AddResourceDir("TerrainEditorData");
     String extension = GetExtension(scriptFileName_);
     if (extension != ".lua" && extension != ".luc")

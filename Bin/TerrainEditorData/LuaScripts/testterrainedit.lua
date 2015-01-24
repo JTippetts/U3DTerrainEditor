@@ -7,7 +7,7 @@
 require "LuaScripts/Utilities/Sample"
 require "LuaScripts/thirdpersoncamera"
 require "LuaScripts/terraineditUI"
-require "LuaScripts/terraineditheightbrush"
+--require "LuaScripts/terraineditheightbrush"
 
 function HtToRG(ht)
 	local expht=math.floor(ht*255)
@@ -28,6 +28,8 @@ end
 
 
 
+
+
 function Start()
     -- Execute the common startup for samples
 	--local style = cache:GetResource("XMLFile", "UI/DefaultStyle.xml")
@@ -44,6 +46,49 @@ function Start()
 
     -- Hook up to the frame update event
     SubscribeToEvents()
+	
+	function GaussianKernel(size)
+	local kernel={}
+	local c=math.floor(size/2)
+	local total=0
+	local x,y
+	for x=1,size,1 do
+		kernel[x]={}
+	end
+	
+	for x=0,size-1,1 do
+		for y=0,size-1,1 do
+			local dx=(x-c)
+			local dy=(y-c)
+			local d=math.sqrt(dx*dx+dy*dy)
+			local i=(c-d)/c
+			i=math.max(0,math.min(1,i))
+			kernel[x+1][y+1]=i
+			total=total+i
+		end
+	end
+	
+	for x=1,size,1 do
+		for y=1,size,1 do
+			kernel[x][y]=kernel[x][y]/total
+		end
+	end
+	return kernel
+end
+
+kernel=GaussianKernel(7)
+kernel9=GaussianKernel(9)
+local i,j
+s="{"
+for i=1,9,1 do
+	for j=1,9,1 do
+		s=s..tostring(kernel9[i][j])..", "
+	end
+	s=s.."\n"
+end
+s=s.."};"
+print(s)
+
 end
 
 function CreateScene()
@@ -119,7 +164,7 @@ function CreateScene()
 	blendtex:SetData(blend, false)
 	--print("Checkpoint")
 	
-	editbrush=scene_:CreateScriptObject("TerrainBrush")
+	--editbrush=scene_:CreateScriptObject("TerrainBrush")
 	terrainui=scene_:CreateScriptObject("TerrainEditUI")
 	
 

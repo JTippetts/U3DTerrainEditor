@@ -79,9 +79,6 @@ function TerrainEditUI:Start()
 	self:SubscribeToEvent("Toggled", "TerrainEditUI:HandleToggled")
 	self:SubscribeToEvent("ItemSelected", "TerrainEditUI:HandleItemSelected")
 	
-	self.edit=scene_:GetScriptObject("TerrainBrush")
-	self.terrain=scene_:GetComponent("Terrain")
-	
 	self.brushcursornode=scene_:CreateChild()
 	self.brushcursor=self.brushcursornode:CreateComponent("CustomGeometry")
 	self.brushcursor:SetNumGeometries(1)
@@ -396,10 +393,15 @@ function TerrainEditUI:Update(dt)
 	
 	if input:GetMouseButtonDown(MOUSEB_LEFT) and ui:GetElementAt(mousepos.x, mousepos.y)==nil then
 		local ground=cam:GetScreenGround(mousepos.x, mousepos.y)
-		if ground~=nil and self.edit~=nil then
+		if ground~=nil then
 			local gx,gz=ground.x,ground.z
 			
-			self.edit:ApplyBrush(gx,gz, self.radius, self.max, self.power, self.hardness, self.mode, self.usemask, dt)
+			--self.edit:ApplyBrush(gx,gz, self.radius, self.max, self.power, self.hardness, self.mode, self.usemask, dt)
+			if self.mode==0 then ApplyHeightBrush(terrain,hmap,mask,gx,gz,self.radius, self.max, self.power, self.hardness, self.usemask, dt) terrain:ApplyHeightMap()
+			elseif self.mode>=1 and self.mode<=4 then ApplyBlendBrush(terrain,hmap,blend,mask,gx,gz,self.radius,self.max,self.power,self.hardness,self.mode,self.usemask,dt) blendtex:SetData(blend)
+			elseif self.mode==5 then ApplySmoothBrush(terrain,hmap,mask,gx,gz,self.radius, self.max, self.power, self.hardness, self.usemask, dt) terrain:ApplyHeightMap()
+			else ApplyMaskBrush(terrain,hmap,mask,gx,gz,self.radius,self.max,self.power,self.hardness,dt) masktex:SetData(mask)
+			end
 			
 		end
 	end
@@ -417,10 +419,8 @@ function TerrainEditUI:GenerateBrushPreview(sharpness)
 			--local i=(rad-d)/rad
 			local i=(d-rad)/(sharpness*rad-rad)
 			i=math.max(0, math.min(1,i))
-			--i=bias(sharpness, i)
-			local max=self.max
 				
-			self.brushpreview:SetPixel(x,y,Color(i,i,i))
+			self.brushpreview:SetPixel(x,y,Color(i*0.5,i*0.5,i*0.6))
 		end
 	end
 	

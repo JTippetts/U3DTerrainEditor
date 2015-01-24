@@ -21,7 +21,7 @@ return
 		for x=0,bw-1,1 do
 			for y=0,bh-1,1 do
 				local nworld=Vector2(x/bw, y/bh)
-				local world=NormalizedToWorld(nworld)
+				local world=NormalizedToWorld(hmap,terrain,nworld)
 				local normal=terrain:GetNormal(world)
 				
 				local steep=math.abs(normal:DotProduct(Vector3(0,1,0)))

@@ -230,7 +230,19 @@ function GaussianKernel(size)
 end
 
 kernel=GaussianKernel(7)
+kernel9=GaussianKernel(9)
 
+
+local i,j
+s="{"
+for i=1,9,1 do
+	for j=1,9,1 do
+		s=s..tostring(kernel[i][j])
+	end
+	s=s.."\n"
+end
+s=s.."};"
+print(s)
 
 function TerrainBrush:ApplySmooth(terrainx, terrainz, radius, max, power, hardness, mode,usemask, dt)
 	local world=Vector3(terrainx,0,terrainz)

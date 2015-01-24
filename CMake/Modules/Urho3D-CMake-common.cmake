@@ -135,6 +135,8 @@ if (CMAKE_HOST_WIN32 AND NOT DEFINED URHO3D_MKLINK)
     set (URHO3D_MKLINK ${URHO3D_MKLINK} CACHE INTERNAL "MKLINK capability on the Windows host system")
 endif ()
 cmake_dependent_option (URHO3D_STATIC_RUNTIME "Use static C/C++ runtime libraries and eliminate the need for runtime DLLs installation (VS only)" FALSE "MSVC" FALSE)
+cmake_dependent_option (URHO3D_WIN32_CONSOLE "Use console main() as entry point when setting up Windows executable targets (Windows platform only)" FALSE "WIN32" FALSE)
+cmake_dependent_option (URHO3D_MACOSX_BUNDLE "Use MACOSX_BUNDLE when setting up Mac OS X executable targets (Xcode native build only)" FALSE "XCODE AND NOT IOS" FALSE)
 set (URHO3D_LIB_TYPE STATIC CACHE STRING "Specify Urho3D library type, possible values are STATIC (default) and SHARED")
 if (CMAKE_CROSSCOMPILING AND NOT ANDROID)
     set (URHO3D_SCP_TO_TARGET "" CACHE STRING "Use scp to transfer executables to target system (non-Android cross-compiling build only), SSH digital key must be setup first for this to work, typical value has a pattern of usr@tgt:remote-loc")
@@ -189,6 +191,12 @@ if (MSVC)
         set (RELEASE_RUNTIME "")
         set (DEBUG_RUNTIME "")
     endif ()
+endif ()
+
+# By default Windows platform setups main executable as Windows application with WinMain() as entry point
+# this build option overrides the default to set the main executable as console application with main() as entry point instead
+if (URHO3D_WIN32_CONSOLE)
+    add_definitions (-DURHO3D_WIN32_CONSOLE)
 endif ()
 
 # Enable file watcher support for automatic resource reloads by default.
@@ -297,9 +305,6 @@ if (IOS)
         set (CMAKE_OSX_ARCHITECTURES $(ARCHS_STANDARD_32_BIT))
     endif ()
     set (CMAKE_XCODE_EFFECTIVE_PLATFORMS -iphoneos -iphonesimulator)
-    if (NOT MACOSX_BUNDLE_GUI_IDENTIFIER)
-        set (MACOSX_BUNDLE_GUI_IDENTIFIER com.github.urho3d.\${PRODUCT_NAME:rfc1034identifier})
-    endif ()
     set (CMAKE_OSX_SYSROOT iphoneos)    # Set Base SDK to "Latest iOS"
     execute_process (COMMAND xcodebuild -version -sdk ${CMAKE_OSX_SYSROOT} Path OUTPUT_VARIABLE IOS_SYSROOT OUTPUT_STRIP_TRAILING_WHITESPACE)   # Obtain iOS sysroot path
     set (CMAKE_FIND_ROOT_PATH ${IOS_SYSROOT})
@@ -313,6 +318,15 @@ elseif (XCODE)
         # If not set, set to current running build system OS version by default
         execute_process (COMMAND sw_vers -productVersion OUTPUT_VARIABLE CURRENT_OSX_VERSION OUTPUT_STRIP_TRAILING_WHITESPACE)
         string (REGEX REPLACE ^\([^.]+\\.[^.]+\).* \\1 CMAKE_OSX_DEPLOYMENT_TARGET ${CURRENT_OSX_VERSION})
+    endif ()
+endif ()
+if (IOS OR URHO3D_MACOSX_BUNDLE)
+    # Common MacOSX and iOS bundle setup
+    if (NOT MACOSX_BUNDLE_GUI_IDENTIFIER)
+        set (MACOSX_BUNDLE_GUI_IDENTIFIER com.github.urho3d.\${PRODUCT_NAME:bundleIdentifier:lower})
+    endif ()
+    if (NOT MACOSX_BUNDLE_BUNDLE_NAME)
+        set (MACOSX_BUNDLE_BUNDLE_NAME \${PRODUCT_NAME})
     endif ()
 endif ()
 if (MSVC)
@@ -400,7 +414,7 @@ macro (set_output_directories OUTPUT_PATH)
 endmacro ()
 
 # Set common binary output directory for all platforms
-set_output_directories (${CMAKE_BINARY_DIR}/Bin RUNTIME PDB)
+set_output_directories (${CMAKE_BINARY_DIR}/bin RUNTIME PDB)
 
 # Macro for setting symbolic link on platform that supports it
 macro (create_symlink SOURCE DESTINATION)
@@ -466,7 +480,7 @@ if (ANDROID)
     # Create symbolic links in the build tree
     foreach (I CoreData Data)
         if (NOT EXISTS ${CMAKE_SOURCE_DIR}/Android/assets/${I})
-            create_symlink (${CMAKE_SOURCE_DIR}/Bin/${I} ${CMAKE_SOURCE_DIR}/Android/assets/${I} FALLBACK_TO_COPY)
+            create_symlink (${CMAKE_SOURCE_DIR}/bin/${I} ${CMAKE_SOURCE_DIR}/Android/assets/${I} FALLBACK_TO_COPY)
         endif ()
     endforeach ()
     foreach (I AndroidManifest.xml build.xml src res assets jni)
@@ -657,15 +671,13 @@ macro (setup_executable)
     endif ()
     setup_target ()
     
-    if (IOS)
-        set_target_properties (${TARGET_NAME} PROPERTIES XCODE_ATTRIBUTE_TARGETED_DEVICE_FAMILY "1,2")
-    elseif (URHO3D_SCP_TO_TARGET)
+    if (URHO3D_SCP_TO_TARGET)
         add_custom_command (TARGET ${TARGET_NAME} POST_BUILD COMMAND scp $<TARGET_FILE:${TARGET_NAME}> ${URHO3D_SCP_TO_TARGET} || exit 0
             COMMENT "Scp-ing ${TARGET_NAME} executable to target system")
     endif ()
     if (DEST_RUNTIME_DIR)
-        # Need to check if the variable is defined first because this macro could be called by CMake project outside of Urho3D that does not wish to install anything
-        install (TARGETS ${TARGET_NAME} RUNTIME DESTINATION ${DEST_RUNTIME_DIR} BUNDLE DESTINATION ${DEST_RUNTIME_DIR})
+        # Need to check if the destination variable is defined first because this macro could be called by external project that does not wish to install anything
+        install (TARGETS ${TARGET_NAME} RUNTIME DESTINATION ${DEST_RUNTIME_DIR} BUNDLE DESTINATION ${DEST_BUNDLE_DIR})
     endif ()
 endmacro ()
 
@@ -680,10 +692,19 @@ macro (setup_ios_linker_flags LINKER_FLAGS)
 endmacro ()
 
 # Macro for setting up an executable target with resources to copy
+#  NODEPS - setup executable target without defining Urho3D dependency libraries
+#  NOBUNDLE - do not use MACOSX_BUNDLE even when URHO3D_MACOSX_BUNDLE build option is enabled
+#  WIN32/MACOSX_BUNDLE/EXCLUDE_FROM_ALL - see CMake help on add_executable command
 macro (setup_main_executable)
+    # Parse extra arguments
+    cmake_parse_arguments (ARG "NOBUNDLE;MACOSX_BUNDLE;WIN32" "" "" ${ARGN})
+
     # Define resource files
     if (XCODE)
-        set (RESOURCE_FILES ${CMAKE_SOURCE_DIR}/Bin/CoreData ${CMAKE_SOURCE_DIR}/Bin/Data)
+        set (RESOURCE_FILES ${CMAKE_SOURCE_DIR}/bin/CoreData ${CMAKE_SOURCE_DIR}/bin/Data ${CMAKE_SOURCE_DIR}/bin/Data/Textures/UrhoIcon.icns)
+        if (IOS)
+            list (APPEND RESOURCE_FILES ${CMAKE_SOURCE_DIR}/bin/Data/Textures/UrhoIcon.png)
+        endif ()
         source_group (Resources FILES ${RESOURCE_FILES})
         set_source_files_properties (${RESOURCE_FILES} PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
         list (APPEND SOURCE_FILES ${RESOURCE_FILES})
@@ -707,6 +728,9 @@ macro (setup_main_executable)
         # Setup target as main shared library
         define_dependency_libs (Urho3D)
         setup_library (SHARED)
+        if (DEST_LIBRARY_DIR)
+            install (TARGETS ${TARGET_NAME} LIBRARY DESTINATION ${DEST_LIBRARY_DIR} ARCHIVE DESTINATION ${DEST_LIBRARY_DIR})
+        endif ()
         # Copy other dependent shared libraries to Android library output path
         foreach (FILE ${ABSOLUTE_PATH_LIBS})
             get_filename_component (EXT ${FILE} EXT)
@@ -734,17 +758,26 @@ macro (setup_main_executable)
         endif ()
     else ()
         # Setup target as executable
+        unset (TARGET_PROPERTIES)
         if (WIN32)
-            set (EXE_TYPE WIN32)
+            if (NOT URHO3D_WIN32_CONSOLE OR ARG_WIN32)
+                set (EXE_TYPE WIN32)
+            endif ()
+            list (APPEND TARGET_PROPERTIES DEBUG_POSTFIX _d)
         elseif (IOS)
             set (EXE_TYPE MACOSX_BUNDLE)
+            list (APPEND TARGET_PROPERTIES XCODE_ATTRIBUTE_TARGETED_DEVICE_FAMILY 1,2 MACOSX_BUNDLE_INFO_PLIST iOSBundleInfo.plist.template)
             setup_ios_linker_flags (CMAKE_EXE_LINKER_FLAGS)
         elseif (APPLE)
+            if ((URHO3D_MACOSX_BUNDLE OR ARG_MACOSX_BUNDLE) AND NOT ARG_NOBUNDLE)
+                set (EXE_TYPE MACOSX_BUNDLE)
+                list (APPEND TARGET_PROPERTIES MACOSX_BUNDLE_INFO_PLIST MacOSXBundleInfo.plist.template)
+            endif ()
             setup_macosx_linker_flags (CMAKE_EXE_LINKER_FLAGS)
         endif ()
-        setup_executable (${EXE_TYPE})
-        if (WIN32)
-            set_target_properties (${TARGET_NAME} PROPERTIES DEBUG_POSTFIX _d)
+        setup_executable (${EXE_TYPE} ${ARG_UNPARSED_ARGUMENTS})
+        if (TARGET_PROPERTIES)
+            set_target_properties (${TARGET_NAME} PROPERTIES ${TARGET_PROPERTIES})
         endif ()
     endif ()
     
@@ -980,7 +1013,8 @@ macro (install_header_files)
     if (NOT ARG_DESTINATION)
         message (FATAL_ERROR "Couldn't setup install command because the install destination is not specified.")
     endif ()
-    if (NOT ARG_BUILD_TREE_ONLY)
+    if (NOT ARG_BUILD_TREE_ONLY AND DEST_INCLUDE_DIR)
+        # Need to check if the destination variable is defined first because this macro could be called by external project that does not wish to install anything
         install (${INSTALL_TYPE} ${INSTALL_SOURCES} DESTINATION ${ARG_DESTINATION} ${INSTALL_PERMISSIONS} ${INSTALL_MATCHING})
     endif ()
 

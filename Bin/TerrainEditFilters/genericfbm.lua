@@ -11,6 +11,7 @@ return
 		{name="Seed", type="value", value=12345},
 		{name="Tiers", type="flag", value=false},
 		{name="Number of tiers", type="value", value=5},
+		{name="Use Mask?", type="flag", value=false},
 	},
 	
 	execute=function(self)
@@ -38,7 +39,13 @@ return
 				local nx=x/hw
 				local ny=y/hh
 				local val=vm:evaluate(CCoordinate(nx,ny,0)).outfloat_*self.options[3].value
-				SetHeightValue(x,y,val)
+				if self.options[8].value==true then
+					local oldheight=GetHeightValue(hmap,x,y)
+					local maskval=1-mask:GetPixelBilinear(nx,ny).r
+					if maskval>0 then print(maskval) end
+					val=oldheight+maskval*(val-oldheight)
+				end
+				SetHeightValue(hmap,x,y,val)
 				
 			end
 		end

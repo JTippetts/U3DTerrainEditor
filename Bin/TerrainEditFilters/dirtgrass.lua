@@ -8,10 +8,11 @@ return
 		{name="Num Octaves", type="value", value=6},
 		{name="Gain", type="value", value=0.8},
 		{name="Seed", type="value", value=12345},
+		{name="Use Mask?", type="flag", value=false},
 	},
 	
 	execute=function(self)
-		local hw,hh=hmap:GetWidth(),hmap:GetHeight()
+		local hw,hh=blend:GetWidth(),blend:GetHeight()
 		local x,y
 		
 		local k=CKernel()
@@ -31,7 +32,16 @@ return
 				local ny=y/hh
 				local val=vm:evaluate(CCoordinate(nx,ny,0)).outfloat_
 				local col=Color(1,0,0,0):Lerp(Color(0,1,0,0), val)
-				blend:SetPixel(x,y,col)
+				if self.options[5].value==true then
+				
+					local oldblend=blend:GetPixel(x,y)
+					local maskval=1-mask:GetPixelBilinear(nx,ny).r
+					local newpix=oldblend:Lerp(col,maskval)
+					if maskval>0 then print(newpix.r,newpix.g,newpix.b,newpix.a) end
+					blend:SetPixel(x,y,newpix)
+				else
+					blend:SetPixel(x,y,col)
+				end
 				
 			end
 		end
