@@ -264,7 +264,7 @@ function TerrainEditUI:SetBrushCursorHeight()
 	
 	local ground=cam:GetScreenGround(mousepos.x, mousepos.y)
 	
-	local numverts=self.brushcursor:GetNumVertices(0)
+	--[[local numverts=self.brushcursor:GetNumVertices(0)
 	
 	local v
 	for v=0,numverts-1,1 do
@@ -273,7 +273,8 @@ function TerrainEditUI:SetBrushCursorHeight()
 		vert.y=ht
 	end
 	
-	self.brushcursor:Commit()
+	self.brushcursor:Commit()]]
+	SetBrushCursorHeight(terrain, self.brushcursor, ground.x, ground.z)
 end
 
 function TerrainEditUI:ActivateHeightBrush()
@@ -500,16 +501,16 @@ function TerrainEditUI:HandleSliderChanged(eventType, eventData)
 	
 	if which==self.activebrush:GetChild("PowerSlider", true) then
 		local text=self.activebrush:GetChild("PowerText", true)
-		if text then text.text=string.format("%.1f", self.power) end
+		if text then text.text=string.format("%.2f", self.power) end
 	elseif which==self.activebrush:GetChild("RadiusSlider", true) then
 		local text=self.activebrush:GetChild("RadiusText", true)
 		if text then text.text=tostring(math.floor(self.radius)) end
 	elseif which==self.activebrush:GetChild("MaxSlider", true) then
 		local text=self.activebrush:GetChild("MaxText", true)
-		if text then text.text=string.format("%.1f", self.max) end
+		if text then text.text=string.format("%.2f", self.max) end
 	elseif which==self.activebrush:GetChild("HardnessSlider", true) then
 		local text=self.activebrush:GetChild("HardnessText", true)
-		if text then text.text=string.format("%.2f", self.hardness) end
+		if text then text.text=string.format("%.3f", self.hardness) end
 	end
 end
 

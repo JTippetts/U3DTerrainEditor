@@ -13,5 +13,7 @@ Vector2 WorldToNormalized(Image *height, Terrain *terrain, Vector3 world);
 	void ApplyMaskBrush(Terrain *terrain, Image *height, Image *mask, float x, float z, float radius, float mx, float power, float hardness, float dt);
 	void ApplySmoothBrush(Terrain *terrain, Image *height, Image *mask, float x, float z, float radius, float max, float power, float hardness, bool usemask, float dt);
 	
+	void SetBrushCursorHeight(Terrain *terrain, CustomGeometry *brush, float groundx, float groundz);
+	
 	void InvertMask(Image *mask);
 	

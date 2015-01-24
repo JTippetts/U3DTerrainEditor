@@ -267,6 +267,19 @@ void ApplySmoothBrush(Terrain *terrain, Image *height, Image *mask, float x, flo
 		}
 	}
 }
+
+void SetBrushCursorHeight(Terrain *terrain, CustomGeometry *brush, float groundx, float groundz)
+{
+	int numverts=brush->GetNumVertices(0);
+	for(int v=0; v<numverts-1; v++)
+	{
+		CustomGeometryVertex *vert=brush->GetVertex(0,v);
+		float ht=terrain->GetHeight(Vector3(vert->position_.x_+groundx, 0, vert->position_.z_+groundz));
+		vert->position_.y_=ht;
+	}
+	brush->Commit();
+}
+
 	
 void InvertMask(Image *mask)
 {

@@ -7,7 +7,6 @@
 require "LuaScripts/Utilities/Sample"
 require "LuaScripts/thirdpersoncamera"
 require "LuaScripts/terraineditUI"
---require "LuaScripts/terraineditheightbrush"
 
 function HtToRG(ht)
 	local expht=math.floor(ht*255)
@@ -120,9 +119,7 @@ function CreateScene()
 	blend:SetSize(512,512,4)
 	blend:Clear(Color(1,0,0,0))
 	blendtex:SetData(blend, false)
-	--print("Checkpoint")
 	
-	--editbrush=scene_:CreateScriptObject("TerrainBrush")
 	terrainui=scene_:CreateScriptObject("TerrainEditUI")
 	
 

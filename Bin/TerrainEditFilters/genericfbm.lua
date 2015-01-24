@@ -42,7 +42,6 @@ return
 				if self.options[8].value==true then
 					local oldheight=GetHeightValue(hmap,x,y)
 					local maskval=1-mask:GetPixelBilinear(nx,ny).r
-					if maskval>0 then print(maskval) end
 					val=oldheight+maskval*(val-oldheight)
 				end
 				SetHeightValue(hmap,x,y,val)

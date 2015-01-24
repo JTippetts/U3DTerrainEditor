@@ -10,6 +10,7 @@
 #include <Urho3D/Graphics/Texture2D.h>
 #include <Urho3D/Resource/Image.h>
 #include <Urho3D/Container/Str.h>
+#include <Urho3D/Graphics/CustomGeometry.h>
 
 using namespace Urho3D;
 	
@@ -23,6 +24,8 @@ using namespace Urho3D;
 	void ApplyBlendBrush(Terrain *terrain, Image *height, Image *blend, Image *mask, float x, float z, float radius, float mx, float power, float hardness, int layer, bool usemask, float dt);
 	void ApplyMaskBrush(Terrain *terrain, Image *height, Image *mask, float x, float z, float radius, float mx, float power, float hardness, float dt);
 	void ApplySmoothBrush(Terrain *terrain, Image *height, Image *mask, float x, float z, float radius, float max, float power, float hardness, bool usemask, float dt);
+	
+	void SetBrushCursorHeight(Terrain *terrain, CustomGeometry *brush, float groundx, float groundz);
 	
 	void InvertMask(Image *mask);
 
