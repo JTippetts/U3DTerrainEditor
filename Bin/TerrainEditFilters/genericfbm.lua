@@ -5,8 +5,8 @@ return
 	options=
 	{
 		{name="Frequency", type="value", value=8},
-		{name="Num Octaves", type="value", value=6},
-		{name="Amplitude", type="value", value=0.5},
+		{name="Num Octaves", type="value", value=4},
+		{name="Amplitude", type="value", value=1},
 		{name="Gain", type="value", value=0.8},
 		{name="Seed", type="value", value=12345},
 		{name="Tiers", type="flag", value=false},

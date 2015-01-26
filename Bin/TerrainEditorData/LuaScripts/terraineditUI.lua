@@ -90,6 +90,21 @@ function TerrainEditUI:Start()
 	self:ActivateHeightBrush()
 	
 	self:PopulateFilterList()
+	
+	
+	-- Waypoints
+	waypoints={}
+end
+
+function TerrainEditUI:AddWaypoint(groundx, groundz)
+	local waynode=scene_:CreateChild()
+	local model=waynode:CreateComponent("StaticModel")
+	model.material=cache:GetResource("Material", "Materials/Flag.xml")
+	model.model=cache:GetResource("Model", "Models/Flag.mdl")
+	local ht=terrain:GetHeight(Vector3(groundx,0,groundz))
+	waynode.position=Vector3(groundx, ht, groundz)
+	waynode.scale=Vector3(0.25,0.25,0.25)
+	table.insert(waypoints, waynode)
 end
 
 function TerrainEditUI:BuildFilterOptions(filter)
@@ -190,7 +205,7 @@ function TerrainEditUI:HandleItemSelected(eventType, eventData)
 end
 
 function TerrainEditUI:GetBrushSettings(brush)
-	local power,max,radius,hardness=0,0,0,0
+	local power,max,radius,hardness=0,0,5,0.9
 	local usemask=false
 	
 	local slider
@@ -405,6 +420,21 @@ function TerrainEditUI:Update(dt)
 			end
 			
 		end
+	elseif input:GetKeyPress(KEY_W) then
+		local mouseground=cam:PickGround(mousepos.x, mousepos.y)
+		self:AddWaypoint(mouseground.x, mouseground.z)
+		
+	elseif input:GetKeyPress(KEY_Q) then
+		if(#waypoints>0) then
+			waypoints[#waypoints]:Remove()
+			table.remove(waypoints)
+		end
+	end
+	
+	local c
+	for _,c in ipairs(waypoints) do
+		local ht=terrain:GetHeight(Vector3(c.position.x,0,c.position.z))
+		c.position=Vector3(c.position.x,ht,c.position.z)
 	end
 end
 
