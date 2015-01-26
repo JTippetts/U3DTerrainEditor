@@ -47,7 +47,4 @@ function rasterizeFace(v0,v1,v2,img,channel,valmod)
 			
 		end
 	end
-	
-	masktex:SetData(mask)
-	
 end
