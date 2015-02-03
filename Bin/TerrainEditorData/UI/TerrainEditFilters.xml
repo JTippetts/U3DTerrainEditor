@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <element type="Window">
-	<attribute name="Position" value="386 140" />
-	<attribute name="Size" value="832 500" />
+	<attribute name="Position" value="383 93" />
+	<attribute name="Size" value="832 600" />
 	<attribute name="Layout Mode" value="Horizontal" />
 	<attribute name="Layout Border" value="12 12 12 12" />
 	<attribute name="Is Movable" value="true" />
@@ -67,27 +67,27 @@
 			<attribute name="Name" value="List" />
 			<attribute name="Scroll Snap Epsilon" value="1e-006" />
 			<element type="ScrollBar" internal="true" style="none">
-				<attribute name="Size" value="404 16" />
+				<attribute name="Size" value="396 16" />
 				<element type="Button" internal="true" style="none" />
 				<element type="Slider" internal="true" style="none">
 					<attribute name="Position" value="16 0" />
-					<attribute name="Size" value="372 16" />
+					<attribute name="Size" value="364 16" />
 					<element type="BorderImage" internal="true" style="none" />
 				</element>
 				<element type="Button" internal="true" style="none">
-					<attribute name="Position" value="388 0" />
+					<attribute name="Position" value="380 0" />
 				</element>
 			</element>
 			<element type="ScrollBar" internal="true" style="none">
-				<attribute name="Size" value="16 445" />
+				<attribute name="Size" value="16 545" />
 				<element type="Button" internal="true" style="none" />
 				<element type="Slider" internal="true" style="none">
 					<attribute name="Position" value="0 16" />
-					<attribute name="Size" value="16 413" />
+					<attribute name="Size" value="16 513" />
 					<element type="BorderImage" internal="true" style="none" />
 				</element>
 				<element type="Button" internal="true" style="none">
-					<attribute name="Position" value="0 429" />
+					<attribute name="Position" value="0 529" />
 				</element>
 			</element>
 			<element type="BorderImage" internal="true" style="none">
@@ -110,5 +110,8 @@
 				<attribute name="Text Alignment" value="Center" />
 			</element>
 		</element>
+	</element>
+	<element type="Button" style="CloseButton">
+		<attribute name="Name" value="CloseButton" />
 	</element>
 </element>

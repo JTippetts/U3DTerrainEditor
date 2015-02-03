@@ -8,6 +8,9 @@ return
 	{
 		{name="Steepness threshold", type="value", value=0.7},
 		{name="Fade", type="value", value=0.15},
+		{name="Cliff Layer", type="value", value=3},
+		{name="Use Mask?", type="flag", value=false},
+		{name="Invert Mask?", type="flag", value=false},
 	},
 	
 	execute=function(self)
@@ -28,14 +31,31 @@ return
 				--print(steep, normal.x, normal.y)
 				local i=(steep-(thresh-halffade))/fade
 				i=math.max(0,math.min(1,i))
-				local col=blend:GetPixel(x,(bh-1)-y)
-				local newcol=Color(0,0,0,1):Lerp(col, i)
+				i=1-i
 				
-					blend:SetPixel(x,(bh-1)-y,newcol)
+				if self.options[4].value==true then
+					local maskval=mask:GetPixelBilinear(nworld.x,1-nworld.y).r
+					if self.options[5].value==true then maskval=1-maskval end
+					i=i*maskval
+				end
+				
+				local col=blend:GetPixel(x,(bh-1)-y)
+				local newcol
+				if self.options[3].value==0 then
+					newcol=col:Lerp(Color(1,0,0,0),i)
+				elseif self.options[3].value==1 then
+					newcol=col:Lerp(Color(0,1,0,0),i)
+				elseif self.options[3].value==2 then
+					newcol=col:Lerp(Color(0,0,1,0),i)
+				else
+					newcol=col:Lerp(Color(0,0,0,1),i)
+				end
+				blend:SetPixel(x,(bh-1)-y,newcol)
 			end
+			collectgarbage()
 		end
 		
-		blendtex:SetData(blend)
+		blendtex:SetData(blend,false)
 	
 		print("Filter executed with options: ")
 		local c

@@ -1,6 +1,6 @@
 return
 {
-	name="Generic Perlin Terrain",
+	name="Perlin Fractal Terrain Types",
 	description="Create a mottled dirt/grass terrain.",
 	options=
 	{
@@ -12,6 +12,8 @@ return
 	},
 	
 	execute=function(self)
+		print(collectgarbage("count"))
+		collectgarbage("restart")
 		local hw,hh=blend:GetWidth(),blend:GetHeight()
 		local x,y
 		
@@ -26,26 +28,37 @@ return
 		
 		local vm=CNoiseExecutor(k:getKernel())
 		
+		local c1=Color(1,0,0,0)
+		local c2=Color(0,1,0,0)
+		local c3=Color(0,0,0,0)
+		local coord=CCoordinate(0,0,0)
+		
 		for x=0,hw-1,1 do
 			for y=0,hh-1,1 do
 				local nx=x/hw
 				local ny=y/hh
-				local val=vm:evaluate(CCoordinate(nx,ny,0)).outfloat_
-				local col=Color(1,0,0,0):Lerp(Color(0,1,0,0), val)
+				coord:set(nx,ny,0)
+				local val=vm:evaluate(coord).outfloat_
+				local col=c1:Lerp(c2, val)
 				if self.options[5].value==true then
 				
 					local oldblend=blend:GetPixel(x,y)
-					local maskval=1-mask:GetPixelBilinear(nx,ny).r
+					local maskval=mask:GetPixelBilinear(nx,ny).r
 					local newpix=oldblend:Lerp(col,maskval)
-					if maskval>0 then print(newpix.r,newpix.g,newpix.b,newpix.a) end
 					blend:SetPixel(x,y,newpix)
 				else
 					blend:SetPixel(x,y,col)
 				end
 				
 			end
+			collectgarbage()
 		end
 		
-		blendtex:SetData(blend)
+		blendtex:SetData(blend,false)
+		print(collectgarbage("count"))
+		collectgarbage()
+		collectgarbage()
+		collectgarbage()
+		print(collectgarbage("count"))
 	end,
 }

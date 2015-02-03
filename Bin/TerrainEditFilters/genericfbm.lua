@@ -12,6 +12,7 @@ return
 		{name="Tiers", type="flag", value=false},
 		{name="Number of tiers", type="value", value=5},
 		{name="Use Mask?", type="flag", value=false},
+		{name="Invert Mask?", type="flag", value=false},
 	},
 	
 	execute=function(self)
@@ -41,12 +42,14 @@ return
 				local val=vm:evaluate(CCoordinate(nx,ny,0)).outfloat_*self.options[3].value
 				if self.options[8].value==true then
 					local oldheight=GetHeightValue(hmap,x,y)
-					local maskval=1-mask:GetPixelBilinear(nx,ny).r
+					local maskval=mask:GetPixelBilinear(nx,ny).r
+					if self.options[9].value==true then maskval=1-maskval end
 					val=oldheight+maskval*(val-oldheight)
 				end
 				SetHeightValue(hmap,x,y,val)
 				
 			end
+			collectgarbage()
 		end
 		
 		terrain:ApplyHeightMap()

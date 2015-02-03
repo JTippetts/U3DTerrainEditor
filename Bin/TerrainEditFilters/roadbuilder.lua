@@ -187,8 +187,9 @@ return
 	Description="Convert the waypoint list to a road.",
 	options=
 	{
-		{name="Strip width", type="value", value=8},
+		{name="Bed width", type="value", value=4},
 		{name="Bed Hardness", type="value", value=0.5},
+		{name="Paving Width", type="value", value=2},
 		{name="Paving Hardness", type="value", value=0.3},
 		{name="Paving Layer", type="value", value=2},
 		{name="Segment steps", type="value", value=10},
@@ -199,7 +200,7 @@ return
 		local plist={}
 		local c
 		for _,c in ipairs(waypoints) do table.insert(plist, {x=c.position.x, y=c.position.y, z=c.position.z}) end
-		local curve=tesselate_curve(plist, self.options[5].value)
+		local curve=tesselate_curve(plist, self.options[6].value)
 		if not curve then print("Need at least 4 waypoints for a road.") return end
 		
 		local quad=build_quad_strip(curve, self.options[1].value)
@@ -218,7 +219,7 @@ return
 		end
 		
 		function pavingbase(c)
-			local hard=math.max(0,math.min(1,self.options[3].value))
+			local hard=math.max(0,math.min(1,self.options[4].value))
 			
 			c=math.abs(c*2-1)
 			return math.max(0,math.min(1,(c-1)/(hard-1)))
@@ -234,6 +235,7 @@ return
 				local c=mask:GetPixel(x,y)
 				mask:SetPixel(x,y,Color(c.r,0,0))
 			end
+			collectgarbage()
 		end
 		
 		-- Lay down road elevations in green channel
@@ -262,6 +264,7 @@ return
 			rasterizeFace(v2,v3,v4,mask,2)
 			
 		end
+		collectgarbage()
 		
 		-- Lay down mask in blue channel
 		for q=1,#quad-3,2 do
@@ -285,7 +288,8 @@ return
 			rasterizeFace(v2,v3,v4,mask,3,roadbase)
 			
 		end
-		mask:SavePNG("mask.png")
+		collectgarbage()
+		--mask:SavePNG("mask.png")
 		
 		-- Apply road bed
 		
@@ -296,6 +300,7 @@ return
 				local ht=GetHeightValue(hmap,x,y)
 				SetHeightValue(hmap,x,y,ht+c.b*(c.g-ht))
 			end
+			collectgarbage()
 		end
 		
 		for x=0,mask:GetWidth()-1,1 do
@@ -303,9 +308,11 @@ return
 				local c=mask:GetPixel(x,y)
 				mask:SetPixel(x,y,Color(c.r,0,0))
 			end
+			collectgarbage()
 		end
 		
 		-- Lay down paving blend
+		quad=build_quad_strip(curve, self.options[3].value)
 		for q=1,#quad-3,2 do
 			local p1=quad[q]
 			local p2=quad[q+1]
@@ -327,6 +334,7 @@ return
 			rasterizeFace(v2,v3,v4,mask,3,pavingbase)
 			
 		end
+		collectgarbage()
 		
 		for x=0,blend:GetWidth()-1,1 do
 			for y=0,blend:GetHeight()-1,1 do
@@ -347,10 +355,11 @@ return
 				local newcol=c:Lerp(pavecolor,m.b)
 				blend:SetPixel(x,y,newcol)
 			end
+			collectgarbage()
 		end
 		
 		terrain:ApplyHeightMap()
-		blendtex:SetData(blend)
+		blendtex:SetData(blend, false)
 		--masktex:SetData(mask)
 		
 	end

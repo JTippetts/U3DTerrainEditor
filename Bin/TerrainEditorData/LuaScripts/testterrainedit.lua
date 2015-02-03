@@ -7,6 +7,7 @@
 require "LuaScripts/Utilities/Sample"
 require "LuaScripts/thirdpersoncamera"
 require "LuaScripts/terraineditUI"
+require "LuaScripts/ui"
 
 function HtToRG(ht)
 	local expht=math.floor(ht*255)
@@ -116,7 +117,7 @@ function CreateScene()
 	terrain:GetMaterial():SetTexture(0,blendtex)
 	
 	blend=Image(context)
-	blend:SetSize(512,512,4)
+	blend:SetSize(1024,1024,4)
 	blend:Clear(Color(1,0,0,0))
 	blendtex:SetData(blend, false)
 	
@@ -156,11 +157,21 @@ function HandleUpdate(eventType, eventData)
 	
 	
 	if input:GetKeyPress(KEY_S) then
-		hmap:SavePNG("terrain.png")
+		hmap:SavePNG("TerrainEditorData/Textures/terrain.png")
 	end
 	
 	if input:GetKeyPress(KEY_D) then
-		blend:SavePNG("blend.png")
+		blend:SavePNG("TerrainEditorData/Textures/blend.png")
+	end
+	
+	if input:GetKeyPress(KEY_K) then
+		hmap=cache:GetResource("Image", "Textures/terrain.png")
+		terrain:SetHeightMap(hmap)
+	end
+	
+	if input:GetKeyPress(KEY_L) then
+		blend=cache:GetResource("Image", "Textures/blend.png")
+		blendtex:SetData(blend)
 	end
 	
 	if input:GetKeyPress(KEY_A) then

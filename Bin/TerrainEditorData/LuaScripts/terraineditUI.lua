@@ -91,7 +91,7 @@ function TerrainEditUI:Start()
 	
 	self:PopulateFilterList()
 	
-	
+	self.counter=0
 	-- Waypoints
 	waypoints={}
 end
@@ -108,6 +108,7 @@ function TerrainEditUI:AddWaypoint(groundx, groundz)
 end
 
 function TerrainEditUI:BuildFilterOptions(filter)
+	if filter==nil then return end
 	local options=self.filteroptions:GetChild("OptionsWindow", true)
 	local name=self.filteroptions:GetChild("FilterName", true)
 	local desc=self.filteroptions:GetChild("FilterDescription", true)
@@ -178,11 +179,11 @@ function TerrainEditUI:PopulateFilterList()
 		for _,c in ipairs(filters) do
 			local filter=dofile("TerrainEditFilters/"..c)
 			print(c)
-			self.filters[c]=filter
+			self.filters[filter.name]=filter
 			local uielement=Text:new(context)
 			uielement.style="EditorEnumAttributeText"
-			uielement.text=c
-			uielement.name=c
+			uielement.text=filter.name
+			uielement.name=filter.name
 			list:AddItem(uielement)
 		end
 	end
@@ -194,7 +195,8 @@ function TerrainEditUI:HandleItemSelected(eventType, eventData)
 	local entry=which:GetItem(selected)
 	if entry==nil then return end
 	local name=entry:GetName()
-	print("Selected: "..name)
+	
+	if self.filters[name]==nil then return end
 	
 	self:BuildFilterOptions(self.filters[name])
 	self.selectedfilter=self.filters[name]
@@ -390,6 +392,12 @@ end
 
 
 function TerrainEditUI:Update(dt)
+	self.counter=self.counter+dt
+	if self.counter>4 then
+		self.counter=self.counter-4
+		print("Used mem: "..collectgarbage("count"))
+		collectgarbage()
+	end
 	local mousepos
 	if input.mouseVisible then
 		mousepos=input:GetMousePosition()
@@ -511,6 +519,8 @@ function TerrainEditUI:HandleButtonPress(eventType, eventData)
 				end
 			end
 			self.selectedfilter:execute()
+			collectgarbage()
+			print("Usedmem: "..collectgarbage("count"))
 		end
 	elseif name=="RescanFilters" then
 		self:PopulateFilterList()
