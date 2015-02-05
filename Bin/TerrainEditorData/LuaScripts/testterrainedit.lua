@@ -96,7 +96,9 @@ function CreateScene()
 	hmap=Image:new(context)
 	hmap:SetSize(1025,1025,3)
     terrain.heightMap = hmap
-    terrain.material = cache:GetResource("Material", "Materials/TerrainEdit.xml")
+    --terrain.material = cache:GetResource("Material", "Materials/TerrainEdit.xml")
+	terrain.material = cache:GetResource("Material", "Materials/TerrainEdit8.xml")
+	
     -- The terrain consists of large triangles, which fits well for occlusion rendering, as a hill can occlude all
     -- terrain patches and other objects behind it
     terrain.occluder = true
@@ -112,14 +114,24 @@ function CreateScene()
 	hmap:Clear(Color(0,0,0))
 	terrain:SetSmoothing(false)
 	print("Components: "..hmap:GetComponents())
-	blendtex=Texture2D:new(context)
-	blendtex:SetSize(0,0,0,TEXTURE_DYNAMIC)
-	terrain:GetMaterial():SetTexture(0,blendtex)
+	blendtex1=Texture2D:new(context)
+	blendtex1:SetSize(0,0,0,TEXTURE_DYNAMIC)
+	terrain:GetMaterial():SetTexture(0,blendtex1)
 	
-	blend=Image(context)
-	blend:SetSize(1024,1024,4)
-	blend:Clear(Color(1,0,0,0))
-	blendtex:SetData(blend, false)
+	blendtex2=Texture2D:new(context)
+	blendtex2:SetSize(0,0,0,TEXTURE_DYNAMIC)
+	terrain:GetMaterial():SetTexture(1,blendtex2)
+	
+	blend1=Image(context)
+	blend1:SetSize(1024,1024,4)
+	blend1:Clear(Color(1,0,0,0))
+	blendtex1:SetData(blend1, false)
+	
+	blend2=Image(context)
+	blend2:SetSize(1024,1024,4)
+	blend2:Clear(Color(0,0,0,0))
+	blendtex2:SetData(blend2, false)
+
 	
 	terrainui=scene_:CreateScriptObject("TerrainEditUI")
 	

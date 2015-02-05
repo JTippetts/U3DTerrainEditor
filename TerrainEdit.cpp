@@ -163,6 +163,149 @@ void ApplyBlendBrush(Terrain *terrain, Image *height, Image *blend, Image *mask,
 	}
 }
 
+void ApplyBlendBrush8(Terrain *terrain, Image *height, Image *blend0, Image *blend1, Image *mask, float x, float z, float radius, float mx, float power, float hardness, int layer, bool usemask, float dt)
+{
+	if(!blend0 || !blend1 || !height || !terrain) return;
+	
+	Vector2 normalized=WorldToNormalized(height,terrain,Vector3(x,0,z));
+	float ratio=((float)blend0->GetWidth()/(float)height->GetWidth());
+	int ix=(int)(normalized.x_*(float)(blend0->GetWidth()-1));
+	int iy=(int)(normalized.y_*(float)(blend0->GetHeight()-1));
+	iy=blend0->GetHeight()-iy;
+	float rad=radius*ratio;
+	int sz=(int)rad+1;
+	
+	for(int hx=ix-sz; hx<=ix+sz; ++hx)
+	{
+		for(int hz=iy-sz; hz<=iy+sz; ++hz)
+		{
+			if(hx>=0 && hx<blend0->GetWidth() && hz>=0 && hz<blend0->GetHeight())
+			{
+				float dx=(float)hx-(float)ix;
+				float dz=(float)hz-(float)iy;
+				float d=std::sqrt(dx*dx+dz*dz);
+				float i=((d-rad)/(hardness*rad-rad));
+				i=std::max(0.0f, std::min(1.0f, i));
+				i=i*dt*power;
+				if(usemask)
+				{
+					float m=mask->GetPixelBilinear((float)(hx)/(float)(blend0->GetWidth()), (float)(hz)/(float)(blend0->GetHeight())).r_;
+					i=i*m;
+				}
+				Color col0=blend0->GetPixel(hx,hz);
+				Color col1=blend1->GetPixel(hx,hz);
+				if(layer==1)
+				{
+					col0.r_=col0.r_+i*(1.0f-col0.r_);
+					col0.r_=std::min(1.0f,col0.r_);
+					float others=col0.g_+col0.b_+col0.a_+col1.r_+col1.g_+col1.b_+col1.a_;
+					col0.g_=(col0.g_/others)*(1.0f-col0.r_);
+					col0.b_=(col0.b_/others)*(1.0f-col0.r_);
+					col0.a_=(col0.a_/others)*(1.0f-col0.r_);
+					col1.r_=(col1.r_/others)*(1.0f-col0.r_);
+					col1.g_=(col1.g_/others)*(1.0f-col0.r_);
+					col1.b_=(col1.b_/others)*(1.0f-col0.r_);
+					col1.a_=(col1.a_/others)*(1.0f-col0.r_);
+				}
+				else if(layer==2)
+				{
+					col0.g_=col0.g_+i*(1.0f-col0.g_);
+					col0.g_=std::min(1.0f,col0.g_);
+					float others=col0.r_+col0.b_+col0.a_+col1.r_+col1.g_+col1.b_+col1.a_;
+					col0.r_=(col0.r_/others)*(1.0f-col0.g_);
+					col0.b_=(col0.b_/others)*(1.0f-col0.g_);
+					col0.a_=(col0.a_/others)*(1.0f-col0.g_);
+					col1.r_=(col1.r_/others)*(1.0f-col0.g_);
+					col1.g_=(col1.g_/others)*(1.0f-col0.g_);
+					col1.b_=(col1.b_/others)*(1.0f-col0.g_);
+					col1.a_=(col1.a_/others)*(1.0f-col0.g_);
+				}
+				else if(layer==3)
+				{
+					col0.b_=col0.b_+i*(1.0f-col0.b_);
+					col0.b_=std::min(1.0f,col0.b_);
+					float others=col0.r_+col0.g_+col0.a_+col1.r_+col1.g_+col1.b_+col1.a_;
+					col0.r_=(col0.r_/others)*(1.0f-col0.b_);
+					col0.g_=(col0.g_/others)*(1.0f-col0.b_);
+					col0.a_=(col0.a_/others)*(1.0f-col0.b_);
+					col1.r_=(col1.r_/others)*(1.0f-col0.b_);
+					col1.g_=(col1.g_/others)*(1.0f-col0.b_);
+					col1.b_=(col1.b_/others)*(1.0f-col0.b_);
+					col1.a_=(col1.a_/others)*(1.0f-col0.b_);
+				}
+				else if(layer==4)
+				{
+					col0.a_=col0.a_+i*(1.0f-col0.a_);
+					col0.a_=std::min(1.0f,col0.a_);
+					float others=col0.r_+col0.g_+col0.b_+col1.r_+col1.g_+col1.b_+col1.a_;
+					col0.r_=(col0.r_/others)*(1.0f-col0.a_);
+					col0.g_=(col0.g_/others)*(1.0f-col0.a_);
+					col0.b_=(col0.b_/others)*(1.0f-col0.a_);
+					col1.r_=(col1.r_/others)*(1.0f-col0.a_);
+					col1.g_=(col1.g_/others)*(1.0f-col0.a_);
+					col1.b_=(col1.b_/others)*(1.0f-col0.a_);
+					col1.a_=(col1.a_/others)*(1.0f-col0.a_);
+				}
+				else if(layer==5)
+				{
+					col1.r_=col1.r_+i*(1.0f-col1.r_);
+					col1.r_=std::min(1.0f,col1.r_);
+					float others=col1.g_+col1.b_+col1.a_+col0.r_+col0.g_+col0.b_+col0.a_;
+					col1.g_=(col1.g_/others)*(1.0f-col1.r_);
+					col1.b_=(col1.b_/others)*(1.0f-col1.r_);
+					col1.a_=(col1.a_/others)*(1.0f-col1.r_);
+					col0.r_=(col0.r_/others)*(1.0f-col1.r_);
+					col0.g_=(col0.g_/others)*(1.0f-col1.r_);
+					col0.b_=(col0.b_/others)*(1.0f-col1.r_);
+					col0.a_=(col0.a_/others)*(1.0f-col1.r_);
+				}
+				else if(layer==6)
+				{
+					col1.g_=col1.g_+i*(1.0f-col1.g_);
+					col1.g_=std::min(1.0f,col1.g_);
+					float others=col1.r_+col1.b_+col1.a_+col0.r_+col0.g_+col0.b_+col0.a_;
+					col1.r_=(col1.r_/others)*(1.0f-col1.g_);
+					col1.b_=(col1.b_/others)*(1.0f-col1.g_);
+					col1.a_=(col1.a_/others)*(1.0f-col1.g_);
+					col0.r_=(col0.r_/others)*(1.0f-col1.g_);
+					col0.g_=(col0.g_/others)*(1.0f-col1.g_);
+					col0.b_=(col0.b_/others)*(1.0f-col1.g_);
+					col0.a_=(col0.a_/others)*(1.0f-col1.g_);
+				}
+				else if(layer==7)
+				{
+					col1.b_=col1.b_+i*(1.0f-col1.b_);
+					col1.b_=std::min(1.0f,col1.b_);
+					float others=col1.r_+col1.g_+col1.a_+col0.r_+col0.g_+col0.b_+col0.a_;
+					col1.r_=(col1.r_/others)*(1.0f-col1.b_);
+					col1.g_=(col1.g_/others)*(1.0f-col1.b_);
+					col1.a_=(col1.a_/others)*(1.0f-col1.b_);
+					col0.r_=(col0.r_/others)*(1.0f-col1.b_);
+					col0.g_=(col0.g_/others)*(1.0f-col1.b_);
+					col0.b_=(col0.b_/others)*(1.0f-col1.b_);
+					col0.a_=(col0.a_/others)*(1.0f-col1.b_);
+				}
+				else if(layer==8)
+				{
+					col1.a_=col1.a_+i*(1.0f-col1.a_);
+					col1.a_=std::min(1.0f,col1.a_);
+					float others=col1.r_+col1.g_+col1.b_+col0.r_+col0.g_+col0.b_+col0.a_;
+					col1.r_=(col1.r_/others)*(1.0f-col1.a_);
+					col1.g_=(col1.g_/others)*(1.0f-col1.a_);
+					col1.b_=(col1.b_/others)*(1.0f-col1.a_);
+					col0.r_=(col0.r_/others)*(1.0f-col1.a_);
+					col0.g_=(col0.g_/others)*(1.0f-col1.a_);
+					col0.b_=(col0.b_/others)*(1.0f-col1.a_);
+					col0.a_=(col0.a_/others)*(1.0f-col1.a_);
+				}
+				blend0->SetPixel(hx,hz,col0);
+				blend1->SetPixel(hx,hz,col1);
+				//LOGINFO(String(col.r_)+String(",")+String(col.g_));
+			}
+		}
+	}
+}
+
 void ApplyMaskBrush(Terrain *terrain, Image *height, Image *mask, float x, float z, float radius, float mx, float power, float hardness, float dt)
 {
 	if(!mask || !height || !terrain) return;

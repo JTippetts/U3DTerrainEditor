@@ -1,0 +1,7 @@
+<material>
+    <technique name="Techniques/TerrainBlend8Edit.xml" />
+    <texture unit="2" name="Textures/composite1.png" />
+    <texture unit="3" name="Textures/composite2.png" />
+    <parameter name="MatSpecColor" value="0.5 0.5 0.5 16" />
+    <parameter name="DetailTiling" value="32 32" />
+</material>

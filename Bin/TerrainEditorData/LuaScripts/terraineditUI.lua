@@ -444,8 +444,8 @@ function TerrainEditUI:Update(dt)
 			
 				--self.edit:ApplyBrush(gx,gz, self.radius, self.max, self.power, self.hardness, self.mode, self.usemask, dt)
 				if self.mode==0 then ApplyHeightBrush(terrain,hmap,mask,gx,gz,self.radius, self.max, self.power, self.hardness, self.usemask, dt) terrain:ApplyHeightMap()
-				elseif self.mode>=1 and self.mode<=4 then ApplyBlendBrush(terrain,hmap,blend,mask,gx,gz,self.radius,self.max,self.power,self.hardness,self.mode,self.usemask,dt) blendtex:SetData(blend)
-				elseif self.mode==5 then ApplySmoothBrush(terrain,hmap,mask,gx,gz,self.radius, self.max, self.power, self.hardness, self.usemask, dt) terrain:ApplyHeightMap()
+				elseif self.mode>=1 and self.mode<=8 then ApplyBlendBrush8(terrain,hmap,blend1,blend2,mask,gx,gz,self.radius,self.max,self.power,self.hardness,self.mode,self.usemask,dt) blendtex1:SetData(blend1) blendtex2:SetData(blend2)
+				elseif self.mode==9 then ApplySmoothBrush(terrain,hmap,mask,gx,gz,self.radius, self.max, self.power, self.hardness, self.usemask, dt) terrain:ApplyHeightMap()
 				else ApplyMaskBrush(terrain,hmap,mask,gx,gz,self.radius,self.max,self.power,self.hardness,dt) masktex:SetData(mask)
 				end
 			end
@@ -497,7 +497,7 @@ function TerrainEditUI:HandleButtonPress(eventType, eventData)
 		self:ActivateHeightBrush()
 		
 	elseif name=="SmoothButton" then
-		self.mode=5
+		self.mode=9
 		self:ActivateSmoothBrush()
 	
 	elseif name=="Terrain1Button" then
@@ -515,9 +515,22 @@ function TerrainEditUI:HandleButtonPress(eventType, eventData)
 	elseif name=="Terrain4Button" then
 		self.mode=4
 		self:ActivateBlendBrush()
+	elseif name=="Terrain5Button" then
+		self.mode=5
+		self:ActivateBlendBrush()
+	elseif name=="Terrain6Button" then
+		self.mode=6
+		self:ActivateBlendBrush()
+	elseif name=="Terrain7Button" then
+		self.mode=7
+		self:ActivateBlendBrush()
+	elseif name=="Terrain8Button" then
+		self.mode=8
+		self:ActivateBlendBrush()
+	
 	
 	elseif name=="MaskButton" then
-		self.mode=6
+		self.mode=10
 		self:ActivateMaskBrush()
 	
 	elseif name=="FilterButton" then
