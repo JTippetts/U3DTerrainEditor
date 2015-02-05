@@ -416,15 +416,38 @@ function TerrainEditUI:Update(dt)
 
 	
 	if input:GetMouseButtonDown(MOUSEB_LEFT) and ui:GetElementAt(mousepos.x, mousepos.y)==nil then
-		local ground=cam:GetScreenGround(mousepos.x, mousepos.y)
-		if ground~=nil then
-			local gx,gz=ground.x,ground.z
+		-- If CTRL is down and we are in mode==0 then grab the terrain height at the cursor instead
+		if self.mode==0 and input:GetQualifierDown(QUAL_CTRL) then
+			local ground=cam:PickGround(mousepos.x, mousepos.y)
+			if ground~=nil then
+				local norm=WorldToNormalized(hmap,terrain,ground)
+				--local tx=math.floor(norm.x*hmap:GetWidth()-1)
+				--local ty=math.floor(norm.y*hmap:GetHeight()-1)
+				--local col=hmap:GetPixel(tx,hmap:GetHeight()-ty)
+				local col=hmap:GetPixelBilinear(norm.x,1-norm.y)
+				local ht=0
+				if hmap.components==1 then ht=col.r
+				else ht=col.r+col.g/256.0
+				end
+				print(ht)
+				
+				local slider=self.activebrush:GetChild("MaxSlider", true)
+				if slider then slider.value=ht*slider.range end
+				self.power, self.max, self.radius, self.hardness, self.usemask=self:GetBrushSettings(self.activebrush)
+				--self:BuildCursorMesh(self.radius)
+				self:GenerateBrushPreview(self.hardness)
+			end
+		else
+			local ground=cam:GetScreenGround(mousepos.x, mousepos.y)
+			if ground~=nil then
+				local gx,gz=ground.x,ground.z
 			
-			--self.edit:ApplyBrush(gx,gz, self.radius, self.max, self.power, self.hardness, self.mode, self.usemask, dt)
-			if self.mode==0 then ApplyHeightBrush(terrain,hmap,mask,gx,gz,self.radius, self.max, self.power, self.hardness, self.usemask, dt) terrain:ApplyHeightMap()
-			elseif self.mode>=1 and self.mode<=4 then ApplyBlendBrush(terrain,hmap,blend,mask,gx,gz,self.radius,self.max,self.power,self.hardness,self.mode,self.usemask,dt) blendtex:SetData(blend)
-			elseif self.mode==5 then ApplySmoothBrush(terrain,hmap,mask,gx,gz,self.radius, self.max, self.power, self.hardness, self.usemask, dt) terrain:ApplyHeightMap()
-			else ApplyMaskBrush(terrain,hmap,mask,gx,gz,self.radius,self.max,self.power,self.hardness,dt) masktex:SetData(mask)
+				--self.edit:ApplyBrush(gx,gz, self.radius, self.max, self.power, self.hardness, self.mode, self.usemask, dt)
+				if self.mode==0 then ApplyHeightBrush(terrain,hmap,mask,gx,gz,self.radius, self.max, self.power, self.hardness, self.usemask, dt) terrain:ApplyHeightMap()
+				elseif self.mode>=1 and self.mode<=4 then ApplyBlendBrush(terrain,hmap,blend,mask,gx,gz,self.radius,self.max,self.power,self.hardness,self.mode,self.usemask,dt) blendtex:SetData(blend)
+				elseif self.mode==5 then ApplySmoothBrush(terrain,hmap,mask,gx,gz,self.radius, self.max, self.power, self.hardness, self.usemask, dt) terrain:ApplyHeightMap()
+				else ApplyMaskBrush(terrain,hmap,mask,gx,gz,self.radius,self.max,self.power,self.hardness,dt) masktex:SetData(mask)
+				end
 			end
 			
 		end
