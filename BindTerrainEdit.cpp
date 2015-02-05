@@ -1,6 +1,6 @@
 /*
 ** Lua binding: BindTerrainEdit
-** Generated automatically by tolua++-1.0.93 on 01/23/15 20:51:27.
+** Generated automatically by tolua++-1.0.93 on 02/04/15 16:48:55.
 */
 
 #ifndef __cplusplus
@@ -15,6 +15,7 @@ TOLUA_API int  tolua_BindTerrainEdit_open (lua_State* tolua_S);
 
 #include "TerrainEdit.h"
 using namespace Urho3D;
+using namespace anl;
 
 /* function to release collected object via destructor */
 #ifdef __cplusplus
@@ -41,6 +42,7 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"Image");
  tolua_usertype(tolua_S,"Vector2");
  tolua_usertype(tolua_S,"Terrain");
+ tolua_usertype(tolua_S,"CKernel");
  tolua_usertype(tolua_S,"CustomGeometry");
  tolua_usertype(tolua_S,"Vector3");
 }
@@ -454,6 +456,46 @@ static int tolua_BindTerrainEdit_InvertMask00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* function: RenderANLKernelToHeight */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_RenderANLKernelToHeight00
+static int tolua_BindTerrainEdit_RenderANLKernelToHeight00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Image",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"Image",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,3,"CKernel",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,1,&tolua_err) ||
+     !tolua_isnumber(tolua_S,5,1,&tolua_err) ||
+     !tolua_isboolean(tolua_S,6,1,&tolua_err) ||
+     !tolua_isboolean(tolua_S,7,1,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,8,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Image* height = ((Image*)  tolua_tousertype(tolua_S,1,0));
+  Image* mask = ((Image*)  tolua_tousertype(tolua_S,2,0));
+  CKernel* kernel = ((CKernel*)  tolua_tousertype(tolua_S,3,0));
+  double lowRange = ((double)  tolua_tonumber(tolua_S,4,0));
+  double highRange = ((double)  tolua_tonumber(tolua_S,5,1));
+  bool useMask = ((bool)  tolua_toboolean(tolua_S,6,false));
+  bool invertMask = ((bool)  tolua_toboolean(tolua_S,7,false));
+  {
+   RenderANLKernelToHeight(height,mask,kernel,lowRange,highRange,useMask,invertMask);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'RenderANLKernelToHeight'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* Open function */
 TOLUA_API int tolua_BindTerrainEdit_open (lua_State* tolua_S)
 {
@@ -471,6 +513,7 @@ TOLUA_API int tolua_BindTerrainEdit_open (lua_State* tolua_S)
   tolua_function(tolua_S,"ApplySmoothBrush",tolua_BindTerrainEdit_ApplySmoothBrush00);
   tolua_function(tolua_S,"SetBrushCursorHeight",tolua_BindTerrainEdit_SetBrushCursorHeight00);
   tolua_function(tolua_S,"InvertMask",tolua_BindTerrainEdit_InvertMask00);
+  tolua_function(tolua_S,"RenderANLKernelToHeight",tolua_BindTerrainEdit_RenderANLKernelToHeight00);
  tolua_endmodule(tolua_S);
  return 1;
 }

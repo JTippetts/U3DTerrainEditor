@@ -89,7 +89,10 @@ namespace anl
 
         CInstructionIndex simpleFractalLayer(unsigned int basistype, CInstructionIndex interptypeindex, double layerscale, double layerfreq, unsigned int seed, bool rot=true,
             double angle=0.5, double ax=0, double ay=0, double az=1);
+		CInstructionIndex simpleRidgedLayer(unsigned int basistype, CInstructionIndex interptypeindex, double layerscale, double layerfreq, unsigned int seed, bool rot=true,
+            double angle=0.5, double ax=0, double ay=0, double az=1);
         CInstructionIndex simplefBm(unsigned int basistype, unsigned int interptype, unsigned int numoctaves, double frequency, unsigned int seed, bool rot=true);
+		CInstructionIndex simpleRidgedMultifractal(unsigned int basistype, unsigned int interptype, unsigned int numoctaves, double frequency, unsigned int seed, bool rot=true);
 
         InstructionListType *getKernel(){return &kernel_;}
         CInstructionIndex nextIndex(){return CInstructionIndex(kernel_.size());}

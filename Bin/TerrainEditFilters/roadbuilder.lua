@@ -343,11 +343,11 @@ return
 				local m=mask:GetPixelBilinear(nx,ny)
 				local c=blend:GetPixel(x,y)
 				local pavecolor
-				if self.options[4].value==0 then
+				if self.options[5].value==0 then
 					pavecolor=Color(1,0,0,0)
-				elseif self.options[4].value==1 then
+				elseif self.options[5].value==1 then
 					pavecolor=Color(0,1,0,0)
-				elseif self.options[4].value==2 then
+				elseif self.options[5].value==2 then
 					pavecolor=Color(0,0,1,0)
 				else
 					pavecolor=Color(0,0,0,1)

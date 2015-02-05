@@ -1,4 +1,5 @@
 #include "TerrainEdit.h"
+#include "ThirdParty/ANL/templates/tarrays.h"
 
 #include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/Scene/Node.h>
@@ -6,6 +7,7 @@
 #include <algorithm>
 #include <cmath>
 #include <Urho3D/IO/Log.h>
+
 	
 Vector2 WorldToNormalized(Image *height, Terrain *terrain, Vector3 world)
 {
@@ -292,6 +294,55 @@ void InvertMask(Image *mask)
 				Color col=mask->GetPixel(x,y);
 				mask->SetPixel(x,y,Color(1-col.r_,0,0));
 			}
+		}
+	}
+}
+
+void RenderANLKernelToHeight(Image *height, Image *mask, CKernel *kernel, double lowRange, double highRange, bool useMask, bool invertMask)
+{
+	if(!height) return;
+	int w=height->GetWidth()-1;
+	int h=height->GetHeight()-1;
+	
+	CNoiseExecutor vm(kernel->getKernel());
+	
+	TArray2D<double> a(height->GetWidth(), height->GetHeight());
+	double mx=-10000;
+	double mn=100000;
+	
+	// Map the ANL module into a temporary buffer
+	for(int x=0; x<=w; ++x)
+	{
+		for(int y=0; y<=h; ++y)
+		{
+			float nx=(float)x/(float)(w);
+			float ny=(float)y/(float)(h);
+			CCoordinate coord(nx,ny,0);
+			double val=vm.evaluate(coord).outfloat_;
+			a.set(x,y,val);
+			if(val>mx) mx=val;
+			if(val<mn) mn=val;
+		}
+	}
+	
+	// Map the temporary into the heightmap
+	for(int x=0; x<=w; ++x)
+	{
+		for(int y=0; y<=h; ++y)
+		{
+			float nx=(float)x/(float)(w);
+			float ny=(float)y/(float)(h);
+			
+			double v=(a.get(x,y)-mn)/(mx-mn);
+			v=lowRange+v*(highRange-lowRange);
+			if(useMask && mask)
+			{
+				float oldheight=GetHeightValue(height,x,y);
+				float maskval=mask->GetPixelBilinear(nx,ny).r_;
+				if(invertMask) maskval=1.0-maskval;
+				v=oldheight+maskval*(v-oldheight);
+			}
+			SetHeightValue(height,x,y,v);
 		}
 	}
 }

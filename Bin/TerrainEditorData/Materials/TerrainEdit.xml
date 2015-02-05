@@ -1,9 +1,9 @@
 <material>
     <technique name="Techniques/TerrainBlendEdit.xml" />
-    <texture unit="1" name="Textures/scrabbly_dirt_1.png" />
+    <texture unit="1" name="Textures/dirt1.png" />
     <texture unit="2" name="Textures/moss2.png" />
-    <texture unit="3" name="Textures/stone_path.png" />
-	<texture unit="4" name="Textures/sand1.png" />
+    <texture unit="3" name="Textures/brownstone.png" />
+	<texture unit="4" name="Textures/sharpstones2.png" />
     <parameter name="MatSpecColor" value="0.5 0.5 0.5 16" />
     <parameter name="DetailTiling" value="32 32" />
 </material>

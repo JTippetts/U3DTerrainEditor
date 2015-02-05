@@ -1,6 +1,6 @@
 /*
 ** Lua binding: bind_anl
-** Generated automatically by tolua++-1.0.93 on 01/18/15 13:01:07.
+** Generated automatically by tolua++-1.0.93 on 02/04/15 08:43:41.
 */
 
 #ifndef __cplusplus
@@ -4166,6 +4166,68 @@ static int tolua_bind_anl_CKernel_simpleFractalLayer00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: simpleRidgedLayer of class  CKernel */
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_simpleRidgedLayer00
+static int tolua_bind_anl_CKernel_simpleRidgedLayer00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"CKernel",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     (tolua_isvaluenil(tolua_S,3,&tolua_err) || !tolua_isusertype(tolua_S,3,"CInstructionIndex",0,&tolua_err)) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,5,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,6,0,&tolua_err) ||
+     !tolua_isboolean(tolua_S,7,1,&tolua_err) ||
+     !tolua_isnumber(tolua_S,8,1,&tolua_err) ||
+     !tolua_isnumber(tolua_S,9,1,&tolua_err) ||
+     !tolua_isnumber(tolua_S,10,1,&tolua_err) ||
+     !tolua_isnumber(tolua_S,11,1,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,12,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  CKernel* self = (CKernel*)  tolua_tousertype(tolua_S,1,0);
+  unsigned int basistype = ((unsigned int)  tolua_tonumber(tolua_S,2,0));
+  CInstructionIndex interptypeindex = *((CInstructionIndex*)  tolua_tousertype(tolua_S,3,0));
+  double layerscale = ((double)  tolua_tonumber(tolua_S,4,0));
+  double layerfreq = ((double)  tolua_tonumber(tolua_S,5,0));
+  unsigned int seed = ((unsigned int)  tolua_tonumber(tolua_S,6,0));
+  bool rot = ((bool)  tolua_toboolean(tolua_S,7,true));
+  double angle = ((double)  tolua_tonumber(tolua_S,8,0.5));
+  double ax = ((double)  tolua_tonumber(tolua_S,9,0));
+  double ay = ((double)  tolua_tonumber(tolua_S,10,0));
+  double az = ((double)  tolua_tonumber(tolua_S,11,1));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'simpleRidgedLayer'", NULL);
+#endif
+  {
+   CInstructionIndex tolua_ret = (CInstructionIndex)  self->simpleRidgedLayer(basistype,interptypeindex,layerscale,layerfreq,seed,rot,angle,ax,ay,az);
+   {
+#ifdef __cplusplus
+    void* tolua_obj = Mtolua_new((CInstructionIndex)(tolua_ret));
+     tolua_pushusertype(tolua_S,tolua_obj,"CInstructionIndex");
+    tolua_register_gc(tolua_S,lua_gettop(tolua_S));
+#else
+    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(CInstructionIndex));
+     tolua_pushusertype(tolua_S,tolua_obj,"CInstructionIndex");
+    tolua_register_gc(tolua_S,lua_gettop(tolua_S));
+#endif
+   }
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'simpleRidgedLayer'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: simplefBm of class  CKernel */
 #ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_simplefBm00
 static int tolua_bind_anl_CKernel_simplefBm00(lua_State* tolua_S)
@@ -4220,6 +4282,60 @@ static int tolua_bind_anl_CKernel_simplefBm00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: simpleRidgedMultifractal of class  CKernel */
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_simpleRidgedMultifractal00
+static int tolua_bind_anl_CKernel_simpleRidgedMultifractal00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"CKernel",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,5,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,6,0,&tolua_err) ||
+     !tolua_isboolean(tolua_S,7,1,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,8,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  CKernel* self = (CKernel*)  tolua_tousertype(tolua_S,1,0);
+  unsigned int basistype = ((unsigned int)  tolua_tonumber(tolua_S,2,0));
+  unsigned int interptype = ((unsigned int)  tolua_tonumber(tolua_S,3,0));
+  unsigned int numoctaves = ((unsigned int)  tolua_tonumber(tolua_S,4,0));
+  double frequency = ((double)  tolua_tonumber(tolua_S,5,0));
+  unsigned int seed = ((unsigned int)  tolua_tonumber(tolua_S,6,0));
+  bool rot = ((bool)  tolua_toboolean(tolua_S,7,true));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'simpleRidgedMultifractal'", NULL);
+#endif
+  {
+   CInstructionIndex tolua_ret = (CInstructionIndex)  self->simpleRidgedMultifractal(basistype,interptype,numoctaves,frequency,seed,rot);
+   {
+#ifdef __cplusplus
+    void* tolua_obj = Mtolua_new((CInstructionIndex)(tolua_ret));
+     tolua_pushusertype(tolua_S,tolua_obj,"CInstructionIndex");
+    tolua_register_gc(tolua_S,lua_gettop(tolua_S));
+#else
+    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(CInstructionIndex));
+     tolua_pushusertype(tolua_S,tolua_obj,"CInstructionIndex");
+    tolua_register_gc(tolua_S,lua_gettop(tolua_S));
+#endif
+   }
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'simpleRidgedMultifractal'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: getKernel of class  CKernel */
 #ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_getKernel00
 static int tolua_bind_anl_CKernel_getKernel00(lua_State* tolua_S)
@@ -4247,6 +4363,90 @@ static int tolua_bind_anl_CKernel_getKernel00(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'getKernel'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: lastIndex of class  CKernel */
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_lastIndex00
+static int tolua_bind_anl_CKernel_lastIndex00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"CKernel",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  CKernel* self = (CKernel*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'lastIndex'", NULL);
+#endif
+  {
+   CInstructionIndex tolua_ret = (CInstructionIndex)  self->lastIndex();
+   {
+#ifdef __cplusplus
+    void* tolua_obj = Mtolua_new((CInstructionIndex)(tolua_ret));
+     tolua_pushusertype(tolua_S,tolua_obj,"CInstructionIndex");
+    tolua_register_gc(tolua_S,lua_gettop(tolua_S));
+#else
+    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(CInstructionIndex));
+     tolua_pushusertype(tolua_S,tolua_obj,"CInstructionIndex");
+    tolua_register_gc(tolua_S,lua_gettop(tolua_S));
+#endif
+   }
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'lastIndex'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: nextIndex of class  CKernel */
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_nextIndex00
+static int tolua_bind_anl_CKernel_nextIndex00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"CKernel",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  CKernel* self = (CKernel*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'nextIndex'", NULL);
+#endif
+  {
+   CInstructionIndex tolua_ret = (CInstructionIndex)  self->nextIndex();
+   {
+#ifdef __cplusplus
+    void* tolua_obj = Mtolua_new((CInstructionIndex)(tolua_ret));
+     tolua_pushusertype(tolua_S,tolua_obj,"CInstructionIndex");
+    tolua_register_gc(tolua_S,lua_gettop(tolua_S));
+#else
+    void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(CInstructionIndex));
+     tolua_pushusertype(tolua_S,tolua_obj,"CInstructionIndex");
+    tolua_register_gc(tolua_S,lua_gettop(tolua_S));
+#endif
+   }
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'nextIndex'.",&tolua_err);
  return 0;
 #endif
 }
@@ -5036,8 +5236,12 @@ TOLUA_API int tolua_bind_anl_open (lua_State* tolua_S)
    tolua_function(tolua_S,"combineRGBA",tolua_bind_anl_CKernel_combineRGBA00);
    tolua_function(tolua_S,"scaleOffset",tolua_bind_anl_CKernel_scaleOffset00);
    tolua_function(tolua_S,"simpleFractalLayer",tolua_bind_anl_CKernel_simpleFractalLayer00);
+   tolua_function(tolua_S,"simpleRidgedLayer",tolua_bind_anl_CKernel_simpleRidgedLayer00);
    tolua_function(tolua_S,"simplefBm",tolua_bind_anl_CKernel_simplefBm00);
+   tolua_function(tolua_S,"simpleRidgedMultifractal",tolua_bind_anl_CKernel_simpleRidgedMultifractal00);
    tolua_function(tolua_S,"getKernel",tolua_bind_anl_CKernel_getKernel00);
+   tolua_function(tolua_S,"lastIndex",tolua_bind_anl_CKernel_lastIndex00);
+   tolua_function(tolua_S,"nextIndex",tolua_bind_anl_CKernel_nextIndex00);
   tolua_endmodule(tolua_S);
   #ifdef __cplusplus
   tolua_cclass(tolua_S,"SRGBA","SRGBA","",tolua_collect_SRGBA);

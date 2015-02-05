@@ -12,7 +12,13 @@
 #include <Urho3D/Container/Str.h>
 #include <Urho3D/Graphics/CustomGeometry.h>
 
+#include "ThirdParty/ANL/VM/vm.h"
+#include "ThirdParty/ANL/VM/instruction.h"
+#include "ThirdParty/ANL/VM/kernel.h"
+#include "ThirdParty/ANL/VM/coordinate.h"
+
 using namespace Urho3D;
+using namespace anl;
 	
 	Vector2 WorldToNormalized(Image *height, Terrain *terrain, Vector3 world);
 	Vector3 NormalizedToWorld(Image *height, Terrain *terrain, Vector2 normalized);
@@ -28,5 +34,6 @@ using namespace Urho3D;
 	void SetBrushCursorHeight(Terrain *terrain, CustomGeometry *brush, float groundx, float groundz);
 	
 	void InvertMask(Image *mask);
+	void RenderANLKernelToHeight(Image *height, Image *mask, CKernel *kernel, double lowRange=0, double highRange=1, bool useMask=false, bool invertMask=false);
 
 #endif
