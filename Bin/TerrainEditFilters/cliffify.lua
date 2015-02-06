@@ -14,7 +14,7 @@ return
 	},
 	
 	execute=function(self)
-		local bw,bh=blend:GetWidth(), blend:GetHeight()
+		local bw,bh=blend1:GetWidth(), blend1:GetHeight()
 		
 		local halffade=self.options[2].value*0.5
 		local fade=self.options[2].value
@@ -39,7 +39,7 @@ return
 					i=i*maskval
 				end
 				
-				local col=blend:GetPixel(x,(bh-1)-y)
+				local col=blend1:GetPixel(x,(bh-1)-y)
 				local newcol
 				if self.options[3].value==0 then
 					newcol=col:Lerp(Color(1,0,0,0),i)
@@ -50,12 +50,12 @@ return
 				else
 					newcol=col:Lerp(Color(0,0,0,1),i)
 				end
-				blend:SetPixel(x,(bh-1)-y,newcol)
+				blend1:SetPixel(x,(bh-1)-y,newcol)
 			end
 			collectgarbage()
 		end
 		
-		blendtex:SetData(blend,false)
+		blendtex1:SetData(blend1,false)
 	
 		print("Filter executed with options: ")
 		local c

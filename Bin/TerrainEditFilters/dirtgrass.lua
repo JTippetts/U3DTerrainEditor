@@ -14,7 +14,7 @@ return
 	execute=function(self)
 		print(collectgarbage("count"))
 		collectgarbage("restart")
-		local hw,hh=blend:GetWidth(),blend:GetHeight()
+		local hw,hh=blend1:GetWidth(),blend1:GetHeight()
 		local x,y
 		
 		local k=CKernel()
@@ -42,19 +42,19 @@ return
 				local col=c1:Lerp(c2, val)
 				if self.options[5].value==true then
 				
-					local oldblend=blend:GetPixel(x,y)
+					local oldblend=blend1:GetPixel(x,y)
 					local maskval=mask:GetPixelBilinear(nx,ny).r
-					local newpix=oldblend:Lerp(col,maskval)
-					blend:SetPixel(x,y,newpix)
+					local newpix=oldblend1:Lerp(col,maskval)
+					blend1:SetPixel(x,y,newpix)
 				else
-					blend:SetPixel(x,y,col)
+					blend1:SetPixel(x,y,col)
 				end
 				
 			end
 			collectgarbage()
 		end
 		
-		blendtex:SetData(blend,false)
+		blendtex1:SetData(blend1,false)
 		print(collectgarbage("count"))
 		collectgarbage()
 		collectgarbage()

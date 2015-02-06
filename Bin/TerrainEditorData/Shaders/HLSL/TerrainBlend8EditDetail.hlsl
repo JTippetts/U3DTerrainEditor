@@ -128,15 +128,15 @@ void PS(float2 iTexCoord : TEXCOORD0,
 	float2 bigFrac=frac(iDetailTexCoord*-0.345);
 	
     float4 diffColor = cMatDiffColor * (
-        weights0.r * (tex2D(sDetailMap1, smallFrac*0.5)+tex2D(sDetailMap1, bigFrac*0.5))*0.5 +
-        weights0.g * (tex2D(sDetailMap1, smallFrac*0.5+float2(0.5,0))+tex2D(sDetailMap1, bigFrac*0.5+float2(0.5,0)))*0.5 +
-        weights0.b * (tex2D(sDetailMap1, smallFrac*0.5+float2(0,0.5))+tex2D(sDetailMap1, bigFrac*0.5+float2(0,0.5)))*0.5 +
-		weights0.a * (tex2D(sDetailMap1, smallFrac*0.5+float2(0.5,0.5))+tex2D(sDetailMap1, bigFrac*0.5+float2(0.5,0.5)))*0.5 +
+        weights0.r * (tex2D(sDetailMap1, smallFrac*0.4961)+tex2D(sDetailMap1, bigFrac*0.4961))*0.5 +
+        weights0.g * (tex2D(sDetailMap1, smallFrac*0.4961+float2(0.502,0))+tex2D(sDetailMap1, bigFrac*0.4961+float2(0.502,0)))*0.5 +
+        weights0.b * (tex2D(sDetailMap1, smallFrac*0.4961+float2(0,0.502))+tex2D(sDetailMap1, bigFrac*0.4961+float2(0,0.502)))*0.5 +
+		weights0.a * (tex2D(sDetailMap1, smallFrac*0.4961+float2(0.502,0.502))+tex2D(sDetailMap1, bigFrac*0.4961+float2(0.502,0.502)))*0.5 +
 		
-		weights1.r * (tex2D(sDetailMap2, smallFrac*0.5)+tex2D(sDetailMap2, bigFrac*0.5))*0.5 +
-        weights1.g * (tex2D(sDetailMap2, smallFrac*0.5+float2(0.5,0))+tex2D(sDetailMap2, bigFrac*0.5+float2(0.5,0)))*0.5 +
-        weights1.b * (tex2D(sDetailMap2, smallFrac*0.5+float2(0,0.5))+tex2D(sDetailMap2, bigFrac*0.5+float2(0,0.5)))*0.5 +
-		weights1.a * (tex2D(sDetailMap2, smallFrac*0.5+float2(0.5,0.5))+tex2D(sDetailMap2, bigFrac*0.5+float2(0.5,0.5)))*0.5
+		weights1.r * (tex2D(sDetailMap2, smallFrac*0.4961)+tex2D(sDetailMap2, bigFrac*0.4961))*0.5 +
+        weights1.g * (tex2D(sDetailMap2, smallFrac*0.4961+float2(0.502,0))+tex2D(sDetailMap2, bigFrac*0.4961+float2(0.502,0)))*0.5 +
+        weights1.b * (tex2D(sDetailMap2, smallFrac*0.4961+float2(0,0.502))+tex2D(sDetailMap2, bigFrac*0.4961+float2(0,0.502)))*0.5 +
+		weights1.a * (tex2D(sDetailMap2, smallFrac*0.4961+float2(0.502,0.502))+tex2D(sDetailMap2, bigFrac*0.4961+float2(0.502,0.502)))*0.5
     );
 	diffColor=lerp(float4(1,0.5,0.3, diffColor.a), diffColor, mask);
 

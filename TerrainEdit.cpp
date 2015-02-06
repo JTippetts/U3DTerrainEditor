@@ -1,5 +1,6 @@
 #include "TerrainEdit.h"
 #include "ThirdParty/ANL/templates/tarrays.h"
+#include "ThirdParty/ANL/VM/random_gen.h"
 
 #include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/Scene/Node.h>
@@ -335,6 +336,46 @@ void ApplyMaskBrush(Terrain *terrain, Image *height, Image *mask, float x, float
 				col.r_=col.r_+i*((1.0f-mx)-col.r_);
 				mask->SetPixel(hx,hz,col);
 				//LOGINFO(String(hx)+String(",")+String(hz)+String(":")+String(col.r_));
+			}
+		}
+	}
+}
+
+void ApplySpeckleBrush(Terrain *terrain, Image *height, Image *color, Image *mask, float x, float z, float radius, float mx, float power, float hardness, Color c1, Color c2, bool usemask, float dt)
+{
+	if(!color  || !height || !terrain) return;
+	
+	Vector2 normalized=WorldToNormalized(height,terrain,Vector3(x,0,z));
+	float ratio=((float)color->GetWidth()/(float)height->GetWidth());
+	int ix=(int)(normalized.x_*(float)(color->GetWidth()-1));
+	int iy=(int)(normalized.y_*(float)(color->GetHeight()-1));
+	iy=color->GetHeight()-iy;
+	float rad=radius*ratio;
+	int sz=(int)rad+1;
+	
+	static KISS rnd;
+	
+	for(int hx=ix-sz; hx<=ix+sz; ++hx)
+	{
+		for(int hz=iy-sz; hz<=iy+sz; ++hz)
+		{
+			if(hx>=0 && hx<color->GetWidth() && hz>=0 && hz<color->GetHeight())
+			{
+				float dx=(float)hx-(float)ix;
+				float dz=(float)hz-(float)iy;
+				float d=std::sqrt(dx*dx+dz*dz);
+				float i=((d-rad)/(hardness*rad-rad));
+				i=std::max(0.0f, std::min(1.0f, i));
+				i=i*dt*power;
+				if(usemask)
+				{
+					float m=mask->GetPixelBilinear((float)(hx)/(float)(color->GetWidth()), (float)(hz)/(float)(color->GetHeight())).r_;
+					i=i*m;
+				}
+				Color oldcol=color->GetPixel(hx,hz);
+				Color newcol=c1.Lerp(c2, (float)rnd.get01());
+				Color finalcol=oldcol.Lerp(newcol, i);
+				color->SetPixel(hx,hz,finalcol);
 			}
 		}
 	}

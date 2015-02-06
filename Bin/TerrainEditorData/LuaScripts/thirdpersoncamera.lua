@@ -36,7 +36,8 @@ function ThirdPersonCamera:Start()
 	self.lastmx=0
 	self.lastmz=0
 	
-	self.offset=0
+	self.offset=1
+	self.tracksurface=true
 end
 
 function ThirdPersonCamera:Finalize()
@@ -273,6 +274,13 @@ function ThirdPersonCamera:HandleUpdate(eventType, eventData)
 		end
 		trans.x=trans.x+(oldx-newx)
 		trans.z=trans.z+(oldy-newy)
+		
+		if self.tracksurface then
+			self.offset=terrain:GetHeight(Vector3(self.node.position.x+trans.x,self.offset,self.node.position.z+trans.z)) + 1
+		else
+			self.offset=1
+		end
+		
 		
 		self.lastmx=mousepos.x
 		self.lastmz=mousepos.y

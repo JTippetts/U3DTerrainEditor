@@ -6,7 +6,7 @@
 
 require "LuaScripts/Utilities/Sample"
 require "LuaScripts/thirdpersoncamera"
-require "LuaScripts/terraineditUI"
+require "LuaScripts/terraineditUIoriginal"
 require "LuaScripts/ui"
 
 function HtToRG(ht)
@@ -94,10 +94,12 @@ function CreateScene()
     terrain.spacing = Vector3(0.20, 0.08, 0.20) -- Spacing between vertices and vertical resolution of the height map
     terrain.smoothing = true
 	hmap=Image:new(context)
-	hmap:SetSize(1025,1025,3)
+	hmap:SetSize(2049,2049,3)
     terrain.heightMap = hmap
-    --terrain.material = cache:GetResource("Material", "Materials/TerrainEdit.xml")
-	terrain.material = cache:GetResource("Material", "Materials/TerrainEdit8.xml")
+    terrain.material = cache:GetResource("Material", "Materials/TerrainEdit.xml")
+	--terrain.material = cache:GetResource("Material", "Materials/TerrainEdit8.xml")
+	--terrain.material = cache:GetResource("Material", "Materials/TerrainColorDetailEdit8.xml")
+	--terrain.material = cache:GetResource("Material", "Materials/TerrainBlend4NormalEdit.xml")
 	
     -- The terrain consists of large triangles, which fits well for occlusion rendering, as a hill can occlude all
     -- terrain patches and other objects behind it
@@ -106,7 +108,7 @@ function CreateScene()
 	mask=Image(context)
 	masktex=Texture2D:new(context)
 	masktex:SetSize(0,0,0,TEXTURE_DYNAMIC)
-	mask:SetSize(1024,1024,3)
+	mask:SetSize(2048,2048,3)
 	mask:Clear(Color(1,0,0))
 	masktex:SetData(mask, false)
 	terrain:GetMaterial():SetTexture(12,masktex)
@@ -118,19 +120,28 @@ function CreateScene()
 	blendtex1:SetSize(0,0,0,TEXTURE_DYNAMIC)
 	terrain:GetMaterial():SetTexture(0,blendtex1)
 	
-	blendtex2=Texture2D:new(context)
-	blendtex2:SetSize(0,0,0,TEXTURE_DYNAMIC)
-	terrain:GetMaterial():SetTexture(1,blendtex2)
+	--blendtex2=Texture2D:new(context)
+	--blendtex2:SetSize(0,0,0,TEXTURE_DYNAMIC)
+	--terrain:GetMaterial():SetTexture(1,blendtex2)
 	
 	blend1=Image(context)
-	blend1:SetSize(1024,1024,4)
+	blend1:SetSize(2048,2048,4)
 	blend1:Clear(Color(1,0,0,0))
 	blendtex1:SetData(blend1, false)
 	
-	blend2=Image(context)
-	blend2:SetSize(1024,1024,4)
-	blend2:Clear(Color(0,0,0,0))
-	blendtex2:SetData(blend2, false)
+	--blend2=Image(context)
+	--blend2:SetSize(1024,1024,4)
+	--blend2:Clear(Color(0,0,0,0))
+	--blendtex2:SetData(blend2, false)
+	
+	-- Color detailing
+	--colortex=Texture2D:new(context)
+	--colortex:SetSize(0,0,0,TEXTURE_DYNAMIC)
+	--terrain:GetMaterial():SetTexture(4,colortex)
+	--color=Image(context)
+	--color:SetSize(1024,1024,3)
+	--color:Clear(Color(0.5,0.5,0.5))
+	--colortex:SetData(color, false)
 
 	
 	terrainui=scene_:CreateScriptObject("TerrainEditUI")
@@ -173,7 +184,7 @@ function HandleUpdate(eventType, eventData)
 	end
 	
 	if input:GetKeyPress(KEY_D) then
-		blend:SavePNG("TerrainEditorData/Textures/blend.png")
+		blend1:SavePNG("TerrainEditorData/Textures/blend.png")
 	end
 	
 	if input:GetKeyPress(KEY_K) then
@@ -182,8 +193,8 @@ function HandleUpdate(eventType, eventData)
 	end
 	
 	if input:GetKeyPress(KEY_L) then
-		blend=cache:GetResource("Image", "Textures/blend.png")
-		blendtex:SetData(blend)
+		blend1=cache:GetResource("Image", "Textures/blend.png")
+		blendtex1:SetData(blend1)
 	end
 	
 	if input:GetKeyPress(KEY_A) then

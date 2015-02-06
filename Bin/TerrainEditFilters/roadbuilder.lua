@@ -336,12 +336,12 @@ return
 		end
 		collectgarbage()
 		
-		for x=0,blend:GetWidth()-1,1 do
-			for y=0,blend:GetHeight()-1,1 do
-				local nx=x/blend:GetWidth()
-				local ny=y/blend:GetHeight()
+		for x=0,blend1:GetWidth()-1,1 do
+			for y=0,blend1:GetHeight()-1,1 do
+				local nx=x/blend1:GetWidth()
+				local ny=y/blend1:GetHeight()
 				local m=mask:GetPixelBilinear(nx,ny)
-				local c=blend:GetPixel(x,y)
+				local c=blend1:GetPixel(x,y)
 				local pavecolor
 				if self.options[5].value==0 then
 					pavecolor=Color(1,0,0,0)
@@ -353,13 +353,13 @@ return
 					pavecolor=Color(0,0,0,1)
 				end
 				local newcol=c:Lerp(pavecolor,m.b)
-				blend:SetPixel(x,y,newcol)
+				blend1:SetPixel(x,y,newcol)
 			end
 			collectgarbage()
 		end
 		
 		terrain:ApplyHeightMap()
-		blendtex:SetData(blend, false)
+		blendtex1:SetData(blend1, false)
 		--masktex:SetData(mask)
 		
 	end
