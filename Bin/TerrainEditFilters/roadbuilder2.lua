@@ -3,7 +3,7 @@
 return
 {
 	name="Road Builder v2.0",
-	Description="Construct a road from the current list of waypoints.",
+	description="Construct a road from the current list of waypoints.",
 	options=
 	{
 		{name="Bed width", type="value", value=16},

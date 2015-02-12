@@ -531,6 +531,55 @@ void RenderANLKernelToHeight(Image *height, Image *mask, CKernel *kernel, double
 	}
 }
 
+void RenderANLKernelToBuffer(RasterBuffer *buffer, CKernel *kernel, float lowrange, float highrange)
+{
+	if(!buffer) return;
+	int w=buffer->width()-1;
+	int h=buffer->height()-1;
+	
+	CNoiseExecutor vm(kernel->getKernel());
+	for(int x=0; x<=w; ++x)
+	{
+		for(int y=0; y<=h; ++y)
+		{
+			float nx=(float)x/(float)(w);
+			float ny=(float)y/(float)(h);
+			CCoordinate coord(nx,ny,0);
+			double val=vm.evaluate(coord).outfloat_;
+			buffer->set(x,y,val);
+		}
+	}
+	
+	buffer->scaleToRange(lowrange, highrange);
+}
+
+void SetHeightFromRasterBuffer(Image *height, RasterBuffer *buffer, Image *mask, bool useMask, bool invertMask)
+{
+	int w=height->GetWidth()-1;
+	int h=height->GetHeight()-1;
+	
+	// Map the temporary into the heightmap
+	for(int x=0; x<=w; ++x)
+	{
+		for(int y=0; y<=h; ++y)
+		{
+			float nx=(float)x/(float)(w);
+			float ny=(float)y/(float)(h);
+			
+			float v=buffer->getBilinear(nx,ny);
+			float m=1.0;
+			float oldht=GetHeightValue(height,x,y);
+			if(useMask && mask)
+			{
+				float maskval=mask->GetPixelBilinear(nx,ny).r_;
+				if(invertMask) maskval=1.0-maskval;
+				m=maskval;
+			}
+			SetHeightValue(height,x,y,oldht+m*(v-oldht));
+		}
+	}
+}
+
 float Orient2D(RasterVertex &a, RasterVertex &b, RasterVertex &c)
 {
 	return (float)(b.x_-a.x_)*(float)(c.y_-a.y_) - (float)(b.y_-a.y_)*(float)(c.x_-a.x_);
@@ -575,7 +624,7 @@ void RasterizeTriangle(RasterBuffer *buffer, RasterVertex v0, RasterVertex v1, R
 
 void RasterizeQuadStrip(RasterBuffer *buffer, RasterVertexList *strip)
 {
-	for(int c=0; c<strip->size()-4; c+=2)
+	for(int c=0; c<=strip->size()-4; c+=2)
 	{
 		RasterizeTriangle(buffer, (*strip)[c], (*strip)[c+1], (*strip)[c+2]);
 		RasterizeTriangle(buffer, (*strip)[c+1], (*strip)[c+2], (*strip)[c+3]);
@@ -792,6 +841,105 @@ void BuildQuadStrip(RasterVertexList *in, RasterVertexList *out, float width)
 	ly/=d;
 	plx=-ly;
 	ply=lx;
+	v1=RasterVertex(p1.x_+0.5*width*plx, p1.y_+0.5*width*ply, p1.val_);
+	v2=RasterVertex(p1.x_-0.5*width*plx, p1.y_-0.5*width*ply, p1.val_);
+	out->push_back(v1);
+	out->push_back(v2);
+}
+
+void BuildQuadStripVarying(RasterVertexList *in, RasterVertexList *out, float startwidth, float endwidth)
+{
+	if(in->size()<3) return;
+	out->resize(0);
+	
+	float t=0.0f;
+	float tinc=1.0f/(float)(in->size()-1);
+	
+	RasterVertex p2=(*in)[1];
+	RasterVertex p1=(*in)[0];
+	float lx=(float)(p2.x_-p1.x_);
+	float ly=(float)(p2.y_-p1.y_);
+	float d=std::sqrt(lx*lx+ly*ly);
+	lx/=d;
+	ly/=d;
+	float plx=-ly;
+	float ply=lx;
+	float width=startwidth+t*(endwidth-startwidth);
+	t+=tinc;
+	RasterVertex v1(p1.x_+0.5*width*plx, p1.y_+0.5*width*ply, p1.val_);
+	RasterVertex v2(p1.x_-0.5*width*plx, p1.y_-0.5*width*ply, p1.val_);
+	out->push_back(v1);
+	out->push_back(v2);
+	
+	for(int i=1; i<in->size()-1; ++i)
+	{
+		width=startwidth+t*(endwidth-startwidth);
+		t+=tinc;
+		float halfwidth=width*0.5;
+		RasterVertex p1=(*in)[i-1];
+		RasterVertex p2=(*in)[i];
+		RasterVertex p3=(*in)[i+1];
+		
+		float l1x=(float)(p2.x_-p1.x_);
+		float l1y=(float)(p2.y_-p1.y_);
+		float l2x=(float)(p3.x_-p2.x_);
+		float l2y=(float)(p3.y_-p2.y_);
+		float d1=std::sqrt(l1x*l1x+l1y*l1y);
+		float d2=std::sqrt(l2x*l2x+l2y*l2y);
+		l1x/=d1;
+		l1y/=d1;
+		l2x/=d2;
+		l2y/=d2;
+		
+		float pl1x=-l1y;
+		float pl1y=l1x;
+		float pl2x=-l2y;
+		float pl2y=l2x;
+		
+		RasterVertex P0((p1.x_+pl1x*halfwidth), (p1.y_+pl1y*halfwidth), p1.val_);
+		RasterVertex P1((p2.x_+pl1x*halfwidth), (p2.y_+pl1y*halfwidth), p2.val_);
+		RasterVertex Q0((p2.x_+pl2x*halfwidth), (p2.y_+pl2y*halfwidth), p2.val_);
+		RasterVertex Q1((p3.x_+pl2x*halfwidth), (p3.y_+pl2y*halfwidth), p3.val_);
+		
+		if(LinesAreParallel(P0,P1,Q0,Q1))
+		{
+			out->push_back(RasterVertex(P1.x_, P1.y_, p2.val_));
+		}
+		else
+		{
+			RasterVertex intersect=CalculateLineIntersection(P0,P1,Q0,Q1);
+			intersect.val_=p2.val_;
+			out->push_back(intersect);
+		}
+		
+		P0=RasterVertex((p1.x_-pl1x*halfwidth), (p1.y_-pl1y*halfwidth), p1.val_);
+		P1=RasterVertex((p2.x_-pl1x*halfwidth), (p2.y_-pl1y*halfwidth), p2.val_);
+		Q0=RasterVertex((p2.x_-pl2x*halfwidth), (p2.y_-pl2y*halfwidth), p2.val_);
+		Q1=RasterVertex((p3.x_-pl2x*halfwidth), (p3.y_-pl2y*halfwidth), p3.val_);
+		
+		if(LinesAreParallel(P0,P1,Q0,Q1))
+		{
+			out->push_back(RasterVertex(P1.x_, P1.y_, p2.val_));
+		}
+		else
+		{
+			RasterVertex intersect=CalculateLineIntersection(P0,P1,Q0,Q1);
+			intersect.val_=p2.val_;
+			out->push_back(intersect);
+		}
+	}
+	
+	p2=(*in)[in->size()-1];
+	p1=(*in)[in->size()-2];
+	lx=(float)(p2.x_-p1.x_);
+	ly=(float)(p2.y_-p1.y_);
+	d=std::sqrt(lx*lx+ly*ly);
+	lx/=d;
+	ly/=d;
+	plx=-ly;
+	ply=lx;
+	width=startwidth+t*(endwidth-startwidth);
+	t+=tinc;
 	v1=RasterVertex(p1.x_+0.5*width*plx, p1.y_+0.5*width*ply, p1.val_);
 	v2=RasterVertex(p1.x_-0.5*width*plx, p1.y_-0.5*width*ply, p1.val_);
 	out->push_back(v1);

@@ -45,8 +45,11 @@ return
 			local tiers=k:smoothTiers(last,numtiers)
 		end
 		
-		RenderANLKernelToHeight(hmap, mask, k, 0, 1, self.options[8].value, self.options[9].value)
-		hmap:SavePNG("terrain.png")
+		--RenderANLKernelToHeight(hmap, mask, k, 0, 1, self.options[8].value, self.options[9].value)
+		local buffer=RasterBuffer(hmap:GetWidth(), hmap:GetHeight())
+		RenderANLKernelToBuffer(buffer,k,0.1,1)
+		SetHeightFromRasterBuffer(hmap,buffer,mask,self.options[8].value, self.options[9].value)
+		--hmap:SavePNG("terrain.png")
 		
 		terrain:ApplyHeightMap()
 	end,

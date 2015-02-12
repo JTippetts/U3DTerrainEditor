@@ -95,6 +95,7 @@ function CreateScene()
     terrain.smoothing = true
 	hmap=Image:new(context)
 	hmap:SetSize(2049,2049,3)
+	hmap:Clear(Color(0.1,0,0,0))
     terrain.heightMap = hmap
     terrain.material = cache:GetResource("Material", "Materials/TerrainEdit.xml")
 	--terrain.material = cache:GetResource("Material", "Materials/TerrainEdit8.xml")

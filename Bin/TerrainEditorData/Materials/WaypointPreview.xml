@@ -1,0 +1,5 @@
+<material>
+    <technique name="Techniques/WaypointPreview.xml" />
+	<cull value="none" />
+	<parameter name="MatDiffColor" value="0 1 1 0.25" />
+</material>

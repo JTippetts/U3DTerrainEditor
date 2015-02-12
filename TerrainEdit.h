@@ -69,5 +69,8 @@ using namespace anl;
 	void TessellateLineList(RasterVertexList *in, RasterVertexList *out, int steps);
 	void ApplyBedFunction(RasterBuffer *buffer, float hardness, bool quintic);
 	void BuildQuadStrip(RasterVertexList *in, RasterVertexList *out, float width);
+	void BuildQuadStripVarying(RasterVertexList *in, RasterVertexList *out, float startwidth, float endwidth);
+	void RenderANLKernelToBuffer(RasterBuffer *buffer, CKernel *kernel, float lowrange=0, float highrange=1);
+	void SetHeightFromRasterBuffer(Image *height, RasterBuffer *buffer, Image *mask=0, bool useMask=false, bool invertMask=false);
 
 #endif

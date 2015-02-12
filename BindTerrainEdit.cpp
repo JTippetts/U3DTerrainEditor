@@ -1,6 +1,6 @@
 /*
 ** Lua binding: BindTerrainEdit
-** Generated automatically by tolua++-1.0.93 on 02/11/15 19:00:10.
+** Generated automatically by tolua++-1.0.93 on 02/11/15 23:02:45.
 */
 
 #ifndef __cplusplus
@@ -2993,6 +2993,110 @@ static int tolua_BindTerrainEdit_BuildQuadStrip00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* function: BuildQuadStripVarying */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_BuildQuadStripVarying00
+static int tolua_BindTerrainEdit_BuildQuadStripVarying00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"RasterVertexList",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"RasterVertexList",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,5,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  RasterVertexList* in = ((RasterVertexList*)  tolua_tousertype(tolua_S,1,0));
+  RasterVertexList* out = ((RasterVertexList*)  tolua_tousertype(tolua_S,2,0));
+  float startwidth = ((float)  tolua_tonumber(tolua_S,3,0));
+  float endwidth = ((float)  tolua_tonumber(tolua_S,4,0));
+  {
+   BuildQuadStripVarying(in,out,startwidth,endwidth);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'BuildQuadStripVarying'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* function: RenderANLKernelToBuffer */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_RenderANLKernelToBuffer00
+static int tolua_BindTerrainEdit_RenderANLKernelToBuffer00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"RasterBuffer",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"CKernel",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,1,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,1,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,5,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  RasterBuffer* buffer = ((RasterBuffer*)  tolua_tousertype(tolua_S,1,0));
+  CKernel* kernel = ((CKernel*)  tolua_tousertype(tolua_S,2,0));
+  float lowrange = ((float)  tolua_tonumber(tolua_S,3,0));
+  float highrange = ((float)  tolua_tonumber(tolua_S,4,1));
+  {
+   RenderANLKernelToBuffer(buffer,kernel,lowrange,highrange);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'RenderANLKernelToBuffer'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* function: SetHeightFromRasterBuffer */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_SetHeightFromRasterBuffer00
+static int tolua_BindTerrainEdit_SetHeightFromRasterBuffer00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Image",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"RasterBuffer",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,3,"Image",1,&tolua_err) ||
+     !tolua_isboolean(tolua_S,4,1,&tolua_err) ||
+     !tolua_isboolean(tolua_S,5,1,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,6,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Image* height = ((Image*)  tolua_tousertype(tolua_S,1,0));
+  RasterBuffer* buffer = ((RasterBuffer*)  tolua_tousertype(tolua_S,2,0));
+  Image* mask = ((Image*)  tolua_tousertype(tolua_S,3,0));
+  bool useMask = ((bool)  tolua_toboolean(tolua_S,4,false));
+  bool invertMask = ((bool)  tolua_toboolean(tolua_S,5,false));
+  {
+   SetHeightFromRasterBuffer(height,buffer,mask,useMask,invertMask);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'SetHeightFromRasterBuffer'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* Open function */
 TOLUA_API int tolua_BindTerrainEdit_open (lua_State* tolua_S)
 {
@@ -3117,6 +3221,9 @@ TOLUA_API int tolua_BindTerrainEdit_open (lua_State* tolua_S)
   tolua_function(tolua_S,"TessellateLineList",tolua_BindTerrainEdit_TessellateLineList00);
   tolua_function(tolua_S,"ApplyBedFunction",tolua_BindTerrainEdit_ApplyBedFunction00);
   tolua_function(tolua_S,"BuildQuadStrip",tolua_BindTerrainEdit_BuildQuadStrip00);
+  tolua_function(tolua_S,"BuildQuadStripVarying",tolua_BindTerrainEdit_BuildQuadStripVarying00);
+  tolua_function(tolua_S,"RenderANLKernelToBuffer",tolua_BindTerrainEdit_RenderANLKernelToBuffer00);
+  tolua_function(tolua_S,"SetHeightFromRasterBuffer",tolua_BindTerrainEdit_SetHeightFromRasterBuffer00);
  tolua_endmodule(tolua_S);
  return 1;
 }

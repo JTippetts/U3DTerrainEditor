@@ -86,6 +86,11 @@ function TerrainEditUI:Start()
 	self.brushmat:SetTexture(0, self.brushtex)
 	self.brushcursor:SetMaterial(self.brushmat)
 	
+	self.waypointpreview=scene_:CreateComponent("CustomGeometry")
+	self.waypointpreview:SetNumGeometries(1)
+	self.waypointpreviewmaterial=cache:GetResource("Material", "Materials/WaypointPreview.xml")
+	self.waypointpreview:SetMaterial(self.waypointpreviewmaterial)
+	
 	self.mode=0
 	self:ActivateHeightBrush()
 	
@@ -94,6 +99,59 @@ function TerrainEditUI:Start()
 	self.counter=0
 	-- Waypoints
 	waypoints={}
+end
+
+function TerrainEditUI:UpdateWaypointVis()
+	--print("1")
+	self.waypointpreview:Clear()
+	self.waypointpreview.occludee=false
+	self.waypointpreview:SetNumGeometries(1)
+	local c
+	local spacing=terrain:GetSpacing()
+	local plist=RasterVertexList()
+	for _,c in ipairs(waypoints) do
+		local pos=c.position
+		local norm=WorldToNormalized(hmap,terrain,pos)
+		local hx=math.floor(norm.x*hmap:GetWidth())
+		local hy=math.floor(norm.y*hmap:GetHeight())
+		local ht=GetHeightValue(hmap,hx,(hmap:GetHeight()-1)-hy)
+		plist:push_back(RasterVertex(hx,hy,ht))
+	end
+	
+	if plist:size()<4 then return end
+	--print("Num waypoints: "..plist:size())
+	local curve=RasterVertexList()
+	TessellateLineList(plist, curve, 10)
+	--print("Num curve points: "..curve:size())
+	local quad=RasterVertexList()
+	BuildQuadStrip(curve, quad, 8)
+	--print("Num quad points: "..quad:size())
+	
+	self.waypointpreview:BeginGeometry(0,TRIANGLE_LIST)
+	self.waypointpreview:SetDynamic(true)
+	
+	function buildVertex(rv)
+		local nx=rv.x_/hmap:GetWidth()
+		local ny=rv.y_/hmap:GetHeight()
+		local v=NormalizedToWorld(hmap,terrain,Vector2(nx,ny))
+		v.y=(rv.val_*255)*spacing.y
+		return v
+	end
+	
+	for c=0,quad:size()-4,2 do
+		self.waypointpreview:DefineVertex(buildVertex(quad:at(c)))
+		self.waypointpreview:DefineVertex(buildVertex(quad:at(c+1)))
+		self.waypointpreview:DefineVertex(buildVertex(quad:at(c+2)))
+		
+		self.waypointpreview:DefineVertex(buildVertex(quad:at(c+1)))
+		self.waypointpreview:DefineVertex(buildVertex(quad:at(c+2)))
+		self.waypointpreview:DefineVertex(buildVertex(quad:at(c+3)))
+		--print("hi")
+		
+	end
+	
+	self.waypointpreview:Commit()
+	self.waypointpreview:SetMaterial(self.waypointpreviewmaterial)
 end
 
 function TerrainEditUI:AddWaypoint(groundx, groundz)
@@ -105,6 +163,7 @@ function TerrainEditUI:AddWaypoint(groundx, groundz)
 	waynode.position=Vector3(groundx, ht, groundz)
 	waynode.scale=Vector3(0.25,0.25,0.25)
 	table.insert(waypoints, waynode)
+	self:UpdateWaypointVis()
 end
 
 function TerrainEditUI:BuildFilterOptions(filter)
@@ -392,6 +451,12 @@ end
 
 
 function TerrainEditUI:Update(dt)
+	if self.waypointpreview.inView==false then
+		print("Waypoint preview is not in view.")
+		
+		local bbox=self.waypointpreview.worldBoundingBox
+		bbox:Define(Vector3(-1000,-1000,-1000), Vector3(1000,1000,1000))
+	end
 	self.counter=self.counter+dt
 	if self.counter>4 then
 		self.counter=self.counter-4
@@ -462,6 +527,7 @@ function TerrainEditUI:Update(dt)
 			waypoints[#waypoints]:Remove()
 			table.remove(waypoints)
 		end
+		self:UpdateWaypointVis()
 	end
 	
 	local c
@@ -469,6 +535,7 @@ function TerrainEditUI:Update(dt)
 		local ht=terrain:GetHeight(Vector3(c.position.x,0,c.position.z))
 		c.position=Vector3(c.position.x,ht,c.position.z)
 	end
+	self:UpdateWaypointVis()
 end
 
 function TerrainEditUI:GenerateBrushPreview(sharpness)
