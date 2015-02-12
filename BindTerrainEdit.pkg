@@ -20,3 +20,85 @@ Vector2 WorldToNormalized(Image *height, Terrain *terrain, Vector3 world);
 	
 	void InvertMask(Image *mask);
 	void RenderANLKernelToHeight(Image *height, Image *mask, CKernel *kernel, double lowRange=0, double highRange=1, bool useMask=false, bool invertMask=false);
+	
+	struct RasterVertex
+	{
+		float x_, y_;
+		float val_;
+		
+		RasterVertex();
+		RasterVertex(float x, float y, float val);
+		RasterVertex(const RasterVertex &rhs);
+		~RasterVertex();
+	};
+	
+	class RasterVertexList
+	{
+		RasterVertexList();
+        RasterVertexList(int size, RasterVertex value);
+		RasterVertexList(int size);
+        RasterVertexList(const RasterVertexList& a);
+        ~RasterVertexList();
+        inline int size();
+        inline int capacity();
+        inline int bytes();
+
+        void fill(RasterVertex val);
+
+        void swap(RasterVertexList& a);
+		RasterVertex &at(int i);
+        void resize(int width);
+        void reserve(int cap);
+        inline bool empty();
+        inline void push_back(const RasterVertex& value);
+        const RasterVertex& front() const;
+        const RasterVertex& back() const;
+	};
+	
+	class RasterBuffer
+	{
+		RasterBuffer(int w, int h);
+        RasterBuffer();
+        ~RasterBuffer();
+
+        void resize(int w, int h);
+        void destroy();
+        int width();
+        int height();
+        void set(int x, int y, float v);
+        float get(int x, int y);
+        float &getRef(int x, int y);
+		float getBilinear(float x, float y);
+        float getIndexed(int c);
+        void setIndexed(int c, float v);
+        void fill(float v);
+        void copyFrom(RasterBuffer *b);
+        void copyFromSub(RasterBuffer *b, int x, int y);
+        void addArray(RasterBuffer *b);
+        void addArraySub(RasterBuffer *b, int x, int y);
+        void subtractArray(RasterBuffer *b);
+        void subtractArraySub(RasterBuffer *b, int x, int y);
+        void multiplyArray(RasterBuffer *b);
+        void multiplyArraySub(RasterBuffer *b, int x, int y);
+        void scale(float s);
+        void blendFromArrays(RasterBuffer *b1, RasterBuffer *b2, RasterBuffer *b3);
+        void selectFromArrays(RasterBuffer *b1, RasterBuffer *b2, RasterBuffer *b3, float threshold);
+        float getMax();
+        float getMin();
+        void scaleToRange(float low, float high);
+        void wrapCoords(float &x, float &y);
+		void offset(int ox, int oy);
+		void flipVertical();
+		void flipHorizontal();
+		void scaleTo(RasterBuffer *dst);
+		void blur(float blur_size, bool seamless);
+	};
+	
+	void RasterizeTriangle(RasterBuffer *buffer, RasterVertex v1, RasterVertex v2, RasterVertex v3);
+	void RasterizeQuadStrip(RasterBuffer *buffer, RasterVertexList *strip);
+	void BlendHeightWithRasterizedBuffer(Image *height, RasterBuffer *buffer, RasterBuffer *blend, Image *mask=0, bool useMask=false, bool invertMask=false);
+	void BlendColorWithRasterizedBuffer(Image *img, RasterBuffer *buffer, Color endColor, Image *mask=0, bool useMask=false, bool invertMask=false);
+	void TessellateLineList(RasterVertexList *in, RasterVertexList *out, int steps);
+	void ApplyBedFunction(RasterBuffer *buffer, float hardness, bool quintic);
+	void BuildQuadStrip(RasterVertexList *in, RasterVertexList *out, float width);
+	

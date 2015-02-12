@@ -63,7 +63,7 @@ void ApplyHeightBrush(Terrain *terrain, Image *height, Image *mask, float x, flo
 	Vector3 world=Vector3(x,0,z);
 	IntVector2 ht=terrain->WorldToHeightMap(world);
 	
-	int sz=(int)radius+1;
+	int sz=radius+1;
 	int comp=height->GetComponents();
 	for(int hx=ht.x_-sz; hx<=ht.x_+sz; ++hx)
 	{
@@ -97,11 +97,11 @@ void ApplyBlendBrush(Terrain *terrain, Image *height, Image *blend, Image *mask,
 	
 	Vector2 normalized=WorldToNormalized(height,terrain,Vector3(x,0,z));
 	float ratio=((float)blend->GetWidth()/(float)height->GetWidth());
-	int ix=(int)(normalized.x_*(float)(blend->GetWidth()-1));
-	int iy=(int)(normalized.y_*(float)(blend->GetHeight()-1));
+	int ix=(normalized.x_*(float)(blend->GetWidth()-1));
+	int iy=(normalized.y_*(float)(blend->GetHeight()-1));
 	iy=blend->GetHeight()-iy;
 	float rad=radius*ratio;
-	int sz=(int)rad+1;
+	int sz=rad+1;
 	
 	for(int hx=ix-sz; hx<=ix+sz; ++hx)
 	{
@@ -170,11 +170,11 @@ void ApplyBlendBrush8(Terrain *terrain, Image *height, Image *blend0, Image *ble
 	
 	Vector2 normalized=WorldToNormalized(height,terrain,Vector3(x,0,z));
 	float ratio=((float)blend0->GetWidth()/(float)height->GetWidth());
-	int ix=(int)(normalized.x_*(float)(blend0->GetWidth()-1));
-	int iy=(int)(normalized.y_*(float)(blend0->GetHeight()-1));
+	int ix=(normalized.x_*(float)(blend0->GetWidth()-1));
+	int iy=(normalized.y_*(float)(blend0->GetHeight()-1));
 	iy=blend0->GetHeight()-iy;
 	float rad=radius*ratio;
-	int sz=(int)rad+1;
+	int sz=rad+1;
 	
 	for(int hx=ix-sz; hx<=ix+sz; ++hx)
 	{
@@ -313,11 +313,11 @@ void ApplyMaskBrush(Terrain *terrain, Image *height, Image *mask, float x, float
 	
 	Vector2 normalized=WorldToNormalized(height,terrain,Vector3(x,0,z));
 	float ratio=((float)mask->GetWidth()/(float)height->GetWidth());
-	int ix=(int)(normalized.x_*(float)(mask->GetWidth()-1));
-	int iy=(int)(normalized.y_*(float)(mask->GetHeight()-1));
+	int ix=(normalized.x_*(float)(mask->GetWidth()-1));
+	int iy=(normalized.y_*(float)(mask->GetHeight()-1));
 	iy=mask->GetHeight()-iy;
 	float rad=radius*ratio;
-	int sz=(int)rad+1;
+	int sz=rad+1;
 	
 	for(int hx=ix-sz; hx<=ix+sz; ++hx)
 	{
@@ -347,11 +347,11 @@ void ApplySpeckleBrush(Terrain *terrain, Image *height, Image *color, Image *mas
 	
 	Vector2 normalized=WorldToNormalized(height,terrain,Vector3(x,0,z));
 	float ratio=((float)color->GetWidth()/(float)height->GetWidth());
-	int ix=(int)(normalized.x_*(float)(color->GetWidth()-1));
-	int iy=(int)(normalized.y_*(float)(color->GetHeight()-1));
+	int ix=(normalized.x_*(float)(color->GetWidth()-1));
+	int iy=(normalized.y_*(float)(color->GetHeight()-1));
 	iy=color->GetHeight()-iy;
 	float rad=radius*ratio;
-	int sz=(int)rad+1;
+	int sz=rad+1;
 	
 	static KISS rnd;
 	
@@ -426,7 +426,7 @@ void ApplySmoothBrush(Terrain *terrain, Image *height, Image *mask, float x, flo
 	Vector3 world=Vector3(x,0,z);
 	IntVector2 ht=terrain->WorldToHeightMap(world);
 	
-	int sz=(int)radius+1;
+	int sz=radius+1;
 	int comp=height->GetComponents();
 	for(int hx=ht.x_-sz; hx<=ht.x_+sz; ++hx)
 	{
@@ -529,4 +529,271 @@ void RenderANLKernelToHeight(Image *height, Image *mask, CKernel *kernel, double
 			SetHeightValue(height,x,y,v);
 		}
 	}
+}
+
+float Orient2D(RasterVertex &a, RasterVertex &b, RasterVertex &c)
+{
+	return (float)(b.x_-a.x_)*(float)(c.y_-a.y_) - (float)(b.y_-a.y_)*(float)(c.x_-a.x_);
+}
+
+
+void RasterizeTriangle(RasterBuffer *buffer, RasterVertex v0, RasterVertex v1, RasterVertex v2)
+{
+	int minx=std::min(v0.x_, std::min(v1.x_, v2.x_));
+	int maxx=std::max(v0.x_, std::max(v1.x_, v2.x_));
+	int miny=std::min(v0.y_, std::min(v1.y_, v2.y_));
+	int maxy=std::max(v0.y_, std::max(v1.y_, v2.y_));
+	
+	minx=std::max(0,minx);
+	miny=std::max(0,miny);
+	maxx=std::min(maxx, buffer->width()-1)+1;
+	maxy=std::min(maxy, buffer->height()-1)+1;
+	
+	RasterVertex p(0,0,0);
+	for(int y=miny; y<=maxy; ++y)
+	{
+		for(int x=minx; x<=maxx; ++x)
+		{
+			p.x_=x;
+			p.y_=y;
+			float w0=Orient2D(v1,v2,p);
+			float w1=Orient2D(v2,v0,p);
+			float w2=Orient2D(v0,v1,p);
+			float sum=w0+w1+w2;
+			w0/=sum;
+			w1/=sum;
+			w2/=sum;
+			
+			if(w0>=0 && w1>=0 && w2>=0)
+			{
+				float newval=(w0*v0.val_ + w1*v1.val_ +w2*v2.val_);
+				buffer->set(x,(buffer->height()-1)-y,newval);
+			}
+		}
+	}
+}
+
+void RasterizeQuadStrip(RasterBuffer *buffer, RasterVertexList *strip)
+{
+	for(int c=0; c<strip->size()-4; c+=2)
+	{
+		RasterizeTriangle(buffer, (*strip)[c], (*strip)[c+1], (*strip)[c+2]);
+		RasterizeTriangle(buffer, (*strip)[c+1], (*strip)[c+2], (*strip)[c+3]);
+	}
+}
+
+void BlendHeightWithRasterizedBuffer(Image *height, RasterBuffer *buffer, RasterBuffer *blend, Image *mask, bool useMask, bool invertMask)
+{
+	for(int x=0; x<height->GetWidth()-1; ++x)
+	{
+		for(int y=0; y<height->GetHeight()-1; ++y)
+		{
+			float nx=(float)x / (float)(height->GetWidth());
+			float ny=(float)y / (float)(height->GetHeight());
+			
+			float v=buffer->getBilinear(nx,ny);
+			float bval=blend->getBilinear(nx,ny);
+			float ht=GetHeightValue(height, x, y);
+			if(useMask)
+			{
+				Color c=mask->GetPixelBilinear(nx,ny);
+				float m=c.r_;
+				if(invertMask) m=1.0f-m;
+				bval*=m;
+			}
+			float newht=ht+bval*(v-ht);
+			SetHeightValue(height,x,y,newht);
+		}
+	}
+}
+
+void BlendColorWithRasterizedBuffer(Image *img, RasterBuffer *buffer, Color endColor, Image *mask, bool useMask, bool invertMask)
+{
+	for(int x=0; x<img->GetWidth()-1; ++x)
+	{
+		for(int y=0; y<img->GetHeight()-1; ++y)
+		{
+			float nx=(float)x / (float)(img->GetWidth());
+			float ny=(float)y / (float)(img->GetHeight());
+			
+			float bval=buffer->getBilinear(nx,ny);
+			Color col=img->GetPixel(x,y);
+			if(useMask)
+			{
+				Color c=mask->GetPixelBilinear(nx,ny);
+				float m=c.r_;
+				if(invertMask) m=1.0f-m;
+				bval*=m;
+			}
+			Color newcol=col.Lerp(endColor, bval);
+			img->SetPixel(x,y,newcol);
+		}
+	}
+}
+
+RasterVertex CubicInterpolate(RasterVertex &p0, RasterVertex &p1, RasterVertex &p2, RasterVertex &p3, float t)
+{
+	RasterVertex e((p3.x_-p2.x_)-(p0.x_-p1.x_), (p3.y_-p2.y_)-(p0.y_-p1.y_), (p3.val_-p2.val_)-(p0.val_-p1.val_));
+	RasterVertex f((p0.x_-p1.x_)-e.x_, (p0.y_-p1.y_)-e.y_, (p0.val_-p1.val_)-e.val_);
+	RasterVertex g(p2.x_-p0.x_, p2.y_-p0.y_, p2.val_-p0.val_);
+	RasterVertex h(p1);
+	
+	float t3=t*t*t;
+	float t2=t*t;
+	return RasterVertex((e.x_*t3+f.x_*t2+g.x_*t+h.x_), (e.y_*t3+f.y_*t2+g.y_*t+h.y_), e.val_*t3+f.val_*t2+g.val_*t+h.val_);
+}
+
+void TessellateLineList(RasterVertexList *in, RasterVertexList *out, int steps)
+{
+	if(in->size()<4) return;
+	
+	float tinc=1.0 / (float)steps;
+	out->resize(0);
+	
+	int A=0, B=0, C=1, D=2;
+	float t=0.0;
+	while(B != C)
+	{
+		t=0.0;
+		for (int i=0; i<steps; ++i)
+		{
+			RasterVertex p=CubicInterpolate((*in)[A], (*in)[B], (*in)[C], (*in)[D], t);
+			t+=tinc;
+			out->push_back(p);
+		}
+		A=B;
+		B=C;
+		C=D;
+		D=D+1;
+		if(D>in->size()-1) D=in->size()-1;
+	}
+	
+}
+
+void ApplyBedFunction(RasterBuffer *buffer, float hardness, bool quintic)
+{
+	for(int x=0; x<buffer->width(); ++x)
+	{
+		for(int y=0; y<buffer->height(); ++y)
+		{
+			float v=buffer->get(x,y);
+			float h=std::max(0.0f, std::min(1.0f,hardness));
+			v=std::abs(v*2.0-1.0);
+			v=std::max(0.0, std::min(1.0, (v-1.0)/(h-1.0)));
+			if(quintic) v=v*v*v*(v*(v*6.0-15.0)+10.0);
+			buffer->set(x,y,v);
+		}
+	}
+}
+
+bool LinesAreParallel(RasterVertex p0, RasterVertex p1, RasterVertex q0, RasterVertex q1)
+{
+	float px=p1.x_-p0.x_;
+	float py=p1.y_-p0.y_;
+	float qx=q1.x_-q0.x_;
+	float qy=q1.y_-q0.y_;
+	
+	if(std::abs(px*qy-py*qx)<0.0001) return true;
+	return false;
+}
+
+RasterVertex CalculateLineIntersection(RasterVertex p0, RasterVertex p1, RasterVertex q0, RasterVertex q1)
+{
+	RasterVertex u(p1.x_-p0.x_, p1.y_-p0.y_, p1.val_-p0.val_);
+	RasterVertex v(q1.x_-q0.x_, q1.y_-q0.y_, q1.val_-q0.val_);
+	RasterVertex w(p0.x_-q0.x_, p0.y_-q0.y_, p0.val_-q0.val_);
+	
+	float D=u.x_*v.x_ - u.y_*v.y_;
+	float t=(float)(u.x_*w.y_-u.y_*w.x_)/(float)D;
+	return RasterVertex((q0.x_ + t* v.x_), (q0.y_+t*v.y_), q0.val_+t*(q1.val_-q0.val_));
+}
+
+void BuildQuadStrip(RasterVertexList *in, RasterVertexList *out, float width)
+{
+	if(in->size()<3) return;
+	out->resize(0);
+	
+	RasterVertex p2=(*in)[1];
+	RasterVertex p1=(*in)[0];
+	float lx=(float)(p2.x_-p1.x_);
+	float ly=(float)(p2.y_-p1.y_);
+	float d=std::sqrt(lx*lx+ly*ly);
+	lx/=d;
+	ly/=d;
+	float plx=-ly;
+	float ply=lx;
+	RasterVertex v1(p1.x_+0.5*width*plx, p1.y_+0.5*width*ply, p1.val_);
+	RasterVertex v2(p1.x_-0.5*width*plx, p1.y_-0.5*width*ply, p1.val_);
+	out->push_back(v1);
+	out->push_back(v2);
+	
+	for(int i=1; i<in->size()-1; ++i)
+	{
+		float halfwidth=width*0.5;
+		RasterVertex p1=(*in)[i-1];
+		RasterVertex p2=(*in)[i];
+		RasterVertex p3=(*in)[i+1];
+		
+		float l1x=(float)(p2.x_-p1.x_);
+		float l1y=(float)(p2.y_-p1.y_);
+		float l2x=(float)(p3.x_-p2.x_);
+		float l2y=(float)(p3.y_-p2.y_);
+		float d1=std::sqrt(l1x*l1x+l1y*l1y);
+		float d2=std::sqrt(l2x*l2x+l2y*l2y);
+		l1x/=d1;
+		l1y/=d1;
+		l2x/=d2;
+		l2y/=d2;
+		
+		float pl1x=-l1y;
+		float pl1y=l1x;
+		float pl2x=-l2y;
+		float pl2y=l2x;
+		
+		RasterVertex P0((p1.x_+pl1x*halfwidth), (p1.y_+pl1y*halfwidth), p1.val_);
+		RasterVertex P1((p2.x_+pl1x*halfwidth), (p2.y_+pl1y*halfwidth), p2.val_);
+		RasterVertex Q0((p2.x_+pl2x*halfwidth), (p2.y_+pl2y*halfwidth), p2.val_);
+		RasterVertex Q1((p3.x_+pl2x*halfwidth), (p3.y_+pl2y*halfwidth), p3.val_);
+		
+		if(LinesAreParallel(P0,P1,Q0,Q1))
+		{
+			out->push_back(RasterVertex(P1.x_, P1.y_, p2.val_));
+		}
+		else
+		{
+			RasterVertex intersect=CalculateLineIntersection(P0,P1,Q0,Q1);
+			intersect.val_=p2.val_;
+			out->push_back(intersect);
+		}
+		
+		P0=RasterVertex((p1.x_-pl1x*halfwidth), (p1.y_-pl1y*halfwidth), p1.val_);
+		P1=RasterVertex((p2.x_-pl1x*halfwidth), (p2.y_-pl1y*halfwidth), p2.val_);
+		Q0=RasterVertex((p2.x_-pl2x*halfwidth), (p2.y_-pl2y*halfwidth), p2.val_);
+		Q1=RasterVertex((p3.x_-pl2x*halfwidth), (p3.y_-pl2y*halfwidth), p3.val_);
+		
+		if(LinesAreParallel(P0,P1,Q0,Q1))
+		{
+			out->push_back(RasterVertex(P1.x_, P1.y_, p2.val_));
+		}
+		else
+		{
+			RasterVertex intersect=CalculateLineIntersection(P0,P1,Q0,Q1);
+			intersect.val_=p2.val_;
+			out->push_back(intersect);
+		}
+	}
+	
+	p2=(*in)[in->size()-1];
+	p1=(*in)[in->size()-2];
+	lx=(float)(p2.x_-p1.x_);
+	ly=(float)(p2.y_-p1.y_);
+	d=std::sqrt(lx*lx+ly*ly);
+	lx/=d;
+	ly/=d;
+	plx=-ly;
+	ply=lx;
+	v1=RasterVertex(p1.x_+0.5*width*plx, p1.y_+0.5*width*ply, p1.val_);
+	v2=RasterVertex(p1.x_-0.5*width*plx, p1.y_-0.5*width*ply, p1.val_);
+	out->push_back(v1);
+	out->push_back(v2);
 }

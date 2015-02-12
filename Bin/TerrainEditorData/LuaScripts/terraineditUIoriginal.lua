@@ -407,12 +407,14 @@ function TerrainEditUI:Update(dt)
 	
 	local ground=cam:GetScreenGround(mousepos.x, mousepos.y)
 	
-	local world=Vector3(ground.x,0,ground.z)
-	self.brushcursornode:SetPosition(world)
+	if ground then 
+		local world=Vector3(ground.x,0,ground.z)
+		self.brushcursornode:SetPosition(world)
 	
-	self.power, self.max, self.radius, self.hardness, self.usemask=self:GetBrushSettings(self.activebrush)
+		self.power, self.max, self.radius, self.hardness, self.usemask=self:GetBrushSettings(self.activebrush)
 	
-	self:SetBrushCursorHeight()
+		self:SetBrushCursorHeight()
+	end
 
 	
 	if input:GetMouseButtonDown(MOUSEB_LEFT) and ui:GetElementAt(mousepos.x, mousepos.y)==nil then

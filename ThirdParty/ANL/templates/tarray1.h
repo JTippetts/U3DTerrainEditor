@@ -31,7 +31,7 @@ namespace anl
 
         TArray1D(const TArray1D<T>& a) : size_(0), capacity_(0), data_(0)
         {
-            resize(a.width(),0);
+            resize(a.size(),0);
         }
         TArray1D(const T* data, size_t size)  : size_(0), capacity_(0), data_(0)
         {
@@ -74,6 +74,8 @@ namespace anl
 
         inline const T& operator [] (size_t i) const {return data_[checkedIndex(i)];}
         inline T& operator [] (size_t i) {return data_[checkedIndex(i)];}
+		
+		inline T& at(size_t i){return data_[checkedIndex(i)];}
 
         inline const T* data() const {return data_;}
         inline T* data() {return data_;}
@@ -96,8 +98,8 @@ namespace anl
         }
         inline bool empty() {return size_==0;}
         inline void push_back(const T& value) { resize(size_+1, &value);}
-        const T& front() const {assert(size_); return data_;}
-        const T& back() const {assert(size_); return data_+size_;}
+        const T& front() const {assert(size_); return data_[0];}
+        const T& back() const {assert(size_); return (data_+size_)[0];}
 
     private:
 

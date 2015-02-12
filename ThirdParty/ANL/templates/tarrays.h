@@ -94,6 +94,36 @@ class TArray2D
             T final = v5 + (T)((v6-v5)*t);
             return final;
         }
+		
+		T getBilinear(float x, float y)
+		{
+			x=x*(float)(m_width-1);
+			y=y*(float)(m_height-1);
+			int ix = (int)x;
+            int iy = (int)y;
+            int nx = ix+1;
+            int ny = iy+1;
+
+            if(ix>=m_width || iy>=m_height) return T(0);
+            if(nx>=m_width) nx=ix;
+            if(ny>=m_height) ny=iy;
+
+            T v1=get(ix,iy);
+            T v2=get(nx,iy);
+            T v3=get(ix,ny);
+            T v4=get(nx,ny);
+
+            float s = x - (float)ix;
+            float t = y - (float)iy;
+
+            // interpolate v1->v2 and v3->v4 on s
+            T v5 = v1 + (T)((v2-v1)*s);
+            T v6 = v3 + (T)((v4-v3)*s);
+
+            // interpolated v5->v6 on t
+            T final = v5 + (T)((v6-v5)*t);
+            return final;
+		}
 
         T getIndexed(int c)
         {

@@ -16,6 +16,8 @@
 #include "ThirdParty/ANL/VM/instruction.h"
 #include "ThirdParty/ANL/VM/kernel.h"
 #include "ThirdParty/ANL/VM/coordinate.h"
+#include "ThirdParty/ANL/templates/tarrays.h"
+#include "ThirdParty/ANL/templates/tarray1.h"
 
 using namespace Urho3D;
 using namespace anl;
@@ -37,5 +39,35 @@ using namespace anl;
 	
 	void InvertMask(Image *mask);
 	void RenderANLKernelToHeight(Image *height, Image *mask, CKernel *kernel, double lowRange=0, double highRange=1, bool useMask=false, bool invertMask=false);
+	
+	struct RasterVertex
+	{
+		float x_, y_;
+		float val_;
+		
+		RasterVertex() : x_(0), y_(0), val_(0){}
+		RasterVertex(float x, float y, float val): x_(x), y_(y), val_(val){}
+		RasterVertex(const RasterVertex &rhs) : x_(rhs.x_), y_(rhs.y_), val_(rhs.val_){}
+		~RasterVertex(){}
+		
+		void operator=(const RasterVertex &rhs)
+		{
+			x_=rhs.x_;
+			y_=rhs.y_;
+			val_=rhs.val_;
+		}
+		
+	};
+	
+	typedef TArray1D<RasterVertex> RasterVertexList;
+	typedef TArray2D<float> RasterBuffer;
+	
+	void RasterizeTriangle(RasterBuffer *buffer, RasterVertex v1, RasterVertex v2, RasterVertex v3);
+	void RasterizeQuadStrip(RasterBuffer *buffer, RasterVertexList *strip);
+	void BlendHeightWithRasterizedBuffer(Image *height, RasterBuffer *buffer, RasterBuffer *blend, Image *mask=0, bool useMask=false, bool invertMask=false);
+	void BlendColorWithRasterizedBuffer(Image *img, RasterBuffer *buffer, Color endColor, Image *mask=0, bool useMask=false, bool invertMask=false);
+	void TessellateLineList(RasterVertexList *in, RasterVertexList *out, int steps);
+	void ApplyBedFunction(RasterBuffer *buffer, float hardness, bool quintic);
+	void BuildQuadStrip(RasterVertexList *in, RasterVertexList *out, float width);
 
 #endif

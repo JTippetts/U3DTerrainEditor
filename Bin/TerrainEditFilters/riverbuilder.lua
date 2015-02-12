@@ -5,16 +5,17 @@ require 'LuaScripts/linelistcurve'
 
 return
 {
-	name="Road Builder",
-	Description="Convert the waypoint list to a road.",
+	name="River Builder",
+	Description="Convert the waypoint list to a river.",
 	options=
 	{
 		{name="Bed width", type="value", value=4},
 		{name="Bed Hardness", type="value", value=0.5},
-		{name="Paving Width", type="value", value=2},
+		{name="Paving Width", type="value", value=4},
 		{name="Paving Hardness", type="value", value=0.3},
 		{name="Paving Layer", type="value", value=2},
 		{name="Segment steps", type="value", value=10},
+		{name="Depth", type="value", value=15},
 	},
 	
 	execute=function(self)
@@ -22,8 +23,19 @@ return
 		local plist={}
 		local c
 		for _,c in ipairs(waypoints) do table.insert(plist, {x=c.position.x, y=c.position.y, z=c.position.z}) end
+		
+		if #plist<4 then return end
+		
 		local curve=tesselate_curve(plist, self.options[6].value)
 		if not curve then print("Need at least 4 waypoints for a road.") return end
+		
+		--[[local lasty=curve[1].y
+		for _,c in ipairs(curve) do
+			local y=c.y
+			if y>lasty then y=lasty end
+			c.y=y
+			lasty=y
+		end]]
 		
 		local quad=build_quad_strip(curve, self.options[1].value)
 		if not quad then return end
@@ -37,7 +49,9 @@ return
 			local hard=math.max(0,math.min(1,self.options[2].value))
 			
 			c=math.abs(c*2-1)
-			return math.max(0,math.min(1,(c-1)/(hard-1)))
+			c=math.max(0, math.min(1,(c-1)/(hard-1)))
+			return c
+			--return c*c*c*(c*(c*6-15)+10)
 		end
 		
 		function pavingbase(c)
@@ -76,10 +90,10 @@ return
 			local val1=GetHeightValue(hmap, math.floor(n1.x*hmap:GetWidth()), math.floor(n1.y*hmap:GetHeight()))
 			local val2=GetHeightValue(hmap, math.floor(n3.x*hmap:GetWidth()), math.floor(n3.y*hmap:GetHeight()))
 			
-			local v1={x=math.floor(n1.x*mask:GetWidth()), y=p1.y/spacing.y, val=(p1.y/spacing.y)/255, z=math.floor((1-n1.y)*mask:GetHeight())}
-			local v2={x=math.floor(n2.x*mask:GetWidth()), y=p2.y/spacing.y, val=(p2.y/spacing.y)/255, z=math.floor((1-n2.y)*mask:GetHeight())}
-			local v3={x=math.floor(n3.x*mask:GetWidth()), y=p3.y/spacing.y, val=(p3.y/spacing.y)/255, z=math.floor((1-n3.y)*mask:GetHeight())}
-			local v4={x=math.floor(n4.x*mask:GetWidth()), y=p4.y/spacing.y, val=(p4.y/spacing.y)/255, z=math.floor((1-n4.y)*mask:GetHeight())}
+			local v1={x=math.floor(n1.x*mask:GetWidth()), y=p1.y/spacing.y, val=(p1.y/spacing.y)/255-self.options[7].value, z=math.floor((1-n1.y)*mask:GetHeight())}
+			local v2={x=math.floor(n2.x*mask:GetWidth()), y=p2.y/spacing.y, val=(p2.y/spacing.y)/255-self.options[7].value, z=math.floor((1-n2.y)*mask:GetHeight())}
+			local v3={x=math.floor(n3.x*mask:GetWidth()), y=p3.y/spacing.y, val=(p3.y/spacing.y)/255-self.options[7].value, z=math.floor((1-n3.y)*mask:GetHeight())}
+			local v4={x=math.floor(n4.x*mask:GetWidth()), y=p4.y/spacing.y, val=(p4.y/spacing.y)/255-self.options[7].value, z=math.floor((1-n4.y)*mask:GetHeight())}
 			--print(v1.val, v3.val)
 			
 			rasterizeFace(v1,v2,v3,mask,2)

@@ -113,8 +113,10 @@ function ThirdPersonCamera:GetScreenGround(mousex, mousey)
 	local ray=self:GetScreenRay(mousex, mousey)
 	
 	local hitdist=ray:HitDistance(Plane(Vector3(0,1,0), Vector3(0,0,0)))
+	if hitdist==M_INFINITY then return nil end
 	local dx=(ray.origin.x+ray.direction.x*hitdist)
 	local dz=(ray.origin.z+ray.direction.z*hitdist)
+	--print("Hit dist: "..hitdist)
 	return Vector3(dx,0,dz)
 end
 
@@ -188,7 +190,7 @@ function ThirdPersonCamera:HandleUpdate(eventType, eventData)
 			local mmovey=input:GetMouseMoveY()/graphics:GetHeight()
 			self.pitch=self.pitch+mmovey*600
 
-			if self.pitch<0 then self.pitch=0 end
+			if self.pitch<-89 then self.pitch=-89 end
 			if self.pitch>89 then self.pitch=89 end
 		end
 		
@@ -267,23 +269,24 @@ function ThirdPersonCamera:HandleUpdate(eventType, eventData)
 		local oldground=self:GetScreenGround(self.lastmx, self.lastmz)
 		if oldground then
 			oldx,oldy=oldground.x, oldground.z
-		end
-		local newground=self:GetScreenGround(mousepos.x, mousepos.y)
-		if newground then
-			newx,newy=newground.x, newground.z
-		end
-		trans.x=trans.x+(oldx-newx)
-		trans.z=trans.z+(oldy-newy)
+			local newground=self:GetScreenGround(mousepos.x, mousepos.y)
+			if newground then
+				newx,newy=newground.x, newground.z
 		
-		if self.tracksurface then
-			self.offset=terrain:GetHeight(Vector3(self.node.position.x+trans.x,self.offset,self.node.position.z+trans.z)) + 1
-		else
-			self.offset=1
+				trans.x=trans.x+(oldx-newx)
+				trans.z=trans.z+(oldy-newy)
+		
+				if self.tracksurface then
+					self.offset=terrain:GetHeight(Vector3(self.node.position.x+trans.x,self.offset,self.node.position.z+trans.z)) + 1
+				else
+					self.offset=1
+				end
+		
+		
+				self.lastmx=mousepos.x
+				self.lastmz=mousepos.y
+			end
 		end
-		
-		
-		self.lastmx=mousepos.x
-		self.lastmz=mousepos.y
 	end
 	
 	self.node.position=Vector3(self.node.position.x+trans.x,self.offset,self.node.position.z+trans.z)

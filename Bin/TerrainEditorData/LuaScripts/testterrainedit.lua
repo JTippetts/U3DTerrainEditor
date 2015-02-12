@@ -91,7 +91,7 @@ function CreateScene()
     terrainNode.position = Vector3(0.0, 0.0, 0.0)
     terrain = terrainNode:CreateComponent("Terrain")
     terrain.patchSize = 64
-    terrain.spacing = Vector3(0.20, 0.08, 0.20) -- Spacing between vertices and vertical resolution of the height map
+    terrain.spacing = Vector3(0.20, 0.1, 0.20) -- Spacing between vertices and vertical resolution of the height map
     terrain.smoothing = true
 	hmap=Image:new(context)
 	hmap:SetSize(2049,2049,3)
