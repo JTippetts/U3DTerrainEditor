@@ -2,11 +2,11 @@
 
 return
 {
-	name="Test Raster",
-	Description="Test Raster",
+	name="Road Builder v2.0",
+	Description="Construct a road from the current list of waypoints.",
 	options=
 	{
-		{name="Bed width", type="value", value=12},
+		{name="Bed width", type="value", value=16},
 		{name="Bed Hardness", type="value", value=0.5},
 		{name="Paving Width", type="value", value=6},
 		{name="Paving Hardness", type="value", value=0.5},
@@ -65,6 +65,11 @@ return
 		elseif pavinglayer==1 then color=Color(0,1,0,0)
 		elseif pavinglayer==2 then color=Color(0,0,1,0)
 		else color=Color(0,0,0,1)
+		end
+		
+		for c=0,quad:size()-1,1 do
+			local v=quad:at(c)
+			v.val_=c % 2
 		end
 		RasterizeQuadStrip(blend, quad)
 		ApplyBedFunction(blend, pavinghardness, true)
