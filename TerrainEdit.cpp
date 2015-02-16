@@ -742,7 +742,7 @@ bool LinesAreParallel(RasterVertex p0, RasterVertex p1, RasterVertex q0, RasterV
 	float qx=q1.x_-q0.x_;
 	float qy=q1.y_-q0.y_;
 	
-	if(std::abs(px*qy-py*qx)<0.0001) return true;
+	if(std::abs(px*qy+py*qx)>0.999) return true;
 	return false;
 }
 

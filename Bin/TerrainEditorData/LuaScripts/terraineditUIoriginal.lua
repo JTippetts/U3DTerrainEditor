@@ -152,6 +152,8 @@ function TerrainEditUI:UpdateWaypointVis()
 	
 	self.waypointpreview:Commit()
 	self.waypointpreview:SetMaterial(self.waypointpreviewmaterial)
+	local bbox=self.waypointpreview.worldBoundingBox
+	bbox:Define(Vector3(-1000,-1000,-1000), Vector3(1000,1000,1000))
 end
 
 function TerrainEditUI:AddWaypoint(groundx, groundz)
@@ -451,12 +453,6 @@ end
 
 
 function TerrainEditUI:Update(dt)
-	if self.waypointpreview.inView==false then
-		print("Waypoint preview is not in view.")
-		
-		local bbox=self.waypointpreview.worldBoundingBox
-		bbox:Define(Vector3(-1000,-1000,-1000), Vector3(1000,1000,1000))
-	end
 	self.counter=self.counter+dt
 	if self.counter>4 then
 		self.counter=self.counter-4
