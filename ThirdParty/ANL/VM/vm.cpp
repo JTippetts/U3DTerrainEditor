@@ -1,10 +1,11 @@
 #include "vm.h"
+#include "kernel.h"
 #include "utility.h"
 #include <iostream>
 
 namespace anl
 {
-    CNoiseExecutor::CNoiseExecutor(InstructionListType *kernel) : kernel_(kernel), evaluated_(kernel->size(), false), coordcache_(kernel->size()), cache_(kernel->size())
+    CNoiseExecutor::CNoiseExecutor(CKernel *kernel) : kernel_(kernel->getKernel()), evaluated_(kernel->getKernel()->size(), false), coordcache_(kernel->getKernel()->size()), cache_(kernel->getKernel()->size())
     {
     }
 

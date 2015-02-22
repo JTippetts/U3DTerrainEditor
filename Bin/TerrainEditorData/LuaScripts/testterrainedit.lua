@@ -46,6 +46,8 @@ function Start()
 
     -- Hook up to the frame update event
     SubscribeToEvents()
+	local i,j
+	for i,j in pairs(tolua) do print(i,j) end
 	
 end
 

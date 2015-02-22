@@ -488,7 +488,7 @@ void RenderANLKernelToHeight(Image *height, Image *mask, CKernel *kernel, double
 	int w=height->GetWidth()-1;
 	int h=height->GetHeight()-1;
 	
-	CNoiseExecutor vm(kernel->getKernel());
+	CNoiseExecutor vm(kernel);
 	
 	TArray2D<double> a(height->GetWidth(), height->GetHeight());
 	double mx=-10000;
@@ -537,7 +537,7 @@ void RenderANLKernelToBuffer(RasterBuffer *buffer, CKernel *kernel, float lowran
 	int w=buffer->width()-1;
 	int h=buffer->height()-1;
 	
-	CNoiseExecutor vm(kernel->getKernel());
+	CNoiseExecutor vm(kernel);
 	for(int x=0; x<=w; ++x)
 	{
 		for(int y=0; y<=h; ++y)
@@ -682,14 +682,30 @@ void BlendColorWithRasterizedBuffer(Image *img, RasterBuffer *buffer, Color endC
 
 RasterVertex CubicInterpolate(RasterVertex &p0, RasterVertex &p1, RasterVertex &p2, RasterVertex &p3, float t)
 {
-	RasterVertex e((p3.x_-p2.x_)-(p0.x_-p1.x_), (p3.y_-p2.y_)-(p0.y_-p1.y_), (p3.val_-p2.val_)-(p0.val_-p1.val_));
+	/*RasterVertex e((p3.x_-p2.x_)-(p0.x_-p1.x_), (p3.y_-p2.y_)-(p0.y_-p1.y_), (p3.val_-p2.val_)-(p0.val_-p1.val_));
 	RasterVertex f((p0.x_-p1.x_)-e.x_, (p0.y_-p1.y_)-e.y_, (p0.val_-p1.val_)-e.val_);
 	RasterVertex g(p2.x_-p0.x_, p2.y_-p0.y_, p2.val_-p0.val_);
 	RasterVertex h(p1);
 	
 	float t3=t*t*t;
 	float t2=t*t;
-	return RasterVertex((e.x_*t3+f.x_*t2+g.x_*t+h.x_), (e.y_*t3+f.y_*t2+g.y_*t+h.y_), e.val_*t3+f.val_*t2+g.val_*t+h.val_);
+	return RasterVertex((e.x_*t3+f.x_*t2+g.x_*t+h.x_), (e.y_*t3+f.y_*t2+g.y_*t+h.y_), e.val_*t3+f.val_*t2+g.val_*t+h.val_);*/
+	
+	// Catmull-Rom
+	/*
+	q(t) = 0.5 *(  	(2 * P1) +
+ 	(-P0 + P2) * t +
+(2*P0 - 5*P1 + 4*P2 - P3) * t2 +
+(-P0 + 3*P1- 3*P2 + P3) * t3)
+	*/
+	float t3=t*t*t;
+	float t2=t*t;
+	
+	return RasterVertex(
+		0.5*((2.0*p1.x_) + (-p0.x_ + p2.x_)*t + (2.0*p0.x_-5.0*p1.x_+4.0*p2.x_-p3.x_)*t2 + (-p0.x_+3.0*p1.x_-3.0*p2.x_+p3.x_)*t3),
+		0.5*((2.0*p1.y_) + (-p0.y_ + p2.y_)*t + (2.0*p0.y_-5.0*p1.y_+4.0*p2.y_-p3.y_)*t2 + (-p0.y_+3.0*p1.y_-3.0*p2.y_+p3.y_)*t3),
+		0.5*((2.0*p1.val_) + (-p0.val_ + p2.val_)*t + (2.0*p0.val_-5.0*p1.val_+4.0*p2.val_-p3.val_)*t2 + (-p0.val_+3.0*p1.val_-3.0*p2.val_+p3.val_)*t3)
+	);
 }
 
 void TessellateLineList(RasterVertexList *in, RasterVertexList *out, int steps)

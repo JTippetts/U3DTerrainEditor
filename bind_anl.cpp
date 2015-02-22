@@ -1,6 +1,6 @@
 /*
 ** Lua binding: bind_anl
-** Generated automatically by tolua++-1.0.93 on 02/04/15 08:43:41.
+** Generated automatically by tolua++-1.0.93 on 02/21/15 08:28:09.
 */
 
 #ifndef __cplusplus
@@ -4883,14 +4883,14 @@ static int tolua_bind_anl_CNoiseExecutor_new00(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
      !tolua_isusertable(tolua_S,1,"CNoiseExecutor",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"InstructionListType",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"CKernel",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,3,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
-  InstructionListType* kernel = ((InstructionListType*)  tolua_tousertype(tolua_S,2,0));
+  CKernel* kernel = ((CKernel*)  tolua_tousertype(tolua_S,2,0));
   {
    CNoiseExecutor* tolua_ret = (CNoiseExecutor*)  Mtolua_new((CNoiseExecutor)(kernel));
     tolua_pushusertype(tolua_S,(void*)tolua_ret,"CNoiseExecutor");
@@ -4913,14 +4913,14 @@ static int tolua_bind_anl_CNoiseExecutor_new00_local(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
      !tolua_isusertable(tolua_S,1,"CNoiseExecutor",0,&tolua_err) ||
-     !tolua_isusertype(tolua_S,2,"InstructionListType",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"CKernel",0,&tolua_err) ||
      !tolua_isnoobj(tolua_S,3,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
-  InstructionListType* kernel = ((InstructionListType*)  tolua_tousertype(tolua_S,2,0));
+  CKernel* kernel = ((CKernel*)  tolua_tousertype(tolua_S,2,0));
   {
    CNoiseExecutor* tolua_ret = (CNoiseExecutor*)  Mtolua_new((CNoiseExecutor)(kernel));
     tolua_pushusertype(tolua_S,(void*)tolua_ret,"CNoiseExecutor");

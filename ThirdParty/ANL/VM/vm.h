@@ -42,7 +42,7 @@ namespace anl
     class CNoiseExecutor
     {
     public:
-        CNoiseExecutor(InstructionListType *kernel);
+        CNoiseExecutor(CKernel *kernel);
 
         SVMOutput evaluate(CCoordinate &coord);
         SVMOutput evaluateAt(CCoordinate &coord, CInstructionIndex index);
