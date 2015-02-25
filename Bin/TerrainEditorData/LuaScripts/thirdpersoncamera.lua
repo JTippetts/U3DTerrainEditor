@@ -29,6 +29,7 @@ function ThirdPersonCamera:Start()
 	self.allowpitch=true        -- Camera pitch can be adjusted via MOUSEB_MIDDLE + Mouse move in y
 	self.allowzoom=true         -- Camera can be zoomed via Mouse wheel
 	self.orthographic=false     -- Orthographic projection
+	self.clipcamera=true        -- Clip camera to solid objects
 	
 	self.curfollow=self.follow  -- Current zoom distance (internal use only)
 	self.followvel=0            -- Zoom movement velocity (internal use only)
@@ -150,6 +151,26 @@ function ThirdPersonCamera:PickGround(mousex, mousey, maxDistance)
 	return nil
 end
 
+function ThirdPersonCamera:CameraPick(ray, followdist)
+	-- Cast a ray from camera target toward camera and determine the nearest clip position.
+	-- Only objects marked by setting node user var solid=true are considered.
+	
+	local scene=self.node:GetScene()
+	local octree = scene:GetComponent("Octree")
+    
+	local resultvec=octree:Raycast(ray, RAY_TRIANGLE, followdist, DRAWABLE_GEOMETRY)
+	if #resultvec==0 then return followdist end
+	
+	local i
+	for i=1,#resultvec,1 do
+		--local node=TopLevelNodeFromDrawable(resultvec[i].drawable, scene)
+		if --[[node:GetVars():GetBool("solid")==true and]] resultvec[i].distance>=0 then
+			return math.min(math.max(0,resultvec[i].distance-1),followdist)
+		end
+	end
+	
+	return followdist
+end
 
 function ThirdPersonCamera:HandleRequestCameraRotation(eventType, eventData)
 	-- Request to provide the camera pitch and yaw, for controllers that use it such as the WASD controllers
@@ -206,11 +227,7 @@ function ThirdPersonCamera:HandleUpdate(eventType, eventData)
 	else
 		ui.cursor.visible=true
 	end
-	
-	-- Apply the spring function to the zoom (follow) level.
-	-- This provides smooth camera movement toward the desired zoom level.
-	
-	self:SpringFollow(dt)		
+
 	
 	local mousepos
 	if input.mouseVisible then
@@ -290,6 +307,21 @@ function ThirdPersonCamera:HandleUpdate(eventType, eventData)
 	end
 	
 	self.node.position=Vector3(self.node.position.x+trans.x,self.offset,self.node.position.z+trans.z)
+	
+		-- Apply the spring function to the zoom (follow) level.
+	-- This provides smooth camera movement toward the desired zoom level.
+	
+	self:SpringFollow(dt)	
+	if self.clipcamera then
+		-- After calculating the camera zoom position, test a ray from view center for obstruction and
+		-- clip camera position to nearest obstruction distance.
+		--print("clipping")
+		local ray=self.camera:GetScreenRay(0.5,0.5)
+		local revray=Ray(self.node.position, ray.direction*Vector3(-1,-1,-1))
+		
+		self.curfollow=self:CameraPick(revray, self.curfollow)
+	end	
+	
 	
 	-- Set camera pitch, zoom and yaw.
 	self.node:SetRotation(Quaternion(self.yaw, Vector3(0,1,0)))

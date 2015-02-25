@@ -1,6 +1,9 @@
 #include <AngelScript/angelscript.h>
 
 #include "TerrainEdit.h"
+#include <iostream>
+using namespace Urho3D;
+using namespace anl;
 
 void ConstructRasterVertex(RasterVertex *rv)
 {
@@ -27,6 +30,11 @@ void ConstructRasterBufferInit(int w, int h, RasterBuffer *rb)
 	new(rb) RasterBuffer(w,h);
 }
 
+void DestructRasterBuffer(RasterBuffer *rb)
+{
+	delete rb;
+}
+
 float RasterBufferGet(int x, int y, RasterBuffer *rb)
 {
 	return rb->get(x,y);
@@ -34,6 +42,7 @@ float RasterBufferGet(int x, int y, RasterBuffer *rb)
 
 void RegisterTerrainEdit(asIScriptEngine* engine)
 {
+	std::cout << "Registering" << std::endl;
 	engine->RegisterObjectType("RasterVertex", sizeof(RasterVertex), asOBJ_VALUE | asOBJ_POD | asOBJ_APP_CLASS_CDAK);
 	engine->RegisterObjectBehaviour("RasterVertex", asBEHAVE_CONSTRUCT, "void f()", asFUNCTION(ConstructRasterVertex), asCALL_CDECL_OBJLAST);
 	engine->RegisterObjectBehaviour("RasterVertex", asBEHAVE_CONSTRUCT, "void f(float, float, float)", asFUNCTION(ConstructRasterVertexInit), asCALL_CDECL_OBJLAST);
@@ -45,6 +54,7 @@ void RegisterTerrainEdit(asIScriptEngine* engine)
 	engine->RegisterObjectType("RasterBuffer", sizeof(RasterBuffer), asOBJ_VALUE | asOBJ_APP_CLASS_CD);
 	engine->RegisterObjectBehaviour("RasterBuffer", asBEHAVE_CONSTRUCT, "void f()", asFUNCTION(ConstructRasterBuffer), asCALL_CDECL_OBJLAST);
 	engine->RegisterObjectBehaviour("RasterBuffer", asBEHAVE_CONSTRUCT, "void f(int, int)", asFUNCTION(ConstructRasterBufferInit), asCALL_CDECL_OBJLAST);
+	engine->RegisterObjectBehaviour("RasterBuffer", asBEHAVE_DESTRUCT, "void f()", asFUNCTION(DestructRasterBuffer), asCALL_CDECL_OBJLAST);
 	engine->RegisterObjectMethod("RasterBuffer", "void resize(int, int)", asMETHOD(RasterBuffer, resize), asCALL_THISCALL);
 	engine->RegisterObjectMethod("RasterBuffer", "void destroy()", asMETHOD(RasterBuffer, destroy), asCALL_THISCALL);
 	engine->RegisterObjectMethod("RasterBuffer", "int width()", asMETHOD(RasterBuffer, width), asCALL_THISCALL);
@@ -61,4 +71,7 @@ void RegisterTerrainEdit(asIScriptEngine* engine)
 	engine->RegisterObjectMethod("RasterBuffer", "float getMin()", asMETHOD(RasterBuffer, getMin), asCALL_THISCALL);
 	engine->RegisterObjectMethod("RasterBuffer", "void scaleToRange(float, float)", asMETHOD(RasterBuffer, scaleToRange), asCALL_THISCALL);
 	engine->RegisterObjectMethod("RasterBuffer", "void blur(float, bool)", asMETHOD(RasterBuffer, blur), asCALL_THISCALL);
+	
+	engine->RegisterGlobalFunction("Vector2 WorldToNormalized(Image &, Terrain &, Vector3)", asFUNCTION(WorldToNormalized), asCALL_CDECL);
+	engine->RegisterGlobalFunction("Vector3 NormalizedToWorld(Image &, Terrain &, Vector2)", asFUNCTION(NormalizedToWorld), asCALL_CDECL);
 }

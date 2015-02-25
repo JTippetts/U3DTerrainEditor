@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <cmath>
 #include <Urho3D/IO/Log.h>
+#include <iostream>
 
 	
 Vector2 WorldToNormalized(Image *height, Terrain *terrain, Vector3 world)
@@ -544,13 +545,17 @@ void RenderANLKernelToBuffer(RasterBuffer *buffer, CKernel *kernel, float lowran
 		{
 			float nx=(float)x/(float)(w);
 			float ny=(float)y/(float)(h);
-			CCoordinate coord(nx,ny,0);
+			CCoordinate coord(nx,ny);
 			double val=vm.evaluate(coord).outfloat_;
+			if(std::isnan(val)) LOGINFO(String("Whoops, got a NaN!"));
+			if(std::isinf(val)) LOGINFO(String("value isinf"));
 			buffer->set(x,y,val);
 		}
 	}
 	
+	LOGINFO(String("Buffer min/max before: ")+String(buffer->getMin()) + String(",")+String(buffer->getMax()));
 	buffer->scaleToRange(lowrange, highrange);
+	LOGINFO(String("Buffer min/max after: ")+String(buffer->getMin()) + String(",")+String(buffer->getMax()));
 }
 
 void SetHeightFromRasterBuffer(Image *height, RasterBuffer *buffer, Image *mask, bool useMask, bool invertMask)
@@ -666,6 +671,10 @@ void BlendColorWithRasterizedBuffer(Image *img, RasterBuffer *buffer, Color endC
 			float ny=(float)y / (float)(img->GetHeight());
 			
 			float bval=buffer->getBilinear(nx,ny);
+			if(bval<0.0f || bval>1.0f) LOGINFO(String("bval: ") + String(bval));
+			if(std::isnan(bval)) LOGINFO(String("bval isnan"));
+			if(std::isinf(bval)) LOGINFO(String("bval isinf"));
+			bval=std::max(0.0f, std::min(1.0f, bval));
 			Color col=img->GetPixel(x,y);
 			if(useMask)
 			{
