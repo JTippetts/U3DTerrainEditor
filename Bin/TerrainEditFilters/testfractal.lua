@@ -23,7 +23,7 @@ return
 		local k=CKernel()
 		
 		local point5=k:constant(0.5)
-		local fbm=k:simplefBm(3, 3, octaves, frequency, seed, true)
+		local fbm=k:simplefBm(3, 3, octaves, frequency, seed, false)
 		local scale=k:multiply(fbm,point5)
 		local offset=k:add(scale,point5)
 		local gainval=k:constant(gn)

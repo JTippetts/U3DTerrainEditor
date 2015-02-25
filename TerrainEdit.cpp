@@ -545,7 +545,7 @@ void RenderANLKernelToBuffer(RasterBuffer *buffer, CKernel *kernel, float lowran
 		{
 			float nx=(float)x/(float)(w);
 			float ny=(float)y/(float)(h);
-			CCoordinate coord(nx,ny);
+			CCoordinate coord(nx,ny,0);
 			double val=vm.evaluate(coord).outfloat_;
 			if(std::isnan(val)) LOGINFO(String("Whoops, got a NaN!"));
 			if(std::isinf(val)) LOGINFO(String("value isinf"));

@@ -271,32 +271,32 @@ typedef double (*worker_noise_6)(double,double,double,double,double,double,int,i
 
 double value_noise_2( double x, double y, int ix, int iy, unsigned int seed)
 {
-    unsigned int n = (hash_coords_2(ix,iy,seed));
+    unsigned int n = (hash_coords_2(ix,iy,seed)) % 256;
     double noise = (double)n / 255.0;
     return noise*2.0 - 1.0;
 }
 double value_noise_3(double x, double y, double z, int ix, int iy, int iz, unsigned int seed)
 {
-    unsigned int n = (hash_coords_3(ix,iy,iz,seed));
+    unsigned int n = (hash_coords_3(ix,iy,iz,seed)) % 256;
     double noise=(double)n/(255.0);
     return noise*2.0-1.0;
 }
 double value_noise_4(double x, double y, double z, double w, int ix, int iy,int iz,int iw, unsigned int seed)
 {
-    unsigned int n = (hash_coords_4(ix,iy,iz,iw,seed));
+    unsigned int n = (hash_coords_4(ix,iy,iz,iw,seed)) % 256;
     double noise = (double)n / 255.0;
     return noise*2.0 - 1.0;
 }
 double value_noise_6(double x, double y, double z, double w, double u, double v, int ix, int iy,int iz,int iw, int iu, int iv, unsigned int seed)
 {
-    unsigned int n = (hash_coords_6(ix,iy,iz,iw,iu,iv,seed));
+    unsigned int n = (hash_coords_6(ix,iy,iz,iw,iu,iv,seed)) % 256;
     double noise = (double)n / 255.0;
     return noise*2.0 - 1.0;
 }
 
 double grad_noise_2(double x, double y, int ix, int iy, unsigned int seed)
 {
-    unsigned int hash=hash_coords_2(ix,iy,seed);
+    unsigned int hash=hash_coords_2(ix,iy,seed)%4;
     double *vec=&gradient2D_lut[hash][0];
 
     double dx=x-(double)ix;
@@ -307,7 +307,7 @@ double grad_noise_2(double x, double y, int ix, int iy, unsigned int seed)
 
 double grad_noise_3(double x, double y, double z, int ix, int iy, int iz, unsigned int seed)
 {
-    unsigned int hash=hash_coords_3(ix,iy,iz,seed);
+    unsigned int hash=hash_coords_3(ix,iy,iz,seed)%12;
     double *vec=&gradient3D_lut[hash][0];
 
     double dx=x-(double)ix;
@@ -318,7 +318,7 @@ double grad_noise_3(double x, double y, double z, int ix, int iy, int iz, unsign
 
 double grad_noise_4(double x, double y, double z, double w, int ix, int iy, int iz, int iw, unsigned int seed)
 {
-    unsigned int hash=hash_coords_4(ix,iy,iz,iw,seed);
+    unsigned int hash=hash_coords_4(ix,iy,iz,iw,seed)%32;
     double *vec=&gradient4D_lut[hash][0];
 
     double dx=x-(double)ix;
@@ -332,7 +332,7 @@ double grad_noise_4(double x, double y, double z, double w, int ix, int iy, int 
 
 double grad_noise_6(double x, double y, double z, double w, double u, double v, int ix, int iy, int iz, int iw, int iu, int iv, unsigned int seed)
 {
-    unsigned int hash=hash_coords_6(ix,iy,iz,iw,iu,iv,seed);
+    unsigned int hash=hash_coords_6(ix,iy,iz,iw,iu,iv,seed)%192;
     double *vec=&gradient6D_lut[hash][0];
 
     double dx=x-(double)ix;
@@ -871,9 +871,9 @@ double anl::simplex_noise2D(double x, double y, unsigned int seed, interp_func i
     double y2=y0-1.0+2.0*G2;
 
     // Hash the triangle coordinates to index the gradient table
-    unsigned int h0=hash_coords_2(i,j,seed);
-    unsigned int h1=hash_coords_2(i+i1,j+j1,seed);
-    unsigned int h2=hash_coords_2(i+1,j+1,seed);
+    unsigned int h0=hash_coords_2(i,j,seed)%4;
+    unsigned int h1=hash_coords_2(i+i1,j+j1,seed)%4;
+    unsigned int h2=hash_coords_2(i+1,j+1,seed)%4;
 
     // Now, index the tables
     double *g0 = &gradient2D_lut[h0][0];
@@ -977,10 +977,10 @@ double anl::simplex_noise3D(double x, double y, double z, unsigned int seed, int
 
     unsigned int h0,h1,h2,h3;
 
-    h0=hash_coords_3(i,j,k,seed);
-    h1=hash_coords_3(i+i1,j+j1,k+k1,seed);
-    h2=hash_coords_3(i+i2,j+j2,k+k2,seed);
-    h3=hash_coords_3(i+1,j+1,k+1,seed);
+    h0=hash_coords_3(i,j,k,seed)%12;
+    h1=hash_coords_3(i+i1,j+j1,k+k1,seed)%12;
+    h2=hash_coords_3(i+i2,j+j2,k+k2,seed)%12;
+    h3=hash_coords_3(i+1,j+1,k+1,seed)%12;
 
     double *g0=&gradient3D_lut[h0][0];
     double *g1=&gradient3D_lut[h1][0];
@@ -1108,11 +1108,11 @@ double anl::simplex_noise4D(double x, double y, double z, double w, unsigned int
     double w4 = w0 - 1.0 + 4.0*G4;
 // Work out the hashed gradient indices of the five simplex corners
     unsigned int h0,h1,h2,h3,h4;
-    h0=hash_coords_4(i,j,k,l,seed);
-    h1=hash_coords_4(i+i1,j+j1,k+k1,l+l1,seed);
-    h2=hash_coords_4(i+i2,j+j2,k+k2,l+l2,seed);
-    h3=hash_coords_4(i+i3,j+j3,k+k3,l+l3,seed);
-    h4=hash_coords_4(i+1,j+1,k+1,l+1,seed);
+    h0=hash_coords_4(i,j,k,l,seed)%32;
+    h1=hash_coords_4(i+i1,j+j1,k+k1,l+l1,seed)%32;
+    h2=hash_coords_4(i+i2,j+j2,k+k2,l+l2,seed)%32;
+    h3=hash_coords_4(i+i3,j+j3,k+k3,l+l3,seed)%32;
+    h4=hash_coords_4(i+1,j+1,k+1,l+1,seed)%32;
 
     double *g0=&gradient4D_lut[h0][0];
     double *g1=&gradient4D_lut[h1][0];
@@ -1267,7 +1267,7 @@ double anl::new_simplex_noise4D(double x, double y, double z, double w, unsigned
 
         if(t>0.0)
         {
-            unsigned int h=hash_coords_4(intLoc[0],intLoc[1],intLoc[2],intLoc[3],seed);
+            unsigned int h=hash_coords_4(intLoc[0],intLoc[1],intLoc[2],intLoc[3],seed)%32;
             double *vec=&gradient4D_lut[h][0];
             double gr=0.0;
             for(int d=0; d<4; ++d)
@@ -1347,7 +1347,7 @@ double anl::simplex_noise6D(double x, double y, double z, double w, double u, do
 
         if(t>0.0)
         {
-            unsigned int h=hash_coords_6(intLoc[0],intLoc[1],intLoc[2],intLoc[3],intLoc[4],intLoc[5],seed);
+            unsigned int h=hash_coords_6(intLoc[0],intLoc[1],intLoc[2],intLoc[3],intLoc[4],intLoc[5],seed)%192;
             double *vec=&gradient6D_lut[h][0];
             double gr=0.0;
             for(int d=0; d<6; ++d)
