@@ -1,5 +1,5 @@
-// Lookup tables for 2D and 3D gradient and simplex noise.
-// Generated with boost::random, using a lagged Fibonacci generator and a uniform_on_sphere distribution.
+// Lookup tables for 2D, 3D, 4D and 6D gradient and simplex noise.
+
 #include "types.h"
 
 

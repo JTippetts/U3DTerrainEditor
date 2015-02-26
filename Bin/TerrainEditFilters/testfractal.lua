@@ -6,10 +6,11 @@ return
 	{
 		{name="Frequency", type="value", value=8},
 		{name="Num Octaves", type="value", value=9},
-		{name="Gain", type="value", value=0.8},
+		{name="Gain", type="value", value=0.5},
 		{name="Seed", type="value", value=12345},
 		{name="Use Mask?", type="flag", value=false},
 		{name="Invert Mask?", type="flag", value=false},
+		{name="Rotate domain?", type="flag", value=true},
 	},
 	
 	execute=function(self)
@@ -23,14 +24,14 @@ return
 		local k=CKernel()
 		
 		local point5=k:constant(0.5)
-		local fbm=k:simplefBm(3, 3, octaves, frequency, seed, false)
+		local fbm=k:simplefBm(3, 3, octaves, frequency, seed, true)
 		local scale=k:multiply(fbm,point5)
 		local offset=k:add(scale,point5)
 		local gainval=k:constant(gn)
 		local gain=k:gain(gainval,offset)
 		
 		local img=Image(context)
-		img:SetSize(512,512,3)
+		img:SetSize(2048,2048,3)
 		
 		local buffer=RasterBuffer(img:GetWidth(), img:GetHeight())
 		RenderANLKernelToBuffer(buffer,k,0,1)

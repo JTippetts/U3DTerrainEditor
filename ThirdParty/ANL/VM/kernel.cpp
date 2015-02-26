@@ -670,79 +670,41 @@ CInstructionIndex CKernel::simpleRidgedLayer(unsigned int basistype, CInstructio
 CInstructionIndex CKernel::simpleRidgedMultifractal(unsigned int basistype, unsigned int interptype, unsigned int numoctaves, double frequency, unsigned int seed, bool rot)
 {
     if(numoctaves<1) return 0;
-
-    // push instruction denoting interpolation type constant
-    CInstructionIndex interpindex=constant(interptype);
-    // Push layers.
-    // Each layer consists of a basis, an amplitude scale, a multiply, and a domain scale.
-    CInstructionIndex basisstart=nextIndex();
-    KISS rnd;
-    rnd.setSeed(seed);
-    for(unsigned int c=0; c<numoctaves; ++c)
-    {
-        // Basis function
-        if(rot)
-        {
-            simpleRidgedLayer(basistype, interpindex, 1.0/std::pow(2.0, (double)(c)), std::pow(2.0, (double)(c))*frequency, seed+10+c*1000,true,
+	
+	CInstructionIndex interpindex=constant(interptype);
+	KISS rnd;
+	rnd.setSeed(seed);
+	simpleRidgedLayer(basistype, interpindex, 1.0, 1.0*frequency, seed+10,rot,
                                rnd.get01()*3.14159265*2.0, rnd.get01(), rnd.get01(), rnd.get01());
-        }
-        else
-        {
-            simpleRidgedLayer(basistype, interpindex, 1.0/std::pow(2.0, (double)(c)), std::pow(2.0, (double)(c))*frequency, seed+10+c*1000, false);
-        }
-		
-		
-    }
-
-    if (numoctaves==1)
-    {
-        return lastIndex();
-    }
-
-    // Sum the layers
-    if(rot) addSequence(basisstart+12, numoctaves, 13);
-    else addSequence(basisstart+7, numoctaves, 8);
-
-    return lastIndex();
+	CInstructionIndex lastlayer=lastIndex();
+	
+	for(int c=0; c<numoctaves-1; ++c)
+	{
+		CInstructionIndex nextlayer=simpleRidgedLayer(basistype, interpindex, 1.0/std::pow(2.0, (double)(c)), std::pow(2.0, (double)(c))*frequency, seed+10+c*1000,rot,
+                               rnd.get01()*3.14159265*2.0, rnd.get01(), rnd.get01(), rnd.get01());
+		lastlayer=add(lastlayer,nextlayer);
+	}
+	return lastIndex();
 }
 
 CInstructionIndex CKernel::simplefBm(unsigned int basistype, unsigned int interptype, unsigned int numoctaves, double frequency, unsigned int seed, bool rot)
 {
     if(numoctaves<1) return 0;
-
-    // push instruction denoting interpolation type constant
-    CInstructionIndex interpindex=constant(interptype);
-    // Push layers.
-    // Each layer consists of a basis, an amplitude scale, a multiply, and a domain scale.
-    CInstructionIndex basisstart=nextIndex();
-    KISS rnd;
-    rnd.setSeed(seed);
-    for(unsigned int c=0; c<numoctaves; ++c)
-    {
-        // Basis function
-        if(rot)
-        {
-            simpleFractalLayer(basistype, interpindex, 1.0/std::pow(2.0, (double)(c)), std::pow(2.0, (double)(c))*frequency, seed+10+c*1000,true,
+	
+	CInstructionIndex interpindex=constant(interptype);
+	KISS rnd;
+	rnd.setSeed(seed);
+	simpleFractalLayer(basistype, interpindex, 1.0, 1.0*frequency, seed+10,rot,
                                rnd.get01()*3.14159265*2.0, rnd.get01(), rnd.get01(), rnd.get01());
-        }
-        else
-        {
-            simpleFractalLayer(basistype, interpindex, 1.0/std::pow(2.0, (double)(c)), std::pow(2.0, (double)(c))*frequency, seed+10+c*1000, false);
-        }
-		
-		
-    }
-
-    if (numoctaves==1)
-    {
-        return lastIndex();
-    }
-
-    // Sum the layers
-    if(rot) addSequence(basisstart+9, numoctaves, 10);
-    else addSequence(basisstart+4, numoctaves, 5);
-
-    return lastIndex();
+	CInstructionIndex lastlayer=lastIndex();
+	
+	for(int c=0; c<numoctaves-1; ++c)
+	{
+		CInstructionIndex nextlayer=simpleFractalLayer(basistype, interpindex, 1.0/std::pow(2.0, (double)(c)), std::pow(2.0, (double)(c))*frequency, seed+10+c*1000,rot,
+                               rnd.get01()*3.14159265*2.0, rnd.get01(), rnd.get01(), rnd.get01());
+		lastlayer=add(lastlayer,nextlayer);
+	}
+	return lastIndex();
 }
 
 CInstructionIndex CKernel::x()

@@ -277,6 +277,8 @@ namespace anl
 				{
 					double s1=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[0],coord);
                     double s2=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[1],coord);
+					s1=std::max(0.0,std::min(1.0,s1));
+					s2=std::max(0.0,std::min(1.0,s2));
                     cache[index].set(bias(s1,s2));
                     evaluated[index]=true;
                     return;
@@ -286,6 +288,8 @@ namespace anl
 				{
 					double s1=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[0],coord);
                     double s2=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[1],coord);
+					s1=std::max(0.0,std::min(1.0,s1));
+					s2=std::max(0.0,std::min(1.0,s2));
                     cache[index].set(gain(s1,s2));
                     evaluated[index]=true;
                     return;

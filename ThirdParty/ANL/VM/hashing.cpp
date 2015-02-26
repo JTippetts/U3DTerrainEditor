@@ -64,19 +64,6 @@ unsigned char xor_fold_hash(unsigned int hash)
     return (unsigned char)((hash>>8) ^ (hash & FNV_MASK_8));
 }
 
-
-// FNV-based coordinate hashes
-/*unsigned int hash_coords_2(int x, int y, unsigned int seed)
-{
-    //unsigned int d[3]={(unsigned int)x,(unsigned int)y,seed};
-    //return xor_fold_hash(fnv_32_a_buf(d, 3));
-	unsigned int hash=FNV_32_INIT;
-	hash=fnv_32_a_combine(hash,(unsigned int)x);
-	hash=fnv_32_a_combine(hash,(unsigned int)y);
-	hash=fnv_32_a_combine(hash,seed);
-	return xor_fold_hash(hash) % 4;
-}*/
-
 // Long period hash
 unsigned int hash_coords_2(int x, int y, unsigned int seed)
 {
@@ -85,18 +72,6 @@ unsigned int hash_coords_2(int x, int y, unsigned int seed)
 	p257[(p257[(p257[x%257]+y)%257]+seed)%257]+
 	p263[(p263[(p263[x%263]+y)%263]+seed)%263]);
 }
-
-/*unsigned int hash_coords_3(int x, int y, int z, unsigned int seed)
-{
-    //unsigned int d[4]={(unsigned int)x,(unsigned int)y,(unsigned int)z,seed};
-    //return xor_fold_hash(fnv_32_a_buf(d, 4));
-	unsigned int hash=FNV_32_INIT;
-	hash=fnv_32_a_combine(hash,(unsigned int)x);
-	hash=fnv_32_a_combine(hash,(unsigned int)y);
-	hash=fnv_32_a_combine(hash,(unsigned int)z);
-	hash=fnv_32_a_combine(hash,seed);
-	return xor_fold_hash(hash) % 12;
-}*/
 
 unsigned int hash_coords_3(int x, int y, int z, unsigned int seed)
 {
@@ -108,20 +83,6 @@ unsigned int hash_coords_3(int x, int y, int z, unsigned int seed)
 	);
 }
 
-/*unsigned int hash_coords_4(int x, int y, int z, int w, unsigned int seed)
-{
-    //unsigned int d[5]={(unsigned int)x,(unsigned int)y,(unsigned int)z,(unsigned int)w,seed};
-    //return xor_fold_hash(fnv_32_a_buf(d, 5));
-	unsigned int hash=FNV_32_INIT;
-	hash=fnv_32_a_combine(hash,(unsigned int)x);
-	hash=fnv_32_a_combine(hash,(unsigned int)y);
-	hash=fnv_32_a_combine(hash,(unsigned int)z);
-	hash=fnv_32_a_combine(hash,(unsigned int)w);
-	hash=fnv_32_a_combine(hash,seed);
-	return xor_fold_hash(hash) % 32;
-}
-*/
-
 unsigned int hash_coords_4(int x, int y, int z, int w, unsigned int seed)
 {
 	return (
@@ -131,21 +92,6 @@ unsigned int hash_coords_4(int x, int y, int z, int w, unsigned int seed)
 		p263[(p263[(p263[(p263[(p263[x%263]+y)%263]+z)%263]+w)%263]+seed)%263]
 	);
 }
-/*
-unsigned int hash_coords_6(int x, int y, int z, int w, int u, int v, unsigned int seed)
-{
-    //unsigned int d[7]={(unsigned int)x,(unsigned int)y,(unsigned int)z,(unsigned int)w,(unsigned int)u,(unsigned int)v,seed};
-    //return xor_fold_hash(fnv_32_a_buf(d, 7));
-	unsigned int hash=FNV_32_INIT;
-	hash=fnv_32_a_combine(hash,(unsigned int)x);
-	hash=fnv_32_a_combine(hash,(unsigned int)y);
-	hash=fnv_32_a_combine(hash,(unsigned int)z);
-	hash=fnv_32_a_combine(hash,(unsigned int)w);
-	hash=fnv_32_a_combine(hash,(unsigned int)u);
-	hash=fnv_32_a_combine(hash,(unsigned int)v);
-	hash=fnv_32_a_combine(hash,seed);
-	return xor_fold_hash(hash) % 251;
-}*/
 
 unsigned int hash_coords_6(int x, int y, int z, int w, int u, int v, unsigned int seed)
 {

@@ -13,6 +13,7 @@ return
 		{name="Number of tiers", type="value", value=5},
 		{name="Use Mask?", type="flag", value=false},
 		{name="Invert Mask?", type="flag", value=false},
+		{name="Ridged?", type="flag", value=false},
 	},
 	
 	execute=function(self)
@@ -25,17 +26,24 @@ return
 		local point75=k:constant(0.75)
 		local point25=k:constant(0.25)
 		local gainval=k:constant(self.options[4].value)
-		local fbm=k:simplefBm(3, 3, self.options[2].value, self.options[1].value, self.options[5].value, true)
+		local fbm
+		if self.options[10].value==false then
+			fbm=k:simplefBm(3, 3, self.options[2].value, self.options[1].value, self.options[5].value, true)
+		else
+			fbm=k:simpleRidgedMultifractal(3, 3, self.options[2].value, self.options[1].value, self.options[5].value, true)
+		end
 		local scale=k:multiply(fbm,point5)
 		local offset=k:add(scale,point5)
-		local gain=k:gain(gainval,offset)
 		
 		local last=k:lastIndex()
 		
-		fbm=k:simplefBm(3, 3, self.options[2].value, self.options[1].value*0.25, self.options[5].value+10, true)
+		if self.options[10].value==false then
+			fbm=k:simplefBm(3, 3, self.options[2].value, self.options[1].value, self.options[5].value+10, true)
+		else
+			fbm=k:simpleRidgedMultifractal(3, 3, self.options[2].value, self.options[1].value, self.options[5].value+10, true)
+		end
 		scale=k:multiply(fbm,point5)
 		offset=k:add(scale,point5)
-		gain=k:gain(gainval,offset)
 		
 		last=k:multiply(k:lastIndex(), last)
 		
