@@ -19,23 +19,36 @@ sampler2D sMask : register(S12);
 
 uniform float2 cDetailTiling;
 
+float4 sampleTerrain(sampler2D s, float2 uv)
+{
+	return (tex2D(s,uv)*0.65+tex2D(s,uv*0.435)*0.35);
+}
+
+float3 bump(sampler2D s, float2 uv)
+{
+	float3 n=float3(
+		(sampleTerrain(s,float2(uv.x-0.002, uv.y)).a - sampleTerrain(s,float2(uv.x+0.002, uv.y)).a)/0.2,
+		(sampleTerrain(s,float2(uv.x,uv.y-0.002)).a - sampleTerrain(s,float2(uv.x,uv.y+0.002)).a)/0.2,
+		1
+	);
+	return normalize(n);
+}
+
 void VS(float4 iPos : POSITION,
     float3 iNormal : NORMAL,
     float2 iTexCoord : TEXCOORD0,
-    #ifdef SKINNED
-        float4 iBlendWeights : BLENDWEIGHT,
-        int4 iBlendIndices : BLENDINDICES,
+	#ifdef BUMPMAP
+        float4 iTangent : TANGENT,
     #endif
-    #ifdef INSTANCED
-        float4x3 iModelInstance : TEXCOORD2,
+    #ifndef BUMPMAP
+        out float2 oTexCoord : TEXCOORD0,
+    #else
+        out float4 oTexCoord : TEXCOORD0,
+        out float4 oTangent : TEXCOORD3,
     #endif
-    #ifdef BILLBOARD
-        float2 iSize : TEXCOORD1,
-    #endif
-    out float2 oTexCoord : TEXCOORD0,
     out float3 oNormal : TEXCOORD1,
     out float4 oWorldPos : TEXCOORD2,
-    out float2 oDetailTexCoord : TEXCOORD3,
+    out float2 oDetailTexCoord : TEXCOORD4,
     #ifdef PERPIXEL
         #ifdef SHADOW
             out float4 oShadowPos[NUMCASCADES] : TEXCOORD4,
@@ -57,7 +70,14 @@ void VS(float4 iPos : POSITION,
     oPos = GetClipPos(worldPos);
     oNormal = GetWorldNormal(modelMatrix);
     oWorldPos = float4(worldPos, GetDepth(oPos));
-    oTexCoord = GetTexCoord(iTexCoord);
+    #ifdef BUMPMAP
+        float3 tangent = GetWorldTangent(modelMatrix);
+        float3 bitangent = cross(tangent, oNormal) * iTangent.w;
+        oTexCoord = float4(GetTexCoord(iTexCoord), bitangent.xy);
+        oTangent = float4(tangent, bitangent.z);
+    #else
+        oTexCoord = GetTexCoord(iTexCoord);
+    #endif
     oDetailTexCoord = cDetailTiling * oTexCoord;
 
     #ifdef PERPIXEL
@@ -90,10 +110,16 @@ void VS(float4 iPos : POSITION,
     #endif
 }
 
-void PS(float2 iTexCoord : TEXCOORD0,
+void PS(
+	#ifndef BUMPMAP
+        float2 iTexCoord : TEXCOORD0,
+    #else
+        float4 iTexCoord : TEXCOORD0,
+        float4 iTangent : TEXCOORD3,
+    #endif
     float3 iNormal : TEXCOORD1,
     float4 iWorldPos : TEXCOORD2,
-    float2 iDetailTexCoord : TEXCOORD3,
+    float2 iDetailTexCoord : TEXCOORD4,
     #ifdef PERPIXEL
         #ifdef SHADOW
             float4 iShadowPos[NUMCASCADES] : TEXCOORD4,
@@ -119,15 +145,15 @@ void PS(float2 iTexCoord : TEXCOORD0,
     out float4 oColor : COLOR0)
 {
     // Get material diffuse albedo
-    float4 weights = tex2D(sWeightMap0, iTexCoord).rgba;
-	float mask=tex2D(sMask, iTexCoord).r;
+    float4 weights = tex2D(sWeightMap0, iTexCoord.xy).rgba;
+	float mask=tex2D(sMask, iTexCoord.xy).r;
     float sumWeights = weights.r + weights.g + weights.b + weights.a;
     weights /= sumWeights;
     float4 diffColor = cMatDiffColor * (
-        weights.r * (tex2D(sDetailMap1, iDetailTexCoord) + tex2D(sDetailMap1, iDetailTexCoord*-0.345))*0.5 +
-        weights.g * (tex2D(sDetailMap2, iDetailTexCoord)+tex2D(sDetailMap2, iDetailTexCoord*-0.345))*0.5 +
-        weights.b * (tex2D(sDetailMap3, iDetailTexCoord)+tex2D(sDetailMap3, iDetailTexCoord*-0.345))*0.5 +
-		weights.a * (tex2D(sDetailMap4, iDetailTexCoord)+tex2D(sDetailMap4, iDetailTexCoord*-0.345))*0.5
+        weights.r * sampleTerrain(sDetailMap1, iDetailTexCoord) +
+        weights.g * sampleTerrain(sDetailMap2, iDetailTexCoord) +
+        weights.b * sampleTerrain(sDetailMap3, iDetailTexCoord) +
+		weights.a * sampleTerrain(sDetailMap4, iDetailTexCoord)
     );
 	diffColor=lerp(float4(1,0.5,0.3, diffColor.a), diffColor, mask);
 
@@ -135,7 +161,16 @@ void PS(float2 iTexCoord : TEXCOORD0,
     float3 specColor = cMatSpecColor.rgb;
 
     // Get normal
-    float3 normal = normalize(iNormal);
+    #ifdef BUMPMAP
+        float3x3 tbn = float3x3(iTangent.xyz, float3(iTexCoord.zw, iTangent.w), iNormal);
+		float3 normal=normalize(mul((
+			bump(sDetailMap1, iDetailTexCoord)*weights.r +
+			bump(sDetailMap2, iDetailTexCoord)*weights.g +
+			bump(sDetailMap3, iDetailTexCoord)*weights.b +
+			bump(sDetailMap4, iDetailTexCoord)*weights.a), tbn));
+    #else
+        float3 normal = normalize(iNormal);
+    #endif
 
     // Get fog factor
     #ifdef HEIGHTFOG
