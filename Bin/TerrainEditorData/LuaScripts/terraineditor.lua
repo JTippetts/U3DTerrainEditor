@@ -77,7 +77,7 @@ function CreateScene()
     light.shadowCascade = CascadeParameters(10.0, 50.0, 200.0, 0.0, 0.8)
     light.specularIntensity = 0.2;
     -- Apply slightly overbright lighting to match the skybox
-    light.color = Color(0.8, 0.8, 0.8);
+    light.color = Color(1,1,1);
 
     -- Create skybox. The Skybox component is used like StaticModel, but it will be always located at the camera, giving the
     -- illusion of the box planes being far away. Use just the ordinary Box model and a suitable material, whose shader will

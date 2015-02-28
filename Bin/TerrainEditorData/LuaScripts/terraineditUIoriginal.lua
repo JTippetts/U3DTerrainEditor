@@ -161,6 +161,7 @@ function TerrainEditUI:AddWaypoint(groundx, groundz)
 	local model=waynode:CreateComponent("StaticModel")
 	model.material=cache:GetResource("Material", "Materials/Flag.xml")
 	model.model=cache:GetResource("Model", "Models/Flag.mdl")
+	model.castShadows=true
 	local ht=terrain:GetHeight(Vector3(groundx,0,groundz))
 	waynode.position=Vector3(groundx, ht, groundz)
 	waynode.scale=Vector3(0.25,0.25,0.25)

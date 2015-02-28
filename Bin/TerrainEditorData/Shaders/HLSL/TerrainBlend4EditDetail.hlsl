@@ -48,7 +48,7 @@ void VS(float4 iPos : POSITION,
     #endif
     out float3 oNormal : TEXCOORD1,
     out float4 oWorldPos : TEXCOORD2,
-    out float2 oDetailTexCoord : TEXCOORD4,
+    out float2 oDetailTexCoord : TEXCOORD10,
     #ifdef PERPIXEL
         #ifdef SHADOW
             out float4 oShadowPos[NUMCASCADES] : TEXCOORD4,
@@ -119,7 +119,7 @@ void PS(
     #endif
     float3 iNormal : TEXCOORD1,
     float4 iWorldPos : TEXCOORD2,
-    float2 iDetailTexCoord : TEXCOORD4,
+    float2 iDetailTexCoord : TEXCOORD10,
     #ifdef PERPIXEL
         #ifdef SHADOW
             float4 iShadowPos[NUMCASCADES] : TEXCOORD4,
