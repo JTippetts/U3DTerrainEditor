@@ -1,9 +1,9 @@
 <material>
     <technique name="Techniques/TerrainBlendEdit.xml" />
-    <texture unit="1" name="Textures/lichen5.png" />
-    <texture unit="2" name="Textures/moss2.png" />
-    <texture unit="3" name="Textures/lichen1.png" />
-	<texture unit="4" name="Textures/stones1.png" />
+    <texture unit="1" name="Textures/lichen5_ht.png" />
+    <texture unit="2" name="Textures/moss2_ht.png" />
+    <texture unit="3" name="Textures/lichen1_ht.png" />
+	<texture unit="4" name="Textures/stones1_ht.png" />
     <parameter name="MatSpecColor" value="0.5 0.5 0.5 16" />
     <parameter name="DetailTiling" value="32 32" />
 </material>

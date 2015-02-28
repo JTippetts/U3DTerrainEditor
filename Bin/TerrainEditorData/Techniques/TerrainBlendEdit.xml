@@ -1,4 +1,4 @@
-<technique vs="TerrainBlend4EditDetail" ps="TerrainBlend4EditDetail">
+<technique vs="TerrainBlend4EditDetailHeight" ps="TerrainBlend4EditDetailHeight">
     <pass name="base" />
     <pass name="litbase" psdefines="AMBIENT" />
     <pass name="light" depthtest="equal" depthwrite="false" blend="add" />
