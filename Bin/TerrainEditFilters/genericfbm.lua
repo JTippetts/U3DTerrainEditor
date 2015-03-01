@@ -34,6 +34,7 @@ return
 		end
 		local scale=k:multiply(fbm,point5)
 		local offset=k:add(scale,point5)
+		k:gain(gainval,offset)
 		
 		local last=k:lastIndex()
 		
@@ -44,6 +45,7 @@ return
 		end
 		scale=k:multiply(fbm,point5)
 		offset=k:add(scale,point5)
+		k:gain(gainval, offset)
 		
 		last=k:multiply(k:lastIndex(), last)
 		
