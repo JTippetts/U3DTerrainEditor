@@ -18,6 +18,7 @@ sampler2D sDetailMap4 : register(S4);
 sampler2D sMask : register(S12);
 
 uniform float2 cDetailTiling;
+uniform float cBumpStrength;
 
 float2 blendfactors(float4 texture1, float a1, float4 texture2, float a2)
 {
@@ -44,8 +45,8 @@ float4 sampleTerrain(sampler2D s, float2 uv)
 float3 bump(sampler2D s, float2 uv)
 {
 	float3 n=float3(
-		(sampleTerrain(s,float2(uv.x-0.002, uv.y)).a - sampleTerrain(s,float2(uv.x+0.002, uv.y)).a)/0.2,
-		(sampleTerrain(s,float2(uv.x,uv.y-0.002)).a - sampleTerrain(s,float2(uv.x,uv.y+0.002)).a)/0.2,
+		(sampleTerrain(s,float2(uv.x-0.002, uv.y)).a - sampleTerrain(s,float2(uv.x+0.002, uv.y)).a)/cBumpStrength,
+		(sampleTerrain(s,float2(uv.x,uv.y-0.002)).a - sampleTerrain(s,float2(uv.x,uv.y+0.002)).a)/cBumpStrength,
 		1
 	);
 	return normalize(n);
