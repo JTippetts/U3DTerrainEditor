@@ -72,5 +72,8 @@ using namespace anl;
 	void BuildQuadStripVarying(RasterVertexList *in, RasterVertexList *out, float startwidth, float endwidth);
 	void RenderANLKernelToBuffer(RasterBuffer *buffer, CKernel *kernel, float lowrange=0, float highrange=1);
 	void SetHeightFromRasterBuffer(Image *height, RasterBuffer *buffer, Image *mask=0, bool useMask=false, bool invertMask=false);
+	
+	void CopyImageInto(Image *dest, Image *src, int x, int y);
+	bool IsPowerOfTwo(int n);
 
 #endif

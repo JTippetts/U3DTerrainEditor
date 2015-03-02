@@ -62,14 +62,14 @@ function CreateScene()
     local zoneNode = scene_:CreateChild("Zone")
     local zone = zoneNode:CreateComponent("Zone")
     zone.boundingBox = BoundingBox(-1000.0, 1000.0)
-    zone.ambientColor = Color(0.3, 0.3, 0.4)
+    zone.ambientColor = Color(0.03, 0.03, 0.04)
     zone.fogColor = Color(1,1,1)
     zone.fogStart = 300.0
     zone.fogEnd = 325.0
 
     -- Create a directional light to the world. Enable cascaded shadows on it
     local lightNode = scene_:CreateChild("DirectionalLight")
-    lightNode.direction = Vector3(0.6, -1.0, 0.8)
+    lightNode.direction = Vector3(0.8, -1.0, 1.0)
     local light = lightNode:CreateComponent("Light")
     light.lightType = LIGHT_DIRECTIONAL
     light.castShadows = true
@@ -77,7 +77,18 @@ function CreateScene()
     light.shadowCascade = CascadeParameters(10.0, 50.0, 200.0, 0.0, 0.8)
     light.specularIntensity = 0.2;
     -- Apply slightly overbright lighting to match the skybox
-    light.color = Color(1,1,1);
+    light.color = Color(1,0.9,0.8);
+	
+	lightNode = scene_:CreateChild("DirectionalLight")
+    lightNode.direction = Vector3(-1.2, -1.0, -1.6)
+    local light = lightNode:CreateComponent("Light")
+    light.lightType = LIGHT_DIRECTIONAL
+    light.castShadows = true
+    light.shadowBias = BiasParameters(0.00025, 0.5)
+    light.shadowCascade = CascadeParameters(10.0, 50.0, 200.0, 0.0, 0.8)
+    light.specularIntensity = 0.2;
+    -- Apply slightly overbright lighting to match the skybox
+    light.color = Color(0.4,0.45,0.5);
 
     -- Create skybox. The Skybox component is used like StaticModel, but it will be always located at the camera, giving the
     -- illusion of the box planes being far away. Use just the ordinary Box model and a suitable material, whose shader will

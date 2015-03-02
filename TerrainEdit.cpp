@@ -386,8 +386,8 @@ float CalcSmooth(Image *height, float *kernel, int kernelsize, int terrainx, int
 {
 	float sum=0.0f;
 	float weight=0.0f;
-	int ox=terrainx-std::ceil(kernelsize/2);
-	int oz=terrainz-std::ceil(kernelsize/2);
+	int ox=terrainx-int(kernelsize/2);
+	int oz=terrainz-int(kernelsize/2);
 	
 	for(int x=0; x<kernelsize; ++x)
 	{
@@ -547,15 +547,11 @@ void RenderANLKernelToBuffer(RasterBuffer *buffer, CKernel *kernel, float lowran
 			float ny=(float)y/(float)(h);
 			CCoordinate coord(nx,ny,0);
 			double val=vm.evaluate(coord).outfloat_;
-			if(std::isnan(val)) LOGINFO(String("Whoops, got a NaN!"));
-			if(std::isinf(val)) LOGINFO(String("value isinf"));
 			buffer->set(x,y,val);
 		}
 	}
 	
-	LOGINFO(String("Buffer min/max before: ")+String(buffer->getMin()) + String(",")+String(buffer->getMax()));
 	buffer->scaleToRange(lowrange, highrange);
-	LOGINFO(String("Buffer min/max after: ")+String(buffer->getMin()) + String(",")+String(buffer->getMax()));
 }
 
 void SetHeightFromRasterBuffer(Image *height, RasterBuffer *buffer, Image *mask, bool useMask, bool invertMask)
@@ -671,9 +667,6 @@ void BlendColorWithRasterizedBuffer(Image *img, RasterBuffer *buffer, Color endC
 			float ny=(float)y / (float)(img->GetHeight());
 			
 			float bval=buffer->getBilinear(nx,ny);
-			if(bval<0.0f || bval>1.0f) LOGINFO(String("bval: ") + String(bval));
-			if(std::isnan(bval)) LOGINFO(String("bval isnan"));
-			if(std::isinf(bval)) LOGINFO(String("bval isinf"));
 			bval=std::max(0.0f, std::min(1.0f, bval));
 			Color col=img->GetPixel(x,y);
 			if(useMask)
@@ -969,4 +962,22 @@ void BuildQuadStripVarying(RasterVertexList *in, RasterVertexList *out, float st
 	v2=RasterVertex(p1.x_-0.5*width*plx, p1.y_-0.5*width*ply, p1.val_);
 	out->push_back(v1);
 	out->push_back(v2);
+}
+
+void CopyImageInto(Image *dest, Image *src, int x, int y)
+{
+	if(!dest || !src) return;
+	
+	for(int j=0; j<src->GetHeight(); ++j)
+	{
+		for(int i=0; i<src->GetWidth(); ++i)
+		{
+			dest->SetPixel(x+i,  y+j, src->GetPixel(i,j));
+		}
+	}
+}
+
+bool IsPowerOfTwo(int n)
+{
+	return (n & (n-1))==0;
 }

@@ -1,0 +1,10 @@
+<material>
+    <technique name="Techniques/TerrainBlend4Bump.xml" />
+    <texture unit="1" name="Textures/lichen5_ht.png" />
+    <texture unit="2" name="Textures/moss2_ht.png" />
+    <texture unit="3" name="Textures/lichen1_ht.png" />
+	<texture unit="4" name="Textures/stones1_ht.png" />
+    <parameter name="MatSpecColor" value="0.5 0.5 0.5 8" />
+    <parameter name="DetailTiling" value="64 64" />
+	<parameter name="BumpStrength" value="0.2" />
+</material>

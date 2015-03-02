@@ -42,11 +42,11 @@ float4 sampleTerrain(sampler2D s, float2 uv)
 	return (tex2D(s,uv)*0.65+tex2D(s,uv*0.435)*0.35);
 }
 
-float3 bump(sampler2D s, float2 uv)
+float3 bump(sampler2D s, float2 uv, float currenta)
 {
 	float3 n=float3(
-		(sampleTerrain(s,float2(uv.x-0.002, uv.y)).a - sampleTerrain(s,float2(uv.x+0.002, uv.y)).a)/cBumpStrength,
-		(sampleTerrain(s,float2(uv.x,uv.y-0.002)).a - sampleTerrain(s,float2(uv.x,uv.y+0.002)).a)/cBumpStrength,
+		(currenta - sampleTerrain(s,float2(uv.x+0.002, uv.y)).a)/cBumpStrength,
+		(currenta - sampleTerrain(s,float2(uv.x,uv.y+0.002)).a)/cBumpStrength,
 		1
 	);
 	return normalize(n);
@@ -164,7 +164,9 @@ void PS(
 {
     // Get material diffuse albedo
 	float4 weights=tex2D(sWeightMap0, iTexCoord.xy).rgba;
+	#ifdef USEMASKTEXTURE
 	float mask=tex2D(sMask, iTexCoord.xy).r;
+	#endif
     float sumWeights = weights.r + weights.g + weights.b + weights.a;
     weights /= sumWeights;
 	
@@ -191,7 +193,9 @@ void PS(
     //    weights.b * (tex2D(sDetailMap3, iDetailTexCoord)+tex2D(sDetailMap3, iDetailTexCoord*-0.345))*0.5 +
 	//	weights.a * (tex2D(sDetailMap4, iDetailTexCoord)+tex2D(sDetailMap4, iDetailTexCoord*-0.345))*0.5
     //);
+	#ifdef USEMASKTEXTURE
 	diffColor=lerp(float4(1,0.5,0.3, diffColor.a), diffColor, mask);
+	#endif
 
     // Get material specular albedo
     float3 specColor = cMatSpecColor.rgb;
@@ -200,10 +204,10 @@ void PS(
     #ifdef BUMPMAP
         float3x3 tbn = float3x3(iTangent.xyz, float3(iTexCoord.zw, iTangent.w), iNormal);
         
-		float3 bump1=bump(sDetailMap1, iDetailTexCoord);
-		float3 bump2=bump(sDetailMap2, iDetailTexCoord);
-		float3 bump3=bump(sDetailMap3, iDetailTexCoord);
-		float3 bump4=bump(sDetailMap4, iDetailTexCoord);
+		float3 bump1=bump(sDetailMap1, iDetailTexCoord, tex1.a);
+		float3 bump2=bump(sDetailMap2, iDetailTexCoord, tex2.a);
+		float3 bump3=bump(sDetailMap3, iDetailTexCoord, tex3.a);
+		float3 bump4=bump(sDetailMap4, iDetailTexCoord, tex4.a);
 		float3 nc1=(bump1*b1.x + bump2*b1.y) / (b1.x+b1.y);
 		float3 nc2=(bump3*b2.x + bump4*b2.y) / (b2.x+b2.y);
 		float3 normal=normalize(mul((nc1*b3.x+nc2*b3.y)/(b3.x+b3.y),tbn));
