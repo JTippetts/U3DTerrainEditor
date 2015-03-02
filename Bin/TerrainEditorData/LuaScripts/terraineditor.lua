@@ -8,6 +8,7 @@ require "LuaScripts/Utilities/Sample"
 require "LuaScripts/thirdpersoncamera"
 require "LuaScripts/terraineditUIoriginal"
 require "LuaScripts/ui"
+require "LuaScripts/buildcomposite"
 
 function HtToRG(ht)
 	local expht=math.floor(ht*255)
@@ -110,8 +111,8 @@ function CreateScene()
 	hmap:SetSize(2049,2049,3)
 	hmap:Clear(Color(0.1,0,0,0))
     terrain.heightMap = hmap
-    terrain.material = cache:GetResource("Material", "Materials/TerrainEdit.xml")
-	--terrain.material = cache:GetResource("Material", "Materials/TerrainEdit8.xml")
+    --terrain.material = cache:GetResource("Material", "Materials/TerrainEdit.xml")
+	terrain.material = cache:GetResource("Material", "Materials/TerrainEdit8.xml")
 	--terrain.material = cache:GetResource("Material", "Materials/TerrainColorDetailEdit8.xml")
 	--terrain.material = cache:GetResource("Material", "Materials/TerrainBlend4NormalEdit.xml")
 	
@@ -134,19 +135,32 @@ function CreateScene()
 	blendtex1:SetSize(0,0,0,TEXTURE_DYNAMIC)
 	terrain:GetMaterial():SetTexture(0,blendtex1)
 	
-	--blendtex2=Texture2D:new(context)
-	--blendtex2:SetSize(0,0,0,TEXTURE_DYNAMIC)
-	--terrain:GetMaterial():SetTexture(1,blendtex2)
+	blendtex2=Texture2D:new(context)
+	blendtex2:SetSize(0,0,0,TEXTURE_DYNAMIC)
+	terrain:GetMaterial():SetTexture(1,blendtex2)
 	
 	blend1=Image(context)
-	blend1:SetSize(2048,2048,4)
+	blend1:SetSize(1024,1024,4)
 	blend1:Clear(Color(1,0,0,0))
 	blendtex1:SetData(blend1, false)
 	
-	--blend2=Image(context)
-	--blend2:SetSize(1024,1024,4)
-	--blend2:Clear(Color(0,0,0,0))
-	--blendtex2:SetData(blend2, false)
+	blend2=Image(context)
+	blend2:SetSize(1024,1024,4)
+	blend2:Clear(Color(0,0,0,0))
+	blendtex2:SetData(blend2, false)
+	
+	-- Build composite textures
+	comptex1=Texture2D:new(context)
+	comptex2=Texture2D:new(context)
+	local img1=BuildCompositeTexture({"Textures/moss2_ht.png", "Textures/stones1_ht.png", "Textures/lichen5_ht.png", "Textures/lava1_ht.png"})
+	local img2=BuildCompositeTexture({"Textures/grass2_ht.png", "Textures/sand1_ht.png", "Textures/lichen1_ht.png", "Textures/lichen2_ht.png"})
+	comptex1:SetData(img1, false)
+	comptex2:SetData(img2, false)
+	terrain:GetMaterial():SetTexture(2,comptex1)
+	terrain:GetMaterial():SetTexture(3,comptex2)
+	
+	img1:SavePNG("thing1.png")
+	img2:SavePNG("thing2.png")
 	
 	-- Color detailing
 	--colortex=Texture2D:new(context)

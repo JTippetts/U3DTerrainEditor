@@ -15,8 +15,9 @@ sampler2D sDetailMap1 : register(S1);
 sampler2D sDetailMap2 : register(S2);
 sampler2D sDetailMap3 : register(S3);
 sampler2D sDetailMap4 : register(S4);
+#ifdef USEMASKTEXTURE
 sampler2D sMask : register(S12);
-
+#endif
 uniform float2 cDetailTiling;
 uniform float cBumpStrength;
 

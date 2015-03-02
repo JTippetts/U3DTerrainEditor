@@ -1,6 +1,6 @@
 /*
 ** Lua binding: BindTerrainEdit
-** Generated automatically by tolua++-1.0.93 on 03/01/15 20:04:14.
+** Generated automatically by tolua++-1.0.93 on 03/02/15 07:41:45.
 */
 
 #ifndef __cplusplus
@@ -3160,6 +3160,35 @@ static int tolua_BindTerrainEdit_IsPowerOfTwo00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* function: GetNextImageLevel */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_GetNextImageLevel00
+static int tolua_BindTerrainEdit_GetNextImageLevel00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Image",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Image* i = ((Image*)  tolua_tousertype(tolua_S,1,0));
+  {
+   Image* tolua_ret = (Image*)  GetNextImageLevel(i);
+    tolua_pushusertype(tolua_S,(void*)tolua_ret,"Image");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'GetNextImageLevel'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* Open function */
 TOLUA_API int tolua_BindTerrainEdit_open (lua_State* tolua_S)
 {
@@ -3289,6 +3318,7 @@ TOLUA_API int tolua_BindTerrainEdit_open (lua_State* tolua_S)
   tolua_function(tolua_S,"SetHeightFromRasterBuffer",tolua_BindTerrainEdit_SetHeightFromRasterBuffer00);
   tolua_function(tolua_S,"CopyImageInto",tolua_BindTerrainEdit_CopyImageInto00);
   tolua_function(tolua_S,"IsPowerOfTwo",tolua_BindTerrainEdit_IsPowerOfTwo00);
+  tolua_function(tolua_S,"GetNextImageLevel",tolua_BindTerrainEdit_GetNextImageLevel00);
  tolua_endmodule(tolua_S);
  return 1;
 }

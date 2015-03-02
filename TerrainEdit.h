@@ -75,5 +75,6 @@ using namespace anl;
 	
 	void CopyImageInto(Image *dest, Image *src, int x, int y);
 	bool IsPowerOfTwo(int n);
+	Image* GetNextImageLevel(Image *i);
 
 #endif

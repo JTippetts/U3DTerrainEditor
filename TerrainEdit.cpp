@@ -981,3 +981,10 @@ bool IsPowerOfTwo(int n)
 {
 	return (n & (n-1))==0;
 }
+
+Image* GetNextImageLevel(Image *i)
+{
+	if(!i) return 0;
+	
+	return i->GetNextLevel();
+}

@@ -107,4 +107,6 @@ Vector2 WorldToNormalized(Image *height, Terrain *terrain, Vector3 world);
 	
 	void CopyImageInto(Image *dest, Image *src, int x, int y);
 	bool IsPowerOfTwo(int n);
+	Image* GetNextImageLevel(Image *i);
+	
 	
