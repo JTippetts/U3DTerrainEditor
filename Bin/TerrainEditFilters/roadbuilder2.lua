@@ -76,6 +76,6 @@ return
 		--BlendColorWithRasterizedBuffer(blend1, blend, color)	
 		BlendRasterizedBuffer8Max(blend1,blend2,blend,pavinglayer,mask,usemask,invertmask)	
 		blendtex1:SetData(blend1, false)
-		blendtex2:Setdata(blend2, false)
+		blendtex2:SetData(blend2, false)
 	end,
 }

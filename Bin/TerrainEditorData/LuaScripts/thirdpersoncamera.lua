@@ -37,7 +37,7 @@ function ThirdPersonCamera:Start()
 	self.lastmx=0
 	self.lastmz=0
 	
-	self.offset=1
+	self.offset=2
 	self.tracksurface=true
 end
 

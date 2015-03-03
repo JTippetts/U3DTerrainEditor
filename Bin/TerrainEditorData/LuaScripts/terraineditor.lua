@@ -221,7 +221,8 @@ function HandleUpdate(eventType, eventData)
 	end
 	
 	if input:GetKeyPress(KEY_D) then
-		blend1:SavePNG("TerrainEditorData/Textures/blend.png")
+		blend1:SavePNG("TerrainEditorData/Textures/blend1.png")
+		if(blend2) then blend2:SavePNG("TerrainEditorData/Textures/blend2.png") end
 	end
 	
 	if input:GetKeyPress(KEY_K) then
@@ -230,8 +231,9 @@ function HandleUpdate(eventType, eventData)
 	end
 	
 	if input:GetKeyPress(KEY_L) then
-		blend1=cache:GetResource("Image", "Textures/blend.png")
-		blendtex1:SetData(blend1)
+		blend1=cache:GetResource("Image", "Textures/blend1.png")
+		blendtex1:SetData(blend1, false)
+		if blend2 then blend2=cache:GetResource("Image", "Textures/blend2.png") blendtex2:SetData(blend2, false) end
 	end
 	
 	if input:GetKeyPress(KEY_A) then
