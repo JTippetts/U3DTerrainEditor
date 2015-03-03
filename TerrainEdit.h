@@ -67,6 +67,7 @@ using namespace anl;
 	void BlendHeightWithRasterizedBuffer(Image *height, RasterBuffer *buffer, RasterBuffer *blend, Image *mask=0, bool useMask=false, bool invertMask=false);
 	void BlendColorWithRasterizedBuffer(Image *img, RasterBuffer *buffer, Color endColor, Image *mask=0, bool useMask=false, bool invertMask=false);
 	void BlendRasterizedBuffer8(Image *img, Image *other, RasterBuffer *buffer, int layer, Image *mask=0, bool useMask=false, bool invertMask=false);
+	void BlendRasterizedBuffer8Max(Image *img, Image *other, RasterBuffer *buffer, int layer, Image *mask=0, bool useMask=false, bool invertMask=false);
 	void TessellateLineList(RasterVertexList *in, RasterVertexList *out, int steps);
 	void ApplyBedFunction(RasterBuffer *buffer, float hardness, bool quintic);
 	void BuildQuadStrip(RasterVertexList *in, RasterVertexList *out, float width);
@@ -77,5 +78,8 @@ using namespace anl;
 	void CopyImageInto(Image *dest, Image *src, int x, int y);
 	bool IsPowerOfTwo(int n);
 	Image* GetNextImageLevel(Image *i);
+	void ExtractLayerToBuffer(Image *blend1, Image *blend2, RasterBuffer *buffer, int layer);
+	float GetLayerBlend(Image *blend1, Image *blend2, int x, int y, int layer);
+	void SetLayerBlend(Image *blend1, Image *blend2, int x, int y, int layer, float v);
 
 #endif

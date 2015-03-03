@@ -40,7 +40,7 @@ return
 			collectgarbage()
 		end
 		
-		BlendRasterizedBuffer8(blend1,blend2,buffer,layer,mask,usemask,invertmask)
+		BlendRasterizedBuffer8Max(blend1,blend2,buffer,layer,mask,usemask,invertmask)
 		blendtex1:SetData(blend1,false)
 		blendtex2:SetData(blend2,false)
 	end,

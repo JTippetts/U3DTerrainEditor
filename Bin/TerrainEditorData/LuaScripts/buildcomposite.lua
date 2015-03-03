@@ -49,7 +49,7 @@ function BuildCompositeTexture(filenames)
 	tex:SetSize(2*tilesize, 2*tilesize,4)
 	local t1,t2,t3,t4=textures[1],textures[2],textures[3],textures[4]
 	
-	for i=0,numlevels-1,1 do
+	for i=0,numlevels,1 do
 		-- Copy current textures into top level
 		CopyImageInto(ttex, t1, 0, 0)
 		CopyImageInto(ttex, t2, tilesize, 0)

@@ -74,7 +74,7 @@ return
 		RasterizeQuadStrip(blend, quad)
 		ApplyBedFunction(blend, pavinghardness, true)
 		--BlendColorWithRasterizedBuffer(blend1, blend, color)	
-		BlendRasterizedBuffer8(blend1,blend2,blend,pavinglayer,mask,usemask,invertmask)	
+		BlendRasterizedBuffer8Max(blend1,blend2,blend,pavinglayer,mask,usemask,invertmask)	
 		blendtex1:SetData(blend1, false)
 		blendtex2:Setdata(blend2, false)
 	end,

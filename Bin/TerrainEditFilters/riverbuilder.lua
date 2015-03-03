@@ -6,10 +6,9 @@ return
 	description="Construct a river from the current list of waypoints.",
 	options=
 	{
-		{name="Starting Bed width", type="value", value=2},
-		{name="Ending Bed Width", type="value", value=64},
+		{name="Starting Bed width", type="value", value=64},
+		{name="Ending Bed Width", type="value", value=92},
 		{name="Bed Hardness", type="value", value=0.125},
-		{name="Paving Width", type="value", value=70},
 		{name="Paving Hardness", type="value", value=0.125},
 		{name="Paving Layer", type="value", value=2},
 		{name="Segment steps", type="value", value=10},
@@ -21,12 +20,11 @@ return
 		local startbedwidth=self.options[1].value
 		local endbedwidth=self.options[2].value
 		local bedhardness=self.options[3].value
-		local pavingwidth=self.options[4].value
-		local pavinghardness=self.options[5].value
-		local pavinglayer=self.options[6].value
-		local segments=self.options[7].value
-		local startdepth=self.options[8].value
-		local enddepth=self.options[9].value
+		local pavinghardness=self.options[4].value
+		local pavinglayer=self.options[5].value
+		local segments=self.options[6].value
+		local startdepth=self.options[7].value
+		local enddepth=self.options[8].value
 		
 		local buffer=RasterBuffer(hmap:GetWidth(), hmap:GetHeight())
 		local blend=RasterBuffer(hmap:GetWidth(), hmap:GetHeight())
@@ -81,12 +79,6 @@ return
 		quad=RasterVertexList()
 		BuildQuadStripVarying(curve, quad, startbedwidth, endbedwidth)
 		blend:fill(0)
-		local color
-		if pavinglayer==0 then color=Color(1,0,0,0)
-		elseif pavinglayer==1 then color=Color(0,1,0,0)
-		elseif pavinglayer==2 then color=Color(0,0,1,0)
-		else color=Color(0,0,0,1)
-		end
 		
 		for c=0,quad:size()-1,1 do
 			local v=quad:at(c)
@@ -95,7 +87,7 @@ return
 		RasterizeQuadStrip(blend, quad)
 		ApplyBedFunction(blend, pavinghardness, true)
 		--BlendColorWithRasterizedBuffer(blend1, blend, color)
-		BlendRasterizedBuffer8(blend1,blend2,blend,pavinglayer,mask,usemask,invertmask)
+		BlendRasterizedBuffer8Max(blend1,blend2,blend,pavinglayer,mask,usemask,invertmask)
 		blendtex1:SetData(blend1,false)
 		blendtex2:SetData(blend2,false)
 	end,

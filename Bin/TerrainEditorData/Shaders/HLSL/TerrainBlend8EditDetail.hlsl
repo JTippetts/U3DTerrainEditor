@@ -19,6 +19,7 @@ sampler2D sMask : register(S12);
 
 uniform float2 cDetailTiling;
 uniform float cBumpStrength;
+uniform float4 cPackTexFactors;
 
 float mipmapLevel(float2 uv, float textureSize)
 {
@@ -28,23 +29,25 @@ float mipmapLevel(float2 uv, float textureSize)
     return 0.5 * log2(d);
 }
 
-float4 sampleTexturePackMipWrapped(sampler2D s, float2 uv, float2 tile, float4 packTexFactors)
+
+
+float4 sampleTexturePackMipWrapped(sampler2D s, float2 uv, float2 tile, float lod)
 {
  	/// estimate mipmap/LOD level
-	float lod = mipmapLevel(uv, packTexFactors.z);
-	lod = clamp(lod, 0.0, packTexFactors.w);
+	//float lod = mipmapLevel(uv, cPackTexFactors.z);
+	//lod = clamp(lod, 0.0, cPackTexFactors.w);
 
 	/// get width/height of the whole pack texture for the current lod level
-	float size = pow(2.0, packTexFactors.w - lod);
-	float sizex = size / packTexFactors.x; // width in pixels
-	float sizey = size / packTexFactors.y; // height in pixels
+	float size = pow(2.0, cPackTexFactors.w - lod);
+	float sizex = size / cPackTexFactors.x; // width in pixels
+	float sizey = size / cPackTexFactors.y; // height in pixels
 
 	/// perform tiling
 	uv = frac(uv);
 
 	/// tweak pixels for correct bilinear filtering, and add offset for the wanted tile
-	uv.x = uv.x * ((sizex * packTexFactors.x - 1.0) / sizex) + 0.5 / sizex + packTexFactors.x * tile.x;
-	uv.y = uv.y * ((sizey * packTexFactors.y - 1.0) / sizey) + 0.5 / sizey + packTexFactors.y * tile.y;
+	uv.x = uv.x * ((sizex * cPackTexFactors.x - 1.0) / sizex) + 0.5 / sizex + cPackTexFactors.x * tile.x;
+	uv.y = uv.y * ((sizey * cPackTexFactors.y - 1.0) / sizey) + 0.5 / sizey + cPackTexFactors.y * tile.y;
 
     //return(tex2Dlod(s, uv, lod));
 	return(tex2Dlod(s, float4(uv.xy,0,lod)));
@@ -67,19 +70,22 @@ float4 blend(float4 texture1, float a1, float4 texture2, float a2)
     return (texture1.rgba * b.x + texture2.rgba * b.y) / (b.x + b.y);
 }
 
-float4 sampleTerrain(sampler2D s, float2 uv, float2 tile)
+float4 sampleTerrain(sampler2D s, float2 uv, float2 tile, float lod)
 {
 	//return (tex2D(s,uv)*0.65+tex2D(s,uv*0.435)*0.35);
 	//return tex2D(s,uv);
-	float4 factors=float4(0.5, 0.5, 512, 9);
-	return sampleTexturePackMipWrapped(s,uv,tile,factors);
+	return sampleTexturePackMipWrapped(s,uv,tile, lod);
 }
 
-float3 bump(sampler2D s, float2 uv, float currenta, float2 tile)
+float3 bump(sampler2D s, float2 uv, float currenta, float2 tile, float lod)
 {
+	float size = pow(2.0, cPackTexFactors.w - lod);
+	float sizex = 1.0/(size / cPackTexFactors.x); // width in pixels
+	float sizey = 1.0/(size / cPackTexFactors.y); // height in pixels
+	
 	float3 n=float3(
-		(currenta - sampleTerrain(s,float2(uv.x+0.002, uv.y),tile).a)/cBumpStrength,
-		(currenta - sampleTerrain(s,float2(uv.x,uv.y+0.002),tile).a)/cBumpStrength,
+		(currenta - sampleTerrain(s,float2(uv.x+sizex, uv.y),tile,lod).a)/(sizex*cBumpStrength),
+		(currenta - sampleTerrain(s,float2(uv.x,uv.y+sizey),tile,lod).a)/(sizey*cBumpStrength),
 		1
 	);
 	return normalize(n);
@@ -205,15 +211,19 @@ void PS(
     weights0 /= sumWeights;
 	weights1 /= sumWeights;
 	
-	float4 tex1=sampleTerrain(sDetailMap1, iDetailTexCoord, float2(0,0));
-	float4 tex2=sampleTerrain(sDetailMap1, iDetailTexCoord, float2(1,0));
-	float4 tex3=sampleTerrain(sDetailMap1, iDetailTexCoord, float2(0,1));
-	float4 tex4=sampleTerrain(sDetailMap1, iDetailTexCoord, float2(1,1));
+	// Calculate lod
+	float lod = mipmapLevel(iDetailTexCoord, cPackTexFactors.z);
+	lod = clamp(lod, 0.0, cPackTexFactors.w);
 	
-	float4 tex5=sampleTerrain(sDetailMap2, iDetailTexCoord, float2(0,0));
-	float4 tex6=sampleTerrain(sDetailMap2, iDetailTexCoord, float2(1,0));
-	float4 tex7=sampleTerrain(sDetailMap2, iDetailTexCoord, float2(0,1));
-	float4 tex8=sampleTerrain(sDetailMap2, iDetailTexCoord, float2(1,1));
+	float4 tex1=sampleTerrain(sDetailMap1, iDetailTexCoord, float2(0,0),lod);
+	float4 tex2=sampleTerrain(sDetailMap1, iDetailTexCoord, float2(1,0),lod);
+	float4 tex3=sampleTerrain(sDetailMap1, iDetailTexCoord, float2(0,1),lod);
+	float4 tex4=sampleTerrain(sDetailMap1, iDetailTexCoord, float2(1,1),lod);
+	
+	float4 tex5=sampleTerrain(sDetailMap2, iDetailTexCoord, float2(0,0),lod);
+	float4 tex6=sampleTerrain(sDetailMap2, iDetailTexCoord, float2(1,0),lod);
+	float4 tex7=sampleTerrain(sDetailMap2, iDetailTexCoord, float2(0,1),lod);
+	float4 tex8=sampleTerrain(sDetailMap2, iDetailTexCoord, float2(1,1),lod);
 	
 	
 	float2 b1=blendfactors(tex1,weights0.r,tex2,weights0.g);
@@ -239,7 +249,7 @@ void PS(
 	
 	float2 b7=blendfactors(c5,a1+a2,c6,a3+a4);
 	float4 diffColor=cMatDiffColor * ((c5*b7.x + c6*b7.y)/(b7.x+b7.y));
-	
+	//float4 diffColor=float4(0.5,0.5,0.5,1);
     
 	#ifdef USEMASKTEXTURE
 	diffColor=lerp(float4(1,0.5,0.3, diffColor.a), diffColor, mask);
@@ -252,15 +262,15 @@ void PS(
     #ifdef BUMPMAP
         float3x3 tbn = float3x3(iTangent.xyz, float3(iTexCoord.zw, iTangent.w), iNormal);
         
-		float3 bump1=bump(sDetailMap1, iDetailTexCoord, tex1.a, float2(0,0));
-		float3 bump2=bump(sDetailMap1, iDetailTexCoord, tex2.a,float2(1,0));
-		float3 bump3=bump(sDetailMap1, iDetailTexCoord, tex3.a,float2(0,1));
-		float3 bump4=bump(sDetailMap1, iDetailTexCoord, tex4.a,float2(1,1));
+		float3 bump1=bump(sDetailMap1, iDetailTexCoord, tex1.a, float2(0,0),lod);
+		float3 bump2=bump(sDetailMap1, iDetailTexCoord, tex2.a,float2(1,0),lod);
+		float3 bump3=bump(sDetailMap1, iDetailTexCoord, tex3.a,float2(0,1),lod);
+		float3 bump4=bump(sDetailMap1, iDetailTexCoord, tex4.a,float2(1,1),lod);
 		
-		float3 bump5=bump(sDetailMap1, iDetailTexCoord, tex1.a,float2(0,0));
-		float3 bump6=bump(sDetailMap1, iDetailTexCoord, tex2.a,float2(1,0));
-		float3 bump7=bump(sDetailMap1, iDetailTexCoord, tex3.a,float2(0,1));
-		float3 bump8=bump(sDetailMap1, iDetailTexCoord, tex4.a,float2(1,1));
+		float3 bump5=bump(sDetailMap2, iDetailTexCoord, tex5.a,float2(0,0),lod);
+		float3 bump6=bump(sDetailMap2, iDetailTexCoord, tex6.a,float2(1,0),lod);
+		float3 bump7=bump(sDetailMap2, iDetailTexCoord, tex7.a,float2(0,1),lod);
+		float3 bump8=bump(sDetailMap2, iDetailTexCoord, tex8.a,float2(1,1),lod);
 		
 		float3 nc1=(bump1*b1.x + bump2*b1.y) / (b1.x+b1.y);
 		float3 nc2=(bump3*b2.x + bump4*b2.y) / (b2.x+b2.y);

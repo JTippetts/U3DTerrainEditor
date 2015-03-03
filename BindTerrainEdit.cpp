@@ -1,6 +1,6 @@
 /*
 ** Lua binding: BindTerrainEdit
-** Generated automatically by tolua++-1.0.93 on 03/02/15 10:46:18.
+** Generated automatically by tolua++-1.0.93 on 03/03/15 06:01:47.
 */
 
 #ifndef __cplusplus
@@ -2937,6 +2937,46 @@ static int tolua_BindTerrainEdit_BlendRasterizedBuffer800(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* function: BlendRasterizedBuffer8Max */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_BlendRasterizedBuffer8Max00
+static int tolua_BindTerrainEdit_BlendRasterizedBuffer8Max00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Image",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"Image",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,3,"RasterBuffer",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,5,"Image",1,&tolua_err) ||
+     !tolua_isboolean(tolua_S,6,1,&tolua_err) ||
+     !tolua_isboolean(tolua_S,7,1,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,8,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Image* img = ((Image*)  tolua_tousertype(tolua_S,1,0));
+  Image* other = ((Image*)  tolua_tousertype(tolua_S,2,0));
+  RasterBuffer* buffer = ((RasterBuffer*)  tolua_tousertype(tolua_S,3,0));
+  int layer = ((int)  tolua_tonumber(tolua_S,4,0));
+  Image* mask = ((Image*)  tolua_tousertype(tolua_S,5,0));
+  bool useMask = ((bool)  tolua_toboolean(tolua_S,6,false));
+  bool invertMask = ((bool)  tolua_toboolean(tolua_S,7,false));
+  {
+   BlendRasterizedBuffer8Max(img,other,buffer,layer,mask,useMask,invertMask);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'BlendRasterizedBuffer8Max'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* function: TessellateLineList */
 #ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_TessellateLineList00
 static int tolua_BindTerrainEdit_TessellateLineList00(lua_State* tolua_S)
@@ -3229,6 +3269,115 @@ static int tolua_BindTerrainEdit_GetNextImageLevel00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* function: ExtractLayerToBuffer */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_ExtractLayerToBuffer00
+static int tolua_BindTerrainEdit_ExtractLayerToBuffer00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Image",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"Image",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,3,"RasterBuffer",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,5,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Image* blend1 = ((Image*)  tolua_tousertype(tolua_S,1,0));
+  Image* blend2 = ((Image*)  tolua_tousertype(tolua_S,2,0));
+  RasterBuffer* buffer = ((RasterBuffer*)  tolua_tousertype(tolua_S,3,0));
+  int layer = ((int)  tolua_tonumber(tolua_S,4,0));
+  {
+   ExtractLayerToBuffer(blend1,blend2,buffer,layer);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'ExtractLayerToBuffer'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* function: GetLayerBlend */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_GetLayerBlend00
+static int tolua_BindTerrainEdit_GetLayerBlend00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Image",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"Image",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,5,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,6,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Image* blend1 = ((Image*)  tolua_tousertype(tolua_S,1,0));
+  Image* blend2 = ((Image*)  tolua_tousertype(tolua_S,2,0));
+  int x = ((int)  tolua_tonumber(tolua_S,3,0));
+  int y = ((int)  tolua_tonumber(tolua_S,4,0));
+  int layer = ((int)  tolua_tonumber(tolua_S,5,0));
+  {
+   float tolua_ret = (float)  GetLayerBlend(blend1,blend2,x,y,layer);
+   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'GetLayerBlend'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* function: SetLayerBlend */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_SetLayerBlend00
+static int tolua_BindTerrainEdit_SetLayerBlend00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Image",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"Image",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,5,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,6,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,7,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Image* blend1 = ((Image*)  tolua_tousertype(tolua_S,1,0));
+  Image* blend2 = ((Image*)  tolua_tousertype(tolua_S,2,0));
+  int x = ((int)  tolua_tonumber(tolua_S,3,0));
+  int y = ((int)  tolua_tonumber(tolua_S,4,0));
+  int layer = ((int)  tolua_tonumber(tolua_S,5,0));
+  float v = ((float)  tolua_tonumber(tolua_S,6,0));
+  {
+   SetLayerBlend(blend1,blend2,x,y,layer,v);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'SetLayerBlend'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* Open function */
 TOLUA_API int tolua_BindTerrainEdit_open (lua_State* tolua_S)
 {
@@ -3351,6 +3500,7 @@ TOLUA_API int tolua_BindTerrainEdit_open (lua_State* tolua_S)
   tolua_function(tolua_S,"BlendHeightWithRasterizedBuffer",tolua_BindTerrainEdit_BlendHeightWithRasterizedBuffer00);
   tolua_function(tolua_S,"BlendColorWithRasterizedBuffer",tolua_BindTerrainEdit_BlendColorWithRasterizedBuffer00);
   tolua_function(tolua_S,"BlendRasterizedBuffer8",tolua_BindTerrainEdit_BlendRasterizedBuffer800);
+  tolua_function(tolua_S,"BlendRasterizedBuffer8Max",tolua_BindTerrainEdit_BlendRasterizedBuffer8Max00);
   tolua_function(tolua_S,"TessellateLineList",tolua_BindTerrainEdit_TessellateLineList00);
   tolua_function(tolua_S,"ApplyBedFunction",tolua_BindTerrainEdit_ApplyBedFunction00);
   tolua_function(tolua_S,"BuildQuadStrip",tolua_BindTerrainEdit_BuildQuadStrip00);
@@ -3360,6 +3510,9 @@ TOLUA_API int tolua_BindTerrainEdit_open (lua_State* tolua_S)
   tolua_function(tolua_S,"CopyImageInto",tolua_BindTerrainEdit_CopyImageInto00);
   tolua_function(tolua_S,"IsPowerOfTwo",tolua_BindTerrainEdit_IsPowerOfTwo00);
   tolua_function(tolua_S,"GetNextImageLevel",tolua_BindTerrainEdit_GetNextImageLevel00);
+  tolua_function(tolua_S,"ExtractLayerToBuffer",tolua_BindTerrainEdit_ExtractLayerToBuffer00);
+  tolua_function(tolua_S,"GetLayerBlend",tolua_BindTerrainEdit_GetLayerBlend00);
+  tolua_function(tolua_S,"SetLayerBlend",tolua_BindTerrainEdit_SetLayerBlend00);
  tolua_endmodule(tolua_S);
  return 1;
 }

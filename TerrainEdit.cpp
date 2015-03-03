@@ -59,7 +59,7 @@ float GetHeightValue(Image *height, int x, int y)
 void BalanceColors(Color &col0, Color &col1, int layer)
 {
 	// Balance colors around the given channel
-	if(layer==1)
+	if(layer==0)
 	{
 		col0.r_=std::min(1.0f,col0.r_);
 		float others=col0.g_+col0.b_+col0.a_+col1.r_+col1.g_+col1.b_+col1.a_;
@@ -71,7 +71,7 @@ void BalanceColors(Color &col0, Color &col1, int layer)
 		col1.b_=(col1.b_/others)*(1.0f-col0.r_);
 		col1.a_=(col1.a_/others)*(1.0f-col0.r_);
 	}
-	else if(layer==2)
+	else if(layer==1)
 	{
 		col0.g_=std::min(1.0f,col0.g_);
 		float others=col0.r_+col0.b_+col0.a_+col1.r_+col1.g_+col1.b_+col1.a_;
@@ -83,7 +83,7 @@ void BalanceColors(Color &col0, Color &col1, int layer)
 		col1.b_=(col1.b_/others)*(1.0f-col0.g_);
 		col1.a_=(col1.a_/others)*(1.0f-col0.g_);
 	}
-	else if(layer==3)
+	else if(layer==2)
 	{
 		col0.b_=std::min(1.0f,col0.b_);
 		float others=col0.r_+col0.g_+col0.a_+col1.r_+col1.g_+col1.b_+col1.a_;
@@ -95,7 +95,7 @@ void BalanceColors(Color &col0, Color &col1, int layer)
 		col1.b_=(col1.b_/others)*(1.0f-col0.b_);
 		col1.a_=(col1.a_/others)*(1.0f-col0.b_);
 	}
-	else if(layer==4)
+	else if(layer==3)
 	{
 		col0.a_=std::min(1.0f,col0.a_);
 		float others=col0.r_+col0.g_+col0.b_+col1.r_+col1.g_+col1.b_+col1.a_;
@@ -107,7 +107,7 @@ void BalanceColors(Color &col0, Color &col1, int layer)
 		col1.b_=(col1.b_/others)*(1.0f-col0.a_);
 		col1.a_=(col1.a_/others)*(1.0f-col0.a_);
 	}
-	else if(layer==5)
+	else if(layer==4)
 	{
 		col1.r_=std::min(1.0f,col1.r_);
 		float others=col1.g_+col1.b_+col1.a_+col0.r_+col0.g_+col0.b_+col0.a_;
@@ -119,7 +119,7 @@ void BalanceColors(Color &col0, Color &col1, int layer)
 		col0.b_=(col0.b_/others)*(1.0f-col1.r_);
 		col0.a_=(col0.a_/others)*(1.0f-col1.r_);
 	}
-	else if(layer==6)
+	else if(layer==5)
 	{
 		col1.g_=std::min(1.0f,col1.g_);
 		float others=col1.r_+col1.b_+col1.a_+col0.r_+col0.g_+col0.b_+col0.a_;
@@ -131,7 +131,7 @@ void BalanceColors(Color &col0, Color &col1, int layer)
 		col0.b_=(col0.b_/others)*(1.0f-col1.g_);
 		col0.a_=(col0.a_/others)*(1.0f-col1.g_);
 	}
-	else if(layer==7)
+	else if(layer==6)
 	{
 		col1.b_=std::min(1.0f,col1.b_);
 		float others=col1.r_+col1.g_+col1.a_+col0.r_+col0.g_+col0.b_+col0.a_;
@@ -143,7 +143,7 @@ void BalanceColors(Color &col0, Color &col1, int layer)
 		col0.b_=(col0.b_/others)*(1.0f-col1.b_);
 		col0.a_=(col0.a_/others)*(1.0f-col1.b_);
 	}
-	else if(layer==8)
+	else
 	{
 		col1.a_=std::min(1.0f,col1.a_);
 		float others=col1.r_+col1.g_+col1.b_+col0.r_+col0.g_+col0.b_+col0.a_;
@@ -296,35 +296,35 @@ void ApplyBlendBrush8(Terrain *terrain, Image *height, Image *blend0, Image *ble
 				}
 				Color col0=blend0->GetPixel(hx,hz);
 				Color col1=blend1->GetPixel(hx,hz);
-				if(layer==1)
+				if(layer==0)
 				{
 					col0.r_=col0.r_+i*(1.0f-col0.r_);
 				}
-				else if(layer==2)
+				else if(layer==1)
 				{
 					col0.g_=col0.g_+i*(1.0f-col0.g_);
 				}
-				else if(layer==3)
+				else if(layer==2)
 				{
 					col0.b_=col0.b_+i*(1.0f-col0.b_);
 				}
-				else if(layer==4)
+				else if(layer==3)
 				{
 					col0.a_=col0.a_+i*(1.0f-col0.a_);
 				}
-				else if(layer==5)
+				else if(layer==4)
 				{
 					col1.r_=col1.r_+i*(1.0f-col1.r_);
 				}
-				else if(layer==6)
+				else if(layer==5)
 				{
 					col1.g_=col1.g_+i*(1.0f-col1.g_);
 				}
-				else if(layer==7)
+				else if(layer==6)
 				{
 					col1.b_=col1.b_+i*(1.0f-col1.b_);
 				}
-				else if(layer==8)
+				else
 				{
 					col1.a_=col1.a_+i*(1.0f-col1.a_);
 				}
@@ -734,107 +734,95 @@ void BlendRasterizedBuffer8(Image *blend0, Image *blend1, RasterBuffer *buffer, 
 				if(layer==0)
 				{
 					col0.r_=i;
-					col0.r_=std::min(1.0f,col0.r_);
-					float others=col0.g_+col0.b_+col0.a_+col1.r_+col1.g_+col1.b_+col1.a_;
-					col0.g_=(col0.g_/others)*(1.0f-col0.r_);
-					col0.b_=(col0.b_/others)*(1.0f-col0.r_);
-					col0.a_=(col0.a_/others)*(1.0f-col0.r_);
-					col1.r_=(col1.r_/others)*(1.0f-col0.r_);
-					col1.g_=(col1.g_/others)*(1.0f-col0.r_);
-					col1.b_=(col1.b_/others)*(1.0f-col0.r_);
-					col1.a_=(col1.a_/others)*(1.0f-col0.r_);
 				}
 				else if(layer==1)
 				{
 					col0.g_=i;
-					col0.g_=std::min(1.0f,col0.g_);
-					float others=col0.r_+col0.b_+col0.a_+col1.r_+col1.g_+col1.b_+col1.a_;
-					col0.r_=(col0.r_/others)*(1.0f-col0.g_);
-					col0.b_=(col0.b_/others)*(1.0f-col0.g_);
-					col0.a_=(col0.a_/others)*(1.0f-col0.g_);
-					col1.r_=(col1.r_/others)*(1.0f-col0.g_);
-					col1.g_=(col1.g_/others)*(1.0f-col0.g_);
-					col1.b_=(col1.b_/others)*(1.0f-col0.g_);
-					col1.a_=(col1.a_/others)*(1.0f-col0.g_);
 				}
 				else if(layer==2)
 				{
 					col0.b_=i;
-					col0.b_=std::min(1.0f,col0.b_);
-					float others=col0.r_+col0.g_+col0.a_+col1.r_+col1.g_+col1.b_+col1.a_;
-					col0.r_=(col0.r_/others)*(1.0f-col0.b_);
-					col0.g_=(col0.g_/others)*(1.0f-col0.b_);
-					col0.a_=(col0.a_/others)*(1.0f-col0.b_);
-					col1.r_=(col1.r_/others)*(1.0f-col0.b_);
-					col1.g_=(col1.g_/others)*(1.0f-col0.b_);
-					col1.b_=(col1.b_/others)*(1.0f-col0.b_);
-					col1.a_=(col1.a_/others)*(1.0f-col0.b_);
 				}
 				else if(layer==3)
 				{
 					col0.a_=i;
-					col0.a_=std::min(1.0f,col0.a_);
-					float others=col0.r_+col0.g_+col0.b_+col1.r_+col1.g_+col1.b_+col1.a_;
-					col0.r_=(col0.r_/others)*(1.0f-col0.a_);
-					col0.g_=(col0.g_/others)*(1.0f-col0.a_);
-					col0.b_=(col0.b_/others)*(1.0f-col0.a_);
-					col1.r_=(col1.r_/others)*(1.0f-col0.a_);
-					col1.g_=(col1.g_/others)*(1.0f-col0.a_);
-					col1.b_=(col1.b_/others)*(1.0f-col0.a_);
-					col1.a_=(col1.a_/others)*(1.0f-col0.a_);
 				}
 				else if(layer==4)
 				{
 					col1.r_=i;
-					col1.r_=std::min(1.0f,col1.r_);
-					float others=col1.g_+col1.b_+col1.a_+col0.r_+col0.g_+col0.b_+col0.a_;
-					col1.g_=(col1.g_/others)*(1.0f-col1.r_);
-					col1.b_=(col1.b_/others)*(1.0f-col1.r_);
-					col1.a_=(col1.a_/others)*(1.0f-col1.r_);
-					col0.r_=(col0.r_/others)*(1.0f-col1.r_);
-					col0.g_=(col0.g_/others)*(1.0f-col1.r_);
-					col0.b_=(col0.b_/others)*(1.0f-col1.r_);
-					col0.a_=(col0.a_/others)*(1.0f-col1.r_);
 				}
 				else if(layer==5)
 				{
 					col1.g_=i;
-					col1.g_=std::min(1.0f,col1.g_);
-					float others=col1.r_+col1.b_+col1.a_+col0.r_+col0.g_+col0.b_+col0.a_;
-					col1.r_=(col1.r_/others)*(1.0f-col1.g_);
-					col1.b_=(col1.b_/others)*(1.0f-col1.g_);
-					col1.a_=(col1.a_/others)*(1.0f-col1.g_);
-					col0.r_=(col0.r_/others)*(1.0f-col1.g_);
-					col0.g_=(col0.g_/others)*(1.0f-col1.g_);
-					col0.b_=(col0.b_/others)*(1.0f-col1.g_);
-					col0.a_=(col0.a_/others)*(1.0f-col1.g_);
 				}
 				else if(layer==6)
 				{
 					col1.b_=i;
-					col1.b_=std::min(1.0f,col1.b_);
-					float others=col1.r_+col1.g_+col1.a_+col0.r_+col0.g_+col0.b_+col0.a_;
-					col1.r_=(col1.r_/others)*(1.0f-col1.b_);
-					col1.g_=(col1.g_/others)*(1.0f-col1.b_);
-					col1.a_=(col1.a_/others)*(1.0f-col1.b_);
-					col0.r_=(col0.r_/others)*(1.0f-col1.b_);
-					col0.g_=(col0.g_/others)*(1.0f-col1.b_);
-					col0.b_=(col0.b_/others)*(1.0f-col1.b_);
-					col0.a_=(col0.a_/others)*(1.0f-col1.b_);
 				}
 				else if(layer==7)
 				{
 					col1.a_=i;
-					col1.a_=std::min(1.0f,col1.a_);
-					float others=col1.r_+col1.g_+col1.b_+col0.r_+col0.g_+col0.b_+col0.a_;
-					col1.r_=(col1.r_/others)*(1.0f-col1.a_);
-					col1.g_=(col1.g_/others)*(1.0f-col1.a_);
-					col1.b_=(col1.b_/others)*(1.0f-col1.a_);
-					col0.r_=(col0.r_/others)*(1.0f-col1.a_);
-					col0.g_=(col0.g_/others)*(1.0f-col1.a_);
-					col0.b_=(col0.b_/others)*(1.0f-col1.a_);
-					col0.a_=(col0.a_/others)*(1.0f-col1.a_);
 				}
+				BalanceColors(col0, col1, layer);
+				blend0->SetPixel(x,y,col0);
+				blend1->SetPixel(x,y,col1);
+		}
+	}
+}
+
+void BlendRasterizedBuffer8Max(Image *blend0, Image *blend1, RasterBuffer *buffer, int layer, Image *mask, bool useMask, bool invertMask)
+{
+	for(int x=0; x<blend0->GetWidth()-1; ++x)
+	{
+		for(int y=0; y<blend0->GetHeight()-1; ++y)
+		{
+			float nx=(float)x / (float)(blend0->GetWidth());
+			float ny=(float)y / (float)(blend0->GetHeight());
+			
+			float i=buffer->getBilinear(nx,ny);
+			i=std::max(0.0f, std::min(1.0f, i));
+			if(useMask)
+			{
+				Color c=mask->GetPixelBilinear(nx,ny);
+				float m=c.r_;
+				if(invertMask) m=1.0f-m;
+				i*=m;
+			}
+				Color col0=blend0->GetPixel(x,y);
+				Color col1=blend1->GetPixel(x,y);
+				if(layer==0)
+				{
+					col0.r_=std::max(col0.r_, i);
+				}
+				else if(layer==1)
+				{
+					col0.g_=std::max(col0.g_, i);
+				}
+				else if(layer==2)
+				{
+					col0.b_=std::max(col0.b_, i);
+				}
+				else if(layer==3)
+				{
+					col0.a_=std::max(col0.a_, i);
+				}
+				else if(layer==4)
+				{
+					col1.r_=std::max(col1.r_, i);
+				}
+				else if(layer==5)
+				{
+					col1.g_=std::max(col1.g_, i);
+				}
+				else if(layer==6)
+				{
+					col1.b_=std::max(col1.b_, i);
+				}
+				else if(layer==7)
+				{
+					col1.a_=std::max(col1.a_, i);
+				}
+				BalanceColors(col0, col1, layer);
 				blend0->SetPixel(x,y,col0);
 				blend1->SetPixel(x,y,col1);
 		}
@@ -1146,4 +1134,73 @@ Image* GetNextImageLevel(Image *i)
 	if(!i) return 0;
 	
 	return i->GetNextLevel();
+}
+
+void ExtractLayerToBuffer(Image *blend1, Image *blend2, RasterBuffer *buffer, int layer)
+{
+	if((layer>=0 && layer<4) && !blend1) return;
+	else if((layer>=4 && layer<8) && !blend2) return;
+	else return;
+	
+	if(buffer->width() != blend1->GetWidth() || buffer->height()!=blend1->GetHeight()) return;
+	for(int x=0; x<buffer->width(); ++x)
+	{
+		for(int y=0; y<buffer->height(); ++y)
+		{
+			Color c;
+			if(layer>=0 && layer<4) c=blend1->GetPixel(x,y);
+			else c=blend2->GetPixel(x,y);
+			
+			float v=0;
+			if(layer==0 || layer==4) v=c.r_;
+			else if(layer==1 || layer==5) v=c.g_;
+			else if(layer==2 || layer==6) v=c.b_;
+			else v=c.a_;
+			
+			buffer->set(x,y,v);
+		}
+	}
+}
+
+float GetLayerBlend(Image *blend1, Image *blend2, int x, int y, int layer)
+{
+	if(layer<0 || layer>7) return 0.0f;
+	
+	Color c;
+	if(layer<4)
+	{
+		if(!blend1) return 0.0f;
+		c=blend1->GetPixel(x,y);
+	}
+	else
+	{
+		if(!blend2) return 0.0f;
+		c=blend2->GetPixel(x,y);
+	}
+	if(layer==0 || layer==4) return c.r_;
+	else if(layer==1 || layer==5) return c.g_;
+	else if(layer==2 || layer==6) return c.b_;
+	else return c.a_;
+}
+
+void SetLayerBlend(Image *blend1, Image *blend2, int x, int y, int layer, float v)
+{
+	if(layer<0 || layer>7) return;
+	Color col0, col1;
+	
+	if(!blend1 || !blend2) return;
+	
+	col0=blend1->GetPixel(x,y);
+	col1=blend2->GetPixel(x,y);
+	if(layer==0) col0.r_=v;
+	else if(layer==1) col0.g_=v;
+	else if(layer==2) col0.b_=v;
+	else if(layer==3) col0.a_=v;
+	else if(layer==4) col1.r_=v;
+	else if(layer==5) col1.g_=v;
+	else if(layer==6) col1.b_=v;
+	else col1.a_=v;
+	BalanceColors(col0, col1, layer);
+	blend1->SetPixel(x,y,col0);
+	blend2->SetPixel(x,y,col1);
 }

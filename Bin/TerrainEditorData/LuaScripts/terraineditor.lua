@@ -53,8 +53,8 @@ function Start()
 end
 
 function Stop()
-	img1:delete()
-	img2:delete()
+	--img1:delete()
+	--img2:delete()
 end
 
 function CreateScene()
@@ -128,7 +128,7 @@ function CreateScene()
 	mask=Image(context)
 	masktex=Texture2D:new(context)
 	masktex:SetSize(0,0,0,TEXTURE_DYNAMIC)
-	mask:SetSize(2048,2048,3)
+	mask:SetSize(1024,1024,3)
 	mask:Clear(Color(1,0,0))
 	masktex:SetData(mask, false)
 	terrain:GetMaterial():SetTexture(12,masktex)
@@ -157,15 +157,17 @@ function CreateScene()
 	-- Build composite textures
 	comptex1=Texture2D:new(context)
 	comptex2=Texture2D:new(context)
-	img1=BuildCompositeTexture({"Textures/moss2_ht.png", "Textures/stones1_ht.png", "Textures/lichen5_ht.png", "Textures/lava1_ht.png"})
-	img2=BuildCompositeTexture({"Textures/grass2_ht.png", "Textures/sand1_ht.png", "Textures/lichen1_ht.png", "Textures/lichen2_ht.png"})
+	--img1=BuildCompositeTexture({"Textures/moss2_ht.png", "Textures/stones1_ht.png", "Textures/lichen5_ht.png", "Textures/lava1_ht.png"})
+	--img2=BuildCompositeTexture({"Textures/dirt1_ht.png", "Textures/softsand1_ht.png", "Textures/lichen1_ht.png", "Textures/sharpstones2_ht.png"})
+	img1=cache:GetResource("Image", "Textures/thing1.png")
+	img2=cache:GetResource("Image", "Textures/thing2.png")
 	comptex1:SetData(img1, false)
 	comptex2:SetData(img2, false)
 	terrain:GetMaterial():SetTexture(2,comptex1)
 	terrain:GetMaterial():SetTexture(3,comptex2)
 	
-	img1:SavePNG("thing1.png")
-	img2:SavePNG("thing2.png")
+	--img1:SavePNG("thing1.png")
+	--img2:SavePNG("thing2.png")
 	
 	-- Color detailing
 	--colortex=Texture2D:new(context)

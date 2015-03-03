@@ -508,7 +508,7 @@ function TerrainEditUI:Update(dt)
 			
 				--self.edit:ApplyBrush(gx,gz, self.radius, self.max, self.power, self.hardness, self.mode, self.usemask, dt)
 				if self.mode==0 then ApplyHeightBrush(terrain,hmap,mask,gx,gz,self.radius, self.max, self.power, self.hardness, self.usemask, dt) terrain:ApplyHeightMap()
-				elseif self.mode>=1 and self.mode<=8 then ApplyBlendBrush8(terrain,hmap,blend1,blend2,mask,gx,gz,self.radius,self.max,self.power,self.hardness,self.mode,self.usemask,dt) blendtex1:SetData(blend1) blendtex2:SetData(blend2)
+				elseif self.mode>=1 and self.mode<=8 then ApplyBlendBrush8(terrain,hmap,blend1,blend2,mask,gx,gz,self.radius,self.max,self.power,self.hardness,self.mode-1,self.usemask,dt) blendtex1:SetData(blend1) blendtex2:SetData(blend2)
 				elseif self.mode==9 then ApplySmoothBrush(terrain,hmap,mask,gx,gz,self.radius, self.max, self.power, self.hardness, self.usemask, dt) terrain:ApplyHeightMap()
 				else ApplyMaskBrush(terrain,hmap,mask,gx,gz,self.radius,self.max,self.power,self.hardness,dt) masktex:SetData(mask)
 				end
