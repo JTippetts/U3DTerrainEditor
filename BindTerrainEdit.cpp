@@ -1,6 +1,6 @@
 /*
 ** Lua binding: BindTerrainEdit
-** Generated automatically by tolua++-1.0.93 on 03/02/15 07:41:45.
+** Generated automatically by tolua++-1.0.93 on 03/02/15 10:46:18.
 */
 
 #ifndef __cplusplus
@@ -2897,6 +2897,46 @@ static int tolua_BindTerrainEdit_BlendColorWithRasterizedBuffer00(lua_State* tol
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* function: BlendRasterizedBuffer8 */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_BlendRasterizedBuffer800
+static int tolua_BindTerrainEdit_BlendRasterizedBuffer800(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"Image",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"Image",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,3,"RasterBuffer",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,5,"Image",1,&tolua_err) ||
+     !tolua_isboolean(tolua_S,6,1,&tolua_err) ||
+     !tolua_isboolean(tolua_S,7,1,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,8,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  Image* img = ((Image*)  tolua_tousertype(tolua_S,1,0));
+  Image* other = ((Image*)  tolua_tousertype(tolua_S,2,0));
+  RasterBuffer* buffer = ((RasterBuffer*)  tolua_tousertype(tolua_S,3,0));
+  int layer = ((int)  tolua_tonumber(tolua_S,4,0));
+  Image* mask = ((Image*)  tolua_tousertype(tolua_S,5,0));
+  bool useMask = ((bool)  tolua_toboolean(tolua_S,6,false));
+  bool invertMask = ((bool)  tolua_toboolean(tolua_S,7,false));
+  {
+   BlendRasterizedBuffer8(img,other,buffer,layer,mask,useMask,invertMask);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'BlendRasterizedBuffer8'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* function: TessellateLineList */
 #ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_TessellateLineList00
 static int tolua_BindTerrainEdit_TessellateLineList00(lua_State* tolua_S)
@@ -3310,6 +3350,7 @@ TOLUA_API int tolua_BindTerrainEdit_open (lua_State* tolua_S)
   tolua_function(tolua_S,"RasterizeQuadStrip",tolua_BindTerrainEdit_RasterizeQuadStrip00);
   tolua_function(tolua_S,"BlendHeightWithRasterizedBuffer",tolua_BindTerrainEdit_BlendHeightWithRasterizedBuffer00);
   tolua_function(tolua_S,"BlendColorWithRasterizedBuffer",tolua_BindTerrainEdit_BlendColorWithRasterizedBuffer00);
+  tolua_function(tolua_S,"BlendRasterizedBuffer8",tolua_BindTerrainEdit_BlendRasterizedBuffer800);
   tolua_function(tolua_S,"TessellateLineList",tolua_BindTerrainEdit_TessellateLineList00);
   tolua_function(tolua_S,"ApplyBedFunction",tolua_BindTerrainEdit_ApplyBedFunction00);
   tolua_function(tolua_S,"BuildQuadStrip",tolua_BindTerrainEdit_BuildQuadStrip00);

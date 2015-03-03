@@ -56,6 +56,106 @@ float GetHeightValue(Image *height, int x, int y)
 	}
 }
 
+void BalanceColors(Color &col0, Color &col1, int layer)
+{
+	// Balance colors around the given channel
+	if(layer==1)
+	{
+		col0.r_=std::min(1.0f,col0.r_);
+		float others=col0.g_+col0.b_+col0.a_+col1.r_+col1.g_+col1.b_+col1.a_;
+		col0.g_=(col0.g_/others)*(1.0f-col0.r_);
+		col0.b_=(col0.b_/others)*(1.0f-col0.r_);
+		col0.a_=(col0.a_/others)*(1.0f-col0.r_);
+		col1.r_=(col1.r_/others)*(1.0f-col0.r_);
+		col1.g_=(col1.g_/others)*(1.0f-col0.r_);
+		col1.b_=(col1.b_/others)*(1.0f-col0.r_);
+		col1.a_=(col1.a_/others)*(1.0f-col0.r_);
+	}
+	else if(layer==2)
+	{
+		col0.g_=std::min(1.0f,col0.g_);
+		float others=col0.r_+col0.b_+col0.a_+col1.r_+col1.g_+col1.b_+col1.a_;
+		col0.r_=(col0.r_/others)*(1.0f-col0.g_);
+		col0.b_=(col0.b_/others)*(1.0f-col0.g_);
+		col0.a_=(col0.a_/others)*(1.0f-col0.g_);
+		col1.r_=(col1.r_/others)*(1.0f-col0.g_);
+		col1.g_=(col1.g_/others)*(1.0f-col0.g_);
+		col1.b_=(col1.b_/others)*(1.0f-col0.g_);
+		col1.a_=(col1.a_/others)*(1.0f-col0.g_);
+	}
+	else if(layer==3)
+	{
+		col0.b_=std::min(1.0f,col0.b_);
+		float others=col0.r_+col0.g_+col0.a_+col1.r_+col1.g_+col1.b_+col1.a_;
+		col0.r_=(col0.r_/others)*(1.0f-col0.b_);
+		col0.g_=(col0.g_/others)*(1.0f-col0.b_);
+		col0.a_=(col0.a_/others)*(1.0f-col0.b_);
+		col1.r_=(col1.r_/others)*(1.0f-col0.b_);
+		col1.g_=(col1.g_/others)*(1.0f-col0.b_);
+		col1.b_=(col1.b_/others)*(1.0f-col0.b_);
+		col1.a_=(col1.a_/others)*(1.0f-col0.b_);
+	}
+	else if(layer==4)
+	{
+		col0.a_=std::min(1.0f,col0.a_);
+		float others=col0.r_+col0.g_+col0.b_+col1.r_+col1.g_+col1.b_+col1.a_;
+		col0.r_=(col0.r_/others)*(1.0f-col0.a_);
+		col0.g_=(col0.g_/others)*(1.0f-col0.a_);
+		col0.b_=(col0.b_/others)*(1.0f-col0.a_);
+		col1.r_=(col1.r_/others)*(1.0f-col0.a_);
+		col1.g_=(col1.g_/others)*(1.0f-col0.a_);
+		col1.b_=(col1.b_/others)*(1.0f-col0.a_);
+		col1.a_=(col1.a_/others)*(1.0f-col0.a_);
+	}
+	else if(layer==5)
+	{
+		col1.r_=std::min(1.0f,col1.r_);
+		float others=col1.g_+col1.b_+col1.a_+col0.r_+col0.g_+col0.b_+col0.a_;
+		col1.g_=(col1.g_/others)*(1.0f-col1.r_);
+		col1.b_=(col1.b_/others)*(1.0f-col1.r_);
+		col1.a_=(col1.a_/others)*(1.0f-col1.r_);
+		col0.r_=(col0.r_/others)*(1.0f-col1.r_);
+		col0.g_=(col0.g_/others)*(1.0f-col1.r_);
+		col0.b_=(col0.b_/others)*(1.0f-col1.r_);
+		col0.a_=(col0.a_/others)*(1.0f-col1.r_);
+	}
+	else if(layer==6)
+	{
+		col1.g_=std::min(1.0f,col1.g_);
+		float others=col1.r_+col1.b_+col1.a_+col0.r_+col0.g_+col0.b_+col0.a_;
+		col1.r_=(col1.r_/others)*(1.0f-col1.g_);
+		col1.b_=(col1.b_/others)*(1.0f-col1.g_);
+		col1.a_=(col1.a_/others)*(1.0f-col1.g_);
+		col0.r_=(col0.r_/others)*(1.0f-col1.g_);
+		col0.g_=(col0.g_/others)*(1.0f-col1.g_);
+		col0.b_=(col0.b_/others)*(1.0f-col1.g_);
+		col0.a_=(col0.a_/others)*(1.0f-col1.g_);
+	}
+	else if(layer==7)
+	{
+		col1.b_=std::min(1.0f,col1.b_);
+		float others=col1.r_+col1.g_+col1.a_+col0.r_+col0.g_+col0.b_+col0.a_;
+		col1.r_=(col1.r_/others)*(1.0f-col1.b_);
+		col1.g_=(col1.g_/others)*(1.0f-col1.b_);
+		col1.a_=(col1.a_/others)*(1.0f-col1.b_);
+		col0.r_=(col0.r_/others)*(1.0f-col1.b_);
+		col0.g_=(col0.g_/others)*(1.0f-col1.b_);
+		col0.b_=(col0.b_/others)*(1.0f-col1.b_);
+		col0.a_=(col0.a_/others)*(1.0f-col1.b_);
+	}
+	else if(layer==8)
+	{
+		col1.a_=std::min(1.0f,col1.a_);
+		float others=col1.r_+col1.g_+col1.b_+col0.r_+col0.g_+col0.b_+col0.a_;
+		col1.r_=(col1.r_/others)*(1.0f-col1.a_);
+		col1.g_=(col1.g_/others)*(1.0f-col1.a_);
+		col1.b_=(col1.b_/others)*(1.0f-col1.a_);
+		col0.r_=(col0.r_/others)*(1.0f-col1.a_);
+		col0.g_=(col0.g_/others)*(1.0f-col1.a_);
+		col0.b_=(col0.b_/others)*(1.0f-col1.a_);
+		col0.a_=(col0.a_/others)*(1.0f-col1.a_);
+	}
+}
 	
 void ApplyHeightBrush(Terrain *terrain, Image *height, Image *mask, float x, float z, float radius, float max, float power, float hardness, bool usemask, float dt)
 {
@@ -199,107 +299,36 @@ void ApplyBlendBrush8(Terrain *terrain, Image *height, Image *blend0, Image *ble
 				if(layer==1)
 				{
 					col0.r_=col0.r_+i*(1.0f-col0.r_);
-					col0.r_=std::min(1.0f,col0.r_);
-					float others=col0.g_+col0.b_+col0.a_+col1.r_+col1.g_+col1.b_+col1.a_;
-					col0.g_=(col0.g_/others)*(1.0f-col0.r_);
-					col0.b_=(col0.b_/others)*(1.0f-col0.r_);
-					col0.a_=(col0.a_/others)*(1.0f-col0.r_);
-					col1.r_=(col1.r_/others)*(1.0f-col0.r_);
-					col1.g_=(col1.g_/others)*(1.0f-col0.r_);
-					col1.b_=(col1.b_/others)*(1.0f-col0.r_);
-					col1.a_=(col1.a_/others)*(1.0f-col0.r_);
 				}
 				else if(layer==2)
 				{
 					col0.g_=col0.g_+i*(1.0f-col0.g_);
-					col0.g_=std::min(1.0f,col0.g_);
-					float others=col0.r_+col0.b_+col0.a_+col1.r_+col1.g_+col1.b_+col1.a_;
-					col0.r_=(col0.r_/others)*(1.0f-col0.g_);
-					col0.b_=(col0.b_/others)*(1.0f-col0.g_);
-					col0.a_=(col0.a_/others)*(1.0f-col0.g_);
-					col1.r_=(col1.r_/others)*(1.0f-col0.g_);
-					col1.g_=(col1.g_/others)*(1.0f-col0.g_);
-					col1.b_=(col1.b_/others)*(1.0f-col0.g_);
-					col1.a_=(col1.a_/others)*(1.0f-col0.g_);
 				}
 				else if(layer==3)
 				{
 					col0.b_=col0.b_+i*(1.0f-col0.b_);
-					col0.b_=std::min(1.0f,col0.b_);
-					float others=col0.r_+col0.g_+col0.a_+col1.r_+col1.g_+col1.b_+col1.a_;
-					col0.r_=(col0.r_/others)*(1.0f-col0.b_);
-					col0.g_=(col0.g_/others)*(1.0f-col0.b_);
-					col0.a_=(col0.a_/others)*(1.0f-col0.b_);
-					col1.r_=(col1.r_/others)*(1.0f-col0.b_);
-					col1.g_=(col1.g_/others)*(1.0f-col0.b_);
-					col1.b_=(col1.b_/others)*(1.0f-col0.b_);
-					col1.a_=(col1.a_/others)*(1.0f-col0.b_);
 				}
 				else if(layer==4)
 				{
 					col0.a_=col0.a_+i*(1.0f-col0.a_);
-					col0.a_=std::min(1.0f,col0.a_);
-					float others=col0.r_+col0.g_+col0.b_+col1.r_+col1.g_+col1.b_+col1.a_;
-					col0.r_=(col0.r_/others)*(1.0f-col0.a_);
-					col0.g_=(col0.g_/others)*(1.0f-col0.a_);
-					col0.b_=(col0.b_/others)*(1.0f-col0.a_);
-					col1.r_=(col1.r_/others)*(1.0f-col0.a_);
-					col1.g_=(col1.g_/others)*(1.0f-col0.a_);
-					col1.b_=(col1.b_/others)*(1.0f-col0.a_);
-					col1.a_=(col1.a_/others)*(1.0f-col0.a_);
 				}
 				else if(layer==5)
 				{
 					col1.r_=col1.r_+i*(1.0f-col1.r_);
-					col1.r_=std::min(1.0f,col1.r_);
-					float others=col1.g_+col1.b_+col1.a_+col0.r_+col0.g_+col0.b_+col0.a_;
-					col1.g_=(col1.g_/others)*(1.0f-col1.r_);
-					col1.b_=(col1.b_/others)*(1.0f-col1.r_);
-					col1.a_=(col1.a_/others)*(1.0f-col1.r_);
-					col0.r_=(col0.r_/others)*(1.0f-col1.r_);
-					col0.g_=(col0.g_/others)*(1.0f-col1.r_);
-					col0.b_=(col0.b_/others)*(1.0f-col1.r_);
-					col0.a_=(col0.a_/others)*(1.0f-col1.r_);
 				}
 				else if(layer==6)
 				{
 					col1.g_=col1.g_+i*(1.0f-col1.g_);
-					col1.g_=std::min(1.0f,col1.g_);
-					float others=col1.r_+col1.b_+col1.a_+col0.r_+col0.g_+col0.b_+col0.a_;
-					col1.r_=(col1.r_/others)*(1.0f-col1.g_);
-					col1.b_=(col1.b_/others)*(1.0f-col1.g_);
-					col1.a_=(col1.a_/others)*(1.0f-col1.g_);
-					col0.r_=(col0.r_/others)*(1.0f-col1.g_);
-					col0.g_=(col0.g_/others)*(1.0f-col1.g_);
-					col0.b_=(col0.b_/others)*(1.0f-col1.g_);
-					col0.a_=(col0.a_/others)*(1.0f-col1.g_);
 				}
 				else if(layer==7)
 				{
 					col1.b_=col1.b_+i*(1.0f-col1.b_);
-					col1.b_=std::min(1.0f,col1.b_);
-					float others=col1.r_+col1.g_+col1.a_+col0.r_+col0.g_+col0.b_+col0.a_;
-					col1.r_=(col1.r_/others)*(1.0f-col1.b_);
-					col1.g_=(col1.g_/others)*(1.0f-col1.b_);
-					col1.a_=(col1.a_/others)*(1.0f-col1.b_);
-					col0.r_=(col0.r_/others)*(1.0f-col1.b_);
-					col0.g_=(col0.g_/others)*(1.0f-col1.b_);
-					col0.b_=(col0.b_/others)*(1.0f-col1.b_);
-					col0.a_=(col0.a_/others)*(1.0f-col1.b_);
 				}
 				else if(layer==8)
 				{
 					col1.a_=col1.a_+i*(1.0f-col1.a_);
-					col1.a_=std::min(1.0f,col1.a_);
-					float others=col1.r_+col1.g_+col1.b_+col0.r_+col0.g_+col0.b_+col0.a_;
-					col1.r_=(col1.r_/others)*(1.0f-col1.a_);
-					col1.g_=(col1.g_/others)*(1.0f-col1.a_);
-					col1.b_=(col1.b_/others)*(1.0f-col1.a_);
-					col0.r_=(col0.r_/others)*(1.0f-col1.a_);
-					col0.g_=(col0.g_/others)*(1.0f-col1.a_);
-					col0.b_=(col0.b_/others)*(1.0f-col1.a_);
-					col0.a_=(col0.a_/others)*(1.0f-col1.a_);
 				}
+				BalanceColors(col0, col1, layer);
 				blend0->SetPixel(hx,hz,col0);
 				blend1->SetPixel(hx,hz,col1);
 				//LOGINFO(String(col.r_)+String(",")+String(col.g_));
@@ -678,6 +707,136 @@ void BlendColorWithRasterizedBuffer(Image *img, RasterBuffer *buffer, Color endC
 			}
 			Color newcol=col.Lerp(endColor, bval);
 			img->SetPixel(x,y,newcol);
+		}
+	}
+}
+
+void BlendRasterizedBuffer8(Image *blend0, Image *blend1, RasterBuffer *buffer, int layer, Image *mask, bool useMask, bool invertMask)
+{
+	for(int x=0; x<blend0->GetWidth()-1; ++x)
+	{
+		for(int y=0; y<blend0->GetHeight()-1; ++y)
+		{
+			float nx=(float)x / (float)(blend0->GetWidth());
+			float ny=(float)y / (float)(blend0->GetHeight());
+			
+			float i=buffer->getBilinear(nx,ny);
+			i=std::max(0.0f, std::min(1.0f, i));
+			if(useMask)
+			{
+				Color c=mask->GetPixelBilinear(nx,ny);
+				float m=c.r_;
+				if(invertMask) m=1.0f-m;
+				i*=m;
+			}
+				Color col0=blend0->GetPixel(x,y);
+				Color col1=blend1->GetPixel(x,y);
+				if(layer==0)
+				{
+					col0.r_=i;
+					col0.r_=std::min(1.0f,col0.r_);
+					float others=col0.g_+col0.b_+col0.a_+col1.r_+col1.g_+col1.b_+col1.a_;
+					col0.g_=(col0.g_/others)*(1.0f-col0.r_);
+					col0.b_=(col0.b_/others)*(1.0f-col0.r_);
+					col0.a_=(col0.a_/others)*(1.0f-col0.r_);
+					col1.r_=(col1.r_/others)*(1.0f-col0.r_);
+					col1.g_=(col1.g_/others)*(1.0f-col0.r_);
+					col1.b_=(col1.b_/others)*(1.0f-col0.r_);
+					col1.a_=(col1.a_/others)*(1.0f-col0.r_);
+				}
+				else if(layer==1)
+				{
+					col0.g_=i;
+					col0.g_=std::min(1.0f,col0.g_);
+					float others=col0.r_+col0.b_+col0.a_+col1.r_+col1.g_+col1.b_+col1.a_;
+					col0.r_=(col0.r_/others)*(1.0f-col0.g_);
+					col0.b_=(col0.b_/others)*(1.0f-col0.g_);
+					col0.a_=(col0.a_/others)*(1.0f-col0.g_);
+					col1.r_=(col1.r_/others)*(1.0f-col0.g_);
+					col1.g_=(col1.g_/others)*(1.0f-col0.g_);
+					col1.b_=(col1.b_/others)*(1.0f-col0.g_);
+					col1.a_=(col1.a_/others)*(1.0f-col0.g_);
+				}
+				else if(layer==2)
+				{
+					col0.b_=i;
+					col0.b_=std::min(1.0f,col0.b_);
+					float others=col0.r_+col0.g_+col0.a_+col1.r_+col1.g_+col1.b_+col1.a_;
+					col0.r_=(col0.r_/others)*(1.0f-col0.b_);
+					col0.g_=(col0.g_/others)*(1.0f-col0.b_);
+					col0.a_=(col0.a_/others)*(1.0f-col0.b_);
+					col1.r_=(col1.r_/others)*(1.0f-col0.b_);
+					col1.g_=(col1.g_/others)*(1.0f-col0.b_);
+					col1.b_=(col1.b_/others)*(1.0f-col0.b_);
+					col1.a_=(col1.a_/others)*(1.0f-col0.b_);
+				}
+				else if(layer==3)
+				{
+					col0.a_=i;
+					col0.a_=std::min(1.0f,col0.a_);
+					float others=col0.r_+col0.g_+col0.b_+col1.r_+col1.g_+col1.b_+col1.a_;
+					col0.r_=(col0.r_/others)*(1.0f-col0.a_);
+					col0.g_=(col0.g_/others)*(1.0f-col0.a_);
+					col0.b_=(col0.b_/others)*(1.0f-col0.a_);
+					col1.r_=(col1.r_/others)*(1.0f-col0.a_);
+					col1.g_=(col1.g_/others)*(1.0f-col0.a_);
+					col1.b_=(col1.b_/others)*(1.0f-col0.a_);
+					col1.a_=(col1.a_/others)*(1.0f-col0.a_);
+				}
+				else if(layer==4)
+				{
+					col1.r_=i;
+					col1.r_=std::min(1.0f,col1.r_);
+					float others=col1.g_+col1.b_+col1.a_+col0.r_+col0.g_+col0.b_+col0.a_;
+					col1.g_=(col1.g_/others)*(1.0f-col1.r_);
+					col1.b_=(col1.b_/others)*(1.0f-col1.r_);
+					col1.a_=(col1.a_/others)*(1.0f-col1.r_);
+					col0.r_=(col0.r_/others)*(1.0f-col1.r_);
+					col0.g_=(col0.g_/others)*(1.0f-col1.r_);
+					col0.b_=(col0.b_/others)*(1.0f-col1.r_);
+					col0.a_=(col0.a_/others)*(1.0f-col1.r_);
+				}
+				else if(layer==5)
+				{
+					col1.g_=i;
+					col1.g_=std::min(1.0f,col1.g_);
+					float others=col1.r_+col1.b_+col1.a_+col0.r_+col0.g_+col0.b_+col0.a_;
+					col1.r_=(col1.r_/others)*(1.0f-col1.g_);
+					col1.b_=(col1.b_/others)*(1.0f-col1.g_);
+					col1.a_=(col1.a_/others)*(1.0f-col1.g_);
+					col0.r_=(col0.r_/others)*(1.0f-col1.g_);
+					col0.g_=(col0.g_/others)*(1.0f-col1.g_);
+					col0.b_=(col0.b_/others)*(1.0f-col1.g_);
+					col0.a_=(col0.a_/others)*(1.0f-col1.g_);
+				}
+				else if(layer==6)
+				{
+					col1.b_=i;
+					col1.b_=std::min(1.0f,col1.b_);
+					float others=col1.r_+col1.g_+col1.a_+col0.r_+col0.g_+col0.b_+col0.a_;
+					col1.r_=(col1.r_/others)*(1.0f-col1.b_);
+					col1.g_=(col1.g_/others)*(1.0f-col1.b_);
+					col1.a_=(col1.a_/others)*(1.0f-col1.b_);
+					col0.r_=(col0.r_/others)*(1.0f-col1.b_);
+					col0.g_=(col0.g_/others)*(1.0f-col1.b_);
+					col0.b_=(col0.b_/others)*(1.0f-col1.b_);
+					col0.a_=(col0.a_/others)*(1.0f-col1.b_);
+				}
+				else if(layer==7)
+				{
+					col1.a_=i;
+					col1.a_=std::min(1.0f,col1.a_);
+					float others=col1.r_+col1.g_+col1.b_+col0.r_+col0.g_+col0.b_+col0.a_;
+					col1.r_=(col1.r_/others)*(1.0f-col1.a_);
+					col1.g_=(col1.g_/others)*(1.0f-col1.a_);
+					col1.b_=(col1.b_/others)*(1.0f-col1.a_);
+					col0.r_=(col0.r_/others)*(1.0f-col1.a_);
+					col0.g_=(col0.g_/others)*(1.0f-col1.a_);
+					col0.b_=(col0.b_/others)*(1.0f-col1.a_);
+					col0.a_=(col0.a_/others)*(1.0f-col1.a_);
+				}
+				blend0->SetPixel(x,y,col0);
+				blend1->SetPixel(x,y,col1);
 		}
 	}
 }

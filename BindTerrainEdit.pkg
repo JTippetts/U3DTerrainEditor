@@ -98,6 +98,7 @@ Vector2 WorldToNormalized(Image *height, Terrain *terrain, Vector3 world);
 	void RasterizeQuadStrip(RasterBuffer *buffer, RasterVertexList *strip);
 	void BlendHeightWithRasterizedBuffer(Image *height, RasterBuffer *buffer, RasterBuffer *blend, Image *mask=0, bool useMask=false, bool invertMask=false);
 	void BlendColorWithRasterizedBuffer(Image *img, RasterBuffer *buffer, Color endColor, Image *mask=0, bool useMask=false, bool invertMask=false);
+	void BlendRasterizedBuffer8(Image *img, Image *other, RasterBuffer *buffer, int layer, Image *mask=0, bool useMask=false, bool invertMask=false);
 	void TessellateLineList(RasterVertexList *in, RasterVertexList *out, int steps);
 	void ApplyBedFunction(RasterBuffer *buffer, float hardness, bool quintic);
 	void BuildQuadStrip(RasterVertexList *in, RasterVertexList *out, float width);

@@ -52,6 +52,11 @@ function Start()
 	
 end
 
+function Stop()
+	img1:delete()
+	img2:delete()
+end
+
 function CreateScene()
     scene_ = Scene()
 	CreateCursor()
@@ -152,8 +157,8 @@ function CreateScene()
 	-- Build composite textures
 	comptex1=Texture2D:new(context)
 	comptex2=Texture2D:new(context)
-	local img1=BuildCompositeTexture({"Textures/moss2_ht.png", "Textures/stones1_ht.png", "Textures/lichen5_ht.png", "Textures/lava1_ht.png"})
-	local img2=BuildCompositeTexture({"Textures/grass2_ht.png", "Textures/sand1_ht.png", "Textures/lichen1_ht.png", "Textures/lichen2_ht.png"})
+	img1=BuildCompositeTexture({"Textures/moss2_ht.png", "Textures/stones1_ht.png", "Textures/lichen5_ht.png", "Textures/lava1_ht.png"})
+	img2=BuildCompositeTexture({"Textures/grass2_ht.png", "Textures/sand1_ht.png", "Textures/lichen1_ht.png", "Textures/lichen2_ht.png"})
 	comptex1:SetData(img1, false)
 	comptex2:SetData(img2, false)
 	terrain:GetMaterial():SetTexture(2,comptex1)
