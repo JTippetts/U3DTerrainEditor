@@ -7,8 +7,8 @@ return
 	options=
 	{
 		{name="Steepness threshold", type="value", value=0.7},
-		{name="Fade", type="value", value=0.15},
-		{name="Cliff Layer", type="value", value=3},
+		{name="Fade", type="value", value=0.4},
+		{name="Cliff Layer", type="value", value=1},
 		{name="Use Mask?", type="flag", value=false},
 		{name="Invert Mask?", type="flag", value=false},
 	},
@@ -19,6 +19,9 @@ return
 		local halffade=self.options[2].value*0.5
 		local fade=self.options[2].value
 		local thresh=self.options[1].value
+		local layer=self.options[3].value
+		
+		local buffer=RasterBuffer(bw,bh)
 		
 		local x,y
 		for x=0,bw-1,1 do
@@ -28,39 +31,17 @@ return
 				local normal=terrain:GetNormal(world)
 				
 				local steep=math.abs(normal:DotProduct(Vector3(0,1,0)))
-				--print(steep, normal.x, normal.y)
 				local i=(steep-(thresh-halffade))/fade
 				i=math.max(0,math.min(1,i))
 				i=1-i
 				
-				if self.options[4].value==true then
-					local maskval=mask:GetPixelBilinear(nworld.x,1-nworld.y).r
-					if self.options[5].value==true then maskval=1-maskval end
-					i=i*maskval
-				end
-				
-				local col=blend1:GetPixel(x,(bh-1)-y)
-				local newcol
-				if self.options[3].value==0 then
-					newcol=col:Lerp(Color(1,0,0,0),i)
-				elseif self.options[3].value==1 then
-					newcol=col:Lerp(Color(0,1,0,0),i)
-				elseif self.options[3].value==2 then
-					newcol=col:Lerp(Color(0,0,1,0),i)
-				else
-					newcol=col:Lerp(Color(0,0,0,1),i)
-				end
-				blend1:SetPixel(x,(bh-1)-y,newcol)
+				buffer:set(x,(bw-1)-y,i)
 			end
 			collectgarbage()
 		end
 		
+		BlendRasterizedBuffer8(blend1,blend2,buffer,layer,mask,usemask,invertmask)
 		blendtex1:SetData(blend1,false)
-	
-		print("Filter executed with options: ")
-		local c
-		for _,c in ipairs(self.options) do
-			print(c.name..": "..tostring(c.value))
-		end
+		blendtex2:SetData(blend2,false)
 	end,
 }
