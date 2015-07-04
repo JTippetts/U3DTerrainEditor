@@ -24,7 +24,7 @@ include (Urho3D-CMake-common)
 
 # Find Urho3D library
 find_package (Urho3D REQUIRED)
-include_directories(${URHO3D_HOME}/include/Urho3D/ThirdParty/Lua)
+include_directories(${URHO3D_HOME}/include/Urho3D/ThirdParty/Lua${JIT})
 include_directories(${URHO3D_HOME}/include/Urho3D/ThirdParty/toluapp)
 include_directories(${URHO3D_HOME}/include/Urho3D/ThirdParty/AngelScript)
 include_directories (${URHO3D_INCLUDE_DIRS})
