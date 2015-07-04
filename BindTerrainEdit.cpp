@@ -1,6 +1,6 @@
 /*
 ** Lua binding: BindTerrainEdit
-** Generated automatically by tolua++-1.0.93 on 03/03/15 06:01:47.
+** Generated automatically by tolua++-1.0.93 on 07/04/15 07:28:27.
 */
 
 #ifndef __cplusplus
@@ -2731,21 +2731,23 @@ static int tolua_BindTerrainEdit_RasterBuffer_blur00(lua_State* tolua_S)
  if (
      !tolua_isusertype(tolua_S,1,"RasterBuffer",0,&tolua_err) ||
      !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
-     !tolua_isboolean(tolua_S,3,0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,4,&tolua_err)
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isboolean(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,5,&tolua_err)
  )
   goto tolua_lerror;
  else
 #endif
  {
   RasterBuffer* self = (RasterBuffer*)  tolua_tousertype(tolua_S,1,0);
-  float blur_size = ((float)  tolua_tonumber(tolua_S,2,0));
-  bool seamless = ((bool)  tolua_toboolean(tolua_S,3,0));
+  int blurwidth = ((int)  tolua_tonumber(tolua_S,2,0));
+  int blurheight = ((int)  tolua_tonumber(tolua_S,3,0));
+  bool seamless = ((bool)  tolua_toboolean(tolua_S,4,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'blur'", NULL);
 #endif
   {
-   self->blur(blur_size,seamless);
+   self->blur(blurwidth,blurheight,seamless);
   }
  }
  return 0;

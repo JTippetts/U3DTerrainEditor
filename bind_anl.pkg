@@ -5,8 +5,90 @@ $#include "./ThirdParty/ANL/VM/instruction.h"
 $#include "./ThirdParty/ANL/VM/kernel.h"
 $#include "./ThirdParty/ANL/VM/coordinate.h"
 $#include "./ThirdParty/ANL/VM/random_gen.h"
+$#include "./ThirdParty/ANL/Imaging/imaging.h"
 
 $using namespace anl;
+double highresTime();
+
+class CVec2f
+{
+	public:
+	CVec2f();
+    ~CVec2f();
+    CVec2f(int a);
+    CVec2f(float a);
+    CVec2f(const CVec2f &tvec);
+    CVec2f(const float t1, const float t2);
+
+	const float dotprod(const CVec2f &tvec);
+    const float length();
+    void normalize();
+    void set(float v1, float v2);
+
+    tolua_property float x;
+    tolua_property float y;
+};
+
+class CVec3f
+{
+    public:
+    CVec3f();
+    ~CVec3f();
+    CVec3f(int a);
+    CVec3f(float a);
+    CVec3f(const CVec3f &tvec);
+    CVec3f(const float t1, const float t2, const float t3);
+
+
+    const float dotprod(const CVec3f &tvec);
+    const float length();
+    void normalize();
+    void set(float v1, float v2, float v3);
+
+    tolua_property float x;
+    tolua_property float y;
+    tolua_property float z;
+};
+
+class CVec2i
+{
+	CVec2i();
+	CVec2i(int a);
+	CVec2i(const CVec2i &tvec);
+	CVec2i(const int t1, const int t2);
+	~CVec2i();
+
+	tolua_property int x;
+	tolua_property int y;
+};
+
+class CVec3i
+{
+	CVec3i();
+	CVec3i(int a);
+	CVec3i(const CVec3i &tvec);
+	CVec3i(const int t1, const int t2, const int t3);
+	~CVec3i();
+
+	tolua_property int x;
+	tolua_property int y;
+	tolua_property int z;
+};
+
+class CVec4i
+{
+	CVec4i();
+	CVec4i(int a);
+	CVec4i(const CVec4i &tvec);
+	CVec4i(const int t1, const int t2, const int t3, const int t4);
+	~CVec4i();
+
+	tolua_property int x;
+	tolua_property int y;
+	tolua_property int z;
+	tolua_property int w;
+
+};
 
 // Random generators
 
@@ -151,6 +233,9 @@ class CInstructionListType
         CInstructionIndex v();
 
 		CInstructionIndex radial();
+		
+		CInstructionIndex hexTile(unsigned int seed);
+		CInstructionIndex hexBump();
 
 
 		CInstructionIndex combineRGBA(CInstructionIndex r, CInstructionIndex g, CInstructionIndex b, CInstructionIndex a);
@@ -168,17 +253,19 @@ class CInstructionListType
 		CInstructionIndex nextIndex();
 	};
 	
-	class SRGBA
-    {
-		SRGBA(float r, float g, float b, float a);
+	struct SRGBA
+	{
 		SRGBA();
+		SRGBA(int a);
+		SRGBA(const  SRGBA &tvec);
+		SRGBA(const float t1, const float t2, const float t3, const float t4);
 		~SRGBA();
-		
-		float x();
-		float y();
-		float z();
-		float w();
-    };
+
+		float r;
+		float g;
+		float b;
+		float a;
+	};
 	
 	struct SVMOutput
     {
@@ -198,3 +285,153 @@ class CInstructionListType
         SVMOutput evaluate(CCoordinate &coord);
         SVMOutput evaluateAt(CCoordinate &coord, CInstructionIndex index);
 	};
+	
+	enum EMappingModes
+    {
+        SEAMLESS_NONE,
+        SEAMLESS_X,
+        SEAMLESS_Y,
+        SEAMLESS_Z,
+        SEAMLESS_XY,
+        SEAMLESS_XZ,
+        SEAMLESS_YZ,
+        SEAMLESS_XYZ
+    };
+
+	struct SMappingRanges
+    {
+		SMappingRanges();
+		SMappingRanges(SMappingRanges &rhs);
+        SMappingRanges(const anl::SMappingRanges &rhs);
+        SMappingRanges(double x0, double x1, double y0, double y1, double z0=0.0, double z1=1.0);
+		~SMappingRanges();
+		
+        double mapx0;
+		double mapy0;
+		double mapz0;
+		double  mapx1;
+		double mapy1;
+		double mapz1;
+        double loopx0;
+		double loopy0;
+		double loopz0;
+		double loopx1;
+		double loopy1;
+		double loopz1;
+    };
+	
+
+class CArray2Dd
+{
+  CArray2Dd(int w, int h);
+  CArray2Dd();
+  ~CArray2Dd();
+  void resize(int w, int h);
+  void destroy();
+  int width();
+  int height();
+  void set(int x, int y, double v);
+  double get(int x, int y);
+  double get(float x, float y);
+  double getIndexed(unsigned c);
+  double getBilinear(float x, float y);
+  void fill(float v);
+  void copyFrom(CArray2Dd *b);
+  void addArray(CArray2Dd *b);
+  void subtractArray(CArray2Dd *b);
+  void multiplyArray(CArray2Dd *b);
+  void copyFromSub(CArray2Dd *b, int x, int y);
+  void addArraySub(CArray2Dd *b, int x, int y);
+  void subtractArraySub(CArray2Dd *b, int x, int y);
+  void multiplyArraySub(CArray2Dd *b, int x, int y);
+  void scale(float s);
+  double getMax();
+  double getMin();
+  void scaleToRange(float low, float high);
+  void wrapCoords(int &x, int &y);
+  void offset(int ox, int oy);
+  void flipVertical();
+  void flipHorizontal();
+  void blur(int blurwidth, int blurheight, bool seamless);
+};
+
+class CArray2Drgba
+{
+  CArray2Drgba(int w, int h);
+  CArray2Drgba();
+  ~CArray2Drgba();
+  void resize(int w, int h);
+  void destroy();
+  int width();
+  int height();
+  void set(int x, int y, SRGBA v);
+  SRGBA get(int x, int y);
+  SRGBA get(float x, float y);
+  SRGBA getIndexed(unsigned c);
+  SRGBA getBilinear(float x, float y);
+  void fill(SRGBA v);
+  void copyFrom(CArray2Drgba *b);
+  void addArray(CArray2Drgba *b);
+  void subtractArray(CArray2Drgba *b);
+  void multiplyArray(CArray2Drgba *b);
+  void copyFromSub(CArray2Drgba *b, int x, int y);
+  void addArraySub(CArray2Drgba *b, int x, int y);
+  void subtractArraySub(CArray2Drgba *b, int x, int y);
+  void multiplyArraySub(CArray2Drgba *b, int x, int y);
+  void scale(SRGBA s);
+  void wrapCoords(int &x, int &y);
+  void offset(int ox, int oy);
+  void flipVertical();
+  void flipHorizontal();
+  void blur(int blurwidth, int blurheight, bool seamless);
+};
+
+
+class CArray3Dd
+{
+	public:
+	CArray3Dd();
+	CArray3Dd(int w, int h, int d);
+	~CArray3Dd();
+
+	int width();
+	int height();
+	int depth();
+
+	void set(int x, int y, int z, double v);
+	double get(int x, int y, int z);
+	void resize(int w, int h, int d);
+};
+
+class CArray3Drgba
+{
+	public:
+	CArray3Drgba();
+	CArray3Drgba(int w, int h, int d);
+	~CArray3Drgba();
+
+	int width();
+	int height();
+	int depth();
+
+	void resize(int w, int h, int d);
+	void set(int x, int y, int z, SRGBA v);
+	anl::SRGBA get(int x, int y, int z);
+};
+
+void map2D(int seamlessmode, CArray2Dd &a, CKernel &k, SMappingRanges ranges, CInstructionIndex index, double z);
+void map2DNoZ(int seamlessmode, CArray2Dd &a, CKernel &k, SMappingRanges ranges, CInstructionIndex index);
+void map3D(int seamlessmode, CArray3Dd &a, CKernel &k, SMappingRanges ranges, CInstructionIndex index);
+
+void mapRGBA2D(int seamlessmode, CArray2Drgba &a, CKernel &k, SMappingRanges ranges, CInstructionIndex index, double z);
+void mapRGBA2DNoZ(int seamlessmode, CArray2Drgba &a, CKernel &k, SMappingRanges ranges, CInstructionIndex index);
+void mapRGBA3D(int seamlessmode, CArray3Drgba &a, CKernel &k, SMappingRanges ranges, CInstructionIndex index);
+
+void saveDoubleArray(const char *filename, CArray2Dd *array);
+void saveRGBAArray(const char *filename, CArray2Drgba *array); 
+void loadDoubleArray(const char *filename, CArray2Dd *array);
+void loadRGBAArray(const char *filename, CArray2Drgba *array);
+	
+	
+void map2DThread(int seamlessmode, CArray2Dd &a, CKernel &k, SMappingRanges ranges, double z);
+void map2DNoThread(int seamlessmode, CArray2Dd &a, CKernel &k, SMappingRanges ranges, double z);

@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2008-2014 the Urho3D project.
+# Copyright (c) 2008-2015 the Urho3D project.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -29,7 +29,7 @@ endif ()
 
 # this one is important
 set (CMAKE_SYSTEM_NAME Windows)
-#this one not so much
+# this one not so much
 set (CMAKE_SYSTEM_PROCESSOR x86)
 
 # specify the cross compiler
@@ -40,8 +40,34 @@ if (NOT EXISTS ${MINGW_PREFIX}-gcc)
     message (FATAL_ERROR "Could not find MinGW cross compilation tool. "
         "Use MINGW_PREFIX environment variable or build option to specify the location of the toolchain.")
 endif ()
-set (CMAKE_C_COMPILER   ${MINGW_PREFIX}-gcc     CACHE PATH "C compiler")
-set (CMAKE_CXX_COMPILER ${MINGW_PREFIX}-g++     CACHE PATH "C++ compiler")
+set (COMPILER_PREFIX ${MINGW_PREFIX})
+if (NOT CMAKE_C_COMPILER AND "$ENV{USE_CCACHE}")
+    get_filename_component (NAME ${MINGW_PREFIX} NAME)
+    execute_process (COMMAND whereis -b ccache COMMAND grep -o \\S*lib\\S* RESULT_VARIABLE EXIT_CODE OUTPUT_VARIABLE CCACHE_SYMLINK ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE)
+    if (EXIT_CODE EQUAL 0 AND EXISTS ${CCACHE_SYMLINK}/${NAME}-gcc AND EXISTS ${CCACHE_SYMLINK}/${NAME}-g++)
+        set (COMPILER_PREFIX ${CCACHE_SYMLINK}/${NAME})
+    else ()
+        # Most probably this is a custom compiler toolchain not provided by the distro's own repository
+        get_filename_component (PATH ${MINGW_PREFIX} PATH)
+        if (NOT $ENV{PATH} MATCHES ${PATH})
+            message (FATAL_ERROR "The bin directory containing the compiler toolchain (${PATH}) has not been added in the PATH environment variable. "
+                "This is required to enable ccache support for MinGW compiler toolchain.")
+        endif ()
+        execute_process (COMMAND which ccache RESULT_VARIABLE EXIT_CODE OUTPUT_VARIABLE CCACHE ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE)
+        if (EXIT_CODE EQUAL 0)
+            foreach (suffix gcc g++)
+                execute_process (COMMAND ${CMAKE_COMMAND} -E create_symlink ${CCACHE} ${CMAKE_BINARY_DIR}/${NAME}-${suffix})
+            endforeach ()
+            set (COMPILER_PREFIX ${CMAKE_BINARY_DIR}/${NAME})
+        else ()
+            message (WARNING "ccache may not have been installed on this host system. "
+                "This is required to enable ccache support for MinGW compiler toolchain. CMake has been configured to use the actual compiler toolchain instead of ccache. "
+                "In order to rectify this, the build tree must be regenerated after installing ccache.")
+        endif ()
+    endif ()
+endif ()
+set (CMAKE_C_COMPILER   ${COMPILER_PREFIX}-gcc  CACHE PATH "C compiler")
+set (CMAKE_CXX_COMPILER ${COMPILER_PREFIX}-g++  CACHE PATH "C++ compiler")
 set (CMAKE_STRIP        ${MINGW_PREFIX}-strip   CACHE PATH "strip")
 set (CMAKE_AR           ${MINGW_PREFIX}-ar      CACHE PATH "archive")
 set (CMAKE_LINKER       ${MINGW_PREFIX}-ld      CACHE PATH "linker")
@@ -59,7 +85,7 @@ if (NOT MINGW_SYSROOT)
         get_filename_component (NAME ${MINGW_PREFIX} NAME)
         if (EXISTS /usr/${NAME}/sys-root)
             # Redhat based system
-            set (MINGW_SYSROOT /usr/${NAME}/sys-root)
+            set (MINGW_SYSROOT /usr/${NAME}/sys-root/mingw)
         else ()
             # Debian based system
             set (MINGW_SYSROOT /usr/${NAME})

@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2008-2014 the Urho3D project.
+# Copyright (c) 2008-2015 the Urho3D project.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -111,13 +111,14 @@ else ()
         endif ()
     endif ()
     if (URHO3D_INCLUDE_DIRS)
+        set (BASE_INCLUDE_DIR ${URHO3D_INCLUDE_DIRS})   # Preserve the base include dir because the original variable will be turned into a list below
         get_filename_component (PATH ${URHO3D_INCLUDE_DIRS} PATH)
         set (URHO3D_INCLUDE_DIRS ${PATH} ${URHO3D_INCLUDE_DIRS}/ThirdParty)
         if (URHO3D_PHYSICS)
-            list (APPEND URHO3D_INCLUDE_DIRS ${URHO3D_INCLUDE_DIRS}/ThirdParty/Bullet)
+            list (APPEND URHO3D_INCLUDE_DIRS ${BASE_INCLUDE_DIR}/ThirdParty/Bullet)
         endif ()
         if (URHO3D_LUA)
-            list (APPEND URHO3D_INCLUDE_DIRS ${URHO3D_INCLUDE_DIRS}/ThirdParty/Lua${JIT})
+            list (APPEND URHO3D_INCLUDE_DIRS ${BASE_INCLUDE_DIR}/ThirdParty/Lua${JIT})
         endif ()
         if (NOT URHO3D_HOME)
             # URHO3D_HOME is not set when using SDK installed on system-wide default location, so set it now

@@ -81,6 +81,10 @@ namespace anl
         CInstructionIndex v();
 
 		CInstructionIndex radial();
+		
+		// Patterns
+		CInstructionIndex hexTile(unsigned int seed);
+		CInstructionIndex hexBump();
 
 
 		CInstructionIndex combineRGBA(CInstructionIndex r, CInstructionIndex g, CInstructionIndex b, CInstructionIndex a);

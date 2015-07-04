@@ -60,6 +60,10 @@ namespace anl
         OP_W,
         OP_U,
         OP_V,
+		
+		// Patterns
+		OP_HexTile,
+		OP_HexBump,
 
 		// RGBA operations
 		OP_ExtractRed,

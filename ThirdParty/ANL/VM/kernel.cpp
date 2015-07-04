@@ -794,4 +794,21 @@ CInstructionIndex CKernel::combineRGBA(CInstructionIndex r, CInstructionIndex g,
 	kernel_.push_back(i);
 	return lastIndex();
 }
+
+CInstructionIndex CKernel::hexTile(unsigned int seed)
+{
+	anl::SInstruction i;
+	i.opcode_=anl::OP_HexTile;
+	i.seed_=seed;
+	kernel_.push_back(i);
+	return lastIndex();
+}
+
+CInstructionIndex CKernel::hexBump()
+{
+	anl::SInstruction i;
+	i.opcode_=anl::OP_HexBump;
+	kernel_.push_back(i);
+	return lastIndex();
+}
 };

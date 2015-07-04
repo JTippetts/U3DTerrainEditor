@@ -117,13 +117,14 @@ function CreateScene()
 	hmap:Clear(Color(0.1,0,0,0))
     terrain.heightMap = hmap
     --terrain.material = cache:GetResource("Material", "Materials/TerrainEdit.xml")
-	terrain.material = cache:GetResource("Material", "Materials/TerrainEdit8.xml")
+	--terrain.material = cache:GetResource("Material", "Materials/TerrainEdit8.xml")
+	terrain.material = cache:GetResource("Material", "Materials/Terrain.xml")
 	--terrain.material = cache:GetResource("Material", "Materials/TerrainColorDetailEdit8.xml")
 	--terrain.material = cache:GetResource("Material", "Materials/TerrainBlend4NormalEdit.xml")
 	
     -- The terrain consists of large triangles, which fits well for occlusion rendering, as a hill can occlude all
     -- terrain patches and other objects behind it
-    terrain.occluder = true
+    terrain.occluder = false
 	
 	mask=Image(context)
 	masktex=Texture2D:new(context)
@@ -157,16 +158,19 @@ function CreateScene()
 	-- Build composite textures
 	comptex1=Texture2D:new(context)
 	comptex2=Texture2D:new(context)
-	--img1=BuildCompositeTexture({"Textures/moss2_ht.png", "Textures/stones1_ht.png", "Textures/lichen5_ht.png", "Textures/lava1_ht.png"})
+	--img1=BuildCompositeTexture({"Textures/moss2_ht.png", "Textures/stones1_ht.png", "Textures/stonepath1_ht.png", "Textures/lava1_ht.png"})
+	--img1:SavePNG("thing1.png")
 	--img2=BuildCompositeTexture({"Textures/dirt1_ht.png", "Textures/softsand1_ht.png", "Textures/lichen1_ht.png", "Textures/sharpstones2_ht.png"})
-	img1=cache:GetResource("Image", "Textures/thing1.png")
-	img2=cache:GetResource("Image", "Textures/thing2.png")
+	--img1=cache:GetResource("Image", "Textures/thing1.png")
+	--img2=cache:GetResource("Image", "Textures/thing2.png")
+	img1=cache:GetResource("Image", "Textures/diff.png")
+	img2=cache:GetResource("Image", "Textures/normal.png")
 	comptex1:SetData(img1, false)
 	comptex2:SetData(img2, false)
 	terrain:GetMaterial():SetTexture(2,comptex1)
 	terrain:GetMaterial():SetTexture(3,comptex2)
 	
-	--img1:SavePNG("thing1.png")
+	
 	--img2:SavePNG("thing2.png")
 	
 	-- Color detailing
@@ -200,6 +204,7 @@ function CreateScene()
 	--local lt=cameraNode:CreateComponent("Light")
 
 	projecttozero=true
+	graphics.flushGPU=true
 end
 
 function CreateInstructions()

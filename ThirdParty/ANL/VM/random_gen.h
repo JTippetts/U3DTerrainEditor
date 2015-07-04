@@ -32,7 +32,6 @@ namespace anl
     class CBasePRNG
     {
         public:
-        CBasePRNG(){};
         virtual ~CBasePRNG(){};
 
         virtual unsigned int get()=0;

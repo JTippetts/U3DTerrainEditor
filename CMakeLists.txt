@@ -22,7 +22,6 @@ MESSAGE("${CMAKE_MODULE_PATH}")
 # Include Urho3D Cmake common module
 include (Urho3D-CMake-common)
 
-
 # Find Urho3D library
 find_package (Urho3D REQUIRED)
 include_directories(${URHO3D_HOME}/include/Urho3D/ThirdParty/Lua)
@@ -32,10 +31,10 @@ include_directories (${URHO3D_INCLUDE_DIRS})
 include_directories (${INCLUDE_DIRS_ONLY})
 
 
-add_subdirectory(ThirdParty/ANL/VM)
+add_subdirectory(ThirdParty/ANL)
 
-set(INCLUDE_DIRS_ONLY ${INCLUDE_DIRS_ONLY} ThirdParty/ANL/VM )
-set(LIBS ${LIBS} ANLVM)
+set(INCLUDE_DIRS_ONLY ${INCLUDE_DIRS_ONLY} ThirdParty/ANL/VM ThirdParty/ANL/Imaging )
+set(LIBS ${LIBS} ANL) 
 
 # Define target name
 set (TARGET_NAME TEdit)

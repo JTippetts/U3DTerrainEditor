@@ -13,8 +13,10 @@
 
 sampler2D sWeightMap0 : register(S0);
 sampler2D sWeightMap1 : register(S1);
-sampler2D sDetailMap1 : register(S2);
-sampler2D sDetailMap2 : register(S3);
+sampler2D sDetailMap : register(S2);
+#ifdef BUMPMAP
+sampler2D sNormal : register(S3);
+#endif
 sampler2D sMask : register(S12);
 
 uniform float2 cDetailTiling;
@@ -53,22 +55,6 @@ float4 sampleTexturePackMipWrapped(sampler2D s, float2 uv, float2 tile, float lo
 	return(tex2Dlod(s, float4(uv.xy,0,lod)));
 }
 
-float2 blendfactors(float4 texture1, float a1, float4 texture2, float a2)
-{
-	float depth = 0.2;
-    float ma = max(texture1.a + a1, texture2.a + a2) - depth;
-
-    float b1 = max(texture1.a + a1 - ma, 0);
-    float b2 = max(texture2.a + a2 - ma, 0);
-	return float2(b1,b2);
-}
-
-float4 blend(float4 texture1, float a1, float4 texture2, float a2)
-{
-    float2 b=blendfactors(texture1, a1, texture2, a2);
-
-    return (texture1.rgba * b.x + texture2.rgba * b.y) / (b.x + b.y);
-}
 
 float4 sampleTerrain(sampler2D s, float2 uv, float2 tile, float lod)
 {
@@ -207,49 +193,32 @@ void PS(
 	#ifdef USEMASKTEXTURE
 	float mask=tex2D(sMask, iTexCoord).r;
 	#endif
-    float sumWeights = weights0.r + weights0.g + weights0.b + weights0.a + weights1.r + weights1.g + weights1.b + weights1.a;
-    weights0 /= sumWeights;
-	weights1 /= sumWeights;
 	
 	// Calculate lod
 	float lod = mipmapLevel(iDetailTexCoord, cPackTexFactors.z);
 	lod = clamp(lod, 0.0, cPackTexFactors.w);
 	
-	float4 tex1=sampleTerrain(sDetailMap1, iDetailTexCoord, float2(0,0),lod);
-	float4 tex2=sampleTerrain(sDetailMap1, iDetailTexCoord, float2(1,0),lod);
-	float4 tex3=sampleTerrain(sDetailMap1, iDetailTexCoord, float2(0,1),lod);
-	float4 tex4=sampleTerrain(sDetailMap1, iDetailTexCoord, float2(1,1),lod);
+	float4 tex1=sampleTerrain(sDetailMap, iDetailTexCoord, float2(0,0),lod);
+	float4 tex2=sampleTerrain(sDetailMap, iDetailTexCoord, float2(1,0),lod);
+	float4 tex3=sampleTerrain(sDetailMap, iDetailTexCoord, float2(2,0),lod);
+	float4 tex4=sampleTerrain(sDetailMap, iDetailTexCoord, float2(3,0),lod);
 	
-	float4 tex5=sampleTerrain(sDetailMap2, iDetailTexCoord, float2(0,0),lod);
-	float4 tex6=sampleTerrain(sDetailMap2, iDetailTexCoord, float2(1,0),lod);
-	float4 tex7=sampleTerrain(sDetailMap2, iDetailTexCoord, float2(0,1),lod);
-	float4 tex8=sampleTerrain(sDetailMap2, iDetailTexCoord, float2(1,1),lod);
+	float4 tex5=sampleTerrain(sDetailMap, iDetailTexCoord, float2(0,1),lod);
+	float4 tex6=sampleTerrain(sDetailMap, iDetailTexCoord, float2(1,1),lod);
+	float4 tex7=sampleTerrain(sDetailMap, iDetailTexCoord, float2(2,1),lod);
+	float4 tex8=sampleTerrain(sDetailMap, iDetailTexCoord, float2(3,1),lod);
 	
-	
-	float2 b1=blendfactors(tex1,weights0.r,tex2,weights0.g);
-	float2 b2=blendfactors(tex3,weights0.b,tex4,weights0.a);
-	float2 b3=blendfactors(tex5,weights1.r,tex6,weights1.g);
-	float2 b4=blendfactors(tex7,weights1.b,tex8,weights1.a);
-	
-	
-	float4 c1=(tex1*b1.x + tex2*b1.y) / (b1.x+b1.y);
-	float a1=weights0.r+weights0.g;
-	float4 c2=(tex3*b2.x + tex4*b2.y) / (b2.x+b2.y);
-	float a2=weights0.b+weights0.a;
-	float4 c3=(tex5*b3.x + tex6*b3.y) / (b3.x+b3.y);
-	float a3=weights1.r+weights1.g;
-	float4 c4=(tex7*b4.x + tex8*b4.y) / (b4.x+b4.y);
-	float a4=weights1.b+weights1.a;
-	
-	float2 b5=blendfactors(c1,a1,c2,a2);
-	float4 c5=(c1*b5.x+c2*b5.y)/(b5.x+b5.y);
-	float2 b6=blendfactors(c3,a3,c4,a4);
-	float4 c6=(c3*b6.x+c4*b6.y)/(b6.x+b6.y);
-	
-	
-	float2 b7=blendfactors(c5,a1+a2,c6,a3+a4);
-	float4 diffColor=cMatDiffColor * ((c5*b7.x + c6*b7.y)/(b7.x+b7.y));
-	//float4 diffColor=float4(0.5,0.5,0.5,1);
+	float ma=max(tex1.a+weights0.r, max(tex2.a+weights0.g, max(tex3.a+weights0.b, max(tex4.a+weights0.a, max(tex5.a+weights1.r, max(tex6.a+weights1.g, max(tex7.a+weights1.b, tex8.a+weights1.a)))))))-0.2;
+	float b1=max(0, tex1.a+weights0.r-ma);
+	float b2=max(0, tex2.a+weights0.g-ma);
+	float b3=max(0, tex3.a+weights0.b-ma);
+	float b4=max(0, tex4.a+weights0.a-ma);
+	float b5=max(0, tex5.a+weights1.r-ma);
+	float b6=max(0, tex6.a+weights1.g-ma);
+	float b7=max(0, tex7.a+weights1.b-ma);
+	float b8=max(0, tex8.a+weights1.a-ma);
+	float bsum=b1+b2+b3+b4+b5+b6+b7+b8;
+	float4 diffColor=(tex1*b1+tex2*b2+tex3*b3+tex4*b4+tex5*b5+tex6*b6+tex7*b7+tex8*b8)/bsum;
     
 	#ifdef USEMASKTEXTURE
 	diffColor=lerp(float4(1,0.5,0.3, diffColor.a), diffColor, mask);
@@ -262,23 +231,28 @@ void PS(
     #ifdef BUMPMAP
         float3x3 tbn = float3x3(iTangent.xyz, float3(iTexCoord.zw, iTangent.w), iNormal);
         
-		float3 bump1=bump(sDetailMap1, iDetailTexCoord, tex1.a, float2(0,0),lod);
-		float3 bump2=bump(sDetailMap1, iDetailTexCoord, tex2.a,float2(1,0),lod);
-		float3 bump3=bump(sDetailMap1, iDetailTexCoord, tex3.a,float2(0,1),lod);
-		float3 bump4=bump(sDetailMap1, iDetailTexCoord, tex4.a,float2(1,1),lod);
+		//float3 bump1=bump(sDetailMap1, iDetailTexCoord, tex1.a, float2(0,0),lod);
+		//float3 bump2=bump(sDetailMap1, iDetailTexCoord, tex2.a,float2(1,0),lod);
+		//float3 bump3=bump(sDetailMap1, iDetailTexCoord, tex3.a,float2(0,1),lod);
+		//float3 bump4=bump(sDetailMap1, iDetailTexCoord, tex4.a,float2(1,1),lod);
 		
-		float3 bump5=bump(sDetailMap2, iDetailTexCoord, tex5.a,float2(0,0),lod);
-		float3 bump6=bump(sDetailMap2, iDetailTexCoord, tex6.a,float2(1,0),lod);
-		float3 bump7=bump(sDetailMap2, iDetailTexCoord, tex7.a,float2(0,1),lod);
-		float3 bump8=bump(sDetailMap2, iDetailTexCoord, tex8.a,float2(1,1),lod);
+		//float3 bump5=bump(sDetailMap2, iDetailTexCoord, tex5.a,float2(0,0),lod);
+		//float3 bump6=bump(sDetailMap2, iDetailTexCoord, tex6.a,float2(1,0),lod);
+		//float3 bump7=bump(sDetailMap2, iDetailTexCoord, tex7.a,float2(0,1),lod);
+		//float3 bump8=bump(sDetailMap2, iDetailTexCoord, tex8.a,float2(1,1),lod);
 		
-		float3 nc1=(bump1*b1.x + bump2*b1.y) / (b1.x+b1.y);
-		float3 nc2=(bump3*b2.x + bump4*b2.y) / (b2.x+b2.y);
-		float3 nc3=(bump5*b3.x + bump6*b3.y) / (b3.x+b3.y);
-		float3 nc4=(bump7*b4.x + bump8*b4.y) / (b4.x+b4.y);
-		float3 nc5=(nc1*b5.x + nc2*b5.y) / (b5.x+b5.y);
-		float3 nc6=(nc3*b6.x + nc4*b6.y) / (b6.x+b6.y);
-		float3 normal=normalize(mul((nc5*b7.x+nc6*b7.y)/(b7.x+b7.y),tbn));
+		float3 bump1=DecodeNormal(sampleTerrain(sNormal, iDetailTexCoord, float2(0,0), lod));
+		float3 bump2=DecodeNormal(sampleTerrain(sNormal, iDetailTexCoord, float2(1,0), lod));
+		float3 bump3=DecodeNormal(sampleTerrain(sNormal, iDetailTexCoord, float2(2,0), lod));
+		float3 bump4=DecodeNormal(sampleTerrain(sNormal, iDetailTexCoord, float2(3,0), lod));
+		
+		float3 bump5=DecodeNormal(sampleTerrain(sNormal, iDetailTexCoord, float2(0,1), lod));
+		float3 bump6=DecodeNormal(sampleTerrain(sNormal, iDetailTexCoord, float2(1,1), lod));
+		float3 bump7=DecodeNormal(sampleTerrain(sNormal, iDetailTexCoord, float2(2,1), lod));
+		float3 bump8=DecodeNormal(sampleTerrain(sNormal, iDetailTexCoord, float2(3,1), lod));
+		
+		float3 normal=normalize(mul((bump1*b1+bump2*b2+bump3*b3+bump4*b4+bump5*b5+bump6*b6+bump7*b7+bump8*b8)/bsum,tbn));
+		
     #else
         float3 normal = normalize(iNormal);
     #endif

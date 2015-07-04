@@ -1,7 +1,65 @@
 #include "vm.h"
 #include "kernel.h"
 #include "utility.h"
+#include "hashing.h"
 #include <iostream>
+
+CoordPair closest_point(double vx, double vy, double x, double  y)
+{
+	double len=std::sqrt(vx*vx+vy*vy);
+	double u=(x*vx+y*vy)/len;
+	CoordPair c;
+	c.x=u*vx;
+	c.y=u*vy;
+	return c;
+}
+
+double deg_to_rad(double deg)
+{
+	return deg*(3.14159265/180.0);
+}
+
+double rad_to_deg(double rad)
+{
+	return rad*(180.0/3.14159265);
+}
+
+double hex_function(double x, double y)
+{
+	if(x==0 && y==0) return 1.0;
+	
+	double len=std::sqrt(x*x+y*y);
+	double dx=x/len, dy=y/len;
+	double angle_degrees=rad_to_deg(std::atan2(dy,dx));
+	
+	double angleincrement=60;
+	double t=(angle_degrees/angleincrement);
+	double a1=std::floor(t)*angleincrement;
+	double a2=a1+angleincrement;
+	
+	double ax1=std::cos(deg_to_rad(a1));
+	double ay1=std::sin(deg_to_rad(a1));
+	double ax2=std::cos(deg_to_rad(a2));
+	double ay2=std::sin(deg_to_rad(a2));
+	
+	CoordPair p1=closest_point(ax1,ay1,x,y);
+	CoordPair p2=closest_point(ax2,ay2,x,y);
+	
+	double dist1=std::sqrt((x-p1.x)*(x-p1.x)+(y-p1.y)*(y-p1.y));
+	double dist2=std::sqrt((x-p2.x)*(x-p2.x)+(y-p2.y)*(y-p2.y));
+	
+	if(dist1<dist2)
+	{
+		double d1=std::sqrt(p1.x*p1.x+p1.y*p1.y);
+		return d1/0.86602540378443864676372317075294;
+	}
+	else
+	{
+		double d1=std::sqrt(p2.x*p2.x+p2.y*p2.y);
+		return d1/0.86602540378443864676372317075294;
+	}
+	
+}
 
 namespace anl
 {
@@ -766,11 +824,31 @@ namespace anl
                 evaluated[index]=true;
                 return;
             } break;
+			
+			case OP_HexTile:
+			{
+				TileCoord tile=calcHexPointTile(coord.x_, coord.y_);
+				unsigned int hash=hash_coords_2(tile.x, tile.y, i.seed_);
+				cache[index].set((double)hash/255.0);
+				evaluated[index]=true;
+				return;
+			} break;
+			
+			case OP_HexBump:
+			{
+				TileCoord tile=calcHexPointTile(coord.x_, coord.y_);
+				CoordPair center=calcHexTileCenter(tile.x, tile.y);
+				double dx=coord.x_-center.x;
+				double dy=coord.y_-center.y;
+				cache[index].set(hex_function(dx,dy));
+				evaluated[index]=true;
+				return;
+			} break;
 
 			case OP_ExtractRed:
 			{
 				SRGBA c=evaluateRGBA(kernel,evaluated,coordcache,cache,i.sources_[0],coord);
-				cache[index].set(c.x());
+				cache[index].set(c.r);
 				evaluated[index]=true;
 				return;
 			} break;
@@ -778,7 +856,7 @@ namespace anl
 			case OP_ExtractGreen:
 			{
 				SRGBA c=evaluateRGBA(kernel,evaluated,coordcache,cache,i.sources_[0],coord);
-				cache[index].set(c.y());
+				cache[index].set(c.g);
 				evaluated[index]=true;
 				return;
 			} break;
@@ -786,7 +864,7 @@ namespace anl
 			case OP_ExtractBlue:
 			{
 				SRGBA c=evaluateRGBA(kernel,evaluated,coordcache,cache,i.sources_[0],coord);
-				cache[index].set(c.z());
+				cache[index].set(c.b);
 				evaluated[index]=true;
 				return;
 			} break;
@@ -794,7 +872,7 @@ namespace anl
 			case OP_ExtractAlpha:
 			{
 				SRGBA c=evaluateRGBA(kernel,evaluated,coordcache,cache,i.sources_[0],coord);
-				cache[index].set(c.w());
+				cache[index].set(c.a);
 				evaluated[index]=true;
 				return;
 			} break;
@@ -821,4 +899,68 @@ namespace anl
             default: evaluated[index]=true; return; break;
         };
     }
+	
+	TileCoord CNoiseExecutor::calcHexPointTile(float px, float py)
+	{
+		TileCoord tile;
+		float rise=0.5f;
+		float slope=rise/0.8660254f;
+		int X=(int)(px/1.732051f);
+		int Y=(int)(py/1.5f);
+
+		float offsetX=px-(float)X*1.732051f;
+		float offsetY=py-(float)Y*1.5f;
+
+		if(fmod(Y, 2)==0)
+		{
+			if(offsetY < (-slope * offsetX+rise))
+			{
+				--X;
+				--Y;
+			}
+			else if(offsetY < (slope*offsetX-rise))
+			{
+				--Y;
+			}
+		}
+		else
+		{
+			if(offsetX >= 0.8660254f)
+			{
+				if(offsetY <(-slope*offsetX+rise*2))
+				{
+					--Y;
+				}
+			}
+			else
+			{
+				if(offsetY<(slope*offsetX))
+				{
+					--Y;
+				}
+				else
+				{
+					--X;
+				}
+			}
+		}
+		tile.x=X;
+		tile.y=Y;
+		return tile;
+	}
+	
+	CoordPair CNoiseExecutor::calcHexTileCenter(int tx, int ty)
+	{
+		CoordPair origin;
+		float ymod=fmod(ty, 2.0f);
+		if(ymod==1.0f) ymod=0.8660254;
+		else ymod=0.0f;
+		origin.x=(float)tx*1.732051+ymod;
+		origin.y=(float)ty*1.5;
+		CoordPair center;
+		center.x=origin.x+0.8660254;
+		center.y=origin.y+1.0;
+		//std::cout << "Hex Coords: " << tx << ", " << ty << "  Center: " << center[0] << ", " << center[1] << std::endl;
+		return center;
+	}
 };
