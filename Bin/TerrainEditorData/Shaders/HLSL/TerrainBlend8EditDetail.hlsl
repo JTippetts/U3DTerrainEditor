@@ -10,18 +10,49 @@
     #undef SPECULAR
 #endif
 
-
-sampler2D sWeightMap0 : register(S0);
-sampler2D sWeightMap1 : register(S1);
-sampler2D sDetailMap : register(S2);
-#ifdef BUMPMAP
-sampler2D sNormal : register(S3);
+#ifndef D3D11
+	#ifdef COMPILEPS
+		sampler2D sWeightMap0 : register(S0);
+		sampler2D sWeightMap1 : register(S1);
+		sampler2D sDetailMap : register(S2);
+		#ifdef BUMPMAP
+			sampler2D sNormal : register(S3);
+		#endif
+		sampler2D sMask : register(S12);
+	#endif
+	
+	#ifdef COMPILEVS
+	
+	#endif
+	uniform float2 cDetailTiling;
+	uniform float cBumpStrength;
+	uniform float4 cPackTexFactors;
+#else
+	#ifdef COMPILEPS
+		Texture2D tWeightMap0 : register(t0);
+		Texture2D tWeightMap1 : register(t1);
+		Texture2D tDetailMap : register(t2);
+		SamplerState sWeightMap0 : register(s0);
+		SamplerState sWeightMap1 : register(s1);
+		SamplerState sDetailMap : register(s2);
+		#ifdef BUMPMAP
+			Texture2D tNormal : register(t3);
+			SamplerState sNormal : register(s3);
+		#endif
+		Texture2D tMask : register(t12);
+		SamplerState sMask : register(s12);
+		
+		cbuffer CustomPS : register(b6)
+		{
+			float4 cPackTexFactors;
+		};
+	
+	#endif
+	
+	#ifdef COMPILEVS
+	
+	#endif
 #endif
-sampler2D sMask : register(S12);
-
-uniform float2 cDetailTiling;
-uniform float cBumpStrength;
-uniform float4 cPackTexFactors;
 
 float mipmapLevel(float2 uv, float textureSize)
 {
@@ -31,7 +62,8 @@ float mipmapLevel(float2 uv, float textureSize)
     return 0.5 * log2(d);
 }
 
-
+#ifdef COMPILEPS
+#ifndef D3D11
 
 float4 sampleTexturePackMipWrapped(sampler2D s, float2 uv, float2 tile, float lod)
 {
@@ -55,7 +87,6 @@ float4 sampleTexturePackMipWrapped(sampler2D s, float2 uv, float2 tile, float lo
 	return(tex2Dlod(s, float4(uv.xy,0,lod)));
 }
 
-
 float4 sampleTerrain(sampler2D s, float2 uv, float2 tile, float lod)
 {
 	//return (tex2D(s,uv)*0.65+tex2D(s,uv*0.435)*0.35);
@@ -63,19 +94,41 @@ float4 sampleTerrain(sampler2D s, float2 uv, float2 tile, float lod)
 	return sampleTexturePackMipWrapped(s,uv,tile, lod);
 }
 
-float3 bump(sampler2D s, float2 uv, float currenta, float2 tile, float lod)
+#else
+float4 sampleTexturePackMipWrapped(Texture2D t, SamplerState s, float2 uv, float2 tile, float lod)
 {
+ 	/// estimate mipmap/LOD level
+	//float lod = mipmapLevel(uv, cPackTexFactors.z);
+	//lod = clamp(lod, 0.0, cPackTexFactors.w);
+
+	/// get width/height of the whole pack texture for the current lod level
 	float size = pow(2.0, cPackTexFactors.w - lod);
-	float sizex = 1.0/(size / cPackTexFactors.x); // width in pixels
-	float sizey = 1.0/(size / cPackTexFactors.y); // height in pixels
-	
-	float3 n=float3(
-		(currenta - sampleTerrain(s,float2(uv.x+sizex, uv.y),tile,lod).a)/(sizex*cBumpStrength),
-		(currenta - sampleTerrain(s,float2(uv.x,uv.y+sizey),tile,lod).a)/(sizey*cBumpStrength),
-		1
-	);
-	return normalize(n);
+	float sizex = size / cPackTexFactors.x; // width in pixels
+	float sizey = size / cPackTexFactors.y; // height in pixels
+
+	/// perform tiling
+	uv = frac(uv);
+
+	/// tweak pixels for correct bilinear filtering, and add offset for the wanted tile
+	uv.x = uv.x * ((sizex * cPackTexFactors.x - 1.0) / sizex) + 0.5 / sizex + cPackTexFactors.x * tile.x;
+	uv.y = uv.y * ((sizey * cPackTexFactors.y - 1.0) / sizey) + 0.5 / sizey + cPackTexFactors.y * tile.y;
+
+    //return(tex2Dlod(s, uv, lod));
+	//return(tex2Dlod(s, float4(uv.xy,0,lod)));
+	return t.SampleLevel(s,uv,lod);
 }
+
+float4 sampleTerrain(Texture2D t, SamplerState s, float2 uv, float2 tile, float lod)
+{
+	//return (tex2D(s,uv)*0.65+tex2D(s,uv*0.435)*0.35);
+	//return tex2D(s,uv);
+	return sampleTexturePackMipWrapped(t,s,uv,tile, lod);
+}
+
+#endif
+#endif
+
+
 
 void VS(float4 iPos : POSITION,
     float3 iNormal : NORMAL,
@@ -106,7 +159,10 @@ void VS(float4 iPos : POSITION,
         out float3 oVertexLight : TEXCOORD4,
         out float4 oScreenPos : TEXCOORD5,
     #endif
-    out float4 oPos : POSITION)
+	#if defined(D3D11) && defined(CLIPPLANE)
+        out float oClip : SV_CLIPDISTANCE0,
+    #endif
+    out float4 oPos : OUTPOSITION)
 {
     float4x3 modelMatrix = iModelMatrix;
     float3 worldPos = GetWorldPos(modelMatrix);
@@ -121,7 +177,11 @@ void VS(float4 iPos : POSITION,
     #else
         oTexCoord = GetTexCoord(iTexCoord);
     #endif
-    oDetailTexCoord = cDetailTiling * oTexCoord;
+    //oDetailTexCoord = cDetailTiling * oTexCoord;
+	oDetailTexCoord=float2(64,64)*oTexCoord;
+	#if defined(D3D11) && defined(CLIPPLANE)
+        oClip = dot(oPos, cClipPlane);
+    #endif
 
     #ifdef PERPIXEL
         // Per-pixel forward lighting
@@ -178,25 +238,36 @@ void PS(
         float4 iScreenPos : TEXCOORD5,
     #endif
     #ifdef PREPASS
-        out float4 oDepth : COLOR1,
+        out float4 oDepth : OUTCOLOR1,
     #endif
     #ifdef DEFERRED
-        out float4 oAlbedo : COLOR1,
-        out float4 oNormal : COLOR2,
-        out float4 oDepth : COLOR3,
+        out float4 oAlbedo : OUTCOLOR1,
+        out float4 oNormal : OUTCOLOR2,
+        out float4 oDepth : OUTCOLOR3,
     #endif
-    out float4 oColor : COLOR0)
+    out float4 oColor : OUTCOLOR0)
 {
     // Get material diffuse albedo
+	#ifndef D3D11
     float4 weights0 = tex2D(sWeightMap0, iTexCoord).rgba;
 	float4 weights1 = tex2D(sWeightMap1, iTexCoord).rgba;
+	#else
+	float4 weights0=tWeightMap0.Sample(sWeightMap0, iTexCoord);
+	float4 weights1=tWeightMap1.Sample(sWeightMap1, iTexCoord);
+	#endif
 	#ifdef USEMASKTEXTURE
-	float mask=tex2D(sMask, iTexCoord).r;
+		#ifndef D3D11
+			float mask=tex2D(sMask, iTexCoord).r;
+		#else
+			float mask=tMask.Sample(sMask, iTexCoord).r;
+		#endif
 	#endif
 	
 	// Calculate lod
 	float lod = mipmapLevel(iDetailTexCoord, cPackTexFactors.z);
 	lod = clamp(lod, 0.0, cPackTexFactors.w);
+	
+	#ifndef D3D11
 	
 	float4 tex1=sampleTerrain(sDetailMap, iDetailTexCoord, float2(0,0),lod);
 	float4 tex2=sampleTerrain(sDetailMap, iDetailTexCoord, float2(1,0),lod);
@@ -207,6 +278,18 @@ void PS(
 	float4 tex6=sampleTerrain(sDetailMap, iDetailTexCoord, float2(1,1),lod);
 	float4 tex7=sampleTerrain(sDetailMap, iDetailTexCoord, float2(2,1),lod);
 	float4 tex8=sampleTerrain(sDetailMap, iDetailTexCoord, float2(3,1),lod);
+	
+	#else
+	float4 tex1=sampleTerrain(tDetailMap, sDetailMap, iDetailTexCoord, float2(0,0),lod);
+	float4 tex2=sampleTerrain(tDetailMap, sDetailMap, iDetailTexCoord, float2(1,0),lod);
+	float4 tex3=sampleTerrain(tDetailMap, sDetailMap, iDetailTexCoord, float2(2,0),lod);
+	float4 tex4=sampleTerrain(tDetailMap, sDetailMap, iDetailTexCoord, float2(3,0),lod);
+	
+	float4 tex5=sampleTerrain(tDetailMap, sDetailMap, iDetailTexCoord, float2(0,1),lod);
+	float4 tex6=sampleTerrain(tDetailMap, sDetailMap, iDetailTexCoord, float2(1,1),lod);
+	float4 tex7=sampleTerrain(tDetailMap, sDetailMap, iDetailTexCoord, float2(2,1),lod);
+	float4 tex8=sampleTerrain(tDetailMap, sDetailMap, iDetailTexCoord, float2(3,1),lod);
+	#endif
 	
 	float ma=max(tex1.a+weights0.r, max(tex2.a+weights0.g, max(tex3.a+weights0.b, max(tex4.a+weights0.a, max(tex5.a+weights1.r, max(tex6.a+weights1.g, max(tex7.a+weights1.b, tex8.a+weights1.a)))))))-0.2;
 	float b1=max(0, tex1.a+weights0.r-ma);
@@ -241,6 +324,8 @@ void PS(
 		//float3 bump7=bump(sDetailMap2, iDetailTexCoord, tex7.a,float2(0,1),lod);
 		//float3 bump8=bump(sDetailMap2, iDetailTexCoord, tex8.a,float2(1,1),lod);
 		
+		#ifndef D3D11
+		
 		float3 bump1=DecodeNormal(sampleTerrain(sNormal, iDetailTexCoord, float2(0,0), lod));
 		float3 bump2=DecodeNormal(sampleTerrain(sNormal, iDetailTexCoord, float2(1,0), lod));
 		float3 bump3=DecodeNormal(sampleTerrain(sNormal, iDetailTexCoord, float2(2,0), lod));
@@ -250,6 +335,18 @@ void PS(
 		float3 bump6=DecodeNormal(sampleTerrain(sNormal, iDetailTexCoord, float2(1,1), lod));
 		float3 bump7=DecodeNormal(sampleTerrain(sNormal, iDetailTexCoord, float2(2,1), lod));
 		float3 bump8=DecodeNormal(sampleTerrain(sNormal, iDetailTexCoord, float2(3,1), lod));
+		
+		#else
+		float3 bump1=DecodeNormal(sampleTerrain(tNormal, sNormal, iDetailTexCoord, float2(0,0), lod));
+		float3 bump2=DecodeNormal(sampleTerrain(tNormal, sNormal, iDetailTexCoord, float2(1,0), lod));
+		float3 bump3=DecodeNormal(sampleTerrain(tNormal, sNormal, iDetailTexCoord, float2(2,0), lod));
+		float3 bump4=DecodeNormal(sampleTerrain(tNormal, sNormal, iDetailTexCoord, float2(3,0), lod));
+		
+		float3 bump5=DecodeNormal(sampleTerrain(tNormal, sNormal, iDetailTexCoord, float2(0,1), lod));
+		float3 bump6=DecodeNormal(sampleTerrain(tNormal, sNormal, iDetailTexCoord, float2(1,1), lod));
+		float3 bump7=DecodeNormal(sampleTerrain(tNormal, sNormal, iDetailTexCoord, float2(2,1), lod));
+		float3 bump8=DecodeNormal(sampleTerrain(tNormal, sNormal, iDetailTexCoord, float2(3,1), lod));
+		#endif
 		
 		float3 normal=normalize(mul((bump1*b1+bump2*b2+bump3*b3+bump4*b4+bump5*b5+bump6*b6+bump7*b7+bump8*b8)/bsum,tbn));
 		

@@ -117,8 +117,8 @@ function CreateScene()
 	hmap:Clear(Color(0.1,0,0,0))
     terrain.heightMap = hmap
     --terrain.material = cache:GetResource("Material", "Materials/TerrainEdit.xml")
-	--terrain.material = cache:GetResource("Material", "Materials/TerrainEdit8.xml")
-	terrain.material = cache:GetResource("Material", "Materials/Terrain.xml")
+	terrain.material = cache:GetResource("Material", "Materials/TerrainEdit8.xml")
+	--terrain.material = cache:GetResource("Material", "Materials/Terrain.xml")
 	--terrain.material = cache:GetResource("Material", "Materials/TerrainColorDetailEdit8.xml")
 	--terrain.material = cache:GetResource("Material", "Materials/TerrainBlend4NormalEdit.xml")
 	

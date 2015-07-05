@@ -7,11 +7,13 @@ ui.root.defaultStyle = uiStyle;
 iconStyle = cache:GetResource("XMLFile", "UI/EditorIcons.xml");
 
 function CreateCursor()
-    local cursor = Cursor:new()
-    cursor.defaultStyle=uiStyle
-	cursor.style=AUTO_STYLE
+    local cursor = Cursor:new("Cursor")
+    --cursor.defaultStyle=uiStyle
+	--cursor.style=AUTO_STYLE
+	cursor:SetStyleAuto(uiStyle)
     cursor:SetPosition(graphics.width / 2, graphics.height / 2)
     ui.cursor = cursor
+	cursor.visible=true
 
 end
 
@@ -30,13 +32,7 @@ function TerrainEditUI:Start()
 	content.style=uiStyle
 	self.filteroptions.contentElement=content
 	
-	self.heightbrush.defaultStyle=uiStyle
-	self.blendbrush.defaultStyle=uiStyle
-	self.maskbrush.defaultStyle=uiStyle
-	self.newterrain.defaultStyle=uiStyle
-	self.toolbar.defaultStyle=uiStyle
-	self.smoothbrush.defaultStyle=uiStyle
-	self.filterui.defaultStyle=uiStyle
+	
 	
 	
 	self.heightbrush.style=uiStyle
@@ -72,6 +68,7 @@ function TerrainEditUI:Start()
 	self.newterrain.visible=false
 	self.smoothbrush.visible=false
 	self.filterui.visible=false
+	self.toolbar.visible=true
 	
 	
 	self:SubscribeToEvent("Pressed", "TerrainEditUI:HandleButtonPress")
