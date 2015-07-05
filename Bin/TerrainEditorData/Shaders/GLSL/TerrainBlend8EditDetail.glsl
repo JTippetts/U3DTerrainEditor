@@ -45,7 +45,10 @@ uniform sampler2D sDetailMap2;
 	uniform sampler2D sNormal3;
 #endif
 
-uniform sampler2D sMask12;
+#ifdef USEMASKTEXTURE
+uniform sampler2D sMask4;
+#endif
+
 uniform vec2 cDetailTiling;
 uniform vec4 cPackTexFactors;
 
@@ -156,7 +159,7 @@ void PS()
 	vec4 weights1 = texture(sWeightMap1, vTexCoord.xy).rgba;
 	
 	#ifdef USEMASKTEXTURE
-	float mask=texture(sMask12, vTexCoord.xy).r;
+	float mask=texture(sMask4, vTexCoord.xy).r;
 	#endif
 	
 	float lod = mipmapLevel(vDetailTexCoord, cPackTexFactors.z);
@@ -186,7 +189,7 @@ void PS()
 	//vec4 diffColor=tex1;
 	
 	#ifdef USEMASKTEXTURE
-	//diffColor=mix(vec4(1,0.5,0.3, diffColor.a), diffColor, mask);
+	diffColor=mix(vec4(1,0.5,0.3, diffColor.a), diffColor, mask);
 	#endif
 
     // Get material specular albedo

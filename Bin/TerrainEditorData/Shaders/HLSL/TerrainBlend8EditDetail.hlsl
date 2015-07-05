@@ -18,7 +18,7 @@
 		#ifdef BUMPMAP
 			sampler2D sNormal : register(S3);
 		#endif
-		sampler2D sMask : register(S12);
+		sampler2D sMask : register(S4);
 	#endif
 	
 	#ifdef COMPILEVS
@@ -39,8 +39,8 @@
 			Texture2D tNormal : register(t3);
 			SamplerState sNormal : register(s3);
 		#endif
-		Texture2D tMask : register(t12);
-		SamplerState sMask : register(s12);
+		Texture2D tMask : register(t4);
+		SamplerState sMask : register(s4);
 		
 		cbuffer CustomPS : register(b6)
 		{
@@ -51,6 +51,10 @@
 	
 	#ifdef COMPILEVS
 	
+		cbuffer CustomVS : register(b6)
+		{
+			float2 cDetailTiling;
+		};
 	#endif
 #endif
 
@@ -177,8 +181,8 @@ void VS(float4 iPos : POSITION,
     #else
         oTexCoord = GetTexCoord(iTexCoord);
     #endif
-    //oDetailTexCoord = cDetailTiling * oTexCoord;
-	oDetailTexCoord=float2(64,64)*oTexCoord;
+    oDetailTexCoord = cDetailTiling * oTexCoord;
+	//oDetailTexCoord=float2(64,64)*oTexCoord;
 	#if defined(D3D11) && defined(CLIPPLANE)
         oClip = dot(oPos, cClipPlane);
     #endif

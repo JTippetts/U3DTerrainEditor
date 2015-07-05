@@ -132,7 +132,7 @@ function CreateScene()
 	mask:SetSize(1024,1024,3)
 	mask:Clear(Color(1,0,0))
 	masktex:SetData(mask, false)
-	terrain:GetMaterial():SetTexture(12,masktex)
+	terrain:GetMaterial():SetTexture(4,masktex)
 	
 	hmap:Clear(Color(0,0,0))
 	terrain:SetSmoothing(false)
