@@ -5,7 +5,14 @@
 #include "Lighting.glsl"
 #include "Fog.glsl"
 
-varying vec2 vTexCoord;
+#ifdef BUMPMAP
+	varying vec4 vTexCoord;
+    varying vec4 vTangent;
+#else
+    varying vec2 vTexCoord;
+#endif
+
+//varying vec2 vTexCoord;
 varying vec2 vDetailTexCoord;
 varying vec3 vNormal;
 varying vec4 vWorldPos;
@@ -88,8 +95,17 @@ void VS()
     gl_Position = GetClipPos(worldPos);
     vNormal = GetWorldNormal(modelMatrix);
     vWorldPos = vec4(worldPos, GetDepth(gl_Position));
-    vTexCoord = GetTexCoord(iTexCoord);
-    vDetailTexCoord = cDetailTiling * vTexCoord;
+	
+	#ifdef BUMPMAP
+        vec3 tangent = GetWorldTangent(modelMatrix);
+        vec3 bitangent = cross(tangent, vNormal) * iTangent.w;
+        vTexCoord = vec4(GetTexCoord(iTexCoord), bitangent.xy);
+        vTangent = vec4(tangent, bitangent.z);
+    #else
+        vTexCoord = GetTexCoord(iTexCoord);
+    #endif
+    //vTexCoord = GetTexCoord(iTexCoord);
+    vDetailTexCoord = cDetailTiling * vTexCoord.xy;
 
     #ifdef PERPIXEL
         // Per-pixel forward lighting
@@ -136,11 +152,11 @@ void VS()
 void PS()
 {
     // Get material diffuse albedo
-    vec4 weights0 = texture(sWeightMap0, vTexCoord).rgba;
-	vec4 weights1 = texture(sWeightMap1, vTexCoord).rgba;
+    vec4 weights0 = texture(sWeightMap0, vTexCoord.xy).rgba;
+	vec4 weights1 = texture(sWeightMap1, vTexCoord.xy).rgba;
 	
 	#ifdef USEMASKTEXTURE
-	float mask=texture(sMask12, vTexCoord).r;
+	float mask=texture(sMask12, vTexCoord.xy).r;
 	#endif
 	
 	float lod = mipmapLevel(vDetailTexCoord, cPackTexFactors.z);
@@ -177,7 +193,26 @@ void PS()
     vec3 specColor = cMatSpecColor.rgb;
 
     // Get normal
-    vec3 normal = normalize(vNormal);
+	#ifdef BUMPMAP
+        mat3 tbn = mat3(vTangent.xyz, vec3(vTexCoord.zw, vTangent.w), vNormal);
+		
+		vec3 bump1=DecodeNormal(sampleTerrain(sNormal3, vDetailTexCoord, vec2(0,0), lod));
+		vec3 bump2=DecodeNormal(sampleTerrain(sNormal3, vDetailTexCoord, vec2(1,0), lod));
+		vec3 bump3=DecodeNormal(sampleTerrain(sNormal3, vDetailTexCoord, vec2(2,0), lod));
+		vec3 bump4=DecodeNormal(sampleTerrain(sNormal3, vDetailTexCoord, vec2(3,0), lod));
+		
+		vec3 bump5=DecodeNormal(sampleTerrain(sNormal3, vDetailTexCoord, vec2(0,1), lod));
+		vec3 bump6=DecodeNormal(sampleTerrain(sNormal3, vDetailTexCoord, vec2(1,1), lod));
+		vec3 bump7=DecodeNormal(sampleTerrain(sNormal3, vDetailTexCoord, vec2(2,1), lod));
+		vec3 bump8=DecodeNormal(sampleTerrain(sNormal3, vDetailTexCoord, vec2(3,1), lod));
+		
+		vec3 normal=normalize(mul((bump1*b1+bump2*b2+bump3*b3+bump4*b4+bump5*b5+bump6*b6+bump7*b7+bump8*b8)/bsum,tbn));
+		
+    #else
+        vec3 normal = normalize(vNormal);
+    #endif
+    //vec3 normal = normalize(vNormal);
+	
 
     // Get fog factor
     #ifdef HEIGHTFOG
