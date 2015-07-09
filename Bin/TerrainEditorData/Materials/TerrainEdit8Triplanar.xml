@@ -1,7 +1,7 @@
 <material>
     <technique name="Techniques/TerrainBlend8EditTriplanar.xml" />
     <parameter name="MatSpecColor" value="0.5 0.5 0.5 16" />
-    <parameter name="DetailTiling" value="8 8 8" />
+    <parameter name="DetailTiling" value="4 4 4" />
 	<parameter name="BumpStrength" value="128" />
 	<parameter name="PackTexFactors" value="0.25 0.5 512 9" />
 </material>

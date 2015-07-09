@@ -209,7 +209,7 @@ void PS()
 		vec3 bump7=DecodeNormal(sampleTerrain(sNormal3, vDetailTexCoord, vec2(2,1), lod));
 		vec3 bump8=DecodeNormal(sampleTerrain(sNormal3, vDetailTexCoord, vec2(3,1), lod));
 		
-		vec3 normal=normalize(mul((bump1*b1+bump2*b2+bump3*b3+bump4*b4+bump5*b5+bump6*b6+bump7*b7+bump8*b8)/bsum,tbn));
+		vec3 normal=normalize(((bump1*b1+bump2*b2+bump3*b3+bump4*b4+bump5*b5+bump6*b6+bump7*b7+bump8*b8)/bsum)*tbn);
 		
     #else
         vec3 normal = normalize(vNormal);
