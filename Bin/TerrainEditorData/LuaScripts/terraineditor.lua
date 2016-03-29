@@ -9,6 +9,7 @@ require "LuaScripts/thirdpersoncamera"
 require "LuaScripts/terraineditUIoriginal"
 require "LuaScripts/ui"
 require "LuaScripts/buildcomposite"
+require "LuaScripts/filterui"
 
 function HtToRG(ht)
 	local expht=math.floor(ht*255)
@@ -113,8 +114,8 @@ function CreateScene()
     terrain.spacing = Vector3(1, 0.1, 1) -- Spacing between vertices and vertical resolution of the height map
     terrain.smoothing = true
 	hmap=Image:new(context)
-	hmap:SetSize(129,129,1)
-	hmap:Clear(Color(0.1,0,0,0))
+	hmap:SetSize(513,513,1)
+	hmap:Clear(Color(0.0,0,0,0))
     terrain.heightMap = hmap
 	
     --terrain.material = cache:GetResource("Material", "Materials/TerrainEdit8.xml")
@@ -145,12 +146,12 @@ function CreateScene()
 	terrain:GetMaterial():SetTexture(1,blendtex2)
 	
 	blend1=Image(context)
-	blend1:SetSize(256,256,4)
+	blend1:SetSize(2048,2048,4)
 	blend1:Clear(Color(1,0,0,0))
 	blendtex1:SetData(blend1, false)
 	
 	blend2=Image(context)
-	blend2:SetSize(256,256,4)
+	blend2:SetSize(2048,2048,4)
 	blend2:Clear(Color(0,0,0,0))
 	blendtex2:SetData(blend2, false)
 	
@@ -183,7 +184,7 @@ function CreateScene()
 
 	
 	terrainui=scene_:CreateScriptObject("TerrainEditUI")
-	
+	filterui=scene_:CreateScriptObject("FilterUI")
 
 
    

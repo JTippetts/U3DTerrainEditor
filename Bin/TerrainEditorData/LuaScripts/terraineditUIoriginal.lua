@@ -24,7 +24,7 @@ function TerrainEditUI:Start()
 	self.smoothbrush=ui:LoadLayout(cache:GetResource("XMLFile", "UI/TerrainEditSmoothBrush.xml"))
 	self.newterrain=ui:LoadLayout(cache:GetResource("XMLFile", "UI/TerrainEditNewTerrain.xml"))
 	self.toolbar=ui:LoadLayout(cache:GetResource("XMLFile", "UI/TerrainEditToolbar.xml"))
-	self.filterui=ui:LoadLayout(cache:GetResource("XMLFile", "UI/TerrainEditFilters.xml"))
+	--[[self.filterui=ui:LoadLayout(cache:GetResource("XMLFile", "UI/TerrainEditFilters.xml"))
 	self.filterlist=self.filterui:GetChild("FilterList", true)
 	self.filteroptions=self.filterui:GetChild("FilterOptions", true)
 	
@@ -32,7 +32,7 @@ function TerrainEditUI:Start()
 	content.style=uiStyle
 	self.filteroptions.contentElement=content
 	
-	
+	]]
 	
 	
 	self.heightbrush.style=uiStyle
@@ -41,7 +41,7 @@ function TerrainEditUI:Start()
 	self.newterrain.style=uiStyle
 	self.toolbar.style=uiStyle
 	self.smoothbrush.style=uiStyle
-	self.filterui.style=uiStyle
+	--self.filterui.style=uiStyle
 	
 	self.brushpreview=Image(context)
 	self.brushpreview:SetSize(64,64,3)
@@ -59,7 +59,7 @@ function TerrainEditUI:Start()
 	ui.root:AddChild(self.smoothbrush)
 	ui.root:AddChild(self.newterrain)
 	ui.root:AddChild(self.toolbar)
-	ui.root:AddChild(self.filterui)
+	--ui.root:AddChild(self.filterui)
 	
 	
 	self.mode=0
@@ -67,7 +67,7 @@ function TerrainEditUI:Start()
 	self.maskbrush.visible=false
 	self.newterrain.visible=false
 	self.smoothbrush.visible=false
-	self.filterui.visible=false
+	--self.filterui.visible=false
 	self.toolbar.visible=true
 	
 	
@@ -91,7 +91,7 @@ function TerrainEditUI:Start()
 	self.mode=0
 	self:ActivateHeightBrush()
 	
-	self:PopulateFilterList()
+	--self:PopulateFilterList()
 	
 	self.counter=0
 	-- Waypoints
@@ -166,6 +166,7 @@ function TerrainEditUI:AddWaypoint(groundx, groundz)
 	self:UpdateWaypointVis()
 end
 
+--[[
 function TerrainEditUI:BuildFilterOptions(filter)
 	if filter==nil then return end
 	local options=self.filteroptions:GetChild("OptionsWindow", true)
@@ -247,9 +248,9 @@ function TerrainEditUI:PopulateFilterList()
 		end
 	end
 end
-
+]]
 function TerrainEditUI:HandleItemSelected(eventType, eventData)
-	local which=eventData["Element"]:GetPtr("ListView")
+	--[[local which=eventData["Element"]:GetPtr("ListView")
 	local selected=eventData["Selection"]:GetInt()
 	local entry=which:GetItem(selected)
 	if entry==nil then return end
@@ -259,6 +260,8 @@ function TerrainEditUI:HandleItemSelected(eventType, eventData)
 	
 	self:BuildFilterOptions(self.filters[name])
 	self.selectedfilter=self.filters[name]
+	
+	]]
 	
 	--if self.filters[name] then
 		--self.filters[name]:execute()
@@ -596,7 +599,7 @@ function TerrainEditUI:HandleButtonPress(eventType, eventData)
 		self.mode=10
 		self:ActivateMaskBrush()
 	
-	elseif name=="FilterButton" then
+	--[[elseif name=="FilterButton" then
 		if self.filterui.visible==true then self.filterui.visible=false
 		else
 			print("Showing filters")
@@ -623,6 +626,8 @@ function TerrainEditUI:HandleButtonPress(eventType, eventData)
 		end
 	elseif name=="RescanFilters" then
 		self:PopulateFilterList()
+		]]
+		
 	elseif name=="ClearMask" then
 		mask:Clear(Color(1,1,1))
 		masktex:SetData(mask)

@@ -1,6 +1,8 @@
 #ifndef IMAGING_H
 #define IMAGING_H
 
+#define USETHREAD 1
+
 #include "../templates/tarrays.h"
 #include "../VM/vm.h"
 

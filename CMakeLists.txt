@@ -31,6 +31,7 @@ include_directories (${URHO3D_INCLUDE_DIRS})
 include_directories (${INCLUDE_DIRS_ONLY})
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+set(USETHREAD 1)
 
 add_subdirectory(ThirdParty/ANL)
 
