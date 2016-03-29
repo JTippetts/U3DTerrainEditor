@@ -80,7 +80,7 @@ function CreateScene()
     light.castShadows = true
     light.shadowBias = BiasParameters(0.00025, 0.5)
     light.shadowCascade = CascadeParameters(10.0, 50.0, 200.0, 0.0, 0.8)
-    light.specularIntensity = 0.2;
+    light.specularIntensity = 0.1;
     light.color = Color(0.7,0.7,0.7);
 	
 	lightNode = scene_:CreateChild("DirectionalLight")
@@ -90,7 +90,7 @@ function CreateScene()
     light.castShadows = true
     light.shadowBias = BiasParameters(0.00025, 0.5)
     light.shadowCascade = CascadeParameters(10.0, 50.0, 200.0, 0.0, 0.8)
-    light.specularIntensity = 0.2;
+    light.specularIntensity = 0.1;
     -- Apply slightly overbright lighting to match the skybox
     light.color = Color(0.3,0.3,0.3);
 
@@ -111,7 +111,7 @@ function CreateScene()
     terrain.spacing = Vector3(1, 0.1, 1) -- Spacing between vertices and vertical resolution of the height map
     terrain.smoothing = true
 	hmap=Image:new(context)
-	hmap:SetSize(513,513,1)
+	hmap:SetSize(1025,1025,1)
 	hmap:Clear(Color(0.0,0,0,0))
     terrain.heightMap = hmap
 	
@@ -143,41 +143,26 @@ function CreateScene()
 	terrain:GetMaterial():SetTexture(1,blendtex2)
 	
 	blend1=Image(context)
-	blend1:SetSize(2048,2048,4)
+	blend1:SetSize(1024,1024,4)
 	blend1:Clear(Color(1,0,0,0))
 	blendtex1:SetData(blend1, false)
 	
 	blend2=Image(context)
-	blend2:SetSize(2048,2048,4)
+	blend2:SetSize(1024,1024,4)
 	blend2:Clear(Color(0,0,0,0))
 	blendtex2:SetData(blend2, false)
 	
 	-- Build composite textures
 	comptex1=Texture2D:new(context)
 	comptex2=Texture2D:new(context)
-	--img1=BuildCompositeTexture({"Textures/moss2_ht.png", "Textures/stones1_ht.png", "Textures/stonepath1_ht.png", "Textures/lava1_ht.png"})
-	--img1:SavePNG("thing1.png")
-	--img2=BuildCompositeTexture({"Textures/dirt1_ht.png", "Textures/softsand1_ht.png", "Textures/lichen1_ht.png", "Textures/sharpstones2_ht.png"})
-	--img1=cache:GetResource("Image", "Textures/thing1.png")
-	--img2=cache:GetResource("Image", "Textures/thing2.png")
+	
 	img1=cache:GetResource("Image", "Textures/diff.png")
 	img2=cache:GetResource("Image", "Textures/normal.png")
 	comptex1:SetData(img1, false)
 	comptex2:SetData(img2, false)
 	terrain:GetMaterial():SetTexture(2,comptex1)
 	terrain:GetMaterial():SetTexture(3,comptex2)
-	
-	
-	--img2:SavePNG("thing2.png")
-	
-	-- Color detailing
-	--colortex=Texture2D:new(context)
-	--colortex:SetSize(0,0,0,TEXTURE_DYNAMIC)
-	--terrain:GetMaterial():SetTexture(4,colortex)
-	--color=Image(context)
-	--color:SetSize(1024,1024,3)
-	--color:Clear(Color(0.5,0.5,0.5))
-	--colortex:SetData(color, false)
+
 
 	
 	terrainui=scene_:CreateScriptObject("TerrainEditUI")
@@ -210,7 +195,6 @@ function CreateInstructions()
 end
 
 function SubscribeToEvents()
-    -- Subscribe HandleUpdate() function for processing update events
     SubscribeToEvent("Update", "HandleUpdate")
 end
 
@@ -220,13 +204,10 @@ function HandleUpdate(eventType, eventData)
 	
 	
 	if input:GetKeyPress(KEY_S) then
-		--hmap:SavePNG("TerrainEditorData/Textures/terrain.png")
 		SendEvent("SaveHeightmap")
 	end
 	
 	if input:GetKeyPress(KEY_D) then
-		--blend1:SavePNG("TerrainEditorData/Textures/blend1.png")
-		--if(blend2) then blend2:SavePNG("TerrainEditorData/Textures/blend2.png") end
 		SendEvent("SaveBlend1")
 	end
 	
@@ -235,8 +216,6 @@ function HandleUpdate(eventType, eventData)
 	end
 	
 	if input:GetKeyPress(KEY_J) then
-		--hmap=cache:GetResource("Image", "Textures/terrain.png")
-		--terrain:SetHeightMap(hmap)
 		SendEvent("LoadHeightmap")
 	end
 	
