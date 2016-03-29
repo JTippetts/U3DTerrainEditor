@@ -518,7 +518,7 @@ void RenderANLKernelToHeight(Image *height, Image *mask, CKernel *kernel, double
 	int w=height->GetWidth()-1;
 	int h=height->GetHeight()-1;
 	
-	CNoiseExecutor vm(kernel);
+	CNoiseExecutor vm(*kernel);
 	
 	TArray2D<double> a(height->GetWidth(), height->GetHeight());
 	double mx=-10000;
@@ -567,7 +567,7 @@ void RenderANLKernelToBuffer(RasterBuffer *buffer, CKernel *kernel, float lowran
 	int w=buffer->width()-1;
 	int h=buffer->height()-1;
 	
-	CNoiseExecutor vm(kernel);
+	CNoiseExecutor vm(*kernel);
 	for(int x=0; x<=w; ++x)
 	{
 		for(int y=0; y<=h; ++y)

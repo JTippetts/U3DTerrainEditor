@@ -2,11 +2,11 @@
 set (TARGET_NAME ANL)
 
 # Define source files
-file (GLOB CPP_FILES VM/*.cpp Imaging/*.cpp)
-file (GLOB H_FILES VM/*.h Imaging/*.h)
+file (GLOB CPP_FILES VM/*.cpp Imaging/*.cpp Expression/*.cpp)
+file (GLOB H_FILES VM/*.h Imaging/*.h Expression/*.h)
 set (SOURCE_FILES ${CPP_FILES} ${H_FILES})
 
-set(INCLUDE_DIRS_ONLY ./VM ./Imaging ./templates)
+set(INCLUDE_DIRS_ONLY ./VM ./Imaging ./Expression ./templates)
 
 if(MINGW OR CMAKE_COMPILER_IS_GNUCXX)
 	include(CheckCXXCompilerFlag)

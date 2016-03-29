@@ -1,12 +1,9 @@
 #include "LoadBindings.h"
 
 #ifdef URHO3D_ANGELSCRIPT
-void RegisterANL(asIScriptEngine* engine);
-void RegisterTerrainEdit(asIScriptEngine* engine);
+
 void LoadScriptBindings(asIScriptEngine* engine)
 {
-	RegisterANL(engine);
-	RegisterTerrainEdit(engine);
 }
 
 #endif

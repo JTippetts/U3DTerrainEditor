@@ -249,8 +249,8 @@ function TerrainEditUI:PopulateFilterList()
 end
 
 function TerrainEditUI:HandleItemSelected(eventType, eventData)
-	local which=eventData:GetPtr("ListView", "Element")
-	local selected=eventData:GetInt("Selection")
+	local which=eventData["Element"]:GetPtr("ListView")
+	local selected=eventData["Selection"]:GetInt()
 	local entry=which:GetItem(selected)
 	if entry==nil then return end
 	local name=entry:GetName()
@@ -553,7 +553,7 @@ function TerrainEditUI:GenerateBrushPreview(sharpness)
 end
 
 function TerrainEditUI:HandleButtonPress(eventType, eventData)
-	local which=eventData:GetPtr("UIElement", "Element")
+	local which=eventData["Element"]:GetPtr("UIElement")
 	local name=which:GetName()
 	if name=="HeightButton" then
 		self.mode=0		
@@ -631,7 +631,7 @@ function TerrainEditUI:HandleButtonPress(eventType, eventData)
 end
 
 function TerrainEditUI:HandleSliderChanged(eventType, eventData)
-	local which=eventData:GetPtr("UIElement", "Element")
+	local which=eventData["Element"]:GetPtr("UIElement")
 	if which==nil then return end
 	
 	self.power, self.max, self.radius, self.hardness, self.usemask=self:GetBrushSettings(self.activebrush)

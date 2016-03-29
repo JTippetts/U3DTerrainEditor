@@ -6,18 +6,50 @@
 #include <string>
 #include <map>
 
+
 namespace anl
 {
+	enum InterpolationTypes
+	{
+		INTERP_NONE,
+		INTERP_LINEAR,
+		INTERP_HERMITE,
+		INTERP_QUINTIC
+	};
+
+	enum DistanceTypes
+	{
+		DISTANCE_EUCLID,
+		DISTANCE_MANHATTAN,
+		DISTANCE_LEASTAXIS,
+		DISTANCE_GREATESTAXIS
+	};
+
+	enum BasisTypes
+	{
+		BASIS_VALUE,
+		BASIS_GRADIENT,
+		BASIS_SIMPLEX
+	};
 
     class CKernel
     {
     public:
+		CKernel();
+
+		CInstructionIndex pi();
+		CInstructionIndex e();
+		CInstructionIndex one();
+		CInstructionIndex zero();
+		CInstructionIndex point5();
+		CInstructionIndex sqrt2();
 
         CInstructionIndex constant(double val);
-        CInstructionIndex valueBasis(CInstructionIndex interpindex, unsigned int seed);
-        CInstructionIndex gradientBasis(CInstructionIndex interpindex, unsigned int seed);
-        CInstructionIndex simplexBasis(unsigned int seed);
-        CInstructionIndex cellularBasis(CInstructionIndex f1, CInstructionIndex f2, CInstructionIndex f3, CInstructionIndex f4, CInstructionIndex d1, CInstructionIndex d2, CInstructionIndex d3, CInstructionIndex d4, CInstructionIndex dist, unsigned int seed);
+		CInstructionIndex seed(unsigned int val);
+        CInstructionIndex valueBasis(CInstructionIndex interpindex, CInstructionIndex seed);
+        CInstructionIndex gradientBasis(CInstructionIndex interpindex, CInstructionIndex seed);
+        CInstructionIndex simplexBasis(CInstructionIndex seed);
+        CInstructionIndex cellularBasis(CInstructionIndex f1, CInstructionIndex f2, CInstructionIndex f3, CInstructionIndex f4, CInstructionIndex d1, CInstructionIndex d2, CInstructionIndex d3, CInstructionIndex d4, CInstructionIndex dist, CInstructionIndex seed);
         CInstructionIndex add(CInstructionIndex s1index, CInstructionIndex s2index);
         CInstructionIndex subtract(CInstructionIndex s1, CInstructionIndex s2);
         CInstructionIndex multiply(CInstructionIndex s1index, CInstructionIndex s2index);
@@ -29,10 +61,7 @@ namespace anl
 		CInstructionIndex bias(CInstructionIndex s1, CInstructionIndex s2);
 		CInstructionIndex gain(CInstructionIndex s1, CInstructionIndex s2);
 
-        CInstructionIndex scaleDomain(CInstructionIndex srcindex, CInstructionIndex xindex, CInstructionIndex yindex);
-        CInstructionIndex scaleDomain(CInstructionIndex srcindex, CInstructionIndex xindex, CInstructionIndex yindex, CInstructionIndex zindex);
-        CInstructionIndex scaleDomain(CInstructionIndex srcindex, CInstructionIndex xindex, CInstructionIndex yindex, CInstructionIndex zindex, CInstructionIndex windex);
-        CInstructionIndex scaleDomain(CInstructionIndex srcindex, CInstructionIndex xindex, CInstructionIndex yindex, CInstructionIndex zindex, CInstructionIndex windex, CInstructionIndex uindex, CInstructionIndex vindex);
+        CInstructionIndex scaleDomain(CInstructionIndex srcindex, CInstructionIndex scale);
 
         CInstructionIndex scaleX(CInstructionIndex src, CInstructionIndex scale);
         CInstructionIndex scaleY(CInstructionIndex src, CInstructionIndex scale);
@@ -41,10 +70,7 @@ namespace anl
         CInstructionIndex scaleU(CInstructionIndex src, CInstructionIndex scale);
         CInstructionIndex scaleV(CInstructionIndex src, CInstructionIndex scale);
 
-        CInstructionIndex translateDomain(CInstructionIndex srcindex, CInstructionIndex xindex, CInstructionIndex yindex);
-        CInstructionIndex translateDomain(CInstructionIndex srcindex, CInstructionIndex xindex, CInstructionIndex yindex, CInstructionIndex zindex);
-        CInstructionIndex translateDomain(CInstructionIndex srcindex, CInstructionIndex xindex, CInstructionIndex yindex, CInstructionIndex zindex, CInstructionIndex windex);
-        CInstructionIndex translateDomain(CInstructionIndex srcindex, CInstructionIndex xindex, CInstructionIndex yindex, CInstructionIndex zindex, CInstructionIndex windex, CInstructionIndex uindex, CInstructionIndex vindex);
+        CInstructionIndex translateDomain(CInstructionIndex srcindex, CInstructionIndex trans);
 
         CInstructionIndex translateX(CInstructionIndex src, CInstructionIndex trans);
         CInstructionIndex translateY(CInstructionIndex src, CInstructionIndex trans);
@@ -59,6 +85,7 @@ namespace anl
         CInstructionIndex multiplySequence(CInstructionIndex baseindex, unsigned int number, unsigned int stride);
         CInstructionIndex maxSequence(CInstructionIndex baseindex, unsigned int number, unsigned int stride);
         CInstructionIndex minSequence(CInstructionIndex baseindex, unsigned int number, unsigned int stride);
+
         CInstructionIndex blend(CInstructionIndex low, CInstructionIndex high, CInstructionIndex control);
         CInstructionIndex select(CInstructionIndex low, CInstructionIndex high, CInstructionIndex control, CInstructionIndex threshold, CInstructionIndex falloff);
         CInstructionIndex clamp(CInstructionIndex src, CInstructionIndex low, CInstructionIndex high);
@@ -69,7 +96,7 @@ namespace anl
         CInstructionIndex acos(CInstructionIndex src);
         CInstructionIndex asin(CInstructionIndex src);
         CInstructionIndex atan(CInstructionIndex src);
-		
+
 		CInstructionIndex tiers(CInstructionIndex src, CInstructionIndex numtiers);
 		CInstructionIndex smoothTiers(CInstructionIndex src, CInstructionIndex numtiers);
 
@@ -80,12 +107,24 @@ namespace anl
         CInstructionIndex u();
         CInstructionIndex v();
 
+		CInstructionIndex dx(CInstructionIndex src, CInstructionIndex spacing);
+		CInstructionIndex dy(CInstructionIndex src, CInstructionIndex spacing);
+		CInstructionIndex dz(CInstructionIndex src, CInstructionIndex spacing);
+		CInstructionIndex dw(CInstructionIndex src, CInstructionIndex spacing);
+		CInstructionIndex du(CInstructionIndex src, CInstructionIndex spacing);
+		CInstructionIndex dv(CInstructionIndex src, CInstructionIndex spacing);
+
+		CInstructionIndex sigmoid(CInstructionIndex src);
+		CInstructionIndex sigmoid(CInstructionIndex src, CInstructionIndex center, CInstructionIndex ramp);
+
 		CInstructionIndex radial();
-		
+
 		// Patterns
-		CInstructionIndex hexTile(unsigned int seed);
+		CInstructionIndex hexTile(CInstructionIndex seed);
 		CInstructionIndex hexBump();
 
+		CInstructionIndex color(SRGBA c);
+		CInstructionIndex color(float r, float g, float b, float a);
 
 		CInstructionIndex combineRGBA(CInstructionIndex r, CInstructionIndex g, CInstructionIndex b, CInstructionIndex a);
 
@@ -95,14 +134,24 @@ namespace anl
             double angle=0.5, double ax=0, double ay=0, double az=1);
 		CInstructionIndex simpleRidgedLayer(unsigned int basistype, CInstructionIndex interptypeindex, double layerscale, double layerfreq, unsigned int seed, bool rot=true,
             double angle=0.5, double ax=0, double ay=0, double az=1);
+		CInstructionIndex simpleBillowLayer(unsigned int basistype, CInstructionIndex interptypeindex, double layerscale, double layerfreq, unsigned int seed, bool rot=true,
+            double angle=0.5, double ax=0, double ay=0, double az=1);
+
         CInstructionIndex simplefBm(unsigned int basistype, unsigned int interptype, unsigned int numoctaves, double frequency, unsigned int seed, bool rot=true);
 		CInstructionIndex simpleRidgedMultifractal(unsigned int basistype, unsigned int interptype, unsigned int numoctaves, double frequency, unsigned int seed, bool rot=true);
+		CInstructionIndex simpleBillow(unsigned int basistype, unsigned int interptype, unsigned int numoctaves, double frequency, unsigned int seed, bool rot=true);
 
         InstructionListType *getKernel(){return &kernel_;}
         CInstructionIndex nextIndex(){return CInstructionIndex(kernel_.size());}
         CInstructionIndex lastIndex(){return CInstructionIndex(kernel_.size()-1);}
+
+        void setVar(const std::string name,double val);
+        CInstructionIndex getVar(const std::string name);
     private:
         InstructionListType kernel_;
+
+		CInstructionIndex pi_, e_, one_, zero_, point5_, sqrt2_;
+		std::map<std::string, CInstructionIndex> vars_;
     };
 
 };

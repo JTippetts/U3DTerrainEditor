@@ -690,14 +690,14 @@ class TArray2D
 	}
 
 
-	void blur(int blurwidth, int blurheight, bool seamless)
+	void blur(float blur_size, bool seamless)
 	{
 		if(!m_data) return;
 		TArray2D<T> temp;
 		temp.resize(m_width, m_height);
 		TArray2D<double> kernelx, kernely;
-		buildSampleKernel(&kernelx, blurwidth);
-		buildSampleKernel(&kernely, blurheight);
+		buildSampleKernel(&kernelx, (int)(blur_size*m_width));
+		buildSampleKernel(&kernely, (int)(blur_size*m_height));
 
 		for(int x=0; x<m_width;++x)
 		{
@@ -762,6 +762,8 @@ template<class T> class TArray3D
     {
         for(int c=0; c<m_width*m_height*m_depth; ++c) m_array[c]=v;
     }
+	
+	T *getData() { return m_array.size()>0 ? &m_array[0] : 0;}
 
     protected:
     int m_width, m_height, m_depth;

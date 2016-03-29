@@ -91,7 +91,7 @@ Vector2 WorldToNormalized(Image *height, Terrain *terrain, Vector3 world);
 		void flipVertical();
 		void flipHorizontal();
 		void scaleTo(RasterBuffer *dst);
-		void blur(int blurwidth, int blurheight, bool seamless);
+		void blur(float blursize, bool seamless);
 	};
 	
 	void RasterizeTriangle(RasterBuffer *buffer, RasterVertex v1, RasterVertex v2, RasterVertex v3);

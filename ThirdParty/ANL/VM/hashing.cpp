@@ -65,15 +65,16 @@ unsigned char xor_fold_hash(unsigned int hash)
 }
 
 // Long period hash
-unsigned int hash_coords_2(int x, int y, unsigned int seed)
+unsigned int hash_coords_2(unsigned int x, unsigned int y, unsigned int seed)
 {
-	return (p241[(p241[(p241[x%241]+y)%241]+seed)%241]+
+	return (
+	p241[(p241[(p241[x%241]+y)%241]+seed)%241]+
 	p251[(p251[(p251[x%251]+y)%251]+seed)%251]+
 	p257[(p257[(p257[x%257]+y)%257]+seed)%257]+
 	p263[(p263[(p263[x%263]+y)%263]+seed)%263]);
 }
 
-unsigned int hash_coords_3(int x, int y, int z, unsigned int seed)
+unsigned int hash_coords_3(unsigned int x, unsigned int y, unsigned int z, unsigned int seed)
 {
 	return (
 		p241[(p241[(p241[(p241[x%241]+y)%241]+z)%241]+seed)%241]+
@@ -83,7 +84,7 @@ unsigned int hash_coords_3(int x, int y, int z, unsigned int seed)
 	);
 }
 
-unsigned int hash_coords_4(int x, int y, int z, int w, unsigned int seed)
+unsigned int hash_coords_4(unsigned int x, unsigned int y, unsigned int z, unsigned int w, unsigned int seed)
 {
 	return (
 		p241[(p241[(p241[(p241[(p241[x%241]+y)%241]+z)%241]+w)%241]+seed)%241]+
@@ -93,7 +94,7 @@ unsigned int hash_coords_4(int x, int y, int z, int w, unsigned int seed)
 	);
 }
 
-unsigned int hash_coords_6(int x, int y, int z, int w, int u, int v, unsigned int seed)
+unsigned int hash_coords_6(unsigned int x, unsigned int y, unsigned int z, unsigned int w, unsigned int u, unsigned int v, unsigned int seed)
 {
 	return (
 		p241[(p241[(p241[(p241[(p241[(p241[(p241[x%241]+y)%241]+z)%241]+w)%241]+u)%241]+v)%241]+seed)%241]+

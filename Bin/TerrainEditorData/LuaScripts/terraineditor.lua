@@ -110,10 +110,10 @@ function CreateScene()
     terrainNode.position = Vector3(0.0, 0.0, 0.0)
     terrain = terrainNode:CreateComponent("Terrain")
     terrain.patchSize = 64
-    terrain.spacing = Vector3(0.20, 0.1, 0.20) -- Spacing between vertices and vertical resolution of the height map
+    terrain.spacing = Vector3(1, 0.1, 1) -- Spacing between vertices and vertical resolution of the height map
     terrain.smoothing = true
 	hmap=Image:new(context)
-	hmap:SetSize(2049,2049,3)
+	hmap:SetSize(129,129,1)
 	hmap:Clear(Color(0.1,0,0,0))
     terrain.heightMap = hmap
 	
@@ -145,12 +145,12 @@ function CreateScene()
 	terrain:GetMaterial():SetTexture(1,blendtex2)
 	
 	blend1=Image(context)
-	blend1:SetSize(1024,1024,4)
+	blend1:SetSize(256,256,4)
 	blend1:Clear(Color(1,0,0,0))
 	blendtex1:SetData(blend1, false)
 	
 	blend2=Image(context)
-	blend2:SetSize(1024,1024,4)
+	blend2:SetSize(256,256,4)
 	blend2:Clear(Color(0,0,0,0))
 	blendtex2:SetData(blend2, false)
 	
@@ -217,7 +217,7 @@ end
 
 function HandleUpdate(eventType, eventData)
     -- Take the frame time step, which is stored as a float
-    local timeStep = eventData:GetFloat("TimeStep")
+    local timeStep = eventData["TimeStep"]:GetFloat()
 	
 	
 	if input:GetKeyPress(KEY_S) then

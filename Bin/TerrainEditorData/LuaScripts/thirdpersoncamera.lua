@@ -189,7 +189,7 @@ function ThirdPersonCamera:SpringFollow(dt)
 end
 
 function ThirdPersonCamera:HandleUpdate(eventType, eventData)
-	local dt=eventData:GetFloat("TimeStep")
+	local dt=eventData["TimeStep"]:GetFloat()
 	
 	if self.allowzoom and not ui:GetElementAt(ui.cursor:GetPosition()) then
 		-- Modify follow (zoom) in response to wheel motion
@@ -238,6 +238,7 @@ function ThirdPersonCamera:HandleUpdate(eventType, eventData)
 	
 	local trans=Vector3(0,0,0)
 	
+	--[[
 	if mousepos.x <= scrollthreshold then
 		local amt=(1.0-mousepos.x/scrollthreshold)*dt*scrollspeed
 		local right=self.node:GetRight()
@@ -275,7 +276,7 @@ function ThirdPersonCamera:HandleUpdate(eventType, eventData)
 		trans.z=trans.z-right.z
 
 	end
-	
+	]]
 	if input:GetMouseButtonPress(MOUSEB_RIGHT) then
 		self.lastmx, self.lastmz=mousepos.x,mousepos.y
 	end

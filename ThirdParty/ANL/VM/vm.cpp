@@ -27,27 +27,27 @@ double rad_to_deg(double rad)
 double hex_function(double x, double y)
 {
 	if(x==0 && y==0) return 1.0;
-	
+
 	double len=std::sqrt(x*x+y*y);
 	double dx=x/len, dy=y/len;
 	double angle_degrees=rad_to_deg(std::atan2(dy,dx));
-	
+
 	double angleincrement=60;
 	double t=(angle_degrees/angleincrement);
 	double a1=std::floor(t)*angleincrement;
 	double a2=a1+angleincrement;
-	
+
 	double ax1=std::cos(deg_to_rad(a1));
 	double ay1=std::sin(deg_to_rad(a1));
 	double ax2=std::cos(deg_to_rad(a2));
 	double ay2=std::sin(deg_to_rad(a2));
-	
+
 	CoordPair p1=closest_point(ax1,ay1,x,y);
 	CoordPair p2=closest_point(ax2,ay2,x,y);
-	
+
 	double dist1=std::sqrt((x-p1.x)*(x-p1.x)+(y-p1.y)*(y-p1.y));
 	double dist2=std::sqrt((x-p2.x)*(x-p2.x)+(y-p2.y)*(y-p2.y));
-	
+
 	if(dist1<dist2)
 	{
 		double d1=std::sqrt(p1.x*p1.x+p1.y*p1.y);
@@ -58,47 +58,105 @@ double hex_function(double x, double y)
 		double d1=std::sqrt(p2.x*p2.x+p2.y*p2.y);
 		return d1/0.86602540378443864676372317075294;
 	}
-	
+
 }
 
 namespace anl
 {
-    CNoiseExecutor::CNoiseExecutor(CKernel *kernel) : kernel_(kernel->getKernel()), evaluated_(kernel->getKernel()->size(), false), coordcache_(kernel->getKernel()->size()), cache_(kernel->getKernel()->size())
+    //CNoiseExecutor::CNoiseExecutor(CKernel *kernel) : kernel_(kernel->getKernel()), evaluated_(kernel->getKernel()->size(), false), coordcache_(kernel->getKernel()->size()), cache_(kernel->getKernel()->size())
+    CNoiseExecutor::CNoiseExecutor(CKernel &kernel) : kernel_(kernel)
     {
     }
+
+    CNoiseExecutor::~CNoiseExecutor()
+    {
+
+    }
+
+	double CNoiseExecutor::evaluateScalar(double x, double y, CInstructionIndex idx)
+	{
+		CCoordinate c(x,y);
+		return evaluateAt(c,idx).outfloat_;
+	}
+
+	double CNoiseExecutor::evaluateScalar(double x, double y, double z, CInstructionIndex idx)
+	{
+		CCoordinate c(x,y,z);
+		return evaluateAt(c,idx).outfloat_;
+	}
+
+	double CNoiseExecutor::evaluateScalar(double x, double y, double z, double w, CInstructionIndex idx)
+	{
+		CCoordinate c(x,y,z,w);
+		return evaluateAt(c,idx).outfloat_;
+	}
+
+	double CNoiseExecutor::evaluateScalar(double x, double y, double z, double w, double u, double v, CInstructionIndex idx)
+	{
+		CCoordinate c(x,y,z,w,u,v);
+		return evaluateAt(c,idx).outfloat_;
+	}
+
+
+	SRGBA CNoiseExecutor::evaluateColor(double x, double y, CInstructionIndex idx)
+	{
+		CCoordinate c(x,y);
+		return evaluateAt(c,idx).outrgba_;
+	}
+
+	SRGBA CNoiseExecutor::evaluateColor(double x, double y, double z, CInstructionIndex idx)
+	{
+		CCoordinate c(x,y);
+		return evaluateAt(c,idx).outrgba_;
+	}
+
+	SRGBA CNoiseExecutor::evaluateColor(double x, double y, double z, double w, CInstructionIndex idx)
+	{
+		CCoordinate c(x,y);
+		return evaluateAt(c,idx).outrgba_;
+	}
+
+	SRGBA CNoiseExecutor::evaluateColor(double x, double y, double z, double w, double u, double v, CInstructionIndex idx)
+	{
+		CCoordinate c(x,y);
+		return evaluateAt(c,idx).outrgba_;
+	}
+
+	InstructionListType *CNoiseExecutor::prepare()
+	{
+	    InstructionListType *k=kernel_.getKernel();
+        if(!k || k->size()==0) return 0;
+        if(k->size() != evaluated_.size()) evaluated_.resize(k->size());
+        if(k->size() != coordcache_.size()) coordcache_.resize(k->size());
+        if(k->size() != cache_.size()) cache_.resize(k->size());
+
+        // clear evaluated flags
+        for(auto i=evaluated_.begin(); i!=evaluated_.end(); ++i) *i=false;
+
+        return k;
+	}
+
 
     SVMOutput CNoiseExecutor::evaluate(CCoordinate &coord)
     {
         SVMOutput out;
-        if(!kernel_) {std::cout<<"duh"<<std::endl;return out;}
-        if(kernel_->size()==0) {std::cout<<"ruh roh"<<std::endl;return out;}
-
-        // Clear evaluated
-        //for(bool& e : evaluated_) e=false;
-        for(auto i=evaluated_.begin(); i!=evaluated_.end(); ++i) *i=false;
-
         // Evaluate the last one to start the chain
-        evaluateInstruction(*kernel_, evaluated_, coordcache_, cache_, kernel_->size()-1, coord);
-        //out.outfloat_=kernel[kernel.size()-1].outfloat_;
-        //return out;
-        return cache_[kernel_->size()-1];
+        InstructionListType *k=prepare();
+        if(!k) return out;
+
+        evaluateInstruction(*k, evaluated_, coordcache_, cache_, k->size()-1, coord);
+
+        return cache_[k->size()-1];
     }
 
     SVMOutput CNoiseExecutor::evaluateAt(CCoordinate &coord, CInstructionIndex index)
     {
         SVMOutput out;
-        if(!kernel_) {std::cout<<"duh"<<std::endl;return out;}
-        if(kernel_->size()==0) {std::cout<<"ruh roh"<<std::endl;return out;}
-        if(index.index_>=kernel_->size()) return out;
-
-        // Clear evaluated
-        //for(bool& e : evaluated_) e=false;
-        for(auto i=evaluated_.begin(); i!=evaluated_.end(); ++i) *i=false;
-
         // Evaluate the instruction at the specified index
-        evaluateInstruction(*kernel_, evaluated_, coordcache_, cache_, index.index_, coord);
-        //out.outfloat_=kernel[kernel.size()-1].outfloat_;
-        //return out;
+        InstructionListType *k=prepare();
+        if(!k) return out;
+
+        evaluateInstruction(*k, evaluated_, coordcache_, cache_, index.index_, coord);
         return cache_[index.index_];
     }
 
@@ -107,7 +165,6 @@ namespace anl
         if(index>=kernel.size()) return 0;
 
         evaluateInstruction(kernel, evaluated, coordcache, cache, index, coord);
-        //return kernel[index].outfloat_;
         return cache[index].outfloat_;
     }
 
@@ -118,6 +175,15 @@ namespace anl
         evaluateInstruction(kernel, evaluated, coordcache, cache, index, coord);
         //return kernel[index].outfloat_;
         return cache[index].outrgba_;
+    }
+
+	SVMOutput CNoiseExecutor::evaluateBoth(InstructionListType &kernel, EvaluatedType &evaluated, CoordCacheType &coordcache, CacheType &cache, unsigned int index, CCoordinate &coord)
+    {
+        if(index>=kernel.size()) return SVMOutput(0);
+
+        evaluateInstruction(kernel, evaluated, coordcache, cache, index, coord);
+        //return kernel[index].outfloat_;
+        return cache[index];
     }
 
     void CNoiseExecutor::evaluateInstruction(InstructionListType &kernel, EvaluatedType &evaluated, CoordCacheType &coordcache, CacheType &cache, unsigned int index, CCoordinate &coord)
@@ -132,6 +198,7 @@ namespace anl
         switch(i.opcode_)
         {
             case OP_NOP:
+			case OP_Seed:
             case OP_Constant: evaluated[index]=true; cache[index].set(i.outfloat_); return; break;
 
             case OP_ValueBasis:
@@ -139,39 +206,40 @@ namespace anl
                 // Parameters
                 // 0=Interpolation
                 int interp=(int)evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[0],coord);
+				unsigned int seed=(unsigned int)evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[1],coord);
                 switch(coord.dimension_)
                 {
                 case 2:
                     switch(interp)
                     {
-                        case 0: cache[index].set(value_noise2D(coord.x_,coord.y_,i.seed_,noInterp)); break;
-                        case 1: cache[index].set(value_noise2D(coord.x_,coord.y_,i.seed_,linearInterp)); break;
-                        case 2: cache[index].set(value_noise2D(coord.x_,coord.y_,i.seed_,hermiteInterp)); break;
-                        default: cache[index].set(value_noise2D(coord.x_,coord.y_,i.seed_,quinticInterp)); break;
+                        case 0: cache[index].set(value_noise2D(coord.x_,coord.y_,seed,noInterp)); break;
+                        case 1: cache[index].set(value_noise2D(coord.x_,coord.y_,seed,linearInterp)); break;
+                        case 2: cache[index].set(value_noise2D(coord.x_,coord.y_,seed,hermiteInterp)); break;
+                        default: cache[index].set(value_noise2D(coord.x_,coord.y_,seed,quinticInterp)); break;
                     }; break;
                 case 3:
                     switch(interp)
                     {
-                        case 0: cache[index].set(value_noise3D(coord.x_,coord.y_,coord.z_,i.seed_,noInterp)); break;
-                        case 1: cache[index].set(value_noise3D(coord.x_,coord.y_,coord.z_,i.seed_,linearInterp)); break;
-                        case 2: cache[index].set(value_noise3D(coord.x_,coord.y_,coord.z_,i.seed_,hermiteInterp)); break;
-                        default: cache[index].set(value_noise3D(coord.x_,coord.y_,coord.z_,i.seed_,quinticInterp)); break;
+                        case 0: cache[index].set(value_noise3D(coord.x_,coord.y_,coord.z_,seed,noInterp)); break;
+                        case 1: cache[index].set(value_noise3D(coord.x_,coord.y_,coord.z_,seed,linearInterp)); break;
+                        case 2: cache[index].set(value_noise3D(coord.x_,coord.y_,coord.z_,seed,hermiteInterp)); break;
+                        default: cache[index].set(value_noise3D(coord.x_,coord.y_,coord.z_,seed,quinticInterp)); break;
                     }; break;
                 case 4:
                     switch(interp)
                     {
-                        case 0: cache[index].set(value_noise4D(coord.x_,coord.y_,coord.z_,coord.w_,i.seed_,noInterp)); break;
-                        case 1: cache[index].set(value_noise4D(coord.x_,coord.y_,coord.z_,coord.w_,i.seed_,linearInterp)); break;
-                        case 2: cache[index].set(value_noise4D(coord.x_,coord.y_,coord.z_,coord.w_,i.seed_,hermiteInterp)); break;
-                        default: cache[index].set(value_noise4D(coord.x_,coord.y_,coord.z_,coord.w_,i.seed_,quinticInterp)); break;
+                        case 0: cache[index].set(value_noise4D(coord.x_,coord.y_,coord.z_,coord.w_,seed,noInterp)); break;
+                        case 1: cache[index].set(value_noise4D(coord.x_,coord.y_,coord.z_,coord.w_,seed,linearInterp)); break;
+                        case 2: cache[index].set(value_noise4D(coord.x_,coord.y_,coord.z_,coord.w_,seed,hermiteInterp)); break;
+                        default: cache[index].set(value_noise4D(coord.x_,coord.y_,coord.z_,coord.w_,seed,quinticInterp)); break;
                     }; break;
                 default:
                     switch(interp)
                     {
-                        case 0: cache[index].set(value_noise6D(coord.x_,coord.y_,coord.z_,coord.w_,coord.u_,coord.v_,i.seed_,noInterp)); break;
-                        case 1: cache[index].set(value_noise6D(coord.x_,coord.y_,coord.z_,coord.w_,coord.u_,coord.v_,i.seed_,linearInterp)); break;
-                        case 2: cache[index].set(value_noise6D(coord.x_,coord.y_,coord.z_,coord.w_,coord.u_,coord.v_,i.seed_,hermiteInterp)); break;
-                        default: cache[index].set(value_noise6D(coord.x_,coord.y_,coord.z_,coord.w_,coord.u_,coord.v_,i.seed_,quinticInterp)); break;
+                        case 0: cache[index].set(value_noise6D(coord.x_,coord.y_,coord.z_,coord.w_,coord.u_,coord.v_,seed,noInterp)); break;
+                        case 1: cache[index].set(value_noise6D(coord.x_,coord.y_,coord.z_,coord.w_,coord.u_,coord.v_,seed,linearInterp)); break;
+                        case 2: cache[index].set(value_noise6D(coord.x_,coord.y_,coord.z_,coord.w_,coord.u_,coord.v_,seed,hermiteInterp)); break;
+                        default: cache[index].set(value_noise6D(coord.x_,coord.y_,coord.z_,coord.w_,coord.u_,coord.v_,seed,quinticInterp)); break;
                     }; break;
                 }
 
@@ -184,40 +252,41 @@ namespace anl
                 // Parameters
                 // 0=Interpolation
                 int interp=(int)evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[0],coord);
+				unsigned int seed=(unsigned int)evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[1],coord);
                 switch(coord.dimension_)
                 {
                 case 2:
                     switch(interp)
                     {
-                        case 0: cache[index].set(gradient_noise2D(coord.x_,coord.y_,i.seed_,noInterp)); break;
-                        case 1: cache[index].set(gradient_noise2D(coord.x_,coord.y_,i.seed_,linearInterp)); break;
-                        case 2: cache[index].set(gradient_noise2D(coord.x_,coord.y_,i.seed_,hermiteInterp)); break;
-                        default: cache[index].set(gradient_noise2D(coord.x_,coord.y_,i.seed_,quinticInterp)); break;
+                        case 0: cache[index].set(gradient_noise2D(coord.x_,coord.y_,seed,noInterp)); break;
+                        case 1: cache[index].set(gradient_noise2D(coord.x_,coord.y_,seed,linearInterp)); break;
+                        case 2: cache[index].set(gradient_noise2D(coord.x_,coord.y_,seed,hermiteInterp)); break;
+                        default: cache[index].set(gradient_noise2D(coord.x_,coord.y_,seed,quinticInterp)); break;
                     }; break;
                 case 3:
                     //std::cout << "(" << coord.x_ << "," << coord.y_ << "," << coord.z_ << std::endl;
                     switch(interp)
                     {
-                        case 0: cache[index].set(gradient_noise3D(coord.x_,coord.y_,coord.z_,i.seed_,noInterp)); break;
-                        case 1: cache[index].set(gradient_noise3D(coord.x_,coord.y_,coord.z_,i.seed_,linearInterp)); break;
-                        case 2: cache[index].set(gradient_noise3D(coord.x_,coord.y_,coord.z_,i.seed_,hermiteInterp)); break;
-                        default: cache[index].set(gradient_noise3D(coord.x_,coord.y_,coord.z_,i.seed_,quinticInterp)); break;
+                        case 0: cache[index].set(gradient_noise3D(coord.x_,coord.y_,coord.z_,seed,noInterp)); break;
+                        case 1: cache[index].set(gradient_noise3D(coord.x_,coord.y_,coord.z_,seed,linearInterp)); break;
+                        case 2: cache[index].set(gradient_noise3D(coord.x_,coord.y_,coord.z_,seed,hermiteInterp)); break;
+                        default: cache[index].set(gradient_noise3D(coord.x_,coord.y_,coord.z_,seed,quinticInterp)); break;
                     }; break;
                 case 4:
                     switch(interp)
                     {
-                        case 0: cache[index].set(gradient_noise4D(coord.x_,coord.y_,coord.z_,coord.w_,i.seed_,noInterp)); break;
-                        case 1: cache[index].set(gradient_noise4D(coord.x_,coord.y_,coord.z_,coord.w_,i.seed_,linearInterp)); break;
-                        case 2: cache[index].set(gradient_noise4D(coord.x_,coord.y_,coord.z_,coord.w_,i.seed_,hermiteInterp)); break;
-                        default: cache[index].set(gradient_noise4D(coord.x_,coord.y_,coord.z_,coord.w_,i.seed_,quinticInterp)); break;
+                        case 0: cache[index].set(gradient_noise4D(coord.x_,coord.y_,coord.z_,coord.w_,seed,noInterp)); break;
+                        case 1: cache[index].set(gradient_noise4D(coord.x_,coord.y_,coord.z_,coord.w_,seed,linearInterp)); break;
+                        case 2: cache[index].set(gradient_noise4D(coord.x_,coord.y_,coord.z_,coord.w_,seed,hermiteInterp)); break;
+                        default: cache[index].set(gradient_noise4D(coord.x_,coord.y_,coord.z_,coord.w_,seed,quinticInterp)); break;
                     }; break;
                 default:
                     switch(interp)
                     {
-                        case 0: cache[index].set(gradient_noise6D(coord.x_,coord.y_,coord.z_,coord.w_,coord.u_,coord.v_,i.seed_,noInterp)); break;
-                        case 1: cache[index].set(gradient_noise6D(coord.x_,coord.y_,coord.z_,coord.w_,coord.u_,coord.v_,i.seed_,linearInterp)); break;
-                        case 2: cache[index].set(gradient_noise6D(coord.x_,coord.y_,coord.z_,coord.w_,coord.u_,coord.v_,i.seed_,hermiteInterp)); break;
-                        default: cache[index].set(gradient_noise6D(coord.x_,coord.y_,coord.z_,coord.w_,coord.u_,coord.v_,i.seed_,quinticInterp)); break;
+                        case 0: cache[index].set(gradient_noise6D(coord.x_,coord.y_,coord.z_,coord.w_,coord.u_,coord.v_,seed,noInterp)); break;
+                        case 1: cache[index].set(gradient_noise6D(coord.x_,coord.y_,coord.z_,coord.w_,coord.u_,coord.v_,seed,linearInterp)); break;
+                        case 2: cache[index].set(gradient_noise6D(coord.x_,coord.y_,coord.z_,coord.w_,coord.u_,coord.v_,seed,hermiteInterp)); break;
+                        default: cache[index].set(gradient_noise6D(coord.x_,coord.y_,coord.z_,coord.w_,coord.u_,coord.v_,seed,quinticInterp)); break;
                     }; break;
                 }
                 evaluated[index]=true;
@@ -229,12 +298,13 @@ namespace anl
                 // Parameters
 
                 // Simplex noise isn't interpolated, so interp does nothing
+				unsigned int seed=(unsigned int)evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[0],coord);
                 switch(coord.dimension_)
                 {
-                case 2: cache[index].set(simplex_noise2D(coord.x_,coord.y_,i.seed_,noInterp)); break;
-                case 3: cache[index].set(simplex_noise3D(coord.x_,coord.y_,coord.z_,i.seed_,noInterp)); break;
-                case 4: cache[index].set(simplex_noise4D(coord.x_,coord.y_,coord.z_,coord.w_,i.seed_,noInterp)); break;
-                default: cache[index].set(simplex_noise6D(coord.x_,coord.y_,coord.z_,coord.w_,coord.u_,coord.v_,i.seed_,noInterp)); break;
+                case 2: cache[index].set(simplex_noise2D(coord.x_,coord.y_,seed,noInterp)); break;
+                case 3: cache[index].set(simplex_noise3D(coord.x_,coord.y_,coord.z_,seed,noInterp)); break;
+                case 4: cache[index].set(simplex_noise4D(coord.x_,coord.y_,coord.z_,coord.w_,seed,noInterp)); break;
+                default: cache[index].set(simplex_noise6D(coord.x_,coord.y_,coord.z_,coord.w_,coord.u_,coord.v_,seed,noInterp)); break;
                 };
                 evaluated[index]=true;
                 return;
@@ -251,44 +321,45 @@ namespace anl
                     double d2=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[6],coord);
                     double d3=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[7],coord);
                     double d4=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[8],coord);
+					unsigned int seed=(unsigned int)evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[9],coord);
                     double f[4], d[4];
                     switch(coord.dimension_)
                     {
                     case 2:
                         switch(dist)
                         {
-                        case 0: cellular_function2D(coord.x_, coord.y_, i.seed_, f, d, distEuclid2); break;
-                        case 1: cellular_function2D(coord.x_, coord.y_, i.seed_, f, d, distManhattan2); break;
-                        case 2: cellular_function2D(coord.x_, coord.y_, i.seed_, f, d, distGreatestAxis2); break;
-                        case 3: cellular_function2D(coord.x_, coord.y_, i.seed_, f, d, distLeastAxis2); break;
-                        default: cellular_function2D(coord.x_, coord.y_, i.seed_, f, d, distEuclid2); break;
+                        case 0: cellular_function2D(coord.x_, coord.y_, seed, f, d, distEuclid2); break;
+                        case 1: cellular_function2D(coord.x_, coord.y_, seed, f, d, distManhattan2); break;
+                        case 2: cellular_function2D(coord.x_, coord.y_, seed, f, d, distGreatestAxis2); break;
+                        case 3: cellular_function2D(coord.x_, coord.y_, seed, f, d, distLeastAxis2); break;
+                        default: cellular_function2D(coord.x_, coord.y_, seed, f, d, distEuclid2); break;
                         }; break;
                     case 3:
                         switch(dist)
                         {
-                        case 0: cellular_function3D(coord.x_, coord.y_, coord.z_, i.seed_, f, d, distEuclid3); break;
-                        case 1: cellular_function3D(coord.x_, coord.y_, coord.z_, i.seed_, f, d, distManhattan3); break;
-                        case 2: cellular_function3D(coord.x_, coord.y_, coord.z_, i.seed_, f, d, distGreatestAxis3); break;
-                        case 3: cellular_function3D(coord.x_, coord.y_, coord.z_, i.seed_, f, d, distLeastAxis3); break;
-                        default: cellular_function3D(coord.x_, coord.y_, coord.z_, i.seed_, f, d, distEuclid3); break;
+                        case 0: cellular_function3D(coord.x_, coord.y_, coord.z_, seed, f, d, distEuclid3); break;
+                        case 1: cellular_function3D(coord.x_, coord.y_, coord.z_, seed, f, d, distManhattan3); break;
+                        case 2: cellular_function3D(coord.x_, coord.y_, coord.z_, seed, f, d, distGreatestAxis3); break;
+                        case 3: cellular_function3D(coord.x_, coord.y_, coord.z_, seed, f, d, distLeastAxis3); break;
+                        default: cellular_function3D(coord.x_, coord.y_, coord.z_, seed, f, d, distEuclid3); break;
                         }; break;
                     case 4:
                         switch(dist)
                         {
-                        case 0: cellular_function4D(coord.x_, coord.y_, coord.z_, coord.w_, i.seed_, f, d, distEuclid4); break;
-                        case 1: cellular_function4D(coord.x_, coord.y_, coord.z_, coord.w_, i.seed_, f, d, distManhattan4); break;
-                        case 2: cellular_function4D(coord.x_, coord.y_, coord.z_, coord.w_, i.seed_, f, d, distGreatestAxis4); break;
-                        case 3: cellular_function4D(coord.x_, coord.y_, coord.z_, coord.w_, i.seed_, f, d, distLeastAxis4); break;
-                        default: cellular_function4D(coord.x_, coord.y_, coord.z_, coord.w_, i.seed_, f, d, distEuclid4); break;
+                        case 0: cellular_function4D(coord.x_, coord.y_, coord.z_, coord.w_, seed, f, d, distEuclid4); break;
+                        case 1: cellular_function4D(coord.x_, coord.y_, coord.z_, coord.w_, seed, f, d, distManhattan4); break;
+                        case 2: cellular_function4D(coord.x_, coord.y_, coord.z_, coord.w_, seed, f, d, distGreatestAxis4); break;
+                        case 3: cellular_function4D(coord.x_, coord.y_, coord.z_, coord.w_, seed, f, d, distLeastAxis4); break;
+                        default: cellular_function4D(coord.x_, coord.y_, coord.z_, coord.w_, seed, f, d, distEuclid4); break;
                         }; break;
                     default:
                         switch(dist)
                         {
-                        case 0: cellular_function6D(coord.x_, coord.y_, coord.z_, coord.w_, coord.u_, coord.v_, i.seed_, f, d, distEuclid6); break;
-                        case 1: cellular_function6D(coord.x_, coord.y_, coord.z_, coord.w_, coord.u_, coord.v_, i.seed_, f, d, distManhattan6); break;
-                        case 2: cellular_function6D(coord.x_, coord.y_, coord.z_, coord.w_, coord.u_, coord.v_, i.seed_, f, d, distGreatestAxis6); break;
-                        case 3: cellular_function6D(coord.x_, coord.y_, coord.z_, coord.w_, coord.u_, coord.v_, i.seed_, f, d, distLeastAxis6); break;
-                        default: cellular_function6D(coord.x_, coord.y_, coord.z_, coord.w_, coord.u_, coord.v_, i.seed_, f, d, distEuclid6); break;
+                        case 0: cellular_function6D(coord.x_, coord.y_, coord.z_, coord.w_, coord.u_, coord.v_, seed, f, d, distEuclid6); break;
+                        case 1: cellular_function6D(coord.x_, coord.y_, coord.z_, coord.w_, coord.u_, coord.v_, seed, f, d, distManhattan6); break;
+                        case 2: cellular_function6D(coord.x_, coord.y_, coord.z_, coord.w_, coord.u_, coord.v_, seed, f, d, distGreatestAxis6); break;
+                        case 3: cellular_function6D(coord.x_, coord.y_, coord.z_, coord.w_, coord.u_, coord.v_, seed, f, d, distLeastAxis6); break;
+                        default: cellular_function6D(coord.x_, coord.y_, coord.z_, coord.w_, coord.u_, coord.v_, seed, f, d, distEuclid6); break;
                         }; break;
                     };
 
@@ -298,8 +369,9 @@ namespace anl
                 }
             case OP_Add:
                 {
-                    double s1=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[0],coord);
-                    double s2=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[1],coord);
+                    SVMOutput s1, s2;
+					s1=evaluateBoth(kernel,evaluated,coordcache,cache,i.sources_[0],coord);
+					s2=evaluateBoth(kernel,evaluated,coordcache,cache,i.sources_[1],coord);
                     cache[index].set(s1+s2);
                     evaluated[index]=true;
                     return;
@@ -307,16 +379,19 @@ namespace anl
                 }
             case OP_Subtract:
                 {
-                    double s1=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[0],coord);
-                    double s2=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[1],coord);
+                    SVMOutput s1, s2;
+					s1=evaluateBoth(kernel,evaluated,coordcache,cache,i.sources_[0],coord);
+					s2=evaluateBoth(kernel,evaluated,coordcache,cache,i.sources_[1],coord);
                     cache[index].set(s1-s2);
                     evaluated[index]=true;
                     return;
                 } break;
             case OP_Multiply:
                 {
-                    double s1=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[0],coord);
-                    double s2=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[1],coord);
+					SVMOutput s1, s2;
+					s1=evaluateBoth(kernel,evaluated,coordcache,cache,i.sources_[0],coord);
+					s2=evaluateBoth(kernel,evaluated,coordcache,cache,i.sources_[1],coord);
+
                     cache[index].set(s1*s2);
                     evaluated[index]=true;
                     return;
@@ -324,8 +399,9 @@ namespace anl
                 }
             case OP_Divide:
                 {
-                    double s1=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[0],coord);
-                    double s2=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[1],coord);
+                    SVMOutput s1, s2;
+					s1=evaluateBoth(kernel,evaluated,coordcache,cache,i.sources_[0],coord);
+					s2=evaluateBoth(kernel,evaluated,coordcache,cache,i.sources_[1],coord);
                     cache[index].set(s1/s2);
                     evaluated[index]=true;
                     return;
@@ -453,47 +529,33 @@ namespace anl
             case OP_ScaleDomain:
                 {
                     CCoordinate scale(1,1,1,1,1,1);
+                    double sc=evaluateParameter(kernel, evaluated, coordcache, cache, i.sources_[1], coord);
                     switch(coord.dimension_)
                     {
                     case 2:
                         {
-                        double sx=evaluateParameter(kernel, evaluated, coordcache,cache,i.sources_[1],coord);
-                        double sy=evaluateParameter(kernel, evaluated, coordcache,cache,i.sources_[2],coord);
-                        scale.set(sx,sy);
+                        scale.set(sc,sc);
                         break;
                         }
                     case 3:
                         {
-                        double sx=evaluateParameter(kernel, evaluated, coordcache,cache,i.sources_[1],coord);
-                        double sy=evaluateParameter(kernel, evaluated, coordcache,cache, i.sources_[2],coord);
-                        double sz=evaluateParameter(kernel, evaluated, coordcache,cache, i.sources_[3],coord);
-                        scale.set(sx,sy,sz);
+                        scale.set(sc,sc,sc);
                         break;
                         }
                     case 4:
                         {
-                        double sx=evaluateParameter(kernel, evaluated, coordcache,cache,i.sources_[1],coord);
-                        double sy=evaluateParameter(kernel, evaluated, coordcache,cache, i.sources_[2],coord);
-                        double sz=evaluateParameter(kernel, evaluated, coordcache,cache, i.sources_[3],coord);
-                        double sw=evaluateParameter(kernel, evaluated, coordcache,cache, i.sources_[4],coord);
-                        scale.set(sx,sy,sz,sw);
+                        scale.set(sc,sc,sc,sc);
                         break;
                         }
                     default:
                         {
-                        double sx=evaluateParameter(kernel, evaluated, coordcache,cache,i.sources_[1],coord);
-                        double sy=evaluateParameter(kernel, evaluated, coordcache,cache, i.sources_[2],coord);
-                        double sz=evaluateParameter(kernel, evaluated, coordcache,cache, i.sources_[3],coord);
-                        double sw=evaluateParameter(kernel, evaluated, coordcache, cache,i.sources_[4],coord);
-                        double su=evaluateParameter(kernel, evaluated, coordcache,cache, i.sources_[5],coord);
-                        double sv=evaluateParameter(kernel, evaluated, coordcache,cache, i.sources_[6],coord);
-                        scale.set(sx,sy,sz,sw,su,sv);
+                        scale.set(sc,sc,sc,sc,sc,sc);
                         break;
                         }
                     };
 
                     CCoordinate c=coord*scale;
-                    cache[index].set(evaluateParameter(kernel, evaluated, coordcache,cache, i.sources_[0], c));
+					cache[index].set(evaluateBoth(kernel, evaluated, coordcache,cache, i.sources_[0], c));
                     evaluated[index]=true;
                     return;
                     break;
@@ -503,7 +565,7 @@ namespace anl
                 double s=evaluateParameter(kernel, evaluated, coordcache, cache,i.sources_[1], coord);
                 CCoordinate scale(s,1,1,1,1,1);
                 CCoordinate c=coord*scale;
-                cache[index].set(evaluateParameter(kernel, evaluated, coordcache, cache,i.sources_[0], c));
+                cache[index].set(evaluateBoth(kernel, evaluated, coordcache, cache,i.sources_[0], c));
                 evaluated[index]=true;
                 return;
             } break;
@@ -513,7 +575,7 @@ namespace anl
                 double s=evaluateParameter(kernel, evaluated, coordcache, cache,i.sources_[1], coord);
                 CCoordinate scale(1,s,1,1,1,1);
                 CCoordinate c=coord*scale;
-                cache[index].set(evaluateParameter(kernel, evaluated, coordcache,cache, i.sources_[0], c));
+                cache[index].set(evaluateBoth(kernel, evaluated, coordcache,cache, i.sources_[0], c));
                 evaluated[index]=true;
                 return;
             } break;
@@ -523,7 +585,7 @@ namespace anl
                 double s=evaluateParameter(kernel, evaluated, coordcache,cache, i.sources_[1], coord);
                 CCoordinate scale(1,1,s,1,1,1);
                 CCoordinate c=coord*scale;
-                cache[index].set(evaluateParameter(kernel, evaluated, coordcache, cache,i.sources_[0], c));
+                cache[index].set(evaluateBoth(kernel, evaluated, coordcache, cache,i.sources_[0], c));
                 evaluated[index]=true;
                 return;
             } break;
@@ -533,7 +595,7 @@ namespace anl
                 double s=evaluateParameter(kernel, evaluated, coordcache, cache,i.sources_[1], coord);
                 CCoordinate scale(1,1,1,s,1,1);
                 CCoordinate c=coord*scale;
-                cache[index].set(evaluateParameter(kernel, evaluated, coordcache,cache, i.sources_[0], c));
+                cache[index].set(evaluateBoth(kernel, evaluated, coordcache,cache, i.sources_[0], c));
                 evaluated[index]=true;
                 return;
             } break;
@@ -543,7 +605,7 @@ namespace anl
                 double s=evaluateParameter(kernel, evaluated, coordcache,cache, i.sources_[1], coord);
                 CCoordinate scale(1,1,1,1,s,1);
                 CCoordinate c=coord*scale;
-                cache[index].set(evaluateParameter(kernel, evaluated, coordcache,cache, i.sources_[0], c));
+                cache[index].set(evaluateBoth(kernel, evaluated, coordcache,cache, i.sources_[0], c));
                 evaluated[index]=true;
                 return;
             } break;
@@ -553,7 +615,7 @@ namespace anl
                 double s=evaluateParameter(kernel, evaluated, coordcache,cache, i.sources_[1], coord);
                 CCoordinate scale(1,1,1,1,1,s);
                 CCoordinate c=coord*scale;
-                cache[index].set(evaluateParameter(kernel, evaluated, coordcache,cache, i.sources_[0], c));
+                cache[index].set(evaluateBoth(kernel, evaluated, coordcache,cache, i.sources_[0], c));
                 evaluated[index]=true;
                 return;
             } break;
@@ -563,7 +625,7 @@ namespace anl
                 double t=evaluateParameter(kernel, evaluated, coordcache, cache,i.sources_[1], coord);
                 CCoordinate trans(t,0,0,0,0,0);
                 CCoordinate c=coord+trans;
-                cache[index].set(evaluateParameter(kernel, evaluated, coordcache,cache, i.sources_[0], c));
+                cache[index].set(evaluateBoth(kernel, evaluated, coordcache,cache, i.sources_[0], c));
                 evaluated[index]=true;
                 return;
             } break;
@@ -573,7 +635,7 @@ namespace anl
                 double t=evaluateParameter(kernel, evaluated, coordcache, cache,i.sources_[1], coord);
                 CCoordinate trans(0,t,0,0,0,0);
                 CCoordinate c=coord+trans;
-                cache[index].set(evaluateParameter(kernel, evaluated, coordcache, cache,i.sources_[0], c));
+                cache[index].set(evaluateBoth(kernel, evaluated, coordcache, cache,i.sources_[0], c));
                 evaluated[index]=true;
                 return;
             } break;
@@ -583,7 +645,7 @@ namespace anl
                 double t=evaluateParameter(kernel, evaluated, coordcache, cache,i.sources_[1], coord);
                 CCoordinate trans(0,0,t,0,0,0);
                 CCoordinate c=coord+trans;
-                cache[index].set(evaluateParameter(kernel, evaluated, coordcache, cache,i.sources_[0], c));
+                cache[index].set(evaluateBoth(kernel, evaluated, coordcache, cache,i.sources_[0], c));
                 evaluated[index]=true;
                 return;
             } break;
@@ -593,7 +655,7 @@ namespace anl
                 double t=evaluateParameter(kernel, evaluated, coordcache, cache,i.sources_[1], coord);
                 CCoordinate trans(0,0,0,t,0,0);
                 CCoordinate c=coord+trans;
-                cache[index].set(evaluateParameter(kernel, evaluated, coordcache, cache,i.sources_[0], c));
+                cache[index].set(evaluateBoth(kernel, evaluated, coordcache, cache,i.sources_[0], c));
                 evaluated[index]=true;
                 return;
             } break;
@@ -603,7 +665,7 @@ namespace anl
                 double t=evaluateParameter(kernel, evaluated, coordcache, cache,i.sources_[1], coord);
                 CCoordinate trans(0,0,0,0,t,0);
                 CCoordinate c=coord+trans;
-                cache[index].set(evaluateParameter(kernel, evaluated, coordcache, cache,i.sources_[0], c));
+                cache[index].set(evaluateBoth(kernel, evaluated, coordcache, cache,i.sources_[0], c));
                 evaluated[index]=true;
                 return;
             } break;
@@ -613,7 +675,7 @@ namespace anl
                 double t=evaluateParameter(kernel, evaluated, coordcache, cache,i.sources_[1], coord);
                 CCoordinate trans(0,0,0,0,0,t);
                 CCoordinate c=coord+trans;
-                cache[index].set(evaluateParameter(kernel, evaluated, coordcache, cache,i.sources_[0], c));
+                cache[index].set(evaluateBoth(kernel, evaluated, coordcache, cache,i.sources_[0], c));
                 evaluated[index]=true;
                 return;
             } break;
@@ -622,47 +684,33 @@ namespace anl
             case OP_TranslateDomain:
             {
                     CCoordinate scale(1,1,1,1,1,1);
+                    double sc=evaluateParameter(kernel, evaluated, coordcache,cache,i.sources_[1],coord);
                     switch(coord.dimension_)
                     {
                     case 2:
                         {
-                        double sx=evaluateParameter(kernel, evaluated, coordcache,cache,i.sources_[1],coord);
-                        double sy=evaluateParameter(kernel, evaluated, coordcache, cache,i.sources_[2],coord);
-                        scale.set(sx,sy);
+                        scale.set(sc,sc);
                         break;
                         }
                     case 3:
                         {
-                        double sx=evaluateParameter(kernel, evaluated, coordcache,cache,i.sources_[1],coord);
-                        double sy=evaluateParameter(kernel, evaluated, coordcache, cache,i.sources_[2],coord);
-                        double sz=evaluateParameter(kernel, evaluated, coordcache, cache,i.sources_[3],coord);
-                        scale.set(sx,sy,sz);
+                        scale.set(sc,sc,sc);
                         break;
                         }
                     case 4:
                         {
-                        double sx=evaluateParameter(kernel, evaluated, coordcache,cache,i.sources_[1],coord);
-                        double sy=evaluateParameter(kernel, evaluated, coordcache, cache,i.sources_[2],coord);
-                        double sz=evaluateParameter(kernel, evaluated, coordcache, cache,i.sources_[3],coord);
-                        double sw=evaluateParameter(kernel, evaluated, coordcache, cache,i.sources_[4],coord);
-                        scale.set(sx,sy,sz,sw);
+                        scale.set(sc,sc,sc,sc);
                         break;
                         }
                     default:
                         {
-                        double sx=evaluateParameter(kernel, evaluated, coordcache,cache,i.sources_[1],coord);
-                        double sy=evaluateParameter(kernel, evaluated, coordcache, cache,i.sources_[2],coord);
-                        double sz=evaluateParameter(kernel, evaluated, coordcache, cache,i.sources_[3],coord);
-                        double sw=evaluateParameter(kernel, evaluated, coordcache, cache,i.sources_[4],coord);
-                        double su=evaluateParameter(kernel, evaluated, coordcache,cache, i.sources_[5],coord);
-                        double sv=evaluateParameter(kernel, evaluated, coordcache, cache,i.sources_[6],coord);
-                        scale.set(sx,sy,sz,sw,su,sv);
+                        scale.set(sc,sc,sc,sc,sc,sc);
                         break;
                         }
                     };
 
                     CCoordinate c=coord+scale;
-                    cache[index].set(evaluateParameter(kernel, evaluated, coordcache,cache, i.sources_[0], c));
+                    cache[index].set(evaluateBoth(kernel, evaluated, coordcache,cache, i.sources_[0], c));
                     evaluated[index]=true;
                     return;
             } break;
@@ -701,25 +749,27 @@ namespace anl
                 nz = (rotmatrix[0][2]*coord.x_) + (rotmatrix[1][2]*coord.y_) + (rotmatrix[2][2]*coord.z_);
                 CCoordinate newcoord=CCoordinate(nx,ny,nz,coord.w_,coord.u_,coord.v_);
                 newcoord.dimension_=coord.dimension_;
-                cache[index].set(evaluateParameter(kernel, evaluated, coordcache,cache, i.sources_[0], newcoord));
+                cache[index].set(evaluateBoth(kernel, evaluated, coordcache,cache, i.sources_[0], newcoord));
                 evaluated[index]=true;
             } break;
             case OP_Blend:
             {
-                double low,high,control;
-                low=evaluateParameter(kernel, evaluated, coordcache,cache, i.sources_[0], coord);
-                high=evaluateParameter(kernel, evaluated, coordcache,cache, i.sources_[1], coord);
+                SVMOutput low,high;
+				double control;
+                low=evaluateBoth(kernel, evaluated, coordcache,cache, i.sources_[0], coord);
+                high=evaluateBoth(kernel, evaluated, coordcache,cache, i.sources_[1], coord);
                 control=evaluateParameter(kernel, evaluated, coordcache,cache, i.sources_[2], coord);
-                cache[index].set(low+control*(high-low));
+                cache[index].set(low+(high-low)*control);
                 evaluated[index]=true;
                 return;
             } break;
             case OP_Select:
             {
                 evaluated[index]=true;
-                double low,high,control,threshold,falloff;
-                low=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[0],coord);
-                high=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[1],coord);
+                SVMOutput low,high;
+				double control,threshold,falloff;
+                low=evaluateBoth(kernel,evaluated,coordcache,cache,i.sources_[0],coord);
+                high=evaluateBoth(kernel,evaluated,coordcache,cache,i.sources_[1],coord);
                 control=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[2],coord);
                 threshold=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[3],coord);
                 falloff=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[4],coord);
@@ -739,7 +789,8 @@ namespace anl
                         double lower=threshold-falloff;
                         double upper=threshold+falloff;
                         double blend=quintic_blend((control-lower)/(upper-lower));
-                        cache[index].set(lerp(blend,low,high));
+                        //cache[index].set(lerp(blend,low,high));
+						cache[index].set(low+(high-low)*blend);
                     }
                 }
                 else
@@ -791,6 +842,83 @@ namespace anl
                 return;
             } break;
 
+			case OP_DX:
+			{
+				double spacing=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[1],coord);
+				double val=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[0],coord);
+				CCoordinate newcoord(coord.x_+spacing, coord.y_, coord.z_, coord.w_, coord.u_, coord.v_);
+				newcoord.dimension_=coord.dimension_;
+				double v1=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[0],newcoord);
+				cache[index].set((val-v1)/spacing);
+				evaluated[index]=true;
+				return;
+			} break;
+			case OP_DY:
+			{
+				double spacing=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[1],coord);
+				double val=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[0],coord);
+				CCoordinate newcoord(coord.x_, coord.y_+spacing, coord.z_, coord.w_, coord.u_, coord.v_);
+				newcoord.dimension_=coord.dimension_;
+				double v1=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[0],newcoord);
+				cache[index].set((val-v1)/spacing);
+				evaluated[index]=true;
+				return;
+			} break;
+			case OP_DZ:
+			{
+				double spacing=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[1],coord);
+				double val=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[0],coord);
+				CCoordinate newcoord(coord.x_, coord.y_, coord.z_+spacing, coord.w_, coord.u_, coord.v_);
+				newcoord.dimension_=coord.dimension_;
+				double v1=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[0],newcoord);
+				cache[index].set((val-v1)/spacing);
+				evaluated[index]=true;
+				return;
+			} break;
+			case OP_DW:
+			{
+				double spacing=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[1],coord);
+				double val=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[0],coord);
+				CCoordinate newcoord(coord.x_, coord.y_, coord.z_, coord.w_+spacing, coord.u_, coord.v_);
+				newcoord.dimension_=coord.dimension_;
+				double v1=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[0],newcoord);
+				cache[index].set((val-v1)/spacing);
+				evaluated[index]=true;
+				return;
+			} break;
+			case OP_DU:
+			{
+				double spacing=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[1],coord);
+				double val=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[0],coord);
+				CCoordinate newcoord(coord.x_, coord.y_, coord.z_, coord.w_, coord.u_+spacing, coord.v_);
+				newcoord.dimension_=coord.dimension_;
+				double v1=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[0],newcoord);
+				cache[index].set((val-v1)/spacing);
+				evaluated[index]=true;
+				return;
+			} break;
+			case OP_DV:
+			{
+				double spacing=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[1],coord);
+				double val=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[0],coord);
+				CCoordinate newcoord(coord.x_, coord.y_, coord.z_, coord.w_, coord.u_, coord.v_+spacing);
+				newcoord.dimension_=coord.dimension_;
+				double v1=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[0],newcoord);
+				cache[index].set((val-v1)/spacing);
+				evaluated[index]=true;
+				return;
+			} break;
+
+			case OP_Sigmoid:
+			{
+				double s=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[0],coord);
+				double c=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[1],coord);
+				double r=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[2],coord);
+				cache[index].set(1.0 / (1.0 + std::exp(-r*(s-c))));
+				evaluated[index]=true;
+				return;
+			} break;
+
             case OP_Radial:
             {
                 double len=0;
@@ -824,16 +952,17 @@ namespace anl
                 evaluated[index]=true;
                 return;
             } break;
-			
+
 			case OP_HexTile:
 			{
 				TileCoord tile=calcHexPointTile(coord.x_, coord.y_);
-				unsigned int hash=hash_coords_2(tile.x, tile.y, i.seed_);
+				unsigned int seed=(unsigned int)evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[0],coord);
+				unsigned int hash=hash_coords_2(tile.x, tile.y, seed);
 				cache[index].set((double)hash/255.0);
 				evaluated[index]=true;
 				return;
 			} break;
-			
+
 			case OP_HexBump:
 			{
 				TileCoord tile=calcHexPointTile(coord.x_, coord.y_);
@@ -844,6 +973,8 @@ namespace anl
 				evaluated[index]=true;
 				return;
 			} break;
+
+			case OP_Color: evaluated[index]=true; cache[index].set(i.outrgba_); return; break;
 
 			case OP_ExtractRed:
 			{
@@ -899,7 +1030,7 @@ namespace anl
             default: evaluated[index]=true; return; break;
         };
     }
-	
+
 	TileCoord CNoiseExecutor::calcHexPointTile(float px, float py)
 	{
 		TileCoord tile;
@@ -948,7 +1079,7 @@ namespace anl
 		tile.y=Y;
 		return tile;
 	}
-	
+
 	CoordPair CNoiseExecutor::calcHexTileCenter(int tx, int ty)
 	{
 		CoordPair origin;

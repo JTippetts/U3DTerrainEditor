@@ -1,7 +1,7 @@
 #ifndef INSTRUCTION_H
 #define INSTRUCTION_H
 
-#include "types.h"
+#include "../vectortypes.h"
 #include <vector>
 
 const int MaxSourceCount=10;
@@ -11,6 +11,7 @@ namespace anl
     enum EOpcodes
     {
         OP_NOP,
+		OP_Seed,
         OP_Constant,
         OP_ValueBasis,
         OP_GradientBasis,
@@ -60,12 +61,22 @@ namespace anl
         OP_W,
         OP_U,
         OP_V,
-		
+
+		OP_DX,
+		OP_DY,
+		OP_DZ,
+		OP_DW,
+		OP_DU,
+		OP_DV,
+
+		OP_Sigmoid,
+
 		// Patterns
 		OP_HexTile,
 		OP_HexBump,
 
 		// RGBA operations
+		OP_Color,
 		OP_ExtractRed,
 		OP_ExtractGreen,
 		OP_ExtractBlue,
@@ -78,21 +89,22 @@ namespace anl
     {
         // Out fields
         double outfloat_;
-        RGBA outrgba_;
+        SRGBA outrgba_;
 
         // Source input indices
         unsigned int sources_[MaxSourceCount];
 
         // Instruction opcode
         unsigned int opcode_;
-        unsigned int seed_;
+        //unsigned int seed_;
 
         SInstruction()
         {
             for(unsigned int c=0; c<MaxSourceCount; ++c) sources_[c]=1000000;
             outfloat_=0;
+			outrgba_=SRGBA(0,0,0,1);
             opcode_=0;
-            seed_=12345;
+            //seed_=12345;
         }
     };
 
@@ -189,6 +201,7 @@ namespace anl
 		unsigned int index_;
 		friend class CKernel;
 		friend class CNoiseExecutor;
+		friend class CExpressionBuilder;
 	};
 };
 

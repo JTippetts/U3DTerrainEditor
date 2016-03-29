@@ -6,7 +6,8 @@ return
 	{
 		{name="Frequency", type="value", value=7},
 		{name="Num Octaves", type="value", value=5},
-		{name="Amplitude", type="value", value=1},
+		{name="MinAmplitude", type="value", value=0},
+		{name="MaxAmplitude", type="value", value=1},
 		{name="Gain", type="value", value=0.8},
 		{name="Seed", type="value", value=12345},
 		{name="Tiers", type="flag", value=false},
@@ -25,12 +26,12 @@ return
 		local point5=k:constant(0.5)
 		local point75=k:constant(0.75)
 		local point25=k:constant(0.25)
-		local gainval=k:constant(self.options[4].value)
+		local gainval=k:constant(self.options[5].value)
 		local fbm
 		if self.options[10].value==false then
-			fbm=k:simplefBm(3, 3, self.options[2].value, self.options[1].value, self.options[5].value, true)
+			fbm=k:simplefBm(3, 3, self.options[2].value, self.options[1].value, self.options[6].value, false)
 		else
-			fbm=k:simpleRidgedMultifractal(3, 3, self.options[2].value, self.options[1].value, self.options[5].value, true)
+			fbm=k:simpleRidgedMultifractal(3, 3, self.options[2].value, self.options[1].value, self.options[6].value, false)
 		end
 		local scale=k:multiply(fbm,point5)
 		local offset=k:add(scale,point5)
@@ -38,10 +39,10 @@ return
 		
 		local last=k:lastIndex()
 		
-		if self.options[10].value==false then
-			fbm=k:simplefBm(3, 3, self.options[2].value, self.options[1].value, self.options[5].value+10, true)
+		if self.options[11].value==false then
+			fbm=k:simplefBm(3, 3, self.options[2].value, self.options[1].value, self.options[6].value+10, false)
 		else
-			fbm=k:simpleRidgedMultifractal(3, 3, self.options[2].value, self.options[1].value, self.options[5].value+10, true)
+			fbm=k:simpleRidgedMultifractal(3, 3, self.options[2].value, self.options[1].value, self.options[6].value+10, false)
 		end
 		scale=k:multiply(fbm,point5)
 		offset=k:add(scale,point5)
@@ -50,15 +51,15 @@ return
 		last=k:multiply(k:lastIndex(), last)
 		
 		
-		if self.options[6].value==true then
-			local numtiers=k:constant(math.floor(self.options[7].value))
+		if self.options[7].value==true then
+			local numtiers=k:constant(math.floor(self.options[8].value))
 			local tiers=k:smoothTiers(last,numtiers)
 		end
 		
 		--RenderANLKernelToHeight(hmap, mask, k, 0, 1, self.options[8].value, self.options[9].value)
 		local buffer=RasterBuffer(hmap:GetWidth(), hmap:GetHeight())
-		RenderANLKernelToBuffer(buffer,k,0.1,1)
-		SetHeightFromRasterBuffer(hmap,buffer,mask,self.options[8].value, self.options[9].value)
+		RenderANLKernelToBuffer(buffer,k,self.options[3].value,self.options[4].value)
+		SetHeightFromRasterBuffer(hmap,buffer,mask,self.options[9].value, self.options[10].value)
 		--hmap:SavePNG("terrain.png")
 		
 		terrain:ApplyHeightMap()

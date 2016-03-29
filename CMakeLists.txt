@@ -30,6 +30,7 @@ include_directories(${URHO3D_HOME}/include/Urho3D/ThirdParty/AngelScript)
 include_directories (${URHO3D_INCLUDE_DIRS})
 include_directories (${INCLUDE_DIRS_ONLY})
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 add_subdirectory(ThirdParty/ANL)
 
@@ -41,6 +42,6 @@ set (TARGET_NAME TEdit)
 
 
 # Define source files
-define_source_files ()
+define_source_files (EXTRA_CPP_FILES ThirdParty/ANL/Bindings/bind_anl.cpp)
 # Setup target with resource copying
 setup_main_executable ()
