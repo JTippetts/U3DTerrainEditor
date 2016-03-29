@@ -203,30 +203,6 @@ function HandleUpdate(eventType, eventData)
     local timeStep = eventData["TimeStep"]:GetFloat()
 	
 	
-	if input:GetKeyPress(KEY_S) then
-		SendEvent("SaveHeightmap")
-	end
-	
-	if input:GetKeyPress(KEY_D) then
-		SendEvent("SaveBlend1")
-	end
-	
-	if input:GetKeyPress(KEY_F) then
-		SendEvent("SaveBlend2")
-	end
-	
-	if input:GetKeyPress(KEY_J) then
-		SendEvent("LoadHeightmap")
-	end
-	
-	if input:GetKeyPress(KEY_K) then
-		SendEvent("LoadBlend1")
-	end
-	
-	if input:GetKeyPress(KEY_L) then
-		SendEvent("LoadBlend2")
-	end
-	
 	if input:GetKeyPress(KEY_A) then
 		local img=Image(context)
 		graphics:TakeScreenShot(img)
