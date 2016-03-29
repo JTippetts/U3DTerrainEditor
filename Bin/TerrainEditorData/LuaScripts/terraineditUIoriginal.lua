@@ -24,15 +24,6 @@ function TerrainEditUI:Start()
 	self.smoothbrush=ui:LoadLayout(cache:GetResource("XMLFile", "UI/TerrainEditSmoothBrush.xml"))
 	self.newterrain=ui:LoadLayout(cache:GetResource("XMLFile", "UI/TerrainEditNewTerrain.xml"))
 	self.toolbar=ui:LoadLayout(cache:GetResource("XMLFile", "UI/TerrainEditToolbar.xml"))
-	--[[self.filterui=ui:LoadLayout(cache:GetResource("XMLFile", "UI/TerrainEditFilters.xml"))
-	self.filterlist=self.filterui:GetChild("FilterList", true)
-	self.filteroptions=self.filterui:GetChild("FilterOptions", true)
-	
-	local content=Window:new(context)
-	content.style=uiStyle
-	self.filteroptions.contentElement=content
-	
-	]]
 	
 	
 	self.heightbrush.style=uiStyle
@@ -41,7 +32,6 @@ function TerrainEditUI:Start()
 	self.newterrain.style=uiStyle
 	self.toolbar.style=uiStyle
 	self.smoothbrush.style=uiStyle
-	--self.filterui.style=uiStyle
 	
 	self.brushpreview=Image(context)
 	self.brushpreview:SetSize(64,64,3)
@@ -59,7 +49,6 @@ function TerrainEditUI:Start()
 	ui.root:AddChild(self.smoothbrush)
 	ui.root:AddChild(self.newterrain)
 	ui.root:AddChild(self.toolbar)
-	--ui.root:AddChild(self.filterui)
 	
 	
 	self.mode=0
@@ -67,14 +56,11 @@ function TerrainEditUI:Start()
 	self.maskbrush.visible=false
 	self.newterrain.visible=false
 	self.smoothbrush.visible=false
-	--self.filterui.visible=false
 	self.toolbar.visible=true
 	
 	
 	self:SubscribeToEvent("Pressed", "TerrainEditUI:HandleButtonPress")
 	self:SubscribeToEvent("SliderChanged", "TerrainEditUI:HandleSliderChanged")
-	self:SubscribeToEvent("Toggled", "TerrainEditUI:HandleToggled")
-	self:SubscribeToEvent("ItemSelected", "TerrainEditUI:HandleItemSelected")
 	
 	self.brushcursornode=scene_:CreateChild()
 	self.brushcursor=self.brushcursornode:CreateComponent("CustomGeometry")
@@ -90,8 +76,6 @@ function TerrainEditUI:Start()
 	
 	self.mode=0
 	self:ActivateHeightBrush()
-	
-	--self:PopulateFilterList()
 	
 	self.counter=0
 	-- Waypoints
@@ -164,108 +148,6 @@ function TerrainEditUI:AddWaypoint(groundx, groundz)
 	waynode.scale=Vector3(0.25,0.25,0.25)
 	table.insert(waypoints, waynode)
 	self:UpdateWaypointVis()
-end
-
---[[
-function TerrainEditUI:BuildFilterOptions(filter)
-	if filter==nil then return end
-	local options=self.filteroptions:GetChild("OptionsWindow", true)
-	local name=self.filteroptions:GetChild("FilterName", true)
-	local desc=self.filteroptions:GetChild("FilterDescription", true)
-	name.text=filter.name
-	desc.text=filter.description
-	
-	options:RemoveAllChildren()
-	
-	if filter.options==nil then print("No options") return end
-	local c
-	local maxx,maxy=0,0
-	for _,c in ipairs(filter.options) do
-		print("Option: "..c.name)
-		local window=Window:new(context)
-		window.defaultStyle=uiStyle
-		window.style=uiStyle
-		window.layoutMode=LM_HORIZONTAL
-		window.layoutBorder=IntRect(5,5,5,5)
-		local title=Text:new(context)
-		title.text=c.name
-		title.defaultStyle=uiStyle
-		title.style=uiStyle
-		--title.maxSize=IntVector2(64,0)
-		window:AddChild(title)
-		
-		if c.type=="flag" then
-			local check=CheckBox:new(context)
-			check.name=c.name
-			check.defaultStyle=uiStyle
-			check.style=uiStyle
-			if c.value==true then check.checked=true
-			else check.checked=false
-			end
-			window:AddChild(check)
-			window.size=IntVector2(title.size.x+check.size.x, 15)
-		elseif c.type=="value" then
-			local edit=LineEdit:new(context)
-			edit.name=c.name
-			edit.defaultStyle=uiStyle
-			edit.style=uiStyle
-			edit.textElement.text=tostring(c.value)
-			window:AddChild(edit)
-			window.size=IntVector2(title.size.x+edit.size.x, 15)
-		end
-		--if window.size.x > maxx then maxx=window.size.x end
-		window.maxSize=IntVector2(10000,25)
-		options:AddChild(window)
-	end
-	
-	--options.size.x=maxx
-	self.filteroptions.visible=true
-end
-
-function TerrainEditUI:PopulateFilterList()
-	self.filters={}
-	self.selectedfilter=nil
-	local options=self.filteroptions:GetChild("OptionsWindow", true)
-	options:RemoveAllChildren()
-	
-	local list=self.filterlist:GetChild("List", true)
-	if list==nil then return end
-	list:RemoveAllItems()
-	
-	local filters=fileSystem:ScanDir(fileSystem:GetProgramDir().."/TerrainEditFilters", "*.lua", SCAN_FILES, false)
-	if filters==nil then print("Uh oh")
-	else
-		local c
-		for _,c in ipairs(filters) do
-			local filter=dofile("TerrainEditFilters/"..c)
-			print(c)
-			self.filters[filter.name]=filter
-			local uielement=Text:new(context)
-			uielement.style="EditorEnumAttributeText"
-			uielement.text=filter.name
-			uielement.name=filter.name
-			list:AddItem(uielement)
-		end
-	end
-end
-]]
-function TerrainEditUI:HandleItemSelected(eventType, eventData)
-	--[[local which=eventData["Element"]:GetPtr("ListView")
-	local selected=eventData["Selection"]:GetInt()
-	local entry=which:GetItem(selected)
-	if entry==nil then return end
-	local name=entry:GetName()
-	
-	if self.filters[name]==nil then return end
-	
-	self:BuildFilterOptions(self.filters[name])
-	self.selectedfilter=self.filters[name]
-	
-	]]
-	
-	--if self.filters[name] then
-		--self.filters[name]:execute()
-	--end
 end
 
 function TerrainEditUI:GetBrushSettings(brush)
@@ -343,16 +225,6 @@ function TerrainEditUI:SetBrushCursorHeight()
 	
 	local ground=cam:GetScreenGround(mousepos.x, mousepos.y)
 	
-	--[[local numverts=self.brushcursor:GetNumVertices(0)
-	
-	local v
-	for v=0,numverts-1,1 do
-		local vert=self.brushcursor:GetVertex(0,v).position
-		local ht=terrain:GetHeight(Vector3(vert.x+ground.x,0,vert.z+ground.z))
-		vert.y=ht
-	end
-	
-	self.brushcursor:Commit()]]
 	SetBrushCursorHeight(terrain, self.brushcursor, ground.x, ground.z)
 end
 
@@ -485,9 +357,6 @@ function TerrainEditUI:Update(dt)
 			local ground=cam:PickGround(mousepos.x, mousepos.y)
 			if ground~=nil then
 				local norm=WorldToNormalized(hmap,terrain,ground)
-				--local tx=math.floor(norm.x*hmap:GetWidth()-1)
-				--local ty=math.floor(norm.y*hmap:GetHeight()-1)
-				--local col=hmap:GetPixel(tx,hmap:GetHeight()-ty)
 				local col=hmap:GetPixelBilinear(norm.x,1-norm.y)
 				local ht=0
 				if hmap.components==1 then ht=col.r
@@ -498,7 +367,6 @@ function TerrainEditUI:Update(dt)
 				local slider=self.activebrush:GetChild("MaxSlider", true)
 				if slider then slider.value=ht*slider.range end
 				self.power, self.max, self.radius, self.hardness, self.usemask=self:GetBrushSettings(self.activebrush)
-				--self:BuildCursorMesh(self.radius)
 				self:GenerateBrushPreview(self.hardness)
 			end
 		else
@@ -506,7 +374,6 @@ function TerrainEditUI:Update(dt)
 			if ground~=nil then
 				local gx,gz=ground.x,ground.z
 			
-				--self.edit:ApplyBrush(gx,gz, self.radius, self.max, self.power, self.hardness, self.mode, self.usemask, dt)
 				if self.mode==0 then ApplyHeightBrush(terrain,hmap,mask,gx,gz,self.radius, self.max, self.power, self.hardness, self.usemask, dt) terrain:ApplyHeightMap()
 				elseif self.mode>=1 and self.mode<=8 then ApplyBlendBrush8(terrain,hmap,blend1,blend2,mask,gx,gz,self.radius,self.max,self.power,self.hardness,self.mode-1,self.usemask,dt) blendtex1:SetData(blend1) blendtex2:SetData(blend2)
 				elseif self.mode==9 then ApplySmoothBrush(terrain,hmap,mask,gx,gz,self.radius, self.max, self.power, self.hardness, self.usemask, dt) terrain:ApplyHeightMap()
@@ -593,41 +460,9 @@ function TerrainEditUI:HandleButtonPress(eventType, eventData)
 	elseif name=="Terrain8Button" then
 		self.mode=8
 		self:ActivateBlendBrush()
-	
-	
 	elseif name=="MaskButton" then
 		self.mode=10
 		self:ActivateMaskBrush()
-	
-	--[[elseif name=="FilterButton" then
-		if self.filterui.visible==true then self.filterui.visible=false
-		else
-			print("Showing filters")
-			self:PopulateFilterList()
-			self.filterui.visible=true
-		end
-	elseif name=="ExecuteButton" then
-		if self.selectedfilter then
-			-- Grab options
-			if self.selectedfilter.options ~= nil then
-				local c
-				for _,c in ipairs(self.selectedfilter.options) do
-					local element=self.filteroptions:GetChild(c.name, true)
-					if element then
-						if c.type=="value" then c.value=tonumber(element.textElement.text)
-						elseif c.type=="flag" then c.value=element.checked
-						end
-					end
-				end
-			end
-			self.selectedfilter:execute()
-			collectgarbage()
-			print("Usedmem: "..collectgarbage("count"))
-		end
-	elseif name=="RescanFilters" then
-		self:PopulateFilterList()
-		]]
-		
 	elseif name=="ClearMask" then
 		mask:Clear(Color(1,1,1))
 		masktex:SetData(mask)
@@ -658,8 +493,3 @@ function TerrainEditUI:HandleSliderChanged(eventType, eventData)
 	end
 end
 
-function TerrainEditUI:HandleToggled(eventType, eventData)
-	local which=eventData:GetPtr("UIElement", "Element")
-	if which==nil then return end
-		
-end

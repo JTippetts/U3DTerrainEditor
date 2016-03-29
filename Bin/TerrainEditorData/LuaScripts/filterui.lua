@@ -1,5 +1,16 @@
 -- Filter UI
 
+function GetOptions(ops)
+	local o={}
+	
+	local j
+	for _,j in ipairs(ops) do
+		o[j.name]=j
+	end
+	
+	return o
+end
+
 FilterUI=ScriptObject()
 
 function FilterUI:Start()
