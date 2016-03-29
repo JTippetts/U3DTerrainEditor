@@ -182,8 +182,8 @@ function TerrainEditUI:BuildCursorMesh(radius)
 	local spacingx=spacing.x
 	local spacingz=spacing.z
 	local meshsize=math.floor(radius)*2+2
-	local originx=(-meshsize/2)*spacingx
-	local originz=(-meshsize/2)*spacingx
+	local originx=(-meshsize)*spacingx*0.5
+	local originz=(-meshsize)*spacingx*0.5
 	
 	local uvspacing=1/(meshsize-1)
 	

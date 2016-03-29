@@ -8,8 +8,19 @@
 #include <algorithm>
 #include <cmath>
 #include <Urho3D/IO/Log.h>
+#include <Urho3D/Resource/Image.h>
+#include <Urho3D/IO/Deserializer.h>
+#include <Urho3D/IO/File.h>
 #include <iostream>
 
+bool LoadImage(Context *c, Image *i, const char *fname)
+{
+	SharedPtr<File> file(new File(c,fname));
+	if(!file) return false;
+	
+	auto success=i->Load(*(file.Get()));
+	return success;
+}
 	
 Vector2 WorldToNormalized(Image *height, Terrain *terrain, Vector3 world)
 {

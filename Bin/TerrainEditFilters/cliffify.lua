@@ -14,19 +14,22 @@ return
 	},
 	
 	execute=function(self)
+		local ops=GetOptions(self.options)
 		local bw,bh=blend1:GetWidth(), blend1:GetHeight()
 		
-		local halffade=self.options[2].value*0.5
-		local fade=self.options[2].value
-		local thresh=self.options[1].value
-		local layer=self.options[3].value
+		local halffade=ops["Fade"]*0.5
+		local fade=ops["Fade"]
+		local thresh=ops["Steepness threshold"]
+		local layer=ops["Cliff Layer"]
+		local usemask=ops["Use Mask?"]
+		local invertmask=ops["Invert Mask?"]
 		
 		local buffer=RasterBuffer(bw,bh)
 		
 		local x,y
 		for x=0,bw-1,1 do
 			for y=0,bh-1,1 do
-				local nworld=Vector2(x/bw, y/bh)
+				local nworld=Vector2(x/(bw-1), y/(bh-1))
 				local world=NormalizedToWorld(hmap,terrain,nworld)
 				local normal=terrain:GetNormal(world)
 				
@@ -35,7 +38,7 @@ return
 				i=math.max(0,math.min(1,i))
 				i=1-i
 				
-				buffer:set(x,(bw-1)-y,i)
+				buffer:set(x,(bh-1)-y,i)
 			end
 			collectgarbage()
 		end

@@ -6,6 +6,7 @@ Bin/CoreData
 Bin/Extra
 Bin/*.png
 !Bin/TerrainEditorData/*.png
+Bin/TerrainEditorData/Save
 *.bat
 *.sh
 *.exe

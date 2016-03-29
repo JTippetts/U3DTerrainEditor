@@ -10,6 +10,7 @@ require "LuaScripts/terraineditUIoriginal"
 require "LuaScripts/ui"
 require "LuaScripts/buildcomposite"
 require "LuaScripts/filterui"
+require "LuaScripts/saveloadui"
 
 function HtToRG(ht)
 	local expht=math.floor(ht*255)
@@ -48,14 +49,11 @@ function Start()
 
     -- Hook up to the frame update event
     SubscribeToEvents()
-	local i,j
-	for i,j in pairs(tolua) do print(i,j) end
 	
 end
 
 function Stop()
-	--img1:delete()
-	--img2:delete()
+	
 end
 
 function CreateScene()
@@ -70,7 +68,7 @@ function CreateScene()
     local zone = zoneNode:CreateComponent("Zone")
     zone.boundingBox = BoundingBox(-1000.0, 1000.0)
     zone.ambientColor = Color(0.03, 0.03, 0.04)
-    zone.fogColor = Color(1,1,1)
+    zone.fogColor = Color(0.1,0.1,0.1)
     zone.fogStart = 300.0
     zone.fogEnd = 325.0
 
@@ -83,8 +81,7 @@ function CreateScene()
     light.shadowBias = BiasParameters(0.00025, 0.5)
     light.shadowCascade = CascadeParameters(10.0, 50.0, 200.0, 0.0, 0.8)
     light.specularIntensity = 0.2;
-    -- Apply slightly overbright lighting to match the skybox
-    light.color = Color(1,0.9,0.8);
+    light.color = Color(0.7,0.7,0.7);
 	
 	lightNode = scene_:CreateChild("DirectionalLight")
     lightNode.direction = Vector3(-1.2, -1.0, -1.6)
@@ -95,7 +92,7 @@ function CreateScene()
     light.shadowCascade = CascadeParameters(10.0, 50.0, 200.0, 0.0, 0.8)
     light.specularIntensity = 0.2;
     -- Apply slightly overbright lighting to match the skybox
-    light.color = Color(0.4,0.45,0.5);
+    light.color = Color(0.3,0.3,0.3);
 
     -- Create skybox. The Skybox component is used like StaticModel, but it will be always located at the camera, giving the
     -- illusion of the box planes being far away. Use just the ordinary Box model and a suitable material, whose shader will
@@ -185,6 +182,7 @@ function CreateScene()
 	
 	terrainui=scene_:CreateScriptObject("TerrainEditUI")
 	filterui=scene_:CreateScriptObject("FilterUI")
+	saveloadui=scene_:CreateScriptObject("SaveLoadUI")
 
 
    
@@ -222,17 +220,24 @@ function HandleUpdate(eventType, eventData)
 	
 	
 	if input:GetKeyPress(KEY_S) then
-		hmap:SavePNG("TerrainEditorData/Textures/terrain.png")
+		--hmap:SavePNG("TerrainEditorData/Textures/terrain.png")
+		SendEvent("SaveHeightmap")
 	end
 	
 	if input:GetKeyPress(KEY_D) then
-		blend1:SavePNG("TerrainEditorData/Textures/blend1.png")
-		if(blend2) then blend2:SavePNG("TerrainEditorData/Textures/blend2.png") end
+		--blend1:SavePNG("TerrainEditorData/Textures/blend1.png")
+		--if(blend2) then blend2:SavePNG("TerrainEditorData/Textures/blend2.png") end
+		SendEvent("SaveBlend1")
+	end
+	
+	if input:GetKeyPress(KEY_F) then
+		SendEvent("SaveBlend2")
 	end
 	
 	if input:GetKeyPress(KEY_K) then
-		hmap=cache:GetResource("Image", "Textures/terrain.png")
-		terrain:SetHeightMap(hmap)
+		--hmap=cache:GetResource("Image", "Textures/terrain.png")
+		--terrain:SetHeightMap(hmap)
+		SendEvent("LoadHeightmap")
 	end
 	
 	if input:GetKeyPress(KEY_L) then

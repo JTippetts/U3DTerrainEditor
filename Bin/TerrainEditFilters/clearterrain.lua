@@ -9,7 +9,7 @@ return
 	execute=function(self)
 		local ops=GetOptions(self.options)
 		
-		local layer=ops["Layer"].value
+		local layer=ops["Layer"]
 		if layer==0 then
 			blend1:Clear(Color(1,0,0,0))
 			blend2:Clear(Color(0,0,0,0))

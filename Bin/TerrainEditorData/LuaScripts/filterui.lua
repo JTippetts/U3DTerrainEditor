@@ -5,7 +5,7 @@ function GetOptions(ops)
 	
 	local j
 	for _,j in ipairs(ops) do
-		o[j.name]=j
+		o[j.name]=j.value
 	end
 	
 	return o

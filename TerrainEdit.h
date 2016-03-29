@@ -81,5 +81,7 @@ using namespace anl;
 	void ExtractLayerToBuffer(Image *blend1, Image *blend2, RasterBuffer *buffer, int layer);
 	float GetLayerBlend(Image *blend1, Image *blend2, int x, int y, int layer);
 	void SetLayerBlend(Image *blend1, Image *blend2, int x, int y, int layer, float v);
+	
+	bool LoadImage(Context *c, Image *i, const char *fname);
 
 #endif
