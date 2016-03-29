@@ -2,12 +2,25 @@ SaveLoadUI=ScriptObject()
 imageFilters={"*.png"}
 
 function SaveLoadUI:Start()
+	self.menu=ui:LoadLayout(cache:GetResource("XMLFile", "UI/TerrainEditSaveLoadMenu.xml"))
+	self.menu.style=uiStyle
+	self.menu.visible=true
+	
+	ui.root:AddChild(self.menu)
+	
 	self:SubscribeToEvent("SaveHeightmap", "SaveLoadUI:SaveHeightmap")
 	self:SubscribeToEvent("SaveBlend1", "SaveLoadUI:SaveBlend1")
 	self:SubscribeToEvent("SaveBlend2", "SaveLoadUI:SaveBlend2")
 	self:SubscribeToEvent("LoadHeightmap", "SaveLoadUI:LoadHeightmap")
 	self:SubscribeToEvent("LoadBlend1", "SaveLoadUI:LoadBlend1")
 	self:SubscribeToEvent("LoadBlend2", "SaveLoadUI:LoadBlend2")
+	
+	self:SubscribeToEvent(self.menu:GetChild("SaveHeightmap",true), "Pressed", "SaveLoadUI:SaveHeightmap")
+	self:SubscribeToEvent(self.menu:GetChild("SaveBlend1",true), "Pressed", "SaveLoadUI:SaveBlend1")
+	self:SubscribeToEvent(self.menu:GetChild("SaveBlend2",true), "Pressed", "SaveLoadUI:SaveBlend2")
+	self:SubscribeToEvent(self.menu:GetChild("LoadHeightmap",true), "Pressed", "SaveLoadUI:LoadHeightmap")
+	self:SubscribeToEvent(self.menu:GetChild("LoadBlend1",true), "Pressed", "SaveLoadUI:LoadBlend1")
+	self:SubscribeToEvent(self.menu:GetChild("LoadBlend2",true), "Pressed", "SaveLoadUI:LoadBlend2")
 end
 
 function CenterDialog(element)

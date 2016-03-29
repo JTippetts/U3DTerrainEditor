@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <element type="Window">
-	<attribute name="Position" value="207 477" />
+	<attribute name="Position" value="-2 479" />
 	<attribute name="Size" value="111 288" />
 	<attribute name="Layout Mode" value="Vertical" />
 	<attribute name="Layout Border" value="5 5 5 5" />
