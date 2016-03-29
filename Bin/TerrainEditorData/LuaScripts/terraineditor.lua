@@ -234,16 +234,18 @@ function HandleUpdate(eventType, eventData)
 		SendEvent("SaveBlend2")
 	end
 	
-	if input:GetKeyPress(KEY_K) then
+	if input:GetKeyPress(KEY_J) then
 		--hmap=cache:GetResource("Image", "Textures/terrain.png")
 		--terrain:SetHeightMap(hmap)
 		SendEvent("LoadHeightmap")
 	end
 	
+	if input:GetKeyPress(KEY_K) then
+		SendEvent("LoadBlend1")
+	end
+	
 	if input:GetKeyPress(KEY_L) then
-		blend1=cache:GetResource("Image", "Textures/blend1.png")
-		blendtex1:SetData(blend1, false)
-		if blend2 then blend2=cache:GetResource("Image", "Textures/blend2.png") blendtex2:SetData(blend2, false) end
+		SendEvent("LoadBlend2")
 	end
 	
 	if input:GetKeyPress(KEY_A) then

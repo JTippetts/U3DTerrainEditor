@@ -6,6 +6,8 @@ function SaveLoadUI:Start()
 	self:SubscribeToEvent("SaveBlend1", "SaveLoadUI:SaveBlend1")
 	self:SubscribeToEvent("SaveBlend2", "SaveLoadUI:SaveBlend2")
 	self:SubscribeToEvent("LoadHeightmap", "SaveLoadUI:LoadHeightmap")
+	self:SubscribeToEvent("LoadBlend1", "SaveLoadUI:LoadBlend1")
+	self:SubscribeToEvent("LoadBlend2", "SaveLoadUI:LoadBlend2")
 end
 
 function CenterDialog(element)
@@ -77,6 +79,16 @@ function SaveLoadUI:LoadHeightmap(eventType, eventData)
 	self:SubscribeToEvent(self.fileSelector, "FileSelected", "SaveLoadUI:HandleLoadHeightmap")
 end
 
+function SaveLoadUI:LoadBlend1(eventType, eventData)
+	self:CreateFileSelector("Load Blend 1", "Load", "Cancel", fileSystem:GetProgramDir().."TerrainEditorData/Save", imageFilters, 0, false)
+	self:SubscribeToEvent(self.fileSelector, "FileSelected", "SaveLoadUI:HandleLoadBlend1")
+end
+
+function SaveLoadUI:LoadBlend2(eventType, eventData)
+	self:CreateFileSelector("Load Blend 2", "Load", "Cancel", fileSystem:GetProgramDir().."TerrainEditorData/Save", imageFilters, 0, false)
+	self:SubscribeToEvent(self.fileSelector, "FileSelected", "SaveLoadUI:HandleLoadBlend2")
+end
+
 function SaveLoadUI:HandleSaveHeightmap(eventType, eventData)
 	local fname=ExtractFilename(eventData, true)
 	if fname~="" then
@@ -109,6 +121,24 @@ function SaveLoadUI:HandleLoadHeightmap(eventType, eventData)
 	if fname~="" then
 		LoadImage(context, hmap, fname)
 		terrain:SetHeightMap(hmap)
+	end
+	self:CloseFileSelector()
+end
+
+function SaveLoadUI:HandleLoadBlend1(eventType, eventData)
+	local fname=ExtractFilename(eventData, true)
+	if fname~="" then
+		LoadImage(context, blend1, fname)
+		blendtex1:SetData(blend1, false)
+	end
+	self:CloseFileSelector()
+end
+
+function SaveLoadUI:HandleLoadBlend2(eventType, eventData)
+	local fname=ExtractFilename(eventData, true)
+	if fname~="" and blend2 then
+		LoadImage(context, blend2, fname)
+		blendtex2:SetData(blend2, false)
 	end
 	self:CloseFileSelector()
 end
