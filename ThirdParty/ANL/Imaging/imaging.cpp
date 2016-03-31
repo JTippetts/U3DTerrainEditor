@@ -132,20 +132,6 @@ namespace anl
                 stbi_image_free(data);
         }
 
-	struct SChunk
-	{
-		int seamlessmode;
-		double *a;
-		int awidth, aheight;
-		int chunkheight, chunkyoffset;
-		CKernel *kernel;
-		SMappingRanges ranges;
-		CInstructionIndex at;
-		double z;
-
-		SChunk(CInstructionIndex a) : at(a) {}
-	};
-
 	void map2DChunk(SChunk chunk)
 	{
 		static double pi2=3.141592*2.0;
@@ -522,19 +508,6 @@ namespace anl
 	#endif
    }
 
-   struct SChunk3D
-   {
-       int seamlessmode;
-       double *a;
-       int awidth, aheight, adepth;
-       int chunkdepth, chunkzoffset;
-       CKernel *kernel;
-       SMappingRanges ranges;
-       CInstructionIndex at;
-
-       SChunk3D(CInstructionIndex a) : at(a) {}
-	};
-
 	void map3DChunk(SChunk3D chunk)
 	{
 	    static double pi2=3.141592*2.0;
@@ -721,22 +694,6 @@ namespace anl
 		for(unsigned int c=0; c<threads.size(); ++c) threads[c].join();
 	#endif
     }
-
-
-
-	struct SRGBAChunk
-	{
-		int seamlessmode;
-		SRGBA *a;
-		int awidth, aheight;
-		int chunkheight, chunkyoffset;
-		CKernel *kernel;
-		SMappingRanges ranges;
-		double z;
-		CInstructionIndex at;
-
-		SRGBAChunk(CInstructionIndex a) : at(a){}
-	};
 
 	void mapRGBA2DChunk(SRGBAChunk chunk)
 	{

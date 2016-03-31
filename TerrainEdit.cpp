@@ -1,6 +1,7 @@
 #include "TerrainEdit.h"
 #include "ThirdParty/ANL/templates/tarrays.h"
 #include "ThirdParty/ANL/VM/random_gen.h"
+#include "ThirdParty/ANL/Imaging/imaging.h"
 
 #include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/Scene/Node.h>
@@ -523,6 +524,11 @@ void InvertMask(Image *mask)
 	}
 }
 
+
+
+
+
+
 void RenderANLKernelToHeight(Image *height, Image *mask, CKernel *kernel, double lowRange, double highRange, bool useMask, bool invertMask)
 {
 	if(!height) return;
@@ -532,23 +538,10 @@ void RenderANLKernelToHeight(Image *height, Image *mask, CKernel *kernel, double
 	CNoiseExecutor vm(*kernel);
 	
 	TArray2D<double> a(height->GetWidth(), height->GetHeight());
-	double mx=-10000;
-	double mn=100000;
 	
-	// Map the ANL module into a temporary buffer
-	for(int x=0; x<=w; ++x)
-	{
-		for(int y=0; y<=h; ++y)
-		{
-			float nx=(float)x/(float)(w);
-			float ny=(float)y/(float)(h);
-			CCoordinate coord(nx,ny,0);
-			double val=vm.evaluate(coord).outfloat_;
-			a.set(x,y,val);
-			if(val>mx) mx=val;
-			if(val<mn) mn=val;
-		}
-	}
+	map2D(SEAMLESS_NONE, a, *kernel, SMappingRanges(0,1,0,1,0,1), 0, kernel->lastIndex());
+	a.scaleToRange(lowRange, highRange);
+	
 	
 	// Map the temporary into the heightmap
 	for(int x=0; x<=w; ++x)
@@ -558,8 +551,7 @@ void RenderANLKernelToHeight(Image *height, Image *mask, CKernel *kernel, double
 			float nx=(float)x/(float)(w);
 			float ny=(float)y/(float)(h);
 			
-			double v=(a.get(x,y)-mn)/(mx-mn);
-			v=lowRange+v*(highRange-lowRange);
+			double v=a.get(x,y);
 			if(useMask && mask)
 			{
 				float oldheight=GetHeightValue(height,x,y);
@@ -578,20 +570,19 @@ void RenderANLKernelToBuffer(RasterBuffer *buffer, CKernel *kernel, float lowran
 	int w=buffer->width()-1;
 	int h=buffer->height()-1;
 	
+	TArray2D<double> a(buffer->width(), buffer->height());
+	map2D(SEAMLESS_NONE, a, *kernel, SMappingRanges(0,1,0,1,0,1), 0, kernel->lastIndex());
+	a.scaleToRange(lowrange, highrange);
+	
 	CNoiseExecutor vm(*kernel);
 	for(int x=0; x<=w; ++x)
 	{
 		for(int y=0; y<=h; ++y)
 		{
-			float nx=(float)x/(float)(w);
-			float ny=(float)y/(float)(h);
-			CCoordinate coord(nx,ny,0);
-			double val=vm.evaluate(coord).outfloat_;
+			double val=a.get(x,y);
 			buffer->set(x,y,val);
 		}
 	}
-	
-	buffer->scaleToRange(lowrange, highrange);
 }
 
 void SetHeightFromRasterBuffer(Image *height, RasterBuffer *buffer, Image *mask, bool useMask, bool invertMask)
@@ -842,15 +833,6 @@ void BlendRasterizedBuffer8Max(Image *blend0, Image *blend1, RasterBuffer *buffe
 
 RasterVertex CubicInterpolate(RasterVertex &p0, RasterVertex &p1, RasterVertex &p2, RasterVertex &p3, float t)
 {
-	/*RasterVertex e((p3.x_-p2.x_)-(p0.x_-p1.x_), (p3.y_-p2.y_)-(p0.y_-p1.y_), (p3.val_-p2.val_)-(p0.val_-p1.val_));
-	RasterVertex f((p0.x_-p1.x_)-e.x_, (p0.y_-p1.y_)-e.y_, (p0.val_-p1.val_)-e.val_);
-	RasterVertex g(p2.x_-p0.x_, p2.y_-p0.y_, p2.val_-p0.val_);
-	RasterVertex h(p1);
-	
-	float t3=t*t*t;
-	float t2=t*t;
-	return RasterVertex((e.x_*t3+f.x_*t2+g.x_*t+h.x_), (e.y_*t3+f.y_*t2+g.y_*t+h.y_), e.val_*t3+f.val_*t2+g.val_*t+h.val_);*/
-	
 	// Catmull-Rom
 	/*
 	q(t) = 0.5 *(  	(2 * P1) +
