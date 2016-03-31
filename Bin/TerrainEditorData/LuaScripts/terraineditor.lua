@@ -144,12 +144,12 @@ function CreateScene()
 	
 	blend1=Image(context)
 	blend1:SetSize(1024,1024,4)
-	blend1:Clear(Color(1,0,0,0))
+	blend1:Clear(Color(0,0,0,0))
 	blendtex1:SetData(blend1, false)
 	
 	blend2=Image(context)
 	blend2:SetSize(1024,1024,4)
-	blend2:Clear(Color(0,0,0,0))
+	blend2:Clear(Color(1,0,0,0))
 	blendtex2:SetData(blend2, false)
 	
 	-- Build composite textures
