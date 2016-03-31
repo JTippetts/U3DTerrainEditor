@@ -18,6 +18,7 @@
 #include "ThirdParty/ANL/VM/coordinate.h"
 #include "ThirdParty/ANL/templates/tarrays.h"
 #include "ThirdParty/ANL/templates/tarray1.h"
+#include "ThirdParty/ANL/imaging/imaging.h"
 
 using namespace Urho3D;
 using namespace anl;
@@ -60,25 +61,27 @@ using namespace anl;
 	};
 	
 	typedef TArray1D<RasterVertex> RasterVertexList;
-	typedef TArray2D<float> RasterBuffer;
+	//typedef TArray2D<float> CArray2Dd;
 	
-	void RasterizeTriangle(RasterBuffer *buffer, RasterVertex v1, RasterVertex v2, RasterVertex v3);
-	void RasterizeQuadStrip(RasterBuffer *buffer, RasterVertexList *strip);
-	void BlendHeightWithRasterizedBuffer(Image *height, RasterBuffer *buffer, RasterBuffer *blend, Image *mask=0, bool useMask=false, bool invertMask=false);
-	void BlendColorWithRasterizedBuffer(Image *img, RasterBuffer *buffer, Color endColor, Image *mask=0, bool useMask=false, bool invertMask=false);
-	void BlendRasterizedBuffer8(Image *img, Image *other, RasterBuffer *buffer, int layer, Image *mask=0, bool useMask=false, bool invertMask=false);
-	void BlendRasterizedBuffer8Max(Image *img, Image *other, RasterBuffer *buffer, int layer, Image *mask=0, bool useMask=false, bool invertMask=false);
+	void RasterizeTriangle(CArray2Dd *buffer, RasterVertex v1, RasterVertex v2, RasterVertex v3);
+	void RasterizeQuadStrip(CArray2Dd *buffer, RasterVertexList *strip);
+	void BlendHeightWithRasterizedBuffer(Image *height, CArray2Dd *buffer, CArray2Dd *blend, Image *mask=0, bool useMask=false, bool invertMask=false);
+	void BlendColorWithRasterizedBuffer(Image *img, CArray2Dd *buffer, Color endColor, Image *mask=0, bool useMask=false, bool invertMask=false);
+	void BlendRasterizedBuffer8(Image *img, Image *other, CArray2Dd *buffer, int layer, Image *mask=0, bool useMask=false, bool invertMask=false);
+	void BlendRasterizedBuffer8Max(Image *img, Image *other, CArray2Dd *buffer, int layer, Image *mask=0, bool useMask=false, bool invertMask=false);
 	void TessellateLineList(RasterVertexList *in, RasterVertexList *out, int steps);
-	void ApplyBedFunction(RasterBuffer *buffer, float hardness, bool quintic);
+	void ApplyBedFunction(CArray2Dd *buffer, float hardness, bool quintic);
 	void BuildQuadStrip(RasterVertexList *in, RasterVertexList *out, float width);
 	void BuildQuadStripVarying(RasterVertexList *in, RasterVertexList *out, float startwidth, float endwidth);
-	void RenderANLKernelToBuffer(RasterBuffer *buffer, CKernel *kernel, float lowrange=0, float highrange=1);
-	void SetHeightFromRasterBuffer(Image *height, RasterBuffer *buffer, Image *mask=0, bool useMask=false, bool invertMask=false);
+	void RenderANLKernelToBuffer(CArray2Dd *buffer, CKernel *kernel, float lowrange=0, float highrange=1);
+	void SetHeightFromRasterBuffer(Image *height, CArray2Dd *buffer, Image *mask=0, bool useMask=false, bool invertMask=false);
+	
+	void DistortBuffer(CArray2Dd *buffer, CArray2Dd *xd, CArray2Dd *yd, double power);
 	
 	void CopyImageInto(Image *dest, Image *src, int x, int y);
 	bool IsPowerOfTwo(int n);
 	Image* GetNextImageLevel(Image *i);
-	void ExtractLayerToBuffer(Image *blend1, Image *blend2, RasterBuffer *buffer, int layer);
+	void ExtractLayerToBuffer(Image *blend1, Image *blend2, CArray2Dd *buffer, int layer);
 	float GetLayerBlend(Image *blend1, Image *blend2, int x, int y, int layer);
 	void SetLayerBlend(Image *blend1, Image *blend2, int x, int y, int layer, float v);
 	

@@ -55,64 +55,27 @@ Vector2 WorldToNormalized(Image *height, Terrain *terrain, Vector3 world);
         const RasterVertex& back() const;
 	};
 	
-	class RasterBuffer
-	{
-		RasterBuffer(int w, int h);
-        RasterBuffer();
-        ~RasterBuffer();
-
-        void resize(int w, int h);
-        void destroy();
-        int width();
-        int height();
-        void set(int x, int y, float v);
-        float get(int x, int y);
-        float &getRef(int x, int y);
-		float getBilinear(float x, float y);
-        float getIndexed(int c);
-        void setIndexed(int c, float v);
-        void fill(float v);
-        void copyFrom(RasterBuffer *b);
-        void copyFromSub(RasterBuffer *b, int x, int y);
-        void addArray(RasterBuffer *b);
-        void addArraySub(RasterBuffer *b, int x, int y);
-        void subtractArray(RasterBuffer *b);
-        void subtractArraySub(RasterBuffer *b, int x, int y);
-        void multiplyArray(RasterBuffer *b);
-        void multiplyArraySub(RasterBuffer *b, int x, int y);
-        void scale(float s);
-        void blendFromArrays(RasterBuffer *b1, RasterBuffer *b2, RasterBuffer *b3);
-        void selectFromArrays(RasterBuffer *b1, RasterBuffer *b2, RasterBuffer *b3, float threshold);
-        float getMax();
-        float getMin();
-        void scaleToRange(float low, float high);
-        void wrapCoords(float &x, float &y);
-		void offset(int ox, int oy);
-		void flipVertical();
-		void flipHorizontal();
-		void scaleTo(RasterBuffer *dst);
-		void blur(float blursize, bool seamless);
-	};
 	
-	void RasterizeTriangle(RasterBuffer *buffer, RasterVertex v1, RasterVertex v2, RasterVertex v3);
-	void RasterizeQuadStrip(RasterBuffer *buffer, RasterVertexList *strip);
-	void BlendHeightWithRasterizedBuffer(Image *height, RasterBuffer *buffer, RasterBuffer *blend, Image *mask=0, bool useMask=false, bool invertMask=false);
-	void BlendColorWithRasterizedBuffer(Image *img, RasterBuffer *buffer, Color endColor, Image *mask=0, bool useMask=false, bool invertMask=false);
-	void BlendRasterizedBuffer8(Image *img, Image *other, RasterBuffer *buffer, int layer, Image *mask=0, bool useMask=false, bool invertMask=false);
-	void BlendRasterizedBuffer8Max(Image *img, Image *other, RasterBuffer *buffer, int layer, Image *mask=0, bool useMask=false, bool invertMask=false);
+	
+	void RasterizeTriangle(CArray2Dd *buffer, RasterVertex v1, RasterVertex v2, RasterVertex v3);
+	void RasterizeQuadStrip(CArray2Dd *buffer, RasterVertexList *strip);
+	void BlendHeightWithRasterizedBuffer(Image *height, CArray2Dd *buffer, CArray2Dd *blend, Image *mask=0, bool useMask=false, bool invertMask=false);
+	void BlendColorWithRasterizedBuffer(Image *img, CArray2Dd *buffer, Color endColor, Image *mask=0, bool useMask=false, bool invertMask=false);
+	void BlendRasterizedBuffer8(Image *img, Image *other, CArray2Dd *buffer, int layer, Image *mask=0, bool useMask=false, bool invertMask=false);
+	void BlendRasterizedBuffer8Max(Image *img, Image *other, CArray2Dd *buffer, int layer, Image *mask=0, bool useMask=false, bool invertMask=false);
 	void TessellateLineList(RasterVertexList *in, RasterVertexList *out, int steps);
-	void ApplyBedFunction(RasterBuffer *buffer, float hardness, bool quintic);
+	void ApplyBedFunction(CArray2Dd *buffer, float hardness, bool quintic);
 	void BuildQuadStrip(RasterVertexList *in, RasterVertexList *out, float width);
 	void BuildQuadStripVarying(RasterVertexList *in, RasterVertexList *out, float startwidth, float endwidth);
-	void RenderANLKernelToBuffer(RasterBuffer *buffer, CKernel *kernel, float lowrange=0, float highrange=1);
-	void SetHeightFromRasterBuffer(Image *height, RasterBuffer *buffer, Image *mask=0, bool useMask=false, bool invertMask=false);
+	void RenderANLKernelToBuffer(CArray2Dd *buffer, CKernel *kernel, float lowrange=0, float highrange=1);
+	void SetHeightFromRasterBuffer(Image *height, CArray2Dd *buffer, Image *mask=0, bool useMask=false, bool invertMask=false);
 	
 	void CopyImageInto(Image *dest, Image *src, int x, int y);
 	bool IsPowerOfTwo(int n);
 	Image* GetNextImageLevel(Image *i);
-	void ExtractLayerToBuffer(Image *blend1, Image *blend2, RasterBuffer *buffer, int layer);
+	void ExtractLayerToBuffer(Image *blend1, Image *blend2, CArray2Dd *buffer, int layer);
 	float GetLayerBlend(Image *blend1, Image *blend2, int x, int y, int layer);
 	void SetLayerBlend(Image *blend1, Image *blend2, int x, int y, int layer, float v);
 	
 	bool LoadImage(Context *c, Image *i, const char *fname);
-	
+	void DistortBuffer(CArray2Dd *buffer, CArray2Dd *xd, CArray2Dd *yd, double power);

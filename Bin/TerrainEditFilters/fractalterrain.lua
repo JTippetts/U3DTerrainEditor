@@ -5,7 +5,7 @@ return
 	options=
 	{
 		{name="Layer", type="value", value=2},
-		{name="Noise function", type="list", value="ridged", list={"simplefBm","ridged"}},
+		{name="Noise function", type="list", value="simplefBm", list=noisekernelsindex},
 		{name="Min scale", type="value", value=0},
 		{name="Max scale", type="value", value=1},
 		{name="Use Mask?", type="flag", value=false},

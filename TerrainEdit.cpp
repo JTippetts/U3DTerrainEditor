@@ -535,9 +535,7 @@ void RenderANLKernelToHeight(Image *height, Image *mask, CKernel *kernel, double
 	int w=height->GetWidth()-1;
 	int h=height->GetHeight()-1;
 	
-	CNoiseExecutor vm(*kernel);
-	
-	TArray2D<double> a(height->GetWidth(), height->GetHeight());
+	CArray2Dd a(height->GetWidth(), height->GetHeight());
 	
 	map2D(SEAMLESS_NONE, a, *kernel, SMappingRanges(0,1,0,1,0,1), 0, kernel->lastIndex());
 	a.scaleToRange(lowRange, highRange);
@@ -564,28 +562,17 @@ void RenderANLKernelToHeight(Image *height, Image *mask, CKernel *kernel, double
 	}
 }
 
-void RenderANLKernelToBuffer(RasterBuffer *buffer, CKernel *kernel, float lowrange, float highrange)
+void RenderANLKernelToBuffer(CArray2Dd *buffer, CKernel *kernel, float lowrange, float highrange)
 {
 	if(!buffer) return;
 	int w=buffer->width()-1;
 	int h=buffer->height()-1;
 	
-	TArray2D<double> a(buffer->width(), buffer->height());
-	map2D(SEAMLESS_NONE, a, *kernel, SMappingRanges(0,1,0,1,0,1), 0, kernel->lastIndex());
-	a.scaleToRange(lowrange, highrange);
-	
-	CNoiseExecutor vm(*kernel);
-	for(int x=0; x<=w; ++x)
-	{
-		for(int y=0; y<=h; ++y)
-		{
-			double val=a.get(x,y);
-			buffer->set(x,y,val);
-		}
-	}
+	map2D(SEAMLESS_NONE, *buffer, *kernel, SMappingRanges(0,1,0,1,0,1), 0, kernel->lastIndex());
+	buffer->scaleToRange(lowrange, highrange);
 }
 
-void SetHeightFromRasterBuffer(Image *height, RasterBuffer *buffer, Image *mask, bool useMask, bool invertMask)
+void SetHeightFromRasterBuffer(Image *height, CArray2Dd *buffer, Image *mask, bool useMask, bool invertMask)
 {
 	int w=height->GetWidth()-1;
 	int h=height->GetHeight()-1;
@@ -618,7 +605,7 @@ float Orient2D(RasterVertex &a, RasterVertex &b, RasterVertex &c)
 }
 
 
-void RasterizeTriangle(RasterBuffer *buffer, RasterVertex v0, RasterVertex v1, RasterVertex v2)
+void RasterizeTriangle(CArray2Dd *buffer, RasterVertex v0, RasterVertex v1, RasterVertex v2)
 {
 	int minx=std::min(v0.x_, std::min(v1.x_, v2.x_));
 	int maxx=std::max(v0.x_, std::max(v1.x_, v2.x_));
@@ -654,7 +641,7 @@ void RasterizeTriangle(RasterBuffer *buffer, RasterVertex v0, RasterVertex v1, R
 	}
 }
 
-void RasterizeQuadStrip(RasterBuffer *buffer, RasterVertexList *strip)
+void RasterizeQuadStrip(CArray2Dd *buffer, RasterVertexList *strip)
 {
 	for(int c=0; c<=strip->size()-4; c+=2)
 	{
@@ -663,7 +650,7 @@ void RasterizeQuadStrip(RasterBuffer *buffer, RasterVertexList *strip)
 	}
 }
 
-void BlendHeightWithRasterizedBuffer(Image *height, RasterBuffer *buffer, RasterBuffer *blend, Image *mask, bool useMask, bool invertMask)
+void BlendHeightWithRasterizedBuffer(Image *height, CArray2Dd *buffer, CArray2Dd *blend, Image *mask, bool useMask, bool invertMask)
 {
 	for(int x=0; x<height->GetWidth()-1; ++x)
 	{
@@ -688,7 +675,7 @@ void BlendHeightWithRasterizedBuffer(Image *height, RasterBuffer *buffer, Raster
 	}
 }
 
-void BlendColorWithRasterizedBuffer(Image *img, RasterBuffer *buffer, Color endColor, Image *mask, bool useMask, bool invertMask)
+void BlendColorWithRasterizedBuffer(Image *img, CArray2Dd *buffer, Color endColor, Image *mask, bool useMask, bool invertMask)
 {
 	for(int x=0; x<img->GetWidth()-1; ++x)
 	{
@@ -713,7 +700,7 @@ void BlendColorWithRasterizedBuffer(Image *img, RasterBuffer *buffer, Color endC
 	}
 }
 
-void BlendRasterizedBuffer8(Image *blend0, Image *blend1, RasterBuffer *buffer, int layer, Image *mask, bool useMask, bool invertMask)
+void BlendRasterizedBuffer8(Image *blend0, Image *blend1, CArray2Dd *buffer, int layer, Image *mask, bool useMask, bool invertMask)
 {
 	for(int x=0; x<blend0->GetWidth()-1; ++x)
 	{
@@ -772,7 +759,7 @@ void BlendRasterizedBuffer8(Image *blend0, Image *blend1, RasterBuffer *buffer, 
 	}
 }
 
-void BlendRasterizedBuffer8Max(Image *blend0, Image *blend1, RasterBuffer *buffer, int layer, Image *mask, bool useMask, bool invertMask)
+void BlendRasterizedBuffer8Max(Image *blend0, Image *blend1, CArray2Dd *buffer, int layer, Image *mask, bool useMask, bool invertMask)
 {
 	for(int x=0; x<blend0->GetWidth()-1; ++x)
 	{
@@ -877,7 +864,7 @@ void TessellateLineList(RasterVertexList *in, RasterVertexList *out, int steps)
 	
 }
 
-void ApplyBedFunction(RasterBuffer *buffer, float hardness, bool quintic)
+void ApplyBedFunction(CArray2Dd *buffer, float hardness, bool quintic)
 {
 	for(int x=0; x<buffer->width(); ++x)
 	{
@@ -1129,7 +1116,7 @@ Image* GetNextImageLevel(Image *i)
 	return i->GetNextLevel();
 }
 
-void ExtractLayerToBuffer(Image *blend1, Image *blend2, RasterBuffer *buffer, int layer)
+void ExtractLayerToBuffer(Image *blend1, Image *blend2, CArray2Dd *buffer, int layer)
 {
 	if((layer>=0 && layer<4) && !blend1) return;
 	else if((layer>=4 && layer<8) && !blend2) return;
@@ -1196,4 +1183,27 @@ void SetLayerBlend(Image *blend1, Image *blend2, int x, int y, int layer, float 
 	BalanceColors(col0, col1, layer);
 	blend1->SetPixel(x,y,col0);
 	blend2->SetPixel(x,y,col1);
+}
+
+void DistortBuffer(CArray2Dd *buffer, CArray2Dd *xd, CArray2Dd *yd, double power)
+{
+	CArray2Dd tmp(buffer->width(), buffer->height());
+	tmp.copyFrom(buffer);
+	
+	
+	int w=buffer->width(), h=buffer->height();
+	
+	for(int x=0; x<w; ++x)
+	{
+		for(int y=0; y<h; ++y)
+		{
+			CCoordinate c((double)x / (double)w, (double)y / (double)h, 0);
+			
+			int newx=(int)((double)x+power*xd->get(x,y));
+			int newy=(int)((double)y+power*yd->get(x,y));
+			newx=std::max(0, std::min(w-1, newx));
+			newy=std::max(0, std::min(h-1, newy));
+			buffer->set(x,y, tmp.get(newx, newy));
+		}
+	}
 }

@@ -6,6 +6,7 @@ function GetOptions(ops)
 	local j
 	for _,j in ipairs(ops) do
 		o[j.name]=j.value
+		print(j.name..": "..tostring(j.value))
 	end
 	
 	return o
@@ -38,7 +39,6 @@ function FilterUI:HandleButtonPress(eventType, eventData)
 	if name=="FilterButton" then
 		if self.filterui.visible==true then self.filterui.visible=false
 		else
-			print("Showing filters")
 			self:PopulateFilterList()
 			self.filterui.visible=true
 		end
@@ -52,7 +52,7 @@ function FilterUI:HandleButtonPress(eventType, eventData)
 					if element then
 						if c.type=="value" then c.value=tonumber(element.textElement.text)
 						elseif c.type=="flag" then c.value=element.checked
-						elseif c.type=="list" then c.value=element:GetSelectedItem().text
+						elseif c.type=="list" then c.value=c.list[element.selection+1]
 						elseif c.type=="string" then c.value=element.textElement.text
 						end
 					end
@@ -95,7 +95,6 @@ function FilterUI:BuildFilterOptions(filter)
 	local c
 	local maxx,maxy=0,0
 	for _,c in ipairs(filter.options) do
-		print("Option: "..c.name)
 		local window=Window:new(context)
 		window.defaultStyle=uiStyle
 		window.style=uiStyle
@@ -105,7 +104,6 @@ function FilterUI:BuildFilterOptions(filter)
 		title.text=c.name
 		title.defaultStyle=uiStyle
 		title.style=uiStyle
-		--title.maxSize=IntVector2(64,0)
 		window:AddChild(title)
 		
 		if c.type=="flag" then
@@ -139,7 +137,7 @@ function FilterUI:BuildFilterOptions(filter)
 			dlist.defaultStyle=uiStyle
 			dlist.style=AUTO_STYLE
 			dlist:SetAlignment(HA_LEFT, VA_CENTER)
-			dlist:SetPlaceholderText(c.list[1])
+			dlist.name=c.name
 			dlist.resizePopup=true
 			
 			local i
@@ -154,7 +152,6 @@ function FilterUI:BuildFilterOptions(filter)
 			window:AddChild(dlist)
 			window.size=IntVector2(title.size.x+dlist.size.x, 25)
 		end
-		--if window.size.x > maxx then maxx=window.size.x end
 		window.maxSize=IntVector2(10000,25)
 		options:AddChild(window)
 	end

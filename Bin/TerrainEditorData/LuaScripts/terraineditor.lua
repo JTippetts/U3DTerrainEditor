@@ -188,6 +188,31 @@ function CreateScene()
 
 	projecttozero=true
 	graphics.flushGPU=true
+	
+	function distortKernel(detail, frequency, seed)
+		local k=CKernel()
+		local eb=CExpressionBuilder(k)
+		
+		eb:setRandomSeed(seed)
+		
+		local gradientLayer="clamp(rotateDomain(scale(gradientBasis(3,rand), 2^n),rand01,rand01,0,rand01*3),-1,1)"
+		local fBmcombine="prev+(1/(2^n))*layer"
+		local fractal=fractalBuilder(eb,k,detail,gradientLayer,fBmcombine)
+		local freq=k:constant(frequency)
+		
+		k:scaleDomain(fractal, freq)
+		return k
+	end
+
+	xdistort=CArray2Dd(blend1:GetWidth(), blend1:GetHeight())
+	local xdk=distortKernel(6, 64, 1234)
+	map2D(SEAMLESS_NONE, xdistort, xdk, SMappingRanges(0,1,0,1,0,1), 0, xdk:lastIndex())
+	xdistort:scaleToRange(-1,1)
+
+	ydistort=CArray2Dd(blend1:GetWidth(), blend1:GetHeight())
+	local ydk=distortKernel(6, 64, 1234)
+	map2D(SEAMLESS_NONE, ydistort, ydk, SMappingRanges(0,1,0,1,0,1), 0, ydk:lastIndex())
+	ydistort:scaleToRange(0,1)
 end
 
 function CreateInstructions()

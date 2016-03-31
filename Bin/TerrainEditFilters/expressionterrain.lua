@@ -13,6 +13,7 @@ function fractalBuilder(eb, k, numoctaves, basisexpr, combinexpr)
 	return ret
 end
 
+
 noisekernels=
 {
 	simplefBm=function(ops)
@@ -28,10 +29,7 @@ noisekernels=
 		
 		k:scaleDomain(fractal, freq)
 		
-		--k:bias(k:constant(ops["Bias"]), k:gain(k:constant(ops["Gain"]), k:scaleDomain(fractal,freq)))
-		
 		return k
-		
 	end,
 	
 	ridged=function(ops)
@@ -46,13 +44,19 @@ noisekernels=
 		local freq=k:constant(ops["Frequency"])
 		
 		k:scaleDomain(fractal, freq)
-		--k:bias(k:constant(ops["Bias"]), k:gain(k:constant(ops["Gain"]), k:scaleDomain(fractal,freq)))
 		
 		return k
-		
 	end,
 	
 }
+
+noisekernelsindex=
+{
+
+}
+
+local i,j
+for i,j in pairs(noisekernels) do table.insert(noisekernelsindex, i) end
 
 function bias(b, t)
     return math.pow(t, math.log(b)/math.log(0.5))
@@ -70,7 +74,7 @@ return
 	description="Generate a terrain from a selection of noise functions.\n",
 	options=
 	{
-		{name="Noise function", type="list", value="ridged", list={"simplefBm","ridged"}},
+		{name="Noise function", type="list", value="simplefbm", list=noisekernelsindex},
 		{name="Min scale", type="value", value=0},
 		{name="Max scale", type="value", value=1},
 		{name="Use Mask?", type="flag", value=false},

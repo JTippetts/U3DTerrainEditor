@@ -1,5 +1,6 @@
 -- New road builder
 
+
 return
 {
 	name="Road Builder v2.0",
@@ -12,6 +13,8 @@ return
 		{name="Paving Hardness", type="value", value=0.5},
 		{name="Paving Layer", type="value", value=2},
 		{name="Segment steps", type="value", value=10},
+		{name="Distort?", type="flag", value=false},
+		{name="Distortion power", type="value", value=4},
 	},
 	
 	execute=function(self)
@@ -21,6 +24,8 @@ return
 		local pavinghardness=self.options[4].value
 		local pavinglayer=self.options[5].value
 		local segments=self.options[6].value
+		local distort=self.options[7].value
+		local power=self.options[8].value
 		
 		local buffer=CArray2Dd(hmap:GetWidth(), hmap:GetHeight())
 		local blend=CArray2Dd(hmap:GetWidth(), hmap:GetHeight())
@@ -38,6 +43,7 @@ return
 			plist:push_back(RasterVertex(hx,hy,ht))
 		end
 		
+		
 		local curve=RasterVertexList()
 		TessellateLineList(plist, curve, segments)
 		
@@ -53,6 +59,11 @@ return
 		end
 		RasterizeQuadStrip(blend, quad)
 		ApplyBedFunction(blend, bedhardness, true)
+		
+		
+		if distort then
+			DistortBuffer(blend, xdistort, ydistort, power)
+		end
 		
 		BlendHeightWithRasterizedBuffer(hmap, buffer, blend)
 		terrain:ApplyHeightMap()
@@ -73,7 +84,11 @@ return
 		end
 		RasterizeQuadStrip(blend, quad)
 		ApplyBedFunction(blend, pavinghardness, true)
-		--BlendColorWithRasterizedBuffer(blend1, blend, color)	
+		
+		if distort then
+			DistortBuffer(blend, xdistort, ydistort, power)
+		end
+	
 		BlendRasterizedBuffer8Max(blend1,blend2,blend,pavinglayer,mask,usemask,invertmask)	
 		blendtex1:SetData(blend1, false)
 		blendtex2:SetData(blend2, false)
