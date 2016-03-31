@@ -19,6 +19,8 @@ noisekernels=
 		local k=CKernel()
 		local eb=CExpressionBuilder(k)
 		
+		eb:setRandomSeed(ops["Random seed"])
+		
 		local gradientLayer="clamp(rotateDomain(scale(gradientBasis(3,rand), 2^n),rand01,rand01,0,rand01*3),-1,1)"
 		local fBmcombine="prev+(1/(2^n))*layer"
 		local fractal=fractalBuilder(eb,k,ops["Detail"],gradientLayer,fBmcombine)
@@ -35,6 +37,8 @@ noisekernels=
 	ridged=function(ops)
 		local k=CKernel()
 		local eb=CExpressionBuilder(k)
+		
+		eb:setRandomSeed(ops["Random seed"])
 		
 		local gradientLayer="clamp(rotateDomain(scale(gradientBasis(3,rand), 2^n),rand01,rand01,0,rand01*3),-1,1)"
 		local ridgedcombine="prev+(1-abs(layer))*(1/(2^n))"
@@ -75,6 +79,7 @@ return
 		{name="Detail", type="value", value=10},
 		{name="Bias", type="value", value=0.5},
 		{name="Gain", type="value", value=0.5},
+		{name="Random seed", type="value", value=12345},
 	},
 	
 	execute=function(self)

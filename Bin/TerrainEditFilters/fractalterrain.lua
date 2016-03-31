@@ -14,6 +14,7 @@ return
 		{name="Detail", type="value", value=10},
 		{name="Bias", type="value", value=0.5},
 		{name="Gain", type="value", value=0.5},
+		{name="Random seed", type="value", value=43234},
 	},
 	
 	execute=function(self)
