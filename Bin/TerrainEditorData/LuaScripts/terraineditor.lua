@@ -132,7 +132,7 @@ function CreateScene()
 	terrain:GetMaterial():SetTexture(4,masktex)
 	
 	hmap:Clear(Color(0,0,0))
-	terrain:SetSmoothing(false)
+	--terrain:SetSmoothing(false)
 	print("Components: "..hmap:GetComponents())
 	blendtex1=Texture2D:new(context)
 	blendtex1:SetSize(0,0,0,TEXTURE_DYNAMIC)

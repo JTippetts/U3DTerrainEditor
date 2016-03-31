@@ -52,6 +52,8 @@ function FilterUI:HandleButtonPress(eventType, eventData)
 					if element then
 						if c.type=="value" then c.value=tonumber(element.textElement.text)
 						elseif c.type=="flag" then c.value=element.checked
+						elseif c.type=="list" then c.value=element:GetSelectedItem().text
+						elseif c.type=="string" then c.value=element.textElement.text
 						end
 					end
 				end
@@ -124,6 +126,33 @@ function FilterUI:BuildFilterOptions(filter)
 			edit.textElement.text=tostring(c.value)
 			window:AddChild(edit)
 			window.size=IntVector2(title.size.x+edit.size.x, 15)
+		elseif c.type=="string" then
+			local edit=LineEdit:new(context)
+			edit.name=c.name
+			edit.defaultStyle=uiStyle
+			edit.style=uiStyle
+			edit.textElement.text=c.value
+			window:AddChild(edit)
+			window.size=IntVector2(title.size.x+edit.size.x, 15)
+		elseif c.type=="list" then
+			local dlist=DropDownList:new(context)
+			dlist.defaultStyle=uiStyle
+			dlist.style=AUTO_STYLE
+			dlist:SetAlignment(HA_LEFT, VA_CENTER)
+			dlist:SetPlaceholderText(c.list[1])
+			dlist.resizePopup=true
+			
+			local i
+			for _,i in ipairs(c.list) do
+				local t=Text:new(context)
+				t.style=uiStyle
+				t.text=i
+				dlist:AddItem(t)
+			end
+			
+			dlist.selection=0
+			window:AddChild(dlist)
+			window.size=IntVector2(title.size.x+dlist.size.x, 25)
 		end
 		--if window.size.x > maxx then maxx=window.size.x end
 		window.maxSize=IntVector2(10000,25)
