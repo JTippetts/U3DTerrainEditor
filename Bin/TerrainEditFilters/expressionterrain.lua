@@ -21,10 +21,12 @@ noisekernels=
 		
 		local gradientLayer="clamp(rotateDomain(scale(gradientBasis(3,rand), 2^n),rand01,rand01,0,rand01*3),-1,1)"
 		local fBmcombine="prev+(1/(2^n))*layer"
-		local fractal=fractalBuilder(eb,k,10,gradientLayer,fBmcombine)
+		local fractal=fractalBuilder(eb,k,ops["Detail"],gradientLayer,fBmcombine)
 		local freq=k:constant(ops["Frequency"])
-		eb:storeVar("freq", freq)
-		fractal=eb:eval("scale(prev,freq)")
+		
+		k:scaleDomain(fractal, freq)
+		
+		--k:bias(k:constant(ops["Bias"]), k:gain(k:constant(ops["Gain"]), k:scaleDomain(fractal,freq)))
 		
 		return k
 		
@@ -35,11 +37,12 @@ noisekernels=
 		local eb=CExpressionBuilder(k)
 		
 		local gradientLayer="clamp(rotateDomain(scale(gradientBasis(3,rand), 2^n),rand01,rand01,0,rand01*3),-1,1)"
-		local ridgedcombine="prev+(1-abs(layer)*cos(prev))*(1/(2^n))"
-		local fractal=fractalBuilder(eb,k,10,gradientLayer,ridgedcombine)
+		local ridgedcombine="prev+(1-abs(layer))*(1/(2^n))"
+		local fractal=fractalBuilder(eb,k,ops["Detail"],gradientLayer,ridgedcombine)
 		local freq=k:constant(ops["Frequency"])
-		eb:storeVar("freq", freq)
-		fractal=eb:eval("scale(prev,freq)")
+		
+		k:scaleDomain(fractal, freq)
+		--k:bias(k:constant(ops["Bias"]), k:gain(k:constant(ops["Gain"]), k:scaleDomain(fractal,freq)))
 		
 		return k
 		
@@ -47,18 +50,31 @@ noisekernels=
 	
 }
 
+function bias(b, t)
+    return math.pow(t, math.log(b)/math.log(0.5))
+end
+
+function gain(g, t)
+    if(t<0.5) then return bias(1.0-g, 2.0*t)/2.0
+    else return 1.0 - bias(1.0-g, 2.0 - 2.0*t)/2.0
+    end
+end
+
 return
 {
-	name="Noise Kernel Terrain",
-	description="Generate a terrain from a function call.\n",
+	name="Generate Noise Heightmap",
+	description="Generate a terrain from a selection of noise functions.\n",
 	options=
 	{
-		{name="Noise function", type="list", value="simplefBm", list={"simplefBm","ridged"}},
+		{name="Noise function", type="list", value="ridged", list={"simplefBm","ridged"}},
 		{name="Min scale", type="value", value=0},
 		{name="Max scale", type="value", value=1},
 		{name="Use Mask?", type="flag", value=false},
 		{name="Invert Mask?", type="flag", value=false},
 		{name="Frequency", type="value", value=16},
+		{name="Detail", type="value", value=10},
+		{name="Bias", type="value", value=0.5},
+		{name="Gain", type="value", value=0.5},
 	},
 	
 	execute=function(self)
@@ -67,8 +83,19 @@ return
 		local k=noisekernels[ops["Noise function"]](ops)
 		if k then
 			local hw,hh=hmap:GetWidth(),hmap:GetHeight()
-			local buffer=RasterBuffer(hw,hh)
-			RenderANLKernelToBuffer(buffer,k,ops["Min scale"],ops["Max scale"])
+			local buffer=CArray2Dd(hw,hh)
+			
+			map2D(SEAMLESS_NONE, buffer, k, SMappingRanges(0,1,0,1,0,1), 0, k:lastIndex())
+			buffer:scaleToRange(ops["Min scale"], ops["Max scale"])
+			
+			
+			local x,y
+			for x=0,hw-1,1 do
+				for y=0,hh-1,1 do
+					buffer:set(x,y, bias(ops["Bias"], gain(ops["Gain"], buffer:get(x,y))))
+				end
+			end
+			
 			SetHeightFromRasterBuffer(hmap,buffer,mask,ops["Use Mask?"], ops["Invert Mask?"])
 		
 			terrain:ApplyHeightMap()

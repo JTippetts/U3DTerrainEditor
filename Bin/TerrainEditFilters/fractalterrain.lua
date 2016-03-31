@@ -1,43 +1,45 @@
 return
 {
-	name="Fractal Terrain Detail",
-	description="Use a fractal layer to apply a terrain detail type.",
+	name="Generate Noise Blend Layer",
+	description="Use a fractal layer to apply a terrain detail type, from one of a set of noise functions.",
 	options=
 	{
-		{name="Frequency", type="value", value=8},
-		{name="Num Octaves", type="value", value=6},
-		{name="Gain", type="value", value=0.99},
-		{name="Seed", type="value", value=12345},
 		{name="Layer", type="value", value=2},
+		{name="Noise function", type="list", value="ridged", list={"simplefBm","ridged"}},
+		{name="Min scale", type="value", value=0},
+		{name="Max scale", type="value", value=1},
 		{name="Use Mask?", type="flag", value=false},
 		{name="Invert Mask?", type="flag", value=false},
+		{name="Frequency", type="value", value=16},
+		{name="Detail", type="value", value=10},
+		{name="Bias", type="value", value=0.5},
+		{name="Gain", type="value", value=0.5},
 	},
 	
 	execute=function(self)
-		local frequency=self.options[1].value
-		local octaves=self.options[2].value
-		local gn=self.options[3].value
-		local seed=self.options[4].value
-		local layer=self.options[5].value
-		local usemask=self.options[6].value
-		local invertmask=self.options[7].value
+		local ops=GetOptions(self.options)
 		
-		local k=CKernel()
+		local k=noisekernels[ops["Noise function"]](ops)
+		if k then
+			local hw,hh=hmap:GetWidth(),hmap:GetHeight()
+			local buffer=CArray2Dd(hw,hh)
+			
+			map2D(SEAMLESS_NONE, buffer, k, SMappingRanges(0,1,0,1,0,1), 0, k:lastIndex())
+			buffer:scaleToRange(ops["Min scale"], ops["Max scale"])
+			
+			
+			local x,y
+			for x=0,hw-1,1 do
+				for y=0,hh-1,1 do
+					buffer:set(x,y, bias(ops["Bias"], gain(ops["Gain"], buffer:get(x,y))))
+				end
+			end
+			
+			BlendRasterizedBuffer8(blend1,blend2,buffer,ops["Layer"],mask,ops["Use Mask?"],ops["Invert Mask?"])
 		
-		local point5=k:constant(0.5)
-		local fbm=k:simplefBm(3, 3, octaves, frequency, seed, true)
-		local scale=k:multiply(fbm,point5)
-		local offset=k:add(scale,point5)
-		local gainval=k:constant(gn)
-		local gain=k:gain(gainval,offset)
 		
-		local buffer=RasterBuffer(blend1:GetWidth(), blend1:GetHeight())
-		RenderANLKernelToBuffer(buffer,k,0,1)
-		--BlendColorWithRasterizedBuffer(blend1, buffer, Color(0,1,0,0), mask, usemask, invertmask)
-		BlendRasterizedBuffer8(blend1,blend2,buffer,layer,mask,usemask,invertmask)
-		
-		blendtex1:SetData(blend1,false)
-		blendtex2:SetData(blend2,false)
-		
+			blendtex1:SetData(blend1,false)
+			blendtex2:SetData(blend2,false)
+		end
 	end,
 }
