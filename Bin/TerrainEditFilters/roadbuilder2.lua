@@ -22,8 +22,8 @@ return
 		local pavinglayer=self.options[5].value
 		local segments=self.options[6].value
 		
-		local buffer=RasterBuffer(hmap:GetWidth(), hmap:GetHeight())
-		local blend=RasterBuffer(hmap:GetWidth(), hmap:GetHeight())
+		local buffer=CArray2Dd(hmap:GetWidth(), hmap:GetHeight())
+		local blend=CArray2Dd(hmap:GetWidth(), hmap:GetHeight())
 		blend:fill(0)
 		
 		local c

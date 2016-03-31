@@ -26,8 +26,8 @@ return
 		local startdepth=self.options[7].value
 		local enddepth=self.options[8].value
 		
-		local buffer=RasterBuffer(hmap:GetWidth(), hmap:GetHeight())
-		local blend=RasterBuffer(hmap:GetWidth(), hmap:GetHeight())
+		local buffer=CArray2Dd(hmap:GetWidth(), hmap:GetHeight())
+		local blend=CArray2Dd(hmap:GetWidth(), hmap:GetHeight())
 		blend:fill(0)
 		
 		local c
