@@ -80,7 +80,7 @@ function CreateScene()
     light.castShadows = true
     light.shadowBias = BiasParameters(0.00025, 0.5)
     light.shadowCascade = CascadeParameters(10.0, 50.0, 200.0, 0.0, 0.8)
-    light.specularIntensity = 0.1;
+    light.specularIntensity = 0.4;
     light.color = Color(0.7,0.7,0.7);
 	
 	lightNode = scene_:CreateChild("DirectionalLight")
@@ -90,7 +90,7 @@ function CreateScene()
     light.castShadows = true
     light.shadowBias = BiasParameters(0.00025, 0.5)
     light.shadowCascade = CascadeParameters(10.0, 50.0, 200.0, 0.0, 0.8)
-    light.specularIntensity = 0.1;
+    light.specularIntensity = 0.3;
     -- Apply slightly overbright lighting to match the skybox
     light.color = Color(0.3,0.3,0.3);
 
