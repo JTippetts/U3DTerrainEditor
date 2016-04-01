@@ -68,7 +68,7 @@ function CreateScene()
     local zone = zoneNode:CreateComponent("Zone")
     zone.boundingBox = BoundingBox(-1000.0, 1000.0)
     zone.ambientColor = Color(0.03, 0.03, 0.04)
-    zone.fogColor = Color(0.1,0.1,0.1)
+    zone.fogColor = Color(0.7,0.8,0.9)
     zone.fogStart = 300.0
     zone.fogEnd = 325.0
 
@@ -81,7 +81,7 @@ function CreateScene()
     light.shadowBias = BiasParameters(0.00025, 0.5)
     light.shadowCascade = CascadeParameters(10.0, 50.0, 200.0, 0.0, 0.8)
     light.specularIntensity = 0.4;
-    light.color = Color(0.7,0.7,0.7);
+    light.color = Color(0.9,0.8,0.7);
 	
 	lightNode = scene_:CreateChild("DirectionalLight")
     lightNode.direction = Vector3(-1.2, -1.0, -1.6)
@@ -92,7 +92,7 @@ function CreateScene()
     light.shadowCascade = CascadeParameters(10.0, 50.0, 200.0, 0.0, 0.8)
     light.specularIntensity = 0.3;
     -- Apply slightly overbright lighting to match the skybox
-    light.color = Color(0.3,0.3,0.3);
+    light.color = Color(0.3,0.4,0.5);
 
     -- Create skybox. The Skybox component is used like StaticModel, but it will be always located at the camera, giving the
     -- illusion of the box planes being far away. Use just the ordinary Box model and a suitable material, whose shader will
