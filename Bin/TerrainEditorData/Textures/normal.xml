@@ -1,0 +1,10 @@
+<texturearray>
+	<layer name="Textures/densenormal.png" />
+	<layer name="Textures/sand_normal.png" />
+	<layer name="Textures/dirtgrass_normal.png" />
+	<layer name="Textures/stones_normal1.png" />
+	<layer name="Textures/floor_normal.png" />
+	<layer name="Textures/cliff_normal.png" />
+	<layer name="Textures/dirtgrass_normal.png" />
+	<layer name="Textures/rockfieldnormal.png" />
+</texturearray>

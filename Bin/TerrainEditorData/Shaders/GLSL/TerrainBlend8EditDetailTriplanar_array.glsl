@@ -176,31 +176,30 @@ void PS()
 	#ifdef BUMPMAP
         mat3 tbn = mat3(vTangent.xyz, vec3(vTexCoord.zw, vTangent.w), vNormal);
 		
-		vec3 bump1=DecodeNormal(sampleTerrain(sNormal3, vDetailTexCoord.zy, vec2(0,0), lod1))*blending.x +
-			DecodeNormal(sampleTerrain(sNormal3, vDetailTexCoord.xy, vec2(0,0), lod2))*blending.z +
-			DecodeNormal(sampleTerrain(sNormal3, vDetailTexCoord.xz, vec2(0,0), lod3))*blending.y;
-		vec3 bump2=DecodeNormal(sampleTerrain(sNormal3, vDetailTexCoord.zy, vec2(1,0), lod1))*blending.x +
-			DecodeNormal(sampleTerrain(sNormal3, vDetailTexCoord.xy, vec2(1,0), lod2))*blending.z +
-			DecodeNormal(sampleTerrain(sNormal3, vDetailTexCoord.xz, vec2(1,0), lod3))*blending.y;
-		vec3 bump3=DecodeNormal(sampleTerrain(sNormal3, vDetailTexCoord.zy, vec2(2,0), lod1))*blending.x +
-			DecodeNormal(sampleTerrain(sNormal3, vDetailTexCoord.xy, vec2(2,0), lod2))*blending.z +
-			DecodeNormal(sampleTerrain(sNormal3, vDetailTexCoord.xz, vec2(2,0), lod3))*blending.y;
-		vec3 bump4=DecodeNormal(sampleTerrain(sNormal3, vDetailTexCoord.zy, vec2(3,0), lod1))*blending.x +
-			DecodeNormal(sampleTerrain(sNormal3, vDetailTexCoord.xy, vec2(3,0), lod2))*blending.z +
-			DecodeNormal(sampleTerrain(sNormal3, vDetailTexCoord.xz, vec2(3,0), lod3))*blending.y;
-			
-		vec3 bump5=DecodeNormal(sampleTerrain(sNormal3, vDetailTexCoord.zy, vec2(0,1), lod1))*blending.x +
-			DecodeNormal(sampleTerrain(sNormal3, vDetailTexCoord.xy, vec2(0,1), lod2))*blending.z +
-			DecodeNormal(sampleTerrain(sNormal3, vDetailTexCoord.xz, vec2(0,1), lod3))*blending.y;
-		vec3 bump6=DecodeNormal(sampleTerrain(sNormal3, vDetailTexCoord.zy, vec2(1,1), lod1))*blending.x +
-			DecodeNormal(sampleTerrain(sNormal3, vDetailTexCoord.xy, vec2(1,1), lod2))*blending.z +
-			DecodeNormal(sampleTerrain(sNormal3, vDetailTexCoord.xz, vec2(1,1), lod3))*blending.y;
-		vec3 bump7=DecodeNormal(sampleTerrain(sNormal3, vDetailTexCoord.zy, vec2(2,1), lod1))*blending.x +
-			DecodeNormal(sampleTerrain(sNormal3, vDetailTexCoord.xy, vec2(2,1), lod2))*blending.z +
-			DecodeNormal(sampleTerrain(sNormal3, vDetailTexCoord.xz, vec2(2,1), lod3))*blending.y;
-		vec3 bump8=DecodeNormal(sampleTerrain(sNormal3, vDetailTexCoord.zy, vec2(3,1), lod1))*blending.x +
-			DecodeNormal(sampleTerrain(sNormal3, vDetailTexCoord.xy, vec2(3,1), lod2))*blending.z +
-			DecodeNormal(sampleTerrain(sNormal3, vDetailTexCoord.xz, vec2(3,1), lod3))*blending.y;
+		vec3 bump1=DecodeNormal(texture(sNormal3, vec3(vDetailTexCoord.zy, 0)))*blending.x+
+			DecodeNormal(texture(sNormal3, vec3(vDetailTexCoord.xy, 0)))*blending.z+
+			DecodeNormal(texture(sNormal3, vec3(vDetailTexCoord.xz,0)))*blending.y;
+		vec3 bump2=DecodeNormal(texture(sNormal3, vec3(vDetailTexCoord.zy, 1)))*blending.x+
+			DecodeNormal(texture(sNormal3, vec3(vDetailTexCoord.xy, 1)))*blending.z+
+			DecodeNormal(texture(sNormal3, vec3(vDetailTexCoord.xz,1)))*blending.y;
+		vec3 bump3=DecodeNormal(texture(sNormal3, vec3(vDetailTexCoord.zy, 2)))*blending.x+
+			DecodeNormal(texture(sNormal3, vec3(vDetailTexCoord.xy, 2)))*blending.z+
+			DecodeNormal(texture(sNormal3, vec3(vDetailTexCoord.xz,2)))*blending.y;
+		vec3 bump4=DecodeNormal(texture(sNormal3, vec3(vDetailTexCoord.zy, 3)))*blending.x+
+			DecodeNormal(texture(sNormal3, vec3(vDetailTexCoord.xy, 3)))*blending.z+
+			DecodeNormal(texture(sNormal3, vec3(vDetailTexCoord.xz,3)))*blending.y;
+		vec3 bump5=DecodeNormal(texture(sNormal3, vec3(vDetailTexCoord.zy, 4)))*blending.x+
+			DecodeNormal(texture(sNormal3, vec3(vDetailTexCoord.xy, 4)))*blending.z+
+			DecodeNormal(texture(sNormal3, vec3(vDetailTexCoord.xz,4)))*blending.y;
+		vec3 bump6=DecodeNormal(texture(sNormal3, vec3(vDetailTexCoord.zy, 5)))*blending.x+
+			DecodeNormal(texture(sNormal3, vec3(vDetailTexCoord.xy, 5)))*blending.z+
+			DecodeNormal(texture(sNormal3, vec3(vDetailTexCoord.xz,5)))*blending.y;
+		vec3 bump7=DecodeNormal(texture(sNormal3, vec3(vDetailTexCoord.zy, 6)))*blending.x+
+			DecodeNormal(texture(sNormal3, vec3(vDetailTexCoord.xy, 6)))*blending.z+
+			DecodeNormal(texture(sNormal3, vec3(vDetailTexCoord.xz,6)))*blending.y;
+		vec3 bump8=DecodeNormal(texture(sNormal3, vec3(vDetailTexCoord.zy, 7)))*blending.x+
+			DecodeNormal(texture(sNormal3, vec3(vDetailTexCoord.xy, 7)))*blending.z+
+			DecodeNormal(texture(sNormal3, vec3(vDetailTexCoord.xz,7)))*blending.y;
 		
 		
 		vec3 normal=normalize(((bump1*b1+bump2*b2+bump3*b3+bump4*b4+bump5*b5+bump6*b6+bump7*b7+bump8*b8)/bsum)*tbn);

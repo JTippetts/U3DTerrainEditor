@@ -117,6 +117,7 @@ function CreateScene()
 	
     --terrain.material = cache:GetResource("Material", "Materials/TerrainEdit8.xml")
 	terrain.material = cache:GetResource("Material", "Materials/TerrainEdit8Triplanar.xml")
+	print("hi")
 	
 	
     -- The terrain consists of large triangles, which fits well for occlusion rendering, as a hill can occlude all
@@ -125,7 +126,7 @@ function CreateScene()
 	
 	mask=Image(context)
 	masktex=Texture2D:new(context)
-	masktex:SetSize(0,0,0,TEXTURE_DYNAMIC)
+	--masktex:SetSize(0,0,0,TEXTURE_DYNAMIC)
 	mask:SetSize(1024,1024,3)
 	mask:Clear(Color(1,0,0))
 	masktex:SetData(mask, false)
@@ -135,34 +136,36 @@ function CreateScene()
 	--terrain:SetSmoothing(false)
 	print("Components: "..hmap:GetComponents())
 	blendtex1=Texture2D:new(context)
-	blendtex1:SetSize(0,0,0,TEXTURE_DYNAMIC)
+	--blendtex1:SetSize(0,0,0,TEXTURE_DYNAMIC)
 	terrain:GetMaterial():SetTexture(0,blendtex1)
 	
 	blendtex2=Texture2D:new(context)
-	blendtex2:SetSize(0,0,0,TEXTURE_DYNAMIC)
+	--blendtex2:SetSize(0,0,0,TEXTURE_DYNAMIC)
 	terrain:GetMaterial():SetTexture(1,blendtex2)
 	
 	blend1=Image(context)
 	blend1:SetSize(1024,1024,4)
-	blend1:Clear(Color(0,0,0,0))
+	blend1:Clear(Color(1,0,0,0))
 	blendtex1:SetData(blend1, false)
 	
 	blend2=Image(context)
 	blend2:SetSize(1024,1024,4)
-	blend2:Clear(Color(1,0,0,0))
+	blend2:Clear(Color(0,0,0,0))
 	blendtex2:SetData(blend2, false)
 	
 	-- Build composite textures
 	comptex1=Texture2D:new(context)
 	comptex2=Texture2D:new(context)
 	
+	-- Uncomment for D3D9
+	--[[
 	img1=cache:GetResource("Image", "Textures/diff.png")
 	img2=cache:GetResource("Image", "Textures/normal.png")
 	comptex1:SetData(img1, false)
 	comptex2:SetData(img2, false)
 	terrain:GetMaterial():SetTexture(2,comptex1)
 	terrain:GetMaterial():SetTexture(3,comptex2)
-
+	]]
 
 	
 	terrainui=scene_:CreateScriptObject("TerrainEditUI")

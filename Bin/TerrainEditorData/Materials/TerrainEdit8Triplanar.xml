@@ -1,5 +1,9 @@
 <material>
-    <technique name="Techniques/TerrainBlend8EditTriplanar.xml" />
+    <technique name="Techniques/TerrainBlend8EditTriplanararray.xml" />
+	<texture unit="0" name="" />
+	<texture unit="1" name="" />
+	<texture unit="2" name="Textures/diff.xml" />
+    <texture unit="3" name="Textures/normal.xml" />
     <parameter name="MatSpecColor" value="0.5 0.5 0.5 16" />
     <parameter name="DetailTiling" value="4 4 4" />
 	<parameter name="BumpStrength" value="128" />
