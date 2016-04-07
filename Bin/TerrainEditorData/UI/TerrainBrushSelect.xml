@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<element type="Window">
+	<attribute name="Position" value="512 384" />
+	<attribute name="Size" value="256 128" />
+	<attribute name="Min Size" value="128 64" />
+	<attribute name="Is Movable" value="true" />
+	<element type="Button">
+		<attribute name="Name" value="Terrain0" />
+		<attribute name="Size" value="64 64" />
+		<attribute name="Min Size" value="64 64" />
+		<attribute name="Max Size" value="64 64" />
+		<attribute name="Image Rect" value="0 0 64 64" />
+	</element>
+	<element type="Button">
+		<attribute name="Name" value="Terrain1" />
+		<attribute name="Position" value="64 0" />
+		<attribute name="Size" value="64 64" />
+		<attribute name="Min Size" value="64 64" />
+		<attribute name="Max Size" value="64 64" />
+		<attribute name="Image Rect" value="0 0 64 64" />
+	</element>
+	<element type="Button">
+		<attribute name="Name" value="Terrain2" />
+		<attribute name="Position" value="128 0" />
+		<attribute name="Size" value="64 64" />
+		<attribute name="Min Size" value="64 64" />
+		<attribute name="Max Size" value="64 64" />
+		<attribute name="Image Rect" value="0 0 64 64" />
+	</element>
+	<element type="Button">
+		<attribute name="Name" value="Terrain3" />
+		<attribute name="Position" value="192 0" />
+		<attribute name="Size" value="64 64" />
+		<attribute name="Min Size" value="64 64" />
+		<attribute name="Max Size" value="64 64" />
+		<attribute name="Image Rect" value="0 0 64 64" />
+	</element>
+	<element type="Button">
+		<attribute name="Name" value="Terrain4" />
+		<attribute name="Position" value="0 64" />
+		<attribute name="Size" value="64 64" />
+		<attribute name="Min Size" value="64 64" />
+		<attribute name="Max Size" value="64 64" />
+		<attribute name="Image Rect" value="0 0 64 64" />
+	</element>
+	<element type="Button">
+		<attribute name="Name" value="Terrain5" />
+		<attribute name="Position" value="64 64" />
+		<attribute name="Size" value="64 64" />
+		<attribute name="Min Size" value="64 64" />
+		<attribute name="Max Size" value="64 64" />
+		<attribute name="Image Rect" value="0 0 64 64" />
+	</element>
+	<element type="Button">
+		<attribute name="Name" value="Terrain6" />
+		<attribute name="Position" value="128 64" />
+		<attribute name="Size" value="64 64" />
+		<attribute name="Min Size" value="64 64" />
+		<attribute name="Max Size" value="64 64" />
+		<attribute name="Image Rect" value="0 0 64 64" />
+	</element>
+	<element type="Button">
+		<attribute name="Name" value="Terrain7" />
+		<attribute name="Position" value="192 64" />
+		<attribute name="Size" value="64 64" />
+		<attribute name="Min Size" value="64 64" />
+		<attribute name="Max Size" value="64 64" />
+		<attribute name="Image Rect" value="0 0 64 64" />
+	</element>
+</element>

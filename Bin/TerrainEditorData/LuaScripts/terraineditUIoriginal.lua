@@ -137,6 +137,18 @@ function TerrainEditUI:UpdateWaypointVis()
 	bbox:Define(Vector3(-1000,-1000,-1000), Vector3(1000,1000,1000))
 end
 
+function TerrainEditUI:LoadThumbnails(thumblist)
+	local i
+	for i=0,7,1 do
+		local name="Terrain"..i
+		local button=self.blendbrush:GetChild(name,true)
+		if button then
+			button.texture=cache:GetResource("Texture2D", thumblist[i+1])
+		end
+	end
+	
+end
+
 function TerrainEditUI:AddWaypoint(groundx, groundz)
 	local waynode=scene_:CreateChild()
 	local model=waynode:CreateComponent("StaticModel")
@@ -264,6 +276,15 @@ function TerrainEditUI:ActivateBlendBrush()
 	self.blendbrush.visible=true
 	self.maskbrush.visible=false
 	self.smoothbrush.visible=false
+	
+	local prev=self.blendbrush:GetChild("SelectedLayer", true)
+	if prev then
+		local whichbutton="Terrain"..(self.mode-1)
+		local b=self.blendbrush:GetChild(whichbutton, true)
+		if b then
+			prev.texture=b.texture
+		end
+	end
 	
 	self.activebrush=self.blendbrush
 	local text=self.activebrush:GetChild("PowerText", true)
@@ -433,31 +454,49 @@ function TerrainEditUI:HandleButtonPress(eventType, eventData)
 		self.mode=9
 		self:ActivateSmoothBrush()
 	
-	elseif name=="Terrain1Button" then
+	elseif name=="TerrainButton" then
+		if self.lastterrain and (self.lastterrain>=1 and self.lastterrain<=8) then
+			self.mode=self.lastterrain
+			self:ActivateBlendBrush()
+		else
+			self.lastterrain=1
+			self.mode=1
+			self:ActivateBlendBrush()
+		end
+	
+	elseif name=="Terrain0" then
+		self.lastterrain=1
 		self.mode=1
 		self:ActivateBlendBrush()
 	
-	elseif name=="Terrain2Button" then
+	elseif  name=="Terrain1" then
+		self.lastterrain=2
 		self.mode=2
 		self:ActivateBlendBrush()
 	
-	elseif name=="Terrain3Button" then
+	elseif name=="Terrain2" then
+		self.lastterrain=3
 		self.mode=3
 		self:ActivateBlendBrush()
 	
-	elseif name=="Terrain4Button" then
+	elseif name=="Terrain3" then
+		self.lastterrain=4
 		self.mode=4
 		self:ActivateBlendBrush()
-	elseif name=="Terrain5Button" then
+	elseif name=="Terrain4" then
+		self.lastterrain=5
 		self.mode=5
 		self:ActivateBlendBrush()
-	elseif name=="Terrain6Button" then
+	elseif name=="Terrain5" then
+		self.lastterrain=6
 		self.mode=6
 		self:ActivateBlendBrush()
-	elseif name=="Terrain7Button" then
+	elseif name=="Terrain6" then
+		self.lastterrain=7
 		self.mode=7
 		self:ActivateBlendBrush()
-	elseif name=="Terrain8Button" then
+	elseif name=="Terrain7"  then
+		self.lastterrain=8
 		self.mode=8
 		self:ActivateBlendBrush()
 	elseif name=="MaskButton" then

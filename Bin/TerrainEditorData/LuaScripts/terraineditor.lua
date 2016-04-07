@@ -11,6 +11,7 @@ require "LuaScripts/ui"
 require "LuaScripts/buildcomposite"
 require "LuaScripts/filterui"
 require "LuaScripts/saveloadui"
+require "LuaScripts/terrainselectui"
 
 function HtToRG(ht)
 	local expht=math.floor(ht*255)
@@ -80,8 +81,8 @@ function CreateScene()
     light.castShadows = true
     light.shadowBias = BiasParameters(0.00025, 0.5)
     light.shadowCascade = CascadeParameters(10.0, 50.0, 200.0, 0.0, 0.8)
-    light.specularIntensity = 0.4;
-    light.color = Color(0.9,0.8,0.7);
+    light.specularIntensity = 0.01;
+    light.color = Color(1.1,1,0.9);
 	
 	lightNode = scene_:CreateChild("DirectionalLight")
     lightNode.direction = Vector3(-1.2, -1.0, -1.6)
@@ -90,13 +91,9 @@ function CreateScene()
     light.castShadows = true
     light.shadowBias = BiasParameters(0.00025, 0.5)
     light.shadowCascade = CascadeParameters(10.0, 50.0, 200.0, 0.0, 0.8)
-    light.specularIntensity = 0.3;
-    -- Apply slightly overbright lighting to match the skybox
+    light.specularIntensity = 0.01;
     light.color = Color(0.3,0.4,0.5);
 
-    -- Create skybox. The Skybox component is used like StaticModel, but it will be always located at the camera, giving the
-    -- illusion of the box planes being far away. Use just the ordinary Box model and a suitable material, whose shader will
-    -- generate the necessary 3D texture coordinates for cube mapping
     local skyNode = scene_:CreateChild("Sky")
     skyNode:SetScale(500.0) -- The scale actually does not matter
     local skybox = skyNode:CreateComponent("Skybox")
@@ -153,12 +150,10 @@ function CreateScene()
 	blend2:Clear(Color(0,0,0,0))
 	blendtex2:SetData(blend2, false)
 	
-	-- Build composite textures
-	comptex1=Texture2D:new(context)
-	comptex2=Texture2D:new(context)
-	
 	-- Uncomment for D3D9
 	--[[
+	comptex1=Texture2D:new(context)
+	comptex2=Texture2D:new(context)
 	img1=cache:GetResource("Image", "Textures/diff.png")
 	img2=cache:GetResource("Image", "Textures/normal.png")
 	comptex1:SetData(img1, false)
@@ -171,8 +166,21 @@ function CreateScene()
 	terrainui=scene_:CreateScriptObject("TerrainEditUI")
 	filterui=scene_:CreateScriptObject("FilterUI")
 	saveloadui=scene_:CreateScriptObject("SaveLoadUI")
-
-
+	--terrainselectui=scene_:CreateScriptObject("TerrainSelectUI")
+	
+	local thumbs=
+	{
+		"Textures/pebbles_thumb.png",
+		"Textures/sand_thumb.png",
+		"Textures/dirtgrass_thumb.png",
+		"Textures/stones_thumb.png",
+		"Textures/floor_thumb.png",
+		"Textures/cliff_thumb.png",
+		"Textures/dirtgrass_thumb.png",
+		"Textures/rockfield_thumb.png"
+	}
+	
+	terrainui:LoadThumbnails(thumbs)
    
     -- Create the camera. Set far clip to match the fog. Note: now we actually create the camera node outside
     -- the scene, because we want it to be unaffected by scene load / save
