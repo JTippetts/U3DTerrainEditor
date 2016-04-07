@@ -1,5 +1,7 @@
 -- Terrain Editor UI
 
+require 'LuaScripts/terrainselectui'
+
 TerrainEditUI=ScriptObject()
 
 uiStyle = cache:GetResource("XMLFile", "UI/DefaultStyle.xml")
@@ -19,7 +21,8 @@ end
 
 function TerrainEditUI:Start()
 	self.heightbrush=ui:LoadLayout(cache:GetResource("XMLFile", "UI/TerrainEditHeightBrush.xml"))
-	self.blendbrush=ui:LoadLayout(cache:GetResource("XMLFile", "UI/TerrainEditBlendBrush.xml"))
+	--self.blendbrush=ui:LoadLayout(cache:GetResource("XMLFile", "UI/TerrainEditBlendBrush.xml"))
+	self.blendbrush=scene_:CreateScriptObject("TerrainSelectUI")
 	self.maskbrush=ui:LoadLayout(cache:GetResource("XMLFile", "UI/TerrainEditMaskBrush.xml"))
 	self.smoothbrush=ui:LoadLayout(cache:GetResource("XMLFile", "UI/TerrainEditSmoothBrush.xml"))
 	self.newterrain=ui:LoadLayout(cache:GetResource("XMLFile", "UI/TerrainEditNewTerrain.xml"))
@@ -27,7 +30,8 @@ function TerrainEditUI:Start()
 	
 	
 	self.heightbrush.style=uiStyle
-	self.blendbrush.style=uiStyle
+	--self.blendbrush.style=uiStyle
+	self.blendbrush:Deactivate()
 	self.maskbrush.style=uiStyle
 	self.newterrain.style=uiStyle
 	self.toolbar.style=uiStyle
@@ -39,12 +43,12 @@ function TerrainEditUI:Start()
 	self.brushtex:SetSize(0,0,0,TEXTURE_DYNAMIC)
 	
 	self.heightbrush:GetChild("BrushPreview",true).texture=self.brushtex
-	self.blendbrush:GetChild("BrushPreview",true).texture=self.brushtex
+	--self.blendbrush:GetChild("BrushPreview",true).texture=self.brushtex
 	self.maskbrush:GetChild("BrushPreview",true).texture=self.brushtex
 	self.smoothbrush:GetChild("BrushPreview",true).texture=self.brushtex
 	
 	ui.root:AddChild(self.heightbrush)
-	ui.root:AddChild(self.blendbrush)
+	--ui.root:AddChild(self.blendbrush)
 	ui.root:AddChild(self.maskbrush)
 	ui.root:AddChild(self.smoothbrush)
 	ui.root:AddChild(self.newterrain)
@@ -52,7 +56,7 @@ function TerrainEditUI:Start()
 	
 	
 	self.mode=0
-	self.blendbrush.visible=false
+	--self.blendbrush.visible=false
 	self.maskbrush.visible=false
 	self.newterrain.visible=false
 	self.smoothbrush.visible=false
@@ -61,6 +65,8 @@ function TerrainEditUI:Start()
 	
 	self:SubscribeToEvent("Pressed", "TerrainEditUI:HandleButtonPress")
 	self:SubscribeToEvent("SliderChanged", "TerrainEditUI:HandleSliderChanged")
+	self:SubscribeToEvent("ActivateTerrain", "TerrainEditUI:HandleActivateTerrain")
+	self:SubscribeToEvent("BrushRadiusChanged", "TerrainEditUI:HandleBrushRadiusChanged")
 	
 	self.brushcursornode=scene_:CreateChild()
 	self.brushcursor=self.brushcursornode:CreateComponent("CustomGeometry")
@@ -138,7 +144,8 @@ function TerrainEditUI:UpdateWaypointVis()
 end
 
 function TerrainEditUI:LoadThumbnails(thumblist)
-	local i
+	if self.blendbrush then self.blendbrush:LoadThumbnails(thumblist) end
+	--[[local i
 	for i=0,7,1 do
 		local name="Terrain"..i
 		local button=self.blendbrush:GetChild(name,true)
@@ -146,7 +153,7 @@ function TerrainEditUI:LoadThumbnails(thumblist)
 			button.texture=cache:GetResource("Texture2D", thumblist[i+1])
 		end
 	end
-	
+	]]
 end
 
 function TerrainEditUI:AddWaypoint(groundx, groundz)
@@ -163,6 +170,10 @@ function TerrainEditUI:AddWaypoint(groundx, groundz)
 end
 
 function TerrainEditUI:GetBrushSettings(brush)
+	if brush==self.blendbrush then
+		return self.blendbrush:GetBrushSettings()
+	end
+
 	local power,max,radius,hardness=0,0,5,0.9
 	local usemask=false
 	
@@ -248,7 +259,8 @@ function TerrainEditUI:ActivateHeightBrush()
 	self.heightbrush:GetChild("BrushPreview",true):SetTexture(self.brushtex)
 	self.heightbrush:GetChild("BrushPreview",true):SetImageRect(IntRect(0,0,63,63))
 	self.heightbrush.visible=true
-	self.blendbrush.visible=false
+	--self.blendbrush.visible=false
+	self.blendbrush:Deactivate()
 	self.maskbrush.visible=false
 	self.smoothbrush.visible=false
 	
@@ -265,36 +277,21 @@ function TerrainEditUI:ActivateHeightBrush()
 	
 end
 
+function TerrainEditUI:ChangeBlendBrush(layer)
+
+end
+
 function TerrainEditUI:ActivateBlendBrush()
-	self.power, self.max, self.radius, self.hardness, self.usemask=self:GetBrushSettings(self.blendbrush)
+	self.power, self.max, self.radius, self.hardness, self.usemask=self.blendbrush:GetBrushSettings()
 	
 	self:BuildCursorMesh(self.radius)
-	self:GenerateBrushPreview(self.hardness)
-	self.blendbrush:GetChild("BrushPreview",true):SetTexture(self.brushtex)
-	self.blendbrush:GetChild("BrushPreview",true):SetImageRect(IntRect(0,0,63,63))
+	self.activebrush=self.blendbrush
+	
 	self.heightbrush.visible=false
-	self.blendbrush.visible=true
 	self.maskbrush.visible=false
 	self.smoothbrush.visible=false
 	
-	local prev=self.blendbrush:GetChild("SelectedLayer", true)
-	if prev then
-		local whichbutton="Terrain"..(self.mode-1)
-		local b=self.blendbrush:GetChild(whichbutton, true)
-		if b then
-			prev.texture=b.texture
-		end
-	end
-	
-	self.activebrush=self.blendbrush
-	local text=self.activebrush:GetChild("PowerText", true)
-	if text then text.text=string.format("%.1f", self.power) end
-	text=self.activebrush:GetChild("RadiusText", true)
-	if text then text.text=tostring(math.floor(self.radius)) end
-	text=self.activebrush:GetChild("MaxText", true)
-	if text then text.text=string.format("%.1f", self.max) end
-	text=self.activebrush:GetChild("HardnessText", true)
-	if text then text.text=string.format("%.2f", self.hardness) end
+	self.blendbrush:Activate()
 end
 
 function TerrainEditUI:ActivateSmoothBrush()
@@ -302,10 +299,11 @@ function TerrainEditUI:ActivateSmoothBrush()
 	
 	self:BuildCursorMesh(self.radius)
 	self:GenerateBrushPreview(self.hardness)
-	self.blendbrush:GetChild("BrushPreview",true):SetTexture(self.brushtex)
-	self.blendbrush:GetChild("BrushPreview",true):SetImageRect(IntRect(0,0,63,63))
+	self.smoothbrush:GetChild("BrushPreview",true):SetTexture(self.brushtex)
+	self.smoothbrush:GetChild("BrushPreview",true):SetImageRect(IntRect(0,0,63,63))
 	self.heightbrush.visible=false
-	self.blendbrush.visible=false
+	--self.blendbrush.visible=false
+	self.blendbrush:Deactivate()
 	self.maskbrush.visible=false
 	self.smoothbrush.visible=true
 	
@@ -325,10 +323,11 @@ function TerrainEditUI:ActivateMaskBrush()
 	
 	self:BuildCursorMesh(self.radius)
 	self:GenerateBrushPreview(self.hardness)
-	self.blendbrush:GetChild("BrushPreview",true):SetTexture(self.brushtex)
-	self.blendbrush:GetChild("BrushPreview",true):SetImageRect(IntRect(0,0,63,63))
+	self.maskbrush:GetChild("BrushPreview",true):SetTexture(self.brushtex)
+	self.maskbrush:GetChild("BrushPreview",true):SetImageRect(IntRect(0,0,63,63))
 	self.heightbrush.visible=false
-	self.blendbrush.visible=false
+	--self.blendbrush.visible=false
+	self.blendbrush:Deactivate()
 	self.maskbrush.visible=true
 	self.newterrain.visible=false
 	self.smoothbrush.visible=false
@@ -365,7 +364,7 @@ function TerrainEditUI:Update(dt)
 	if ground then 
 		local world=Vector3(ground.x,0,ground.z)
 		self.brushcursornode:SetPosition(world)
-	
+		
 		self.power, self.max, self.radius, self.hardness, self.usemask=self:GetBrushSettings(self.activebrush)
 	
 		self:SetBrushCursorHeight()
@@ -462,9 +461,10 @@ function TerrainEditUI:HandleButtonPress(eventType, eventData)
 			self.lastterrain=1
 			self.mode=1
 			self:ActivateBlendBrush()
+			self.blendbrush:ChangeLayer(self.mode)
 		end
 	
-	elseif name=="Terrain0" then
+	--[[elseif name=="Terrain0" then
 		self.lastterrain=1
 		self.mode=1
 		self:ActivateBlendBrush()
@@ -499,6 +499,7 @@ function TerrainEditUI:HandleButtonPress(eventType, eventData)
 		self.lastterrain=8
 		self.mode=8
 		self:ActivateBlendBrush()
+		]]
 	elseif name=="MaskButton" then
 		self.mode=10
 		self:ActivateMaskBrush()
@@ -509,9 +510,28 @@ function TerrainEditUI:HandleButtonPress(eventType, eventData)
 	
 end
 
+function TerrainEditUI:HandleActivateTerrain(eventType, eventData)
+	local which=eventData["Layer"]:GetUInt()
+	
+	if which>=1 and which<=8 then
+		self.lastterrain=which
+		self.mode=which
+		self:ActivateBlendBrush()
+	end
+	 
+end
+
+function TerrainEditUI:HandleBrushRadiusChanged(eventType, eventData)
+	local radius=eventData["Radius"]:GetFloat()
+	self:BuildCursorMesh(radius)
+	--self.radius=radius
+end
+
 function TerrainEditUI:HandleSliderChanged(eventType, eventData)
 	local which=eventData["Element"]:GetPtr("UIElement")
 	if which==nil then return end
+	
+	if self.activebrush==self.blendbrush then return end
 	
 	self.power, self.max, self.radius, self.hardness, self.usemask=self:GetBrushSettings(self.activebrush)
 	self:BuildCursorMesh(self.radius)
