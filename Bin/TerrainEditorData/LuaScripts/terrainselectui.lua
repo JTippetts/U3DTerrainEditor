@@ -18,6 +18,16 @@ function TerrainSelectUI:Start()
 	self:SubscribeToEvent("SliderChanged", "TerrainSelectUI:HandleSliderChanged")
 	
 	
+	self.power,self.max,self.radius,self.hardness,self.usemask=self:GetBrushSettings()
+	
+	local text=self.panel:GetChild("PowerText", true)
+	if text then text.text=string.format("%.1f", self.power) end
+	text=self.panel:GetChild("RadiusText", true)
+	if text then text.text=tostring(math.floor(self.radius)) end
+	text=self.panel:GetChild("MaxText", true)
+	if text then text.text=string.format("%.1f", self.max) end
+	text=self.panel:GetChild("HardnessText", true)
+	if text then text.text=string.format("%.2f", self.hardness) end
 end
 
 function TerrainSelectUI:LoadThumbnails(thumblist)

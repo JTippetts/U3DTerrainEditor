@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <element type="Window">
-	<attribute name="Position" value="138 461" />
-	<attribute name="Size" value="266 304" />
+	<attribute name="Position" value="139 454" />
+	<attribute name="Size" value="266 312" />
 	<attribute name="Layout Mode" value="Vertical" />
 	<attribute name="Layout Border" value="5 5 5 5" />
 	<attribute name="Is Movable" value="true" />
@@ -27,7 +27,7 @@
 		<element type="Slider">
 			<attribute name="Name" value="PowerSlider" />
 			<attribute name="Range" value="100" />
-			<attribute name="Value" value="65.4545" />
+			<attribute name="Value" value="35" />
 			<element type="BorderImage" internal="true" style="none" />
 		</element>
 		<element type="Text">
@@ -54,7 +54,7 @@
 		<element type="Slider">
 			<attribute name="Name" value="RadiusSlider" />
 			<attribute name="Range" value="100" />
-			<attribute name="Value" value="30" />
+			<attribute name="Value" value="10" />
 			<element type="BorderImage" internal="true" style="none" />
 		</element>
 		<element type="Text">
@@ -95,18 +95,20 @@
 		</element>
 	</element>
 	<element type="Window">
-		<attribute name="Min Size" value="128 64" />
+		<attribute name="Min Size" value="128 72" />
 		<element type="BorderImage">
 			<attribute name="Name" value="BrushPreview" />
 			<attribute name="Size" value="64 64" />
 			<attribute name="Min Size" value="64 64" />
 			<attribute name="Max Size" value="64 64" />
+			<attribute name="Vert Alignment" value="Center" />
 			<attribute name="Image Rect" value="0 0 63 63" />
 		</element>
 		<element type="BorderImage">
 			<attribute name="Name" value="SelectedLayer" />
 			<attribute name="Size" value="64 64" />
 			<attribute name="Horiz Alignment" value="Right" />
+			<attribute name="Vert Alignment" value="Center" />
 			<attribute name="Image Rect" value="0 0 64 64" />
 		</element>
 	</element>
