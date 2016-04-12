@@ -108,13 +108,13 @@ function CreateScene()
     terrain.spacing = Vector3(1, 0.1, 1) -- Spacing between vertices and vertical resolution of the height map
     terrain.smoothing = true
 	hmap=Image:new(context)
-	hmap:SetSize(1025,1025,1)
+	hmap:SetSize(1025,1025,3)
 	hmap:Clear(Color(0.0,0,0,0))
     terrain.heightMap = hmap
 	
     --terrain.material = cache:GetResource("Material", "Materials/TerrainEdit8.xml")
 	terrain.material = cache:GetResource("Material", "Materials/TerrainEdit8Triplanar.xml")
-	print("hi")
+	print(graphics:GetApiName())
 	
 	
     -- The terrain consists of large triangles, which fits well for occlusion rendering, as a hill can occlude all
@@ -150,17 +150,17 @@ function CreateScene()
 	blend2:Clear(Color(0,0,0,0))
 	blendtex2:SetData(blend2, false)
 	
-	-- Uncomment for D3D9
-	--[[
-	comptex1=Texture2D:new(context)
-	comptex2=Texture2D:new(context)
-	img1=cache:GetResource("Image", "Textures/diff.png")
-	img2=cache:GetResource("Image", "Textures/normal.png")
-	comptex1:SetData(img1, false)
-	comptex2:SetData(img2, false)
-	terrain:GetMaterial():SetTexture(2,comptex1)
-	terrain:GetMaterial():SetTexture(3,comptex2)
-	]]
+	local api=graphics:GetApiName()
+	if api=="D3D9" then
+		comptex1=Texture2D:new(context)
+		comptex2=Texture2D:new(context)
+		img1=cache:GetResource("Image", "Textures/diff.png")
+		img2=cache:GetResource("Image", "Textures/normal.png")
+		comptex1:SetData(img1, false)
+		comptex2:SetData(img2, false)
+		terrain:GetMaterial():SetTexture(2,comptex1)
+		terrain:GetMaterial():SetTexture(3,comptex2)
+	end
 
 	
 	terrainui=scene_:CreateScriptObject("TerrainEditUI")
@@ -176,7 +176,7 @@ function CreateScene()
 		"Textures/stones_thumb.png",
 		"Textures/floor_thumb.png",
 		"Textures/cliff_thumb.png",
-		"Textures/dirtgrass_thumb.png",
+		"Textures/cliff2_thumb.png",
 		"Textures/rockfield_thumb.png"
 	}
 	
