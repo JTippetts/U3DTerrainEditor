@@ -68,10 +68,10 @@ function CreateScene()
     local zoneNode = scene_:CreateChild("Zone")
     local zone = zoneNode:CreateComponent("Zone")
     zone.boundingBox = BoundingBox(-1000.0, 1000.0)
-    zone.ambientColor = Color(0.03, 0.03, 0.04)
+    zone.ambientColor = Color(0.5, 0.5, 0.7)
     zone.fogColor = Color(0.7,0.8,0.9)
     zone.fogStart = 300.0
-    zone.fogEnd = 325.0
+    zone.fogEnd = 375.0
 
     -- Create a directional light to the world. Enable cascaded shadows on it
     local lightNode = scene_:CreateChild("DirectionalLight")
@@ -79,12 +79,12 @@ function CreateScene()
     local light = lightNode:CreateComponent("Light")
     light.lightType = LIGHT_DIRECTIONAL
     light.castShadows = true
-    light.shadowBias = BiasParameters(0.00025, 0.5)
-    light.shadowCascade = CascadeParameters(10.0, 50.0, 200.0, 0.0, 0.8)
+    --light.shadowBias = BiasParameters(0.00025, 0.5)
+    --light.shadowCascade = CascadeParameters(10.0, 50.0, 200.0, 0.0, 0.8)
     light.specularIntensity = 0.01;
-    light.color = Color(1.1,1,0.9);
+    light.color = Color(0.9,0.8,0.7);
 	
-	lightNode = scene_:CreateChild("DirectionalLight")
+	--[[lightNode = scene_:CreateChild("DirectionalLight")
     lightNode.direction = Vector3(-1.2, -1.0, -1.6)
     local light = lightNode:CreateComponent("Light")
     light.lightType = LIGHT_DIRECTIONAL
@@ -92,7 +92,7 @@ function CreateScene()
     light.shadowBias = BiasParameters(0.00025, 0.5)
     light.shadowCascade = CascadeParameters(10.0, 50.0, 200.0, 0.0, 0.8)
     light.specularIntensity = 0.01;
-    light.color = Color(0.3,0.4,0.5);
+    light.color = Color(0.13,0.14,0.15);]]
 
     local skyNode = scene_:CreateChild("Sky")
     skyNode:SetScale(500.0) -- The scale actually does not matter
@@ -111,6 +111,8 @@ function CreateScene()
 	hmap:SetSize(1025,1025,3)
 	hmap:Clear(Color(0.0,0,0,0))
     terrain.heightMap = hmap
+	terrain.castShadows=true
+	
 	
     --terrain.material = cache:GetResource("Material", "Materials/TerrainEdit8.xml")
 	terrain.material = cache:GetResource("Material", "Materials/TerrainEdit8Triplanar.xml")

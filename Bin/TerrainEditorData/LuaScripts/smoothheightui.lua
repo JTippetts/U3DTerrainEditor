@@ -116,12 +116,7 @@ function SmoothHeightUI:HandleSliderChanged(eventType, eventData)
 	elseif which==self.panel:GetChild("RadiusSlider", true) then
 		local text=self.panel:GetChild("RadiusText", true)
 		if text then text.text=tostring(math.floor(self.radius)) end
-		
-		local vm=VariantMap()
-		vm["Radius"]=self.radius
-		SendEvent("BrushRadiusChanged", vm)
-		print("Brush changed: "..self.radius)
-		
+		self.cursor:BuildCursorMesh(self.radius)
 	elseif which==self.panel:GetChild("MaxSlider", true) then
 		local text=self.panel:GetChild("MaxText", true)
 		if text then text.text=string.format("%.2f", self.max) end

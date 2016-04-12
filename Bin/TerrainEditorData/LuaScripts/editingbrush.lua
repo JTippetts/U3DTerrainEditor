@@ -70,7 +70,9 @@ function EditingBrush:SetBrushCursorHeight()
 	
 	local ground=cam:GetScreenGround(mousepos.x, mousepos.y)
 	
-	SetBrushCursorHeight(terrain, self.brushcursor, ground.x, ground.z)
+	if ground then
+		SetBrushCursorHeight(terrain, self.brushcursor, ground.x, ground.z)
+	end
 end
 
 function EditingBrush:SetPosition(world)

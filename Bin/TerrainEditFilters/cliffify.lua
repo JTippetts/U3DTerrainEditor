@@ -24,7 +24,7 @@ return
 		local usemask=ops["Use Mask?"]
 		local invertmask=ops["Invert Mask?"]
 		
-		local buffer=RasterBuffer(bw,bh)
+		local buffer=CArray2Dd(bw,bh)
 		
 		local x,y
 		for x=0,bw-1,1 do
