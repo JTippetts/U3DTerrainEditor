@@ -1,16 +1,17 @@
--- Terrain Brush select panel
+-- Elevation Height Editing Brush
 require 'LuaScripts/editingbrush'
 
-TerrainSelectUI=ScriptObject()
+EditHeightUI=ScriptObject()
 
-function TerrainSelectUI:Start()
-	self.panel=ui:LoadLayout(cache:GetResource("XMLFile", "UI/TerrainEditBlendBrush.xml"))
+function EditHeightUI:Start()
+	self.panel=ui:LoadLayout(cache:GetResource("XMLFile", "UI/TerrainEditHeightBrush.xml"))
+	
+	self:SubscribeToEvent("Pressed", "EditHeightUI:HandleButtonPress")
+	self:SubscribeToEvent("SliderChanged", "EditHeightUI:HandleSliderChanged")
+	
 	self.panel.style=uiStyle
 	ui.root:AddChild(self.panel)
-	self.panel.visible=false
-	
-	self.layer=1
-	self.active=false
+	self.active=true
 	
 	self.brushpreview=Image(context)
 	self.brushpreview:SetSize(64,64,3)
@@ -18,11 +19,8 @@ function TerrainSelectUI:Start()
 	--self.brushtex:SetSize(0,0,0,TEXTURE_DYNAMIC)
 	self.panel:GetChild("BrushPreview",true).texture=self.brushtex
 	
-	self:SubscribeToEvent("Pressed", "TerrainSelectUI:HandleButtonPress")
-	self:SubscribeToEvent("SliderChanged", "TerrainSelectUI:HandleSliderChanged")
-	
-	
 	self.power,self.max,self.radius,self.hardness,self.usemask=self:GetBrushSettings()
+	self:GenerateBrushPreview()
 	
 	local text=self.panel:GetChild("PowerText", true)
 	if text then text.text=string.format("%.1f", self.power) end
@@ -36,22 +34,10 @@ function TerrainSelectUI:Start()
 	self.cursor=EditingBrush(scene_)
 	self.cursor:BuildCursorMesh(self.radius)
 	self.cursor:SetBrushPreview(self.brushtex)
-	self.cursor:Hide()
+	self.cursor:Show()
 end
 
-function TerrainSelectUI:LoadThumbnails(thumblist)
-	local i
-	for i=0,7,1 do
-		local name="Terrain"..i
-		local button=self.panel:GetChild(name,true)
-		if button then
-			button.texture=cache:GetResource("Texture2D", thumblist[i+1])
-		end
-	end
-	
-end
-
-function TerrainSelectUI:GetBrushSettings()
+function EditHeightUI:GetBrushSettings()
 	local power,max,radius,hardness=0,0,5,0.9
 	local usemask=false
 	
@@ -74,7 +60,7 @@ function TerrainSelectUI:GetBrushSettings()
 	return power,max,radius,math.min(1,hardness),usemask
 end
 
-function TerrainSelectUI:GenerateBrushPreview()
+function EditHeightUI:GenerateBrushPreview()
 	local hardness=0.5
 	local slider=self.panel:GetChild("HardnessSlider", true)
 	if slider then hardness=(slider.value/slider.range) end
@@ -98,11 +84,12 @@ function TerrainSelectUI:GenerateBrushPreview()
 	self.brushtex:SetData(self.brushpreview, false)
 end
 
-function TerrainSelectUI:GetBrushPreview()
+function EditHeightUI:GetBrushPreview()
 	return self.brushtex
 end
 
-function TerrainSelectUI:Activate()
+
+function EditHeightUI:Activate()
 	self.panel.visible=true
 	self.active=true
 	self:GenerateBrushPreview(self.hardness)
@@ -111,52 +98,23 @@ function TerrainSelectUI:Activate()
 	self.cursor:SetBrushPreview(self.brushtex)
 end
 
-function TerrainSelectUI:Deactivate()
+function EditHeightUI:Deactivate()
 	self.panel.visible=false
 	self.active=false
 	self.cursor:Hide()
 end
 
-function TerrainSelectUI:ChangeLayer(which)
-	local prev=self.panel:GetChild("SelectedLayer", true)
-	if prev then
-		local whichbutton="Terrain"..(which-1)
-		local b=self.panel:GetChild(whichbutton, true)
-		if b then
-			prev.texture=b.texture
-		end
-	end
+function EditHeightUI:SetHeight(ht)
+	local slider=self.panel:GetChild("MaxSlider", true)
+	if slider then slider.value=ht*slider.range end
+	self:GenerateBrushPreview()
 end
 
-function TerrainSelectUI:SwitchLayer(which)
-	self:ChangeLayer(which)
-	self.layer=which
+function EditHeightUI:HandleButtonPress(eventType, eventData)
+
 end
 
-function TerrainSelectUI:HandleButtonPress(eventType, eventData)
-	local which=eventData["Element"]:GetPtr("UIElement")
-	local name=which:GetName()
-	if name=="Terrain0" then
-		self:SwitchLayer(1)
-	elseif  name=="Terrain1" then
-		self:SwitchLayer(2)
-	elseif name=="Terrain2" then
-		self:SwitchLayer(3)
-	elseif name=="Terrain3" then
-		self:SwitchLayer(4)
-	elseif name=="Terrain4" then
-		self:SwitchLayer(5)
-	elseif name=="Terrain5" then
-		self:SwitchLayer(6)
-	elseif name=="Terrain6" then
-		self:SwitchLayer(7)
-	elseif name=="Terrain7"  then
-		self:SwitchLayer(8)
-	end
-	
-end
-
-function TerrainSelectUI:HandleSliderChanged(eventType, eventData)
+function EditHeightUI:HandleSliderChanged(eventType, eventData)
 	local which=eventData["Element"]:GetPtr("UIElement")
 	if which==nil then return end
 	
@@ -180,7 +138,7 @@ function TerrainSelectUI:HandleSliderChanged(eventType, eventData)
 	end
 end
 
-function TerrainSelectUI:Update(dt)
+function EditHeightUI:Update(dt)
 	if not self.active then return end
 	
 	
@@ -199,8 +157,20 @@ function TerrainSelectUI:Update(dt)
 		self.power, self.max, self.radius, self.hardness, self.usemask=self:GetBrushSettings()
 		
 		if input:GetMouseButtonDown(MOUSEB_LEFT) and ui:GetElementAt(mousepos.x, mousepos.y)==nil then
-			local gx,gz=ground.x,ground.z
-			ApplyBlendBrush8(terrain,hmap,blend1,blend2,mask,gx,gz,self.radius,self.max,self.power,self.hardness,self.layer-1,self.usemask,dt) blendtex1:SetData(blend1) blendtex2:SetData(blend2)
+			if input:GetQualifierDown(QUAL_CTRL) then
+				local norm=WorldToNormalized(hmap,terrain,ground)
+				local col=hmap:GetPixelBilinear(norm.x,1-norm.y)
+				local ht=0
+				if hmap.components==1 then ht=col.r
+				else ht=col.r+col.g/256.0
+				end
+				print(ht)
+				
+				self:SetHeight(ht)
+			else
+				local gx,gz=ground.x,ground.z
+				ApplyHeightBrush(terrain,hmap,mask,gx,gz,self.radius, self.max, self.power, self.hardness, self.usemask, dt) terrain:ApplyHeightMap()
+			end
 		end
 	end
 	
