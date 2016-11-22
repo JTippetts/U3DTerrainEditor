@@ -29,7 +29,7 @@ using namespace Urho3D;
 /// Urho3DPlayer application runs a script specified on the command line.
 class Urho3DPlayer : public Application
 {
-
+  URHO3D_OBJECT(Urho3DPlayer, Application)
 public:
     /// Construct.
     Urho3DPlayer(Context* context);
