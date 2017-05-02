@@ -1,0 +1,12 @@
+<material>
+    <technique name="Techniques/TerrainEdit8.xml" />
+	<texture unit="0" name="" />
+	<texture unit="1" name="" />
+	<texture unit="2" name="Textures/diff.xml" />
+    <texture unit="3" name="Textures/normal.xml" />
+    <parameter name="MatSpecColor" value="0.5 0.5 0.5 16" />
+    <parameter name="DetailTiling" value="4 4 4" />
+	<parameter name="BumpStrength" value="128" />
+	<parameter name="LayerScaling1" value="1 1 1 1" />
+	<parameter name="LayerScaling2" value="1 1 1 0.125" />
+</material>

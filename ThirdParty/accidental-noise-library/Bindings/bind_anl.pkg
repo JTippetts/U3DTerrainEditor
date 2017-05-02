@@ -1,0 +1,426 @@
+// Bind ANL
+
+$#include "../anl.h"
+
+$using namespace anl;
+double highresTime();
+
+// Random generators
+
+class CBasePRNG
+{
+    public:
+    virtual unsigned int get();
+    virtual void setSeed(unsigned int s);
+    void setSeedTime();
+    unsigned int getTarget(unsigned int t);
+    unsigned int getRange(unsigned int low, unsigned int high);
+    double get01();
+};
+
+class LCG : public CBasePRNG
+{
+	LCG();
+	~LCG();
+};
+
+class Xorshift : public CBasePRNG
+{
+	Xorshift();
+	~Xorshift();
+};
+
+class MWC256 : public CBasePRNG
+{
+	MWC256();
+	~MWC256();
+};
+
+class CMWC4096 : public CBasePRNG
+{
+	CMWC4096();
+	~CMWC4096();
+};
+
+class KISS : public CBasePRNG
+{
+	KISS();
+	~KISS();
+};
+
+enum InterpolationTypes
+{
+	INTERP_NONE,
+	INTERP_LINEAR,
+	INTERP_HERMITE,
+	INTERP_QUINTIC
+};
+	
+enum DistanceTypes
+{
+	DISTANCE_EUCLID,
+	DISTANCE_MANHATTAN,
+	DISTANCE_LEASTAXIS,
+	DISTANCE_GREATESTAXIS
+};
+
+enum BasisTypes
+{
+	BASIS_VALUE,
+	BASIS_GRADIENT,
+	BASIS_SIMPLEX
+};
+
+// Coordinate
+struct CCoordinate
+{
+    CCoordinate();
+    CCoordinate(double x, double y);
+    CCoordinate(double x, double y, double z);
+    CCoordinate(double x, double y, double z, double w);
+    CCoordinate(double x, double y, double z, double w, double u, double v);
+	CCoordinate(const CCoordinate &c);
+
+    void set(double x, double y);
+    void set(double x, double y, double z);
+    void set(double x, double y, double z, double w);
+    void set(double x, double y, double z, double w, double u, double v);
+};
+
+// InstructionIndex
+class CInstructionIndex
+{
+};
+
+class CInstructionListType
+{
+};
+
+// Kernel
+	class CKernel
+    {
+    public:
+		CKernel();
+		~CKernel();
+		
+		CInstructionIndex pi();
+		CInstructionIndex e();
+		CInstructionIndex one();
+		CInstructionIndex zero();
+		CInstructionIndex point5();
+		CInstructionIndex sqrt2();
+
+        CInstructionIndex constant(double val);
+		CInstructionIndex seed(unsigned int val);
+        CInstructionIndex valueBasis(CInstructionIndex interpindex, CInstructionIndex seed);
+        CInstructionIndex gradientBasis(CInstructionIndex interpindex, CInstructionIndex seed);
+        CInstructionIndex simplexBasis(CInstructionIndex seed);
+        CInstructionIndex cellularBasis(CInstructionIndex f1, CInstructionIndex f2, CInstructionIndex f3, CInstructionIndex f4, CInstructionIndex d1, CInstructionIndex d2, CInstructionIndex d3, CInstructionIndex d4, CInstructionIndex dist, CInstructionIndex seed);
+        CInstructionIndex add(CInstructionIndex s1index, CInstructionIndex s2index);
+        CInstructionIndex subtract(CInstructionIndex s1, CInstructionIndex s2);
+        CInstructionIndex multiply(CInstructionIndex s1index, CInstructionIndex s2index);
+        CInstructionIndex divide(CInstructionIndex s1, CInstructionIndex s2);
+        CInstructionIndex maximum(CInstructionIndex s1index, CInstructionIndex s2index);
+        CInstructionIndex minimum(CInstructionIndex s1index, CInstructionIndex s2index);
+        CInstructionIndex abs(CInstructionIndex sindex);
+        CInstructionIndex pow(CInstructionIndex s1, CInstructionIndex s2);
+		CInstructionIndex bias(CInstructionIndex s1, CInstructionIndex s2);
+		CInstructionIndex gain(CInstructionIndex s1, CInstructionIndex s2);
+
+        CInstructionIndex scaleDomain(CInstructionIndex srcindex, CInstructionIndex scale);
+		
+        CInstructionIndex scaleX(CInstructionIndex src, CInstructionIndex scale);
+        CInstructionIndex scaleY(CInstructionIndex src, CInstructionIndex scale);
+        CInstructionIndex scaleZ(CInstructionIndex src, CInstructionIndex scale);
+        CInstructionIndex scaleW(CInstructionIndex src, CInstructionIndex scale);
+        CInstructionIndex scaleU(CInstructionIndex src, CInstructionIndex scale);
+        CInstructionIndex scaleV(CInstructionIndex src, CInstructionIndex scale);
+
+        CInstructionIndex translateDomain(CInstructionIndex srcindex, CInstructionIndex trans);
+		
+        CInstructionIndex translateX(CInstructionIndex src, CInstructionIndex trans);
+        CInstructionIndex translateY(CInstructionIndex src, CInstructionIndex trans);
+        CInstructionIndex translateZ(CInstructionIndex src, CInstructionIndex trans);
+        CInstructionIndex translateW(CInstructionIndex src, CInstructionIndex trans);
+        CInstructionIndex translateU(CInstructionIndex src, CInstructionIndex trans);
+        CInstructionIndex translateV(CInstructionIndex src, CInstructionIndex trans);
+
+        CInstructionIndex rotateDomain(CInstructionIndex src, CInstructionIndex angle, CInstructionIndex ax, CInstructionIndex ay, CInstructionIndex az);
+
+        CInstructionIndex addSequence(CInstructionIndex baseindex, unsigned int number, unsigned int stride);
+        CInstructionIndex multiplySequence(CInstructionIndex baseindex, unsigned int number, unsigned int stride);
+        CInstructionIndex maxSequence(CInstructionIndex baseindex, unsigned int number, unsigned int stride);
+        CInstructionIndex minSequence(CInstructionIndex baseindex, unsigned int number, unsigned int stride);
+        CInstructionIndex blend(CInstructionIndex low, CInstructionIndex high, CInstructionIndex control);
+        CInstructionIndex select(CInstructionIndex low, CInstructionIndex high, CInstructionIndex control, CInstructionIndex threshold, CInstructionIndex falloff);
+        CInstructionIndex clamp(CInstructionIndex src, CInstructionIndex low, CInstructionIndex high);
+
+        CInstructionIndex cos(CInstructionIndex src);
+        CInstructionIndex sin(CInstructionIndex src);
+        CInstructionIndex tan(CInstructionIndex src);
+        CInstructionIndex acos(CInstructionIndex src);
+        CInstructionIndex asin(CInstructionIndex src);
+        CInstructionIndex atan(CInstructionIndex src);
+		
+		CInstructionIndex tiers(CInstructionIndex src, CInstructionIndex numtiers);
+		CInstructionIndex smoothTiers(CInstructionIndex src, CInstructionIndex numtiers);
+
+        CInstructionIndex x();
+        CInstructionIndex y();
+        CInstructionIndex z();
+        CInstructionIndex w();
+        CInstructionIndex u();
+        CInstructionIndex v();
+		
+		CInstructionIndex dx(CInstructionIndex src, CInstructionIndex spacing);
+		CInstructionIndex dy(CInstructionIndex src, CInstructionIndex spacing);
+		CInstructionIndex dz(CInstructionIndex src, CInstructionIndex spacing);
+		CInstructionIndex dw(CInstructionIndex src, CInstructionIndex spacing);
+		CInstructionIndex du(CInstructionIndex src, CInstructionIndex spacing);
+		CInstructionIndex dv(CInstructionIndex src, CInstructionIndex spacing);
+		
+		CInstructionIndex sigmoid(CInstructionIndex src);
+		CInstructionIndex sigmoid(CInstructionIndex src, CInstructionIndex center, CInstructionIndex ramp);
+
+		CInstructionIndex radial();
+		
+		// Patterns
+		CInstructionIndex hexTile(CInstructionIndex seed);
+		CInstructionIndex hexBump();
+		
+		CInstructionIndex color(SRGBA c);
+		CInstructionIndex color(float r, float g, float b, float a);
+		CInstructionIndex combineRGBA(CInstructionIndex r, CInstructionIndex g, CInstructionIndex b, CInstructionIndex a);
+
+        CInstructionIndex scaleOffset(CInstructionIndex src, double scale, double offset);
+
+        CInstructionIndex simpleFractalLayer(unsigned int basistype, CInstructionIndex interptypeindex, double layerscale, double layerfreq, unsigned int seed, bool rot=true,
+            double angle=0.5, double ax=0, double ay=0, double az=1);
+		CInstructionIndex simpleRidgedLayer(unsigned int basistype, CInstructionIndex interptypeindex, double layerscale, double layerfreq, unsigned int seed, bool rot=true,
+            double angle=0.5, double ax=0, double ay=0, double az=1);
+		CInstructionIndex simpleBillowLayer(unsigned int basistype, CInstructionIndex interptypeindex, double layerscale, double layerfreq, unsigned int seed, bool rot=true,
+            double angle=0.5, double ax=0, double ay=0, double az=1);
+			
+        CInstructionIndex simplefBm(unsigned int basistype, unsigned int interptype, unsigned int numoctaves, double frequency, unsigned int seed, bool rot=true);
+		CInstructionIndex simpleRidgedMultifractal(unsigned int basistype, unsigned int interptype, unsigned int numoctaves, double frequency, unsigned int seed, bool rot=true);
+		CInstructionIndex simpleBillow(unsigned int basistype, unsigned int interptype, unsigned int numoctaves, double frequency, unsigned int seed, bool rot=true);
+		
+		
+		InstructionListType *getKernel();
+		CInstructionIndex lastIndex();
+		CInstructionIndex nextIndex();
+		
+		CInstructionIndex getVar(const char *name);
+		void setVar(const char *name, double val);
+	};
+	
+	struct SRGBA
+	{
+		SRGBA();
+		SRGBA(int a);
+		SRGBA(const  SRGBA &tvec);
+		SRGBA(const float t1, const float t2, const float t3, const float t4);
+		~SRGBA();
+
+		float r;
+		float g;
+		float b;
+		float a;
+	};
+	
+	struct SVMOutput
+    {
+        double outfloat_;
+        SRGBA outrgba_;
+
+        SVMOutput();
+		~SVMOutput();
+    };
+	
+	class CNoiseExecutor
+    {
+    public:
+        CNoiseExecutor(CKernel &kernel);
+		~CNoiseExecutor();
+
+        SVMOutput evaluate(CCoordinate &coord);
+        SVMOutput evaluateAt(CCoordinate &coord, CInstructionIndex index);
+		
+		double evaluateScalar(double x, double y, CInstructionIndex idx);
+		double evaluateScalar(double x, double y, double z, CInstructionIndex idx);
+		double evaluateScalar(double x, double y, double z, double w, CInstructionIndex idx);
+		double evaluateScalar(double x, double y, double z, double w, double u, double v, CInstructionIndex idx);
+		
+		SRGBA evaluateColor(double x, double y, CInstructionIndex idx);
+		SRGBA evaluateColor(double x, double y, double z, CInstructionIndex idx);
+		SRGBA evaluateColor(double x, double y, double z, double w, CInstructionIndex idx);
+		SRGBA evaluateColor(double x, double y, double z, double w, double u, double v, CInstructionIndex idx);
+	};
+	
+	enum EMappingModes
+    {
+        SEAMLESS_NONE,
+        SEAMLESS_X,
+        SEAMLESS_Y,
+        SEAMLESS_Z,
+        SEAMLESS_XY,
+        SEAMLESS_XZ,
+        SEAMLESS_YZ,
+        SEAMLESS_XYZ
+    };
+
+	struct SMappingRanges
+    {
+		SMappingRanges();
+		SMappingRanges(SMappingRanges &rhs);
+        SMappingRanges(const anl::SMappingRanges &rhs);
+        SMappingRanges(double x0, double x1, double y0, double y1, double z0=0.0, double z1=1.0);
+		~SMappingRanges();
+		
+        double mapx0;
+		double mapy0;
+		double mapz0;
+		double  mapx1;
+		double mapy1;
+		double mapz1;
+        double loopx0;
+		double loopy0;
+		double loopz0;
+		double loopx1;
+		double loopy1;
+		double loopz1;
+    };
+	
+	class CExpressionBuilder
+	{
+	public:
+		CExpressionBuilder(CKernel &kernel);
+		~CExpressionBuilder();
+
+		CInstructionIndex eval(const char *expr);
+		CInstructionIndex evalAndStore(const char *expr);
+		void store(CInstructionIndex i);
+		void setRandomSeed(unsigned int seed);
+		void storeVar(const char *varname, CInstructionIndex i);
+		CInstructionIndex evalAndStoreVar(const char *varname, const char *expr);
+		CInstructionIndex retrieveVar(const char *varname);
+	};
+	
+
+class CArray2Dd
+{
+  CArray2Dd(int w, int h);
+  CArray2Dd();
+  ~CArray2Dd();
+  void resize(int w, int h);
+  void destroy();
+  int width();
+  int height();
+  void set(int x, int y, double v);
+  double get(int x, int y);
+  double get(float x, float y);
+  double getIndexed(unsigned c);
+  void fill(float v);
+  void copyFrom(CArray2Dd *b);
+  void addArray(CArray2Dd *b);
+  void subtractArray(CArray2Dd *b);
+  void multiplyArray(CArray2Dd *b);
+  void copyFromSub(CArray2Dd *b, int x, int y);
+  void addArraySub(CArray2Dd *b, int x, int y);
+  void subtractArraySub(CArray2Dd *b, int x, int y);
+  void multiplyArraySub(CArray2Dd *b, int x, int y);
+  void scale(float s);
+  double getMax();
+  double getMin();
+  void scaleToRange(float low, float high);
+  void wrapCoords(int &x, int &y);
+  void offset(int ox, int oy);
+  void flipVertical();
+  void flipHorizontal();
+  void blur(float,bool);
+  void subtractFilter(CArray2Dd *fil);
+  void addFilter(CArray2Dd *fil);
+  void scaleTo(CArray2Dd *i);
+};
+
+class CArray2Drgba
+{
+  CArray2Drgba(int w, int h);
+  CArray2Drgba();
+  ~CArray2Drgba();
+  void resize(int w, int h);
+  void destroy();
+  int width();
+  int height();
+  void set(int x, int y, SRGBA v);
+  SRGBA get(int x, int y);
+  SRGBA get(float x, float y);
+  SRGBA getIndexed(unsigned c);
+  void fill(SRGBA v);
+  void copyFrom(CArray2Drgba *b);
+  void addArray(CArray2Drgba *b);
+  void subtractArray(CArray2Drgba *b);
+  void multiplyArray(CArray2Drgba *b);
+  void copyFromSub(CArray2Drgba *b, int x, int y);
+  void addArraySub(CArray2Drgba *b, int x, int y);
+  void subtractArraySub(CArray2Drgba *b, int x, int y);
+  void multiplyArraySub(CArray2Drgba *b, int x, int y);
+  void scale(SRGBA s);
+  void wrapCoords(int &x, int &y);
+  void offset(int ox, int oy);
+  void flipVertical();
+  void flipHorizontal();
+  void blur(float,bool);
+};
+
+
+class CArray3Dd
+{
+	public:
+	CArray3Dd();
+	CArray3Dd(int w, int h, int d);
+	~CArray3Dd();
+
+	int width();
+	int height();
+	int depth();
+
+	void set(int x, int y, int z, double v);
+	double get(int x, int y, int z);
+	void resize(int w, int h, int d);
+};
+
+class CArray3Drgba
+{
+	public:
+	CArray3Drgba();
+	CArray3Drgba(int w, int h, int d);
+	~CArray3Drgba();
+
+	int width();
+	int height();
+	int depth();
+
+	void resize(int w, int h, int d);
+	void set(int x, int y, int z, SRGBA v);
+	anl::SRGBA get(int x, int y, int z);
+};
+
+void map2D(int seamlessmode, CArray2Dd &a, CKernel &k, SMappingRanges ranges, double z, CInstructionIndex at);
+void map2DNoZ(int seamlessmode, CArray2Dd &a, CKernel &k, SMappingRanges ranges, CInstructionIndex at);
+void map3D(int seamlessmode, CArray3Dd &a, CKernel &k, SMappingRanges ranges, CInstructionIndex index);
+
+void mapRGBA2D(int seamlessmode, CArray2Drgba &a, CKernel &k, SMappingRanges ranges, double z, CInstructionIndex at);
+void mapRGBA2DNoZ(int seamlessmode, CArray2Drgba &a, CKernel &k, SMappingRanges ranges, CInstructionIndex at);
+void mapRGBA3D(int seamlessmode, CArray3Drgba &a, CKernel &k, SMappingRanges ranges, CInstructionIndex index);
+
+void saveDoubleArray(const char *filename, CArray2Dd *array);
+void saveHeightmap(const char *filename, CArray2Dd *array);
+void saveRGBAArray(const char *filename, CArray2Drgba *array); 
+void loadDoubleArray(const char *filename, CArray2Dd *array);
+void loadRGBAArray(const char *filename, CArray2Drgba *array);
+	
+	
+void simpleErode(CArray2Dd &map, unsigned int numdrops, float power);
+void calcNormalMap(CArray2Dd *map, CArray2Drgba *bump, float spacing, bool normalize, bool wrap);
+void calcBumpMap(CArray2Dd *map, CArray2Dd *bump, float light[3], float spacing, bool wrap);

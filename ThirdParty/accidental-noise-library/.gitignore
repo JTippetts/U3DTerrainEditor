@@ -1,0 +1,10 @@
+build
+tolua++.exe
+tolua.exe
+Framework.exe
+*.a
+ThirdParty/oolua/file_generator.exe
+premake4.exe
+tolua++.exe
+Bindings/tolua++.exe
+Bindings/toluaexe.exe

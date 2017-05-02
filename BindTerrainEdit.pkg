@@ -1,0 +1,81 @@
+$#include "TerrainEdit.h"
+
+$using namespace Urho3D;
+$using namespace anl;
+
+Vector2 WorldToNormalized(Image *height, Terrain *terrain, Vector3 world);
+	Vector3 NormalizedToWorld(Image *height, Terrain *terrain, Vector2 normalized);
+	
+	void SetHeightValue(Image *height, int x, int y, float val);
+	float GetHeightValue(Image *height, int x, int y);
+	
+	void ApplyHeightBrush(Terrain *terrain, Image *height, Image *mask, float x, float z, float radius, float max, float power, float hardness, bool usemask, float dt);
+	void ApplyBlendBrush(Terrain *terrain, Image *height, Image *blend, Image *mask, float x, float z, float radius, float mx, float power, float hardness, int layer, bool usemask, float dt);
+	void ApplyBlendBrush8(Terrain *terrain, Image *height, Image *blend0, Image *blend1, Image *mask, float x, float z, float radius, float mx, float power, float hardness, int layer, bool usemask, float dt);
+	void ApplyMaskBrush(Terrain *terrain, Image *height, Image *mask, float x, float z, float radius, float mx, float power, float hardness, float dt);
+	void ApplySmoothBrush(Terrain *terrain, Image *height, Image *mask, float x, float z, float radius, float max, float power, float hardness, bool usemask, float dt);
+	void ApplySpeckleBrush(Terrain *terrain, Image *height, Image *color, Image *mask, float x, float z, float radius, float mx, float power, float hardness, Color c1, Color c2, bool usemask, float dt);
+	
+	void SetBrushCursorHeight(Terrain *terrain, CustomGeometry *brush, float groundx, float groundz);
+	
+	void InvertMask(Image *mask);
+	void RenderANLKernelToHeight(Image *height, Image *mask, CKernel *kernel, double lowRange=0, double highRange=1, bool useMask=false, bool invertMask=false);
+	
+	struct RasterVertex
+	{
+		float x_, y_;
+		float val_;
+		
+		RasterVertex();
+		RasterVertex(float x, float y, float val);
+		RasterVertex(const RasterVertex &rhs);
+		~RasterVertex();
+	};
+	
+	class RasterVertexList
+	{
+		RasterVertexList();
+        RasterVertexList(int size, RasterVertex value);
+		RasterVertexList(int size);
+        RasterVertexList(const RasterVertexList& a);
+        ~RasterVertexList();
+        inline int size();
+        inline int capacity();
+        inline int bytes();
+
+        void fill(RasterVertex val);
+
+        void swap(RasterVertexList& a);
+		RasterVertex &at(int i);
+        void resize(int width);
+        void reserve(int cap);
+        inline bool empty();
+        inline void push_back(const RasterVertex& value);
+        const RasterVertex& front() const;
+        const RasterVertex& back() const;
+	};
+	
+	
+	
+	void RasterizeTriangle(CArray2Dd *buffer, RasterVertex v1, RasterVertex v2, RasterVertex v3);
+	void RasterizeQuadStrip(CArray2Dd *buffer, RasterVertexList *strip);
+	void BlendHeightWithRasterizedBuffer(Image *height, CArray2Dd *buffer, CArray2Dd *blend, Image *mask=0, bool useMask=false, bool invertMask=false);
+	void BlendColorWithRasterizedBuffer(Image *img, CArray2Dd *buffer, Color endColor, Image *mask=0, bool useMask=false, bool invertMask=false);
+	void BlendRasterizedBuffer8(Image *img, Image *other, CArray2Dd *buffer, int layer, Image *mask=0, bool useMask=false, bool invertMask=false);
+	void BlendRasterizedBuffer8Max(Image *img, Image *other, CArray2Dd *buffer, int layer, Image *mask=0, bool useMask=false, bool invertMask=false);
+	void TessellateLineList(RasterVertexList *in, RasterVertexList *out, int steps);
+	void ApplyBedFunction(CArray2Dd *buffer, float hardness, bool quintic);
+	void BuildQuadStrip(RasterVertexList *in, RasterVertexList *out, float width);
+	void BuildQuadStripVarying(RasterVertexList *in, RasterVertexList *out, float startwidth, float endwidth);
+	void RenderANLKernelToBuffer(CArray2Dd *buffer, CKernel *kernel, float lowrange=0, float highrange=1);
+	void SetHeightFromRasterBuffer(Image *height, CArray2Dd *buffer, Image *mask=0, bool useMask=false, bool invertMask=false);
+	
+	void CopyImageInto(Image *dest, Image *src, int x, int y);
+	bool IsPowerOfTwo(int n);
+	Image* GetNextImageLevel(Image *i);
+	void ExtractLayerToBuffer(Image *blend1, Image *blend2, CArray2Dd *buffer, int layer);
+	float GetLayerBlend(Image *blend1, Image *blend2, int x, int y, int layer);
+	void SetLayerBlend(Image *blend1, Image *blend2, int x, int y, int layer, float v);
+	
+	bool LoadImage(Context *c, Image *i, const char *fname);
+	void DistortBuffer(CArray2Dd *buffer, CArray2Dd *xd, CArray2Dd *yd, double power);

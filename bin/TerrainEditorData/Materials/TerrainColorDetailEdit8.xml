@@ -1,0 +1,7 @@
+<material>
+    <technique name="Techniques/TerrainColorDetail8.xml" />
+    <texture unit="2" name="Textures/composite1_normal.png" />
+    <texture unit="3" name="Textures/composite2_normal.png" />
+    <parameter name="MatSpecColor" value="0.5 0.5 0.5 16" />
+    <parameter name="DetailTiling" value="32 32" />
+</material>

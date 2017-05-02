@@ -1,0 +1,164 @@
+<?xml version="1.0"?>
+<element type="Window">
+	<attribute name="Position" value="800 450" />
+	<attribute name="Size" value="227 184" />
+	<attribute name="Layout Mode" value="Vertical" />
+	<attribute name="Layout Border" value="6 6 6 6" />
+	<attribute name="Is Movable" value="true" />
+	<element type="Text">
+		<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+		<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+		<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+		<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+		<attribute name="Font Size" value="12" />
+		<attribute name="Text" value="New Terrain" />
+		<attribute name="Text Alignment" value="Center" />
+	</element>
+	<element type="Window">
+		<attribute name="Layout Mode" value="Horizontal" />
+		<element type="Window">
+			<attribute name="Layout Mode" value="Vertical" />
+			<attribute name="Layout Spacing" value="6" />
+			<attribute name="Layout Border" value="8 8 8 8" />
+			<element type="Text">
+				<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Font Size" value="10" />
+				<attribute name="Text" value="Heightmap Width:" />
+			</element>
+			<element type="Text">
+				<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Font Size" value="10" />
+				<attribute name="Text" value="Heightmap Height:" />
+			</element>
+			<element type="Text">
+				<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Font Size" value="10" />
+				<attribute name="Text" value="Blendmap Width:" />
+			</element>
+			<element type="Text">
+				<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Font Size" value="10" />
+				<attribute name="Text" value="Blendmap Height" />
+			</element>
+			<element type="Text">
+				<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Font Size" value="10" />
+				<attribute name="Text" value="Spacing:" />
+			</element>
+			<element type="Text">
+				<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Font Size" value="10" />
+				<attribute name="Text" value="Max height:" />
+			</element>
+		</element>
+		<element type="Window">
+			<attribute name="Layout Mode" value="Vertical" />
+			<attribute name="Layout Spacing" value="6" />
+			<attribute name="Layout Border" value="8 8 8 8" />
+			<element type="LineEdit">
+				<attribute name="Name" value="HeightmapWidth" />
+				<attribute name="Min Size" value="64 0" />
+				<element type="Text" internal="true" style="none">
+					<attribute name="Top Left Color" value="0.9 1 0.9 1" />
+					<attribute name="Top Right Color" value="0.9 1 0.9 1" />
+					<attribute name="Bottom Left Color" value="0.9 1 0.9 1" />
+					<attribute name="Bottom Right Color" value="0.9 1 0.9 1" />
+				</element>
+				<element type="BorderImage" internal="true" style="none">
+					<attribute name="Size" value="4 15" />
+				</element>
+			</element>
+			<element type="LineEdit">
+				<attribute name="Name" value="HeightmapHeight" />
+				<attribute name="Min Size" value="64 0" />
+				<element type="Text" internal="true" style="none">
+					<attribute name="Top Left Color" value="0.9 1 0.9 1" />
+					<attribute name="Top Right Color" value="0.9 1 0.9 1" />
+					<attribute name="Bottom Left Color" value="0.9 1 0.9 1" />
+					<attribute name="Bottom Right Color" value="0.9 1 0.9 1" />
+				</element>
+				<element type="BorderImage" internal="true" style="none">
+					<attribute name="Size" value="4 15" />
+				</element>
+			</element>
+			<element type="LineEdit">
+				<attribute name="Name" value="BlendmapWidth" />
+				<element type="Text" internal="true" style="none">
+					<attribute name="Top Left Color" value="0.9 1 0.9 1" />
+					<attribute name="Top Right Color" value="0.9 1 0.9 1" />
+					<attribute name="Bottom Left Color" value="0.9 1 0.9 1" />
+					<attribute name="Bottom Right Color" value="0.9 1 0.9 1" />
+				</element>
+				<element type="BorderImage" internal="true" style="none">
+					<attribute name="Size" value="4 15" />
+				</element>
+			</element>
+			<element type="LineEdit">
+				<attribute name="Name" value="BlendmapHeight" />
+				<element type="Text" internal="true" style="none">
+					<attribute name="Top Left Color" value="0.9 1 0.9 1" />
+					<attribute name="Top Right Color" value="0.9 1 0.9 1" />
+					<attribute name="Bottom Left Color" value="0.9 1 0.9 1" />
+					<attribute name="Bottom Right Color" value="0.9 1 0.9 1" />
+				</element>
+				<element type="BorderImage" internal="true" style="none">
+					<attribute name="Size" value="4 15" />
+				</element>
+			</element>
+			<element type="LineEdit">
+				<attribute name="Name" value="Spacing" />
+				<element type="Text" internal="true" style="none">
+					<attribute name="Top Left Color" value="0.9 1 0.9 1" />
+					<attribute name="Top Right Color" value="0.9 1 0.9 1" />
+					<attribute name="Bottom Left Color" value="0.9 1 0.9 1" />
+					<attribute name="Bottom Right Color" value="0.9 1 0.9 1" />
+				</element>
+				<element type="BorderImage" internal="true" style="none">
+					<attribute name="Size" value="4 15" />
+				</element>
+			</element>
+			<element type="LineEdit">
+				<attribute name="Name" value="MaxHeight" />
+				<element type="Text" internal="true" style="none">
+					<attribute name="Top Left Color" value="0.9 1 0.9 1" />
+					<attribute name="Top Right Color" value="0.9 1 0.9 1" />
+					<attribute name="Bottom Left Color" value="0.9 1 0.9 1" />
+					<attribute name="Bottom Right Color" value="0.9 1 0.9 1" />
+				</element>
+				<element type="BorderImage" internal="true" style="none">
+					<attribute name="Size" value="4 15" />
+				</element>
+			</element>
+		</element>
+	</element>
+	<element type="Button">
+		<attribute name="Name" value="CreateButton" />
+		<attribute name="Layout Mode" value="Vertical" />
+		<element type="Text">
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Text" value="Create" />
+			<attribute name="Text Alignment" value="Center" />
+		</element>
+	</element>
+</element>

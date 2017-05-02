@@ -1,0 +1,10 @@
+<texturearray>
+	<layer name="Textures/pebbles.png" />
+	<layer name="Textures/sand.png" />
+	<layer name="Textures/grass.png" />
+	<layer name="Textures/pebbles2_diff.png" />
+	<layer name="Textures/bigrocks1_diffdisp.png" />
+	<layer name="Textures/cliff.png" />
+	<layer name="Textures/rockface1.png" />
+	<layer name="Textures/cliff2.png" />
+</texturearray>
