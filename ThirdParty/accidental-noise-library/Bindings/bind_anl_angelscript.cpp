@@ -122,6 +122,8 @@ static CInstructionIndex CExpressionBuilderRetrieveVar(String s, CExpressionBuil
 	std::string st(s.CString());
 	return eb->retrieveVar(st);
 }
+#endif
+
 
 static void ConstructSMappingRanges(SMappingRanges *s)
 {
@@ -148,6 +150,11 @@ static void ConstructCArray2Dd(CArray2Dd *a)
 	new(a) CArray2Dd();
 }
 
+static void DestructCArray2Dd(CArray2Dd *a)
+{
+	a->~CArray2Dd();
+}
+
 static void ConstructCArray2DdSize(int w, int h, CArray2Dd *a)
 {
 	new(a) CArray2Dd(w,h);
@@ -158,11 +165,169 @@ static void ConstructCArray2Drgba(CArray2Drgba *a)
 	new(a) CArray2Drgba();
 }
 
+static void DestructCArray2Drgba(CArray2Drgba *a)
+{
+	a->~CArray2Drgba();
+}
+
 static void ConstructCArray2DrgbaSize(int w, int h, CArray2Drgba *a)
 {
 	new(a) CArray2Drgba(w,h);
 }
+
+static void ConstructCArray3Dd(CArray3Dd *a)
+{
+	new(a) CArray3Dd();
+}
+
+static void DestructCArray3Dd(CArray3Dd *a)
+{
+	a->~CArray3Dd();
+}
+
+static void ConstructCArray3DdSize(int w, int h, int d, CArray3Dd *a)
+{
+	new(a) CArray3Dd(w,h,d);
+}
+
+static void ConstructCArray3Drgba(CArray3Drgba *a)
+{
+	new(a) CArray3Drgba();
+}
+
+static void DestructCArray3Drgba(CArray3Drgba *a)
+{
+	a->~CArray3Drgba();
+}
+
+static void ConstructCArray3DrgbaSize(int w, int h, int d, CArray3Drgba *a)
+{
+	new(a) CArray3Drgba(w,h,d);
+}
+
+#ifdef ANL_ANGELSCRIPT_BINDSTDSTRING
+	static void saveDoubleArrayString(std::string filename, CArray2Dd &a)
+	{
+		saveDoubleArray(filename,&a);
+	}
+	static void saveRGBAArrayString(std::string filename, CArray2Drgba &a)
+	{
+		saveRGBAArray(filename,&a);
+	}
+	static void loadDoubleArrayString(std::string filename, CArray2Dd &a)
+	{
+		loadDoubleArray(filename,&a);
+	}
+	static void loadRGBAArrayString(std::string filename, CArray2Drgba &a)
+	{
+		loadRGBAArray(filename,&a);
+	}
+#else
+	static void saveDoubleArrayString(String filename, CArray2Dd &a)
+	{
+		std::string s(filename.CString());
+		saveDoubleArray(s,&a);
+	}
+	static void saveRGBAArrayString(String filename, CArray2Drgba &a)
+	{
+		std::string s(filename.CString());
+		saveRGBAArray(s,&a);
+	}
+	static void loadDoubleArrayString(String filename, CArray2Dd &a)
+	{
+		std::string s(filename.CString());
+		loadDoubleArray(s,&a);
+	}
+	static void loadRGBAArrayString(String filename, CArray2Drgba &a)
+	{
+		std::string s(filename.CString());
+		loadRGBAArray(s,&a);
+	}
 #endif
+
+static void CArray2DdCopyFrom(CArray2Dd &b, CArray2Dd *d)
+{
+	d->copyFrom(&b);
+}
+static void CArray2DdAddArray(CArray2Dd &b, CArray2Dd *d)
+{
+	d->addArray(&b);
+}
+static void CArray2DdSubtractArray(CArray2Dd &b, CArray2Dd *d)
+{
+	d->subtractArray(&b);
+}
+static void CArray2DdMultiplyArray(CArray2Dd &b, CArray2Dd *d)
+{
+	d->multiplyArray(&b);
+}
+static void CArray2DdCopyFromSub(CArray2Dd &b, int x, int y, CArray2Dd *d)
+{
+	d->copyFromSub(&b,x,y);
+}
+static void CArray2DdAddArraySub(CArray2Dd &b, int x, int y, CArray2Dd *d)
+{
+	d->addArraySub(&b,x,y);
+}
+static void CArray2DdSubtractArraySub(CArray2Dd &b, int x, int y, CArray2Dd *d)
+{
+	d->subtractArraySub(&b,x,y);
+}
+static void CArray2DdMultiplyArraySub(CArray2Dd &b, int x, int y, CArray2Dd *d)
+{
+	d->multiplyArraySub(&b,x,y);
+}
+static void CArray2DdScaleTo(CArray2Dd &b, CArray2Dd *d)
+{
+	d->scaleTo(&b);
+}
+static void CArray2DdAddFilter(CArray2Dd &b, CArray2Dd *d)
+{
+	d->addFilter(&b);
+}
+static void CArray2DdSubtractFilter(CArray2Dd &b, CArray2Dd *d)
+{
+	d->subtractFilter(&b);
+}
+
+
+
+static void CArray2DrgbaCopyFrom(CArray2Drgba &b, CArray2Drgba *d)
+{
+	d->copyFrom(&b);
+}
+static void CArray2DrgbaAddArray(CArray2Drgba &b, CArray2Drgba *d)
+{
+	d->addArray(&b);
+}
+static void CArray2DrgbaSubtractArray(CArray2Drgba &b, CArray2Drgba *d)
+{
+	d->subtractArray(&b);
+}
+static void CArray2DrgbaMultiplyArray(CArray2Drgba &b, CArray2Drgba *d)
+{
+	d->multiplyArray(&b);
+}
+static void CArray2DrgbaCopyFromSub(CArray2Drgba &b, int x, int y, CArray2Drgba *d)
+{
+	d->copyFromSub(&b,x,y);
+}
+static void CArray2DrgbaAddArraySub(CArray2Drgba &b, int x, int y, CArray2Drgba *d)
+{
+	d->addArraySub(&b,x,y);
+}
+static void CArray2DrgbaSubtractArraySub(CArray2Drgba &b, int x, int y, CArray2Drgba *d)
+{
+	d->subtractArraySub(&b,x,y);
+}
+static void CArray2DrgbaMultiplyArraySub(CArray2Drgba &b, int x, int y, CArray2Drgba *d)
+{
+	d->multiplyArraySub(&b,x,y);
+}
+static void CArray2DrgbaScaleTo(CArray2Drgba &b, CArray2Drgba *d)
+{
+	d->scaleTo(&b);
+}
 
 
 void RegisterANL(asIScriptEngine *as)
@@ -203,7 +368,6 @@ void RegisterANL(asIScriptEngine *as)
 	
 	// CInstructionIndex
 	
-	//as->RegisterObjectBehaviour("CInstructionIndex", asBEHAVE_CONSTRUCT, "void f()", asFUNCTION(ConstructCInstructionIndex), asCALL_CDECL_OBJLAST);
 	as->RegisterObjectBehaviour("CInstructionIndex", asBEHAVE_CONSTRUCT, "void f(const CInstructionIndex &)", asFUNCTION(ConstructCInstructionIndexCopy), asCALL_CDECL_OBJLAST);
 	as->RegisterObjectBehaviour("CInstructionIndex", asBEHAVE_DESTRUCT, "void f()", asFUNCTION(DestructCInstructionIndex), asCALL_CDECL_OBJLAST);
 	
@@ -243,6 +407,7 @@ void RegisterANL(asIScriptEngine *as)
 	as->RegisterObjectType("CArray2Dd", sizeof(CArray2Dd), asOBJ_VALUE | asOBJ_APP_CLASS);
 	as->RegisterObjectBehaviour("CArray2Dd", asBEHAVE_CONSTRUCT, "void f()", asFUNCTION(ConstructCArray2Dd), asCALL_CDECL_OBJLAST);
 	as->RegisterObjectBehaviour("CArray2Dd", asBEHAVE_CONSTRUCT, "void f(int,int)", asFUNCTION(ConstructCArray2DdSize), asCALL_CDECL_OBJLAST);
+	as->RegisterObjectBehaviour("CArray2Dd", asBEHAVE_DESTRUCT, "void f()", asFUNCTION(DestructCArray2Dd), asCALL_CDECL_OBJLAST);
 	as->RegisterObjectMethod("CArray2Dd", "void resize(int,int)", asMETHOD(CArray2Dd,resize), asCALL_THISCALL);
 	as->RegisterObjectMethod("CArray2Dd", "int width()", asMETHOD(CArray2Dd,width), asCALL_THISCALL);
 	as->RegisterObjectMethod("CArray2Dd", "int height()", asMETHOD(CArray2Dd,height), asCALL_THISCALL);
@@ -251,29 +416,30 @@ void RegisterANL(asIScriptEngine *as)
 	as->RegisterObjectMethod("CArray2Dd", "double get(float,float)", asMETHODPR(CArray2Dd,get,(float,float),double), asCALL_THISCALL);
 	as->RegisterObjectMethod("CArray2Dd", "double getIndexed(int)", asMETHOD(CArray2Dd,getIndexed), asCALL_THISCALL);
 	as->RegisterObjectMethod("CArray2Dd", "void fill(double)", asMETHOD(CArray2Dd,fill), asCALL_THISCALL);
-	as->RegisterObjectMethod("CArray2Dd", "void copyFrom(CArray2Dd *)", asMETHOD(CArray2Dd,copyFrom), asCALL_THISCALL);
-	as->RegisterObjectMethod("CArray2Dd", "void addArray(CArray2Dd *)", asMETHOD(CArray2Dd,addArray), asCALL_THISCALL);
-	as->RegisterObjectMethod("CArray2Dd", "void subtractArray(CArray2Dd *)", asMETHOD(CArray2Dd,subtractArray), asCALL_THISCALL);
-	as->RegisterObjectMethod("CArray2Dd", "void multiplyArray(CArray2Dd *)", asMETHOD(CArray2Dd,multiplyArray), asCALL_THISCALL);
-	as->RegisterObjectMethod("CArray2Dd", "void copyFromSub(CArray2Dd *, int, int)", asMETHOD(CArray2Dd,copyFromSub), asCALL_THISCALL);
-	as->RegisterObjectMethod("CArray2Dd", "void addArraySub(CArray2Dd *, int, int)", asMETHOD(CArray2Dd,addArraySub), asCALL_THISCALL);
-	as->RegisterObjectMethod("CArray2Dd", "void subtractArraySub(CArray2Dd *, int, int)", asMETHOD(CArray2Dd,subtractArraySub), asCALL_THISCALL);
-	as->RegisterObjectMethod("CArray2Dd", "void multiplyArraySub(CArray2Dd *, int, int)", asMETHOD(CArray2Dd,multiplyArraySub), asCALL_THISCALL);
+	as->RegisterObjectMethod("CArray2Dd", "void copyFrom(CArray2Dd &)", asFUNCTION(CArray2DdCopyFrom), asCALL_CDECL_OBJLAST);
+	as->RegisterObjectMethod("CArray2Dd", "void addArray(CArray2Dd &)", asFUNCTION(CArray2DdAddArray), asCALL_CDECL_OBJLAST);
+	as->RegisterObjectMethod("CArray2Dd", "void subtractArray(CArray2Dd &)", asFUNCTION(CArray2DdSubtractArray), asCALL_CDECL_OBJLAST);
+	as->RegisterObjectMethod("CArray2Dd", "void multiplyArray(CArray2Dd &)", asFUNCTION(CArray2DdMultiplyArray), asCALL_CDECL_OBJLAST);
+	as->RegisterObjectMethod("CArray2Dd", "void copyFromSub(CArray2Dd &, int, int)", asFUNCTION(CArray2DdCopyFromSub), asCALL_CDECL_OBJLAST);
+	as->RegisterObjectMethod("CArray2Dd", "void addArraySub(CArray2Dd &, int, int)", asFUNCTION(CArray2DdAddArraySub), asCALL_CDECL_OBJLAST);
+	as->RegisterObjectMethod("CArray2Dd", "void subtractArraySub(CArray2Dd &, int, int)", asFUNCTION(CArray2DdSubtractArraySub), asCALL_CDECL_OBJLAST);
+	as->RegisterObjectMethod("CArray2Dd", "void multiplyArraySub(CArray2Dd &, int, int)", asFUNCTION(CArray2DdMultiplyArraySub), asCALL_CDECL_OBJLAST);
 	as->RegisterObjectMethod("CArray2Dd", "void scale(float)", asMETHOD(CArray2Dd,scale), asCALL_THISCALL);
 	as->RegisterObjectMethod("CArray2Dd", "double getMax()", asMETHOD(CArray2Dd,getMax), asCALL_THISCALL);
 	as->RegisterObjectMethod("CArray2Dd", "double getMin()", asMETHOD(CArray2Dd,getMin), asCALL_THISCALL);
-	as->RegisterObjectMethod("CArray2Dd", "void scaleToRange(float, float)", asMETHOD(CArray2Dd,scaleToRange), asCALL_THISCALL);
+	as->RegisterObjectMethod("CArray2Dd", "void scaleToRange(double,double)", asMETHOD(CArray2Dd,scaleToRange), asCALL_THISCALL);
 	as->RegisterObjectMethod("CArray2Dd", "void offset(int,int)", asMETHOD(CArray2Dd,offset), asCALL_THISCALL);
 	as->RegisterObjectMethod("CArray2Dd", "void flipVertical()", asMETHOD(CArray2Dd,flipVertical), asCALL_THISCALL);
 	as->RegisterObjectMethod("CArray2Dd", "void flipHorizontal()", asMETHOD(CArray2Dd,flipHorizontal), asCALL_THISCALL);
 	as->RegisterObjectMethod("CArray2Dd", "void blur(float,bool)", asMETHOD(CArray2Dd,blur), asCALL_THISCALL);
-	as->RegisterObjectMethod("CArray2Dd", "void subtractFilter(CArray2Dd *)", asMETHOD(CArray2Dd,subtractFilter), asCALL_THISCALL);
-	as->RegisterObjectMethod("CArray2Dd", "void addFilter(CArray2Dd *)", asMETHOD(CArray2Dd,addFilter), asCALL_THISCALL);
-	as->RegisterObjectMethod("CArray2Dd", "void scaleTo(CArray2Dd *)", asMETHOD(CArray2Dd,scaleTo), asCALL_THISCALL);
+	as->RegisterObjectMethod("CArray2Dd", "void subtractFilter(CArray2Dd &)", asFUNCTION(CArray2DdSubtractFilter), asCALL_CDECL_OBJLAST);
+	as->RegisterObjectMethod("CArray2Dd", "void addFilter(CArray2Dd &)", asFUNCTION(CArray2DdAddFilter), asCALL_CDECL_OBJLAST);
+	as->RegisterObjectMethod("CArray2Dd", "void scaleTo(CArray2Dd &)", asFUNCTION(CArray2DdScaleTo), asCALL_CDECL_OBJLAST);
 	
 	as->RegisterObjectType("CArray2Drgba", sizeof(CArray2Drgba), asOBJ_VALUE | asOBJ_APP_CLASS);
 	as->RegisterObjectBehaviour("CArray2Drgba", asBEHAVE_CONSTRUCT, "void f()", asFUNCTION(ConstructCArray2Drgba), asCALL_CDECL_OBJLAST);
 	as->RegisterObjectBehaviour("CArray2Drgba", asBEHAVE_CONSTRUCT, "void f(int,int)", asFUNCTION(ConstructCArray2DrgbaSize), asCALL_CDECL_OBJLAST);
+	as->RegisterObjectBehaviour("CArray2Drgba", asBEHAVE_DESTRUCT, "void f()", asFUNCTION(DestructCArray2Drgba), asCALL_CDECL_OBJLAST);
 	as->RegisterObjectMethod("CArray2Drgba", "void resize(int,int)", asMETHOD(CArray2Drgba,resize), asCALL_THISCALL);
 	as->RegisterObjectMethod("CArray2Drgba", "int width()", asMETHOD(CArray2Drgba,width), asCALL_THISCALL);
 	as->RegisterObjectMethod("CArray2Drgba", "int height()", asMETHOD(CArray2Drgba,height), asCALL_THISCALL);
@@ -282,20 +448,44 @@ void RegisterANL(asIScriptEngine *as)
 	as->RegisterObjectMethod("CArray2Drgba", "SRGBA get(float,float)", asMETHODPR(CArray2Drgba,get,(float,float),SRGBA), asCALL_THISCALL);
 	as->RegisterObjectMethod("CArray2Drgba", "SRGBA getIndexed(int)", asMETHOD(CArray2Drgba,getIndexed), asCALL_THISCALL);
 	as->RegisterObjectMethod("CArray2Drgba", "void fill(SRGBA)", asMETHOD(CArray2Drgba,fill), asCALL_THISCALL);
-	as->RegisterObjectMethod("CArray2Drgba", "void copyFrom(CArray2Drgba *)", asMETHOD(CArray2Drgba,copyFrom), asCALL_THISCALL);
-	as->RegisterObjectMethod("CArray2Drgba", "void addArray(CArray2Drgba *)", asMETHOD(CArray2Drgba,addArray), asCALL_THISCALL);
-	as->RegisterObjectMethod("CArray2Drgba", "void subtractArray(CArray2Drgba *)", asMETHOD(CArray2Drgba,subtractArray), asCALL_THISCALL);
-	as->RegisterObjectMethod("CArray2Drgba", "void multiplyArray(CArray2Drgba *)", asMETHOD(CArray2Drgba,multiplyArray), asCALL_THISCALL);
-	as->RegisterObjectMethod("CArray2Drgba", "void copyFromSub(CArray2Drgba *, int, int)", asMETHOD(CArray2Drgba,copyFromSub), asCALL_THISCALL);
-	as->RegisterObjectMethod("CArray2Drgba", "void addArraySub(CArray2Drgba *, int, int)", asMETHOD(CArray2Drgba,addArraySub), asCALL_THISCALL);
-	as->RegisterObjectMethod("CArray2Drgba", "void subtractArraySub(CArray2Drgba *, int, int)", asMETHOD(CArray2Drgba,subtractArraySub), asCALL_THISCALL);
-	as->RegisterObjectMethod("CArray2Drgba", "void multiplyArraySub(CArray2Drgba *, int, int)", asMETHOD(CArray2Drgba,multiplyArraySub), asCALL_THISCALL);
+	as->RegisterObjectMethod("CArray2Drgba", "void copyFrom(CArray2Drgba &)", asFUNCTION(CArray2DrgbaCopyFrom), asCALL_CDECL_OBJLAST);
+	as->RegisterObjectMethod("CArray2Drgba", "void addArray(CArray2Drgba &)", asFUNCTION(CArray2DrgbaAddArray), asCALL_CDECL_OBJLAST);
+	as->RegisterObjectMethod("CArray2Drgba", "void subtractArray(CArray2Drgba &)", asFUNCTION(CArray2DrgbaSubtractArray), asCALL_CDECL_OBJLAST);
+	as->RegisterObjectMethod("CArray2Drgba", "void multiplyArray(CArray2Drgba &)", asFUNCTION(CArray2DrgbaMultiplyArray), asCALL_CDECL_OBJLAST);
+	as->RegisterObjectMethod("CArray2Drgba", "void copyFromSub(CArray2Drgba &, int, int)", asFUNCTION(CArray2DrgbaCopyFromSub), asCALL_CDECL_OBJLAST);
+	as->RegisterObjectMethod("CArray2Drgba", "void addArraySub(CArray2Drgba &, int, int)", asFUNCTION(CArray2DrgbaAddArraySub), asCALL_CDECL_OBJLAST);
+	as->RegisterObjectMethod("CArray2Drgba", "void subtractArraySub(CArray2Drgba &, int, int)", asFUNCTION(CArray2DrgbaSubtractArraySub), asCALL_CDECL_OBJLAST);
+	as->RegisterObjectMethod("CArray2Drgba", "void multiplyArraySub(CArray2Drgba &, int, int)", asFUNCTION(CArray2DrgbaMultiplyArraySub), asCALL_CDECL_OBJLAST);
 	as->RegisterObjectMethod("CArray2Drgba", "void scale(SRGBA)", asMETHOD(CArray2Drgba,scale), asCALL_THISCALL);
 	as->RegisterObjectMethod("CArray2Drgba", "void offset(int,int)", asMETHOD(CArray2Drgba,offset), asCALL_THISCALL);
 	as->RegisterObjectMethod("CArray2Drgba", "void flipVertical()", asMETHOD(CArray2Drgba,flipVertical), asCALL_THISCALL);
 	as->RegisterObjectMethod("CArray2Drgba", "void flipHorizontal()", asMETHOD(CArray2Drgba,flipHorizontal), asCALL_THISCALL);
 	as->RegisterObjectMethod("CArray2Drgba", "void blur(float,bool)", asMETHOD(CArray2Drgba,blur), asCALL_THISCALL);
-	as->RegisterObjectMethod("CArray2Drgba", "void scaleTo(CArray2Drgba *)", asMETHOD(CArray2Drgba,scaleTo), asCALL_THISCALL);
+	as->RegisterObjectMethod("CArray2Drgba", "void scaleTo(CArray2Drgba &)", asFUNCTION(CArray2DrgbaScaleTo), asCALL_CDECL_OBJLAST);
+	
+	// CArray3Dd
+	
+	as->RegisterObjectType("CArray3Dd", sizeof(CArray3Dd), asOBJ_VALUE | asOBJ_APP_CLASS);
+	as->RegisterObjectBehaviour("CArray3Dd", asBEHAVE_CONSTRUCT, "void f()", asFUNCTION(ConstructCArray3Dd), asCALL_CDECL_OBJLAST);
+	as->RegisterObjectBehaviour("CArray3Dd", asBEHAVE_CONSTRUCT, "void f(int,int,int)", asFUNCTION(ConstructCArray3DdSize), asCALL_CDECL_OBJLAST);
+	as->RegisterObjectBehaviour("CArray3Dd", asBEHAVE_DESTRUCT, "void f()", asFUNCTION(DestructCArray3Dd), asCALL_CDECL_OBJLAST);
+	as->RegisterObjectMethod("CArray3Dd", "int width()", asMETHOD(CArray3Dd,width), asCALL_THISCALL);
+	as->RegisterObjectMethod("CArray3Dd", "int height()", asMETHOD(CArray3Dd,height), asCALL_THISCALL);
+	as->RegisterObjectMethod("CArray3Dd", "int depth()", asMETHOD(CArray3Dd,depth), asCALL_THISCALL);
+	as->RegisterObjectMethod("CArray3Dd", "void resize(int,int,int)", asMETHOD(CArray3Dd,resize), asCALL_THISCALL);
+	as->RegisterObjectMethod("CArray3Dd", "void set(int,int,int,double)", asMETHOD(CArray3Dd,set), asCALL_THISCALL);
+	as->RegisterObjectMethod("CArray3Dd", "double get(int,int,int)", asMETHOD(CArray3Dd,get), asCALL_THISCALL);
+	
+	as->RegisterObjectType("CArray3Drgba", sizeof(CArray3Drgba), asOBJ_VALUE | asOBJ_APP_CLASS);
+	as->RegisterObjectBehaviour("CArray3Drgba", asBEHAVE_CONSTRUCT, "void f()", asFUNCTION(ConstructCArray3Drgba), asCALL_CDECL_OBJLAST);
+	as->RegisterObjectBehaviour("CArray3Drgba", asBEHAVE_CONSTRUCT, "void f(int,int,int)", asFUNCTION(ConstructCArray3DrgbaSize), asCALL_CDECL_OBJLAST);
+	as->RegisterObjectBehaviour("CArray3Drgba", asBEHAVE_DESTRUCT, "void f()", asFUNCTION(DestructCArray3Drgba), asCALL_CDECL_OBJLAST);
+	as->RegisterObjectMethod("CArray3Drgba", "int width()", asMETHOD(CArray3Drgba,width), asCALL_THISCALL);
+	as->RegisterObjectMethod("CArray3Drgba", "int height()", asMETHOD(CArray3Drgba,height), asCALL_THISCALL);
+	as->RegisterObjectMethod("CArray3Drgba", "int depth()", asMETHOD(CArray3Drgba,depth), asCALL_THISCALL);
+	as->RegisterObjectMethod("CArray3Drgba", "void resize(int,int,int)", asMETHOD(CArray3Drgba,resize), asCALL_THISCALL);
+	as->RegisterObjectMethod("CArray3Drgba", "void set(int,int,int,SRGBA)", asMETHOD(CArray3Drgba,set), asCALL_THISCALL);
+	as->RegisterObjectMethod("CArray3Drgba", "SRGBA get(int,int,int)", asMETHOD(CArray3Drgba,get), asCALL_THISCALL);
 	
 	
 	// CKernel
@@ -307,7 +497,7 @@ void RegisterANL(asIScriptEngine *as)
     
 	as->RegisterObjectMethod("CKernel", "CInstructionIndex pi()", asMETHOD(CKernel, pi), asCALL_THISCALL);
 	
-	#ifdef ANL_ANGLESCRIPT_BINDSTDSTRING
+	#ifdef ANL_ANGELSCRIPT_BINDSTDSTRING
 		as->RegisterObjectMethod("CKernel", "void setVar(std::string, double)", asMETHOD(CKernel, setVar), asCALL_THISCALL);
 		as->RegisterObjectMethod("CKernel", "CInstructionIndex getVar(std::string)", asMETHOD(CKernel, getVar), asCALL_THISCALL);
 	#else
@@ -337,7 +527,7 @@ void RegisterANL(asIScriptEngine *as)
 	as->RegisterObjectBehaviour("CExpressionBuilder", asBEHAVE_CONSTRUCT, "void f(CKernel &i)", asFUNCTION(ConstructCExpressionBuilder), asCALL_CDECL_OBJLAST);
 	as->RegisterObjectBehaviour("CExpressionBuilder", asBEHAVE_DESTRUCT, "void f()", asFUNCTION(DestructCExpressionBuilder), asCALL_CDECL_OBJLAST);
 	
-	#ifdef ANL_ANGLESCRIPT_BINDSTDSTRING
+	#ifdef ANL_ANGELSCRIPT_BINDSTDSTRING
 		as->RegisterObjectMethod("CExpressionBuilder", "CInstructionIndex eval(std::string &)", asMETHOD(CExpressionBuilder, eval), asCALL_THISCALL);
 		as->RegisterObjectMethod("CExpressionBuilder", "CInstructionIndex evalAndStore(const std::string &)", asMETHOD(CExpressionBuilder, evalAndStore), asCALL_THISCALL);
 		as->RegisterObjectMethod("CExpressionBuilder", "CInstructionIndex evalAndStoreVar(const std::string&, const std::string &)", asMETHOD(CExpressionBuilder, evalAndStoreVar), asCALL_THISCALL);
@@ -353,6 +543,27 @@ void RegisterANL(asIScriptEngine *as)
 	
 	as->RegisterObjectMethod("CExpressionBuilder", "void store(CInstructionIndex)", asMETHOD(CExpressionBuilder,store), asCALL_THISCALL);
 	as->RegisterObjectMethod("CExpressionBuilder", "void setRandomSeed(int)", asMETHOD(CExpressionBuilder,setRandomSeed), asCALL_THISCALL);
+	
+	// Mapping
+	as->RegisterGlobalFunction("void map2D(int, CArray2Dd &, CKernel &, SMappingRanges, double, CInstructionIndex)", asFUNCTION(map2D), asCALL_CDECL);
+	as->RegisterGlobalFunction("void map2DNoZ(int, CArray2Dd &, CKernel &, SMappingRanges, CInstructionIndex)", asFUNCTION(map2DNoZ), asCALL_CDECL);
+	as->RegisterGlobalFunction("void map3D(int, CArray3Dd &, CKernel &, SMappingRanges, CInstructionIndex)", asFUNCTION(map3D), asCALL_CDECL);
+	
+	as->RegisterGlobalFunction("void mapRGBA2D(int, CArray2Drgba &, CKernel &, SMappingRanges, double, CInstructionIndex)", asFUNCTION(mapRGBA2D), asCALL_CDECL);
+	as->RegisterGlobalFunction("void mapRGBA2DNoZ(int, CArray2Drgba &, CKernel &, SMappingRanges, CInstructionIndex)", asFUNCTION(mapRGBA2DNoZ), asCALL_CDECL);
+	as->RegisterGlobalFunction("void mapRGBA3D(int, CArray3Drgba &, CKernel &, SMappingRanges, CInstructionIndex)", asFUNCTION(mapRGBA3D), asCALL_CDECL);
+	
+	#ifdef ANL_ANGELSCRIPT_BINDSTDSTRING
+		as->RegisterGlobalFunction("void saveDoubleArray(std::string, CArray2Dd &)", asFUNCTION(saveDoubleArrayString), asCALL_CDECL);
+		as->RegisterGlobalFunction("void saveRGBAeArray(std::string, CArray2Drgba &)", asFUNCTION(saveRGBAArrayString), asCALL_CDECL);
+		as->RegisterGlobalFunction("void loadDoubleArray(std::string, CArray2Dd &)", asFUNCTION(loadDoubleArrayString), asCALL_CDECL);
+		as->RegisterGlobalFunction("void loadRGBAArray(std::string, CArray2Drgba &)", asFUNCTION(loadRGBAArrayString), asCALL_CDECL);
+	#else
+		as->RegisterGlobalFunction("void saveDoubleArray(String, CArray2Dd &)", asFUNCTION(saveDoubleArrayString), asCALL_CDECL);
+		as->RegisterGlobalFunction("void saveRGBAeArray(String, CArray2Drgba &)", asFUNCTION(saveRGBAArrayString), asCALL_CDECL);
+		as->RegisterGlobalFunction("void loadDoubleArray(String, CArray2Dd &)", asFUNCTION(loadDoubleArrayString), asCALL_CDECL);
+		as->RegisterGlobalFunction("void loadRGBAArray(String, CArray2Drgba &)", asFUNCTION(loadRGBAArrayString), asCALL_CDECL);
+	#endif
 	
 }
 

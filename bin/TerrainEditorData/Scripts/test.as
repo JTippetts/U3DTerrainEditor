@@ -30,6 +30,13 @@ void Start()
 	Print(col.r);
 	
 	Print(vm.evaluateScalar(0,0,ii));
+	
+	anl::CArray2Dd img(256,256);
+	anl::map2D(0, img, k, anl::SMappingRanges(), 0, ii);
+	img.scaleToRange(0.0,1.0);
+	Print(img.getMin());
+	Print(img.getMax());
+	anl::saveDoubleArray("testthing.png", img);
 }
 
 void CreateText()
