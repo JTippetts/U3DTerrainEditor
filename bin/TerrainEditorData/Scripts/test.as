@@ -24,6 +24,7 @@ void Start()
 	anl::CNoiseExecutor vm(k);
 	
 	anl::CExpressionBuilder eb(k);
+	k.x();
 	anl::CInstructionIndex ii=eb.eval("valueBasis(3,rand)*2-1");
 	
 	anl::SRGBA col=vm.evaluateColor(0,0.1,ii);
@@ -32,11 +33,16 @@ void Start()
 	Print(vm.evaluateScalar(0,0,ii));
 	
 	anl::CArray2Dd img(256,256);
-	anl::map2D(0, img, k, anl::SMappingRanges(), 0, ii);
+	anl::map2D(0, img, k, anl::SMappingRanges(0,14,0,14), 0, ii);
 	img.scaleToRange(0.0,1.0);
 	Print(img.getMin());
 	Print(img.getMax());
 	anl::saveDoubleArray("testthing.png", img);
+	
+	anl::CArray2Dd bump(256,256);
+	anl::calcBumpMap(img,bump,1.5,3.5,-1.5,0.2,false);
+	bump.scaleToRange(0,1);
+	anl::saveDoubleArray("bump.png", bump);
 }
 
 void CreateText()

@@ -222,6 +222,12 @@ static void ConstructCArray3DrgbaSize(int w, int h, int d, CArray3Drgba *a)
 	{
 		loadRGBAArray(filename,&a);
 	}
+	
+	static void saveHeightmapString(std::string filename, CArray2Dd &a)
+	{
+		saveHeightmap(filename, &a);
+	}
+	
 #else
 	static void saveDoubleArrayString(String filename, CArray2Dd &a)
 	{
@@ -242,6 +248,11 @@ static void ConstructCArray3DrgbaSize(int w, int h, int d, CArray3Drgba *a)
 	{
 		std::string s(filename.CString());
 		loadRGBAArray(s,&a);
+	}
+	static void saveHeightmapString(String filename, CArray2Dd &a)
+	{
+		std::string s(filename.CString());
+		saveHeightmap(s,&a);
 	}
 #endif
 
@@ -327,6 +338,17 @@ static void CArray2DrgbaMultiplyArraySub(CArray2Drgba &b, int x, int y, CArray2D
 static void CArray2DrgbaScaleTo(CArray2Drgba &b, CArray2Drgba *d)
 {
 	d->scaleTo(&b);
+}
+
+static void CalcNormalMap(CArray2Dd &map, CArray2Drgba &bump, float spacing, bool normalize, bool wrap)
+{
+	calcNormalMap(&map, &bump, spacing, normalize, wrap);
+}
+
+static void CalcBumpMap(CArray2Dd &map, CArray2Dd &bump, float lx, float ly, float lz, float spacing, bool wrap)
+{
+	float light[3]={lx,ly,lz};
+	calcBumpMap(&map, &bump, light, spacing, wrap);
 }
 
 
@@ -504,13 +526,90 @@ void RegisterANL(asIScriptEngine *as)
 		as->RegisterObjectMethod("CKernel", "void setVar(String, double)", asFUNCTION(CKernelSetVar), asCALL_CDECL_OBJLAST);
 		as->RegisterObjectMethod("CKernel", "CInstructionIndex getVar(String)", asFUNCTION(CKernelGetVar), asCALL_CDECL_OBJLAST);
 	#endif
+	as->RegisterObjectMethod("CKernel", "CInstructionIndex e()", asMETHOD(CKernel, e), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex one()", asMETHOD(CKernel, one), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex zero()", asMETHOD(CKernel, zero), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex point5()", asMETHOD(CKernel, point5), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex sqrt2()", asMETHOD(CKernel, sqrt2), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex constant(double val)", asMETHOD(CKernel, constant), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex seed(int val)", asMETHOD(CKernel, seed), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex valueBasis(CInstructionIndex interpindex, CInstructionIndex seed)", asMETHOD(CKernel, valueBasis), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex gradientBasis(CInstructionIndex interpindex, CInstructionIndex seed)", asMETHOD(CKernel, gradientBasis), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex simplexBasis(CInstructionIndex seed)", asMETHOD(CKernel, simplexBasis), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex cellularBasis(CInstructionIndex f1, CInstructionIndex f2, CInstructionIndex f3, CInstructionIndex f4, CInstructionIndex d1, CInstructionIndex d2, CInstructionIndex d3, CInstructionIndex d4, CInstructionIndex dist, CInstructionIndex seed)", asMETHOD(CKernel, cellularBasis), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex add(CInstructionIndex s1index, CInstructionIndex s2index)", asMETHOD(CKernel, add), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex subtract(CInstructionIndex s1, CInstructionIndex s2)", asMETHOD(CKernel, subtract), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex multiply(CInstructionIndex s1index, CInstructionIndex s2index)", asMETHOD(CKernel, multiply), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex divide(CInstructionIndex s1, CInstructionIndex s2)", asMETHOD(CKernel, divide), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex maximum(CInstructionIndex s1index, CInstructionIndex s2index)", asMETHOD(CKernel, maximum), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex minimum(CInstructionIndex s1index, CInstructionIndex s2index)", asMETHOD(CKernel, minimum), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex abs(CInstructionIndex sindex)", asMETHOD(CKernel, abs), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex pow(CInstructionIndex s1, CInstructionIndex s2)", asMETHOD(CKernel, pow), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex bias(CInstructionIndex s1, CInstructionIndex s2)", asMETHOD(CKernel, bias), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex gain(CInstructionIndex s1, CInstructionIndex s2)", asMETHOD(CKernel, gain), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex scaleDomain(CInstructionIndex srcindex, CInstructionIndex scale)", asMETHOD(CKernel, scaleDomain), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex scaleX(CInstructionIndex src, CInstructionIndex scale)", asMETHOD(CKernel, scaleX), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex scaleY(CInstructionIndex src, CInstructionIndex scale)", asMETHOD(CKernel, scaleY), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex scaleZ(CInstructionIndex src, CInstructionIndex scale)", asMETHOD(CKernel, scaleZ), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex scaleW(CInstructionIndex src, CInstructionIndex scale)", asMETHOD(CKernel, scaleW), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex scaleU(CInstructionIndex src, CInstructionIndex scale)", asMETHOD(CKernel, scaleU), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex scaleV(CInstructionIndex src, CInstructionIndex scale)", asMETHOD(CKernel, scaleV), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex translateDomain(CInstructionIndex srcindex, CInstructionIndex trans)", asMETHOD(CKernel, translateDomain), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex translateX(CInstructionIndex src, CInstructionIndex trans)", asMETHOD(CKernel, translateX), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex translateY(CInstructionIndex src, CInstructionIndex trans)", asMETHOD(CKernel, translateY), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex translateZ(CInstructionIndex src, CInstructionIndex trans)", asMETHOD(CKernel, translateZ), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex translateW(CInstructionIndex src, CInstructionIndex trans)", asMETHOD(CKernel, translateW), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex translateU(CInstructionIndex src, CInstructionIndex trans)", asMETHOD(CKernel, translateU), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex translateV(CInstructionIndex src, CInstructionIndex trans)", asMETHOD(CKernel, translateV), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex rotateDomain(CInstructionIndex src, CInstructionIndex angle, CInstructionIndex ax, CInstructionIndex ay, CInstructionIndex az)", asMETHOD(CKernel, rotateDomain), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex addSequence(CInstructionIndex baseindex, int number, int stride)", asMETHOD(CKernel, addSequence), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex multiplySequence(CInstructionIndex baseindex, int number, int stride)", asMETHOD(CKernel, multiplySequence), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex maxSequence(CInstructionIndex baseindex, int number, int stride)", asMETHOD(CKernel, maxSequence), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex minSequence(CInstructionIndex baseindex, int number, int stride)", asMETHOD(CKernel, minSequence), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex blend(CInstructionIndex low, CInstructionIndex high, CInstructionIndex control)", asMETHOD(CKernel, blend), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex select(CInstructionIndex low, CInstructionIndex high, CInstructionIndex control, CInstructionIndex threshold, CInstructionIndex falloff)", asMETHOD(CKernel, select), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex clamp(CInstructionIndex src, CInstructionIndex low, CInstructionIndex high)", asMETHOD(CKernel, clamp), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex cos(CInstructionIndex src)", asMETHOD(CKernel, cos), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex sin(CInstructionIndex src)", asMETHOD(CKernel, sin), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex tan(CInstructionIndex src)", asMETHOD(CKernel, tan), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex acos(CInstructionIndex src)", asMETHOD(CKernel, acos), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex asin(CInstructionIndex src)", asMETHOD(CKernel, asin), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex atan(CInstructionIndex src)", asMETHOD(CKernel, atan), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex tiers(CInstructionIndex src, CInstructionIndex numtiers)", asMETHOD(CKernel, tiers), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex smoothTiers(CInstructionIndex src, CInstructionIndex numtiers)", asMETHOD(CKernel, smoothTiers), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex x()", asMETHOD(CKernel, x), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex y()", asMETHOD(CKernel, y), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex z()", asMETHOD(CKernel, z), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex w()", asMETHOD(CKernel, w), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex u()", asMETHOD(CKernel, u), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex v()", asMETHOD(CKernel, v), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex dx(CInstructionIndex src, CInstructionIndex spacing)", asMETHOD(CKernel, dx), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex dy(CInstructionIndex src, CInstructionIndex spacing)", asMETHOD(CKernel, dy), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex dz(CInstructionIndex src, CInstructionIndex spacing)", asMETHOD(CKernel, dz), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex dw(CInstructionIndex src, CInstructionIndex spacing)", asMETHOD(CKernel, dw), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex du(CInstructionIndex src, CInstructionIndex spacing)", asMETHOD(CKernel, du), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex dv(CInstructionIndex src, CInstructionIndex spacing)", asMETHOD(CKernel, dv), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex sigmoid(CInstructionIndex src)", asMETHODPR(CKernel, sigmoid,(CInstructionIndex),CInstructionIndex), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex sigmoid(CInstructionIndex src, CInstructionIndex center, CInstructionIndex ramp)", asMETHODPR(CKernel, sigmoid,(CInstructionIndex,CInstructionIndex,CInstructionIndex),CInstructionIndex), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex radial()", asMETHOD(CKernel, radial), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex hexTile(CInstructionIndex seed)", asMETHOD(CKernel, hexTile), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex hexBump()", asMETHOD(CKernel, hexBump), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex color(SRGBA c)", asMETHODPR(CKernel, color,(SRGBA),CInstructionIndex), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex color(float r, float g, float b, float a)", asMETHODPR(CKernel, color,(float,float,float,float),CInstructionIndex), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex combineRGBA(CInstructionIndex r, CInstructionIndex g, CInstructionIndex b, CInstructionIndex a)", asMETHOD(CKernel, combineRGBA), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex scaleOffset(CInstructionIndex src, double scale, double offset)", asMETHOD(CKernel, scaleOffset), asCALL_THISCALL);
+	as->RegisterObjectMethod("CKernel", "CInstructionIndex simplefBm(int basistype, int interptype, int numoctaves, double frequency, int seed, bool rot)", asMETHOD(CKernel, simplefBm), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex simpleRidgedMultifractal(int basistype, int interptype, int numoctaves, double frequency, int seed, bool rot)", asMETHOD(CKernel, simpleRidgedMultifractal), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex simpleBillow(int basistype, int interptype, int numoctaves, double frequency, int seed, bool rot)", asMETHOD(CKernel, simpleBillow), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex nextIndex()", asMETHOD(CKernel, nextIndex), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex lastIndex()", asMETHOD(CKernel, lastIndex), asCALL_THISCALL);
+ 
 	
 	// CNoiseExecutor
 	
 	as->RegisterObjectType("CNoiseExecutor", sizeof(CNoiseExecutor), asOBJ_APP_CLASS | asOBJ_VALUE);
 	as->RegisterObjectBehaviour("CNoiseExecutor", asBEHAVE_CONSTRUCT, "void f(CKernel &i)", asFUNCTION(ConstructCNoiseExecutor), asCALL_CDECL_OBJLAST);
 	as->RegisterObjectBehaviour("CNoiseExecutor", asBEHAVE_DESTRUCT, "void f()", asFUNCTION(DestructCNoiseExecutor), asCALL_CDECL_OBJLAST);
-	//as->RegisterObjectMethod("CNoiseExecutor", "CNoiseExecutor &opAssign(const CNoiseExecutor&in)", asMETHOD(CNoiseExecutor,operator =), asCALL_THISCALL);
 	
 	as->RegisterObjectMethod("CNoiseExecutor", "double evaluateScalar(double,double,CInstructionIndex)", asMETHODPR(CNoiseExecutor,evaluateScalar,(double,double,CInstructionIndex),double), asCALL_THISCALL);
 	as->RegisterObjectMethod("CNoiseExecutor", "double evaluateScalar(double,double,double,CInstructionIndex)", asMETHODPR(CNoiseExecutor,evaluateScalar,(double,double,double,CInstructionIndex),double), asCALL_THISCALL);
@@ -558,12 +657,17 @@ void RegisterANL(asIScriptEngine *as)
 		as->RegisterGlobalFunction("void saveRGBAeArray(std::string, CArray2Drgba &)", asFUNCTION(saveRGBAArrayString), asCALL_CDECL);
 		as->RegisterGlobalFunction("void loadDoubleArray(std::string, CArray2Dd &)", asFUNCTION(loadDoubleArrayString), asCALL_CDECL);
 		as->RegisterGlobalFunction("void loadRGBAArray(std::string, CArray2Drgba &)", asFUNCTION(loadRGBAArrayString), asCALL_CDECL);
+		as->RegisterGlobalFunction("void saveHeightmap(std::string, CArray2Dd &)", asFUNCTION(saveHeightmapString), asCALL_CDECL);
 	#else
 		as->RegisterGlobalFunction("void saveDoubleArray(String, CArray2Dd &)", asFUNCTION(saveDoubleArrayString), asCALL_CDECL);
 		as->RegisterGlobalFunction("void saveRGBAeArray(String, CArray2Drgba &)", asFUNCTION(saveRGBAArrayString), asCALL_CDECL);
 		as->RegisterGlobalFunction("void loadDoubleArray(String, CArray2Dd &)", asFUNCTION(loadDoubleArrayString), asCALL_CDECL);
 		as->RegisterGlobalFunction("void loadRGBAArray(String, CArray2Drgba &)", asFUNCTION(loadRGBAArrayString), asCALL_CDECL);
+		as->RegisterGlobalFunction("void saveHeightmap(String, CArray2Dd &)", asFUNCTION(saveHeightmapString), asCALL_CDECL);
 	#endif
+	
+	as->RegisterGlobalFunction("void calcNormalMap(CArray2Dd &, CArray2Drgba &, float, bool, bool)", asFUNCTION(CalcNormalMap), asCALL_CDECL);
+	as->RegisterGlobalFunction("void calcBumpMap(CArray2Dd &, CArray2Dd &, float,float,float, float, bool)", asFUNCTION(CalcBumpMap), asCALL_CDECL);
 	
 }
 
