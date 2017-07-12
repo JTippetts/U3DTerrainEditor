@@ -161,6 +161,7 @@ public:
 	{
 		kernel_=in.kernel_;
 		vars_=in.vars_;
+		return *this;
 	}
 private:
     InstructionListType kernel_;
