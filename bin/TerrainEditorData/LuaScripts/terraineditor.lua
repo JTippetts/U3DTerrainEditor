@@ -85,7 +85,7 @@ function CreateScene()
     --light.shadowCascade = CascadeParameters(10.0, 50.0, 200.0, 0.0, 0.8)
     light.specularIntensity = 0.01;
     light.color = Color(1.2,1.2,1.2);
-	light.shadowBias = BiasParameters(0,0,0.015)
+	--light.shadowBias = BiasParameters(0,0,0.015)
 	
 	--[[lightNode = scene_:CreateChild("DirectionalLight")
     lightNode.direction = Vector3(-1.2, -1.0, -1.6)
