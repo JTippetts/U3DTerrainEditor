@@ -156,7 +156,6 @@ public:
 
     void setVar(const std::string name,double val);
     CInstructionIndex getVar(const std::string name);
-	
 	CKernel &operator =(const CKernel &in)
 	{
 		kernel_=in.kernel_;

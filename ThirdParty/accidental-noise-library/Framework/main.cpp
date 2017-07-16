@@ -21,6 +21,10 @@ extern "C"{
 
 #define ANL_IMPLEMENTATION
 #define IMPLEMENT_STB
+
+// If you want to use long-period hashing, uncomment the following line:
+//#define ANL_LONG_PERIOD_HASHING
+
 #include "../anl.h"
 
 

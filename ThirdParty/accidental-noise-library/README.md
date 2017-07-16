@@ -9,6 +9,8 @@ Included in the root level directory is a CMakeLists.txt to facilitate building 
 	
 The ANL executable, when executed, enters a Lua interpreter. The executable can be run instead with a Lua script filename passed on the command line to execute that file instead.
 
+By default, ANL uses a hashing algorithm similar to the reference implementation of Perlin noise. A 512-element look-up table is used, and input coordinates are ANDed with 0xff to reference the table. This means that the noise functions will have a period of 256; with coordinates higher than that, the patterns will repeat. If a larger period is required, one can #define ANL_LONG_PERIOD_HASHING to use a long-period hash instead. This hash is based on the algorithm detailed at http://graphics.cs.kuleuven.be/publications/LD06LPHFPT/ and provides a significantly longer period for the underlying functions in exchange for a slight decrease in performance.
+
 ## Overview
 
 The ANL is a C++ library (C++11 supported) for the generation of complex noise functions. Functions include noise generators such as Ken Perlin's [improved gradient noise](https://mrl.nyu.edu/~perlin/noise/) and [simplex noise](http://webstaff.itn.liu.se/~stegu/simplexnoise/simplexnoise.pdf) variants, a value noise generator, and [Worley's cellular noise](https://en.wikipedia.org/wiki/Worley_noise). The library allows combining various generator functions using operations (arithmetic and otherwise) in order to generate a complex output.

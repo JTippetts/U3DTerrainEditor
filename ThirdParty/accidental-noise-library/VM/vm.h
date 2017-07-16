@@ -104,8 +104,6 @@ public:
 
     SVMOutput evaluate(CCoordinate &coord);
     SVMOutput evaluateAt(CCoordinate &coord, CInstructionIndex index);
-	
-	CNoiseExecutor &operator =(const CNoiseExecutor &in);
 
     double evaluateScalar(double x, double y, CInstructionIndex idx);
     double evaluateScalar(double x, double y, double z, CInstructionIndex idx);

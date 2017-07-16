@@ -110,7 +110,6 @@ std::vector<Token> CExpressionBuilder::getPostfix(const std::string &expr)
 
 CInstructionIndex CExpressionBuilder::eval(const std::string &expr)
 {
-	std::cout << "Attempting to eval the string " << expr << std::endl;
     ExpressionToPostfix e(expr, f_, vars_);
 
     auto p=e.ToPostfix();

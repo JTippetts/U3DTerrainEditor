@@ -1,3 +1,5 @@
+#ifdef ANL_LONG_PERIOD_HASHING
+// Use long-period hashing
 
 unsigned int p241[241]= {220, 23, 228, 115, 24, 40, 34, 83, 129, 162, 169, 49, 16, 203, 89, 103, 136, 222, 48, 214, 174, 98, 235, 62, 145, 120, 178, 87, 125, 131, 56, 180, 60, 61, 37, 165,
                          216, 211, 63, 117, 224, 107, 77, 142, 119, 39, 130, 108, 192, 241, 102, 52, 45, 42, 195, 13, 182, 239, 141, 64, 207, 25, 215, 233, 19, 101, 204, 105, 219, 240, 8, 157, 5, 126, 14, 139,
@@ -38,35 +40,6 @@ unsigned int p263[263]= {128, 96, 113, 105, 173, 171, 62, 89, 183, 122, 243, 135
                         };
 
 
-
-
-unsigned int fnv_32_a_buf(void *buf, unsigned int len)
-{
-    unsigned int hval=(unsigned int)FNV_32_INIT;
-    unsigned int *bp = (unsigned int *)buf;
-    unsigned int *be = bp+len;
-    while (bp<be)
-    {
-        hval ^=*bp++;
-        hval*=FNV_32_PRIME;
-    }
-    return hval;
-}
-
-unsigned int fnv_32_a_combine(unsigned int hash, unsigned int val)
-{
-    hash^=val;
-    hash*=FNV_32_PRIME;
-    return hash;
-}
-
-
-unsigned char xor_fold_hash(unsigned int hash)
-{
-    // Implement XOR-folding to reduce from 32 to 8-bit hash
-    return (unsigned char)((hash>>8) ^ (hash & FNV_MASK_8));
-}
-
 // Long period hash
 unsigned int hash_coords_2(unsigned int x, unsigned int y, unsigned int seed)
 {
@@ -105,4 +78,74 @@ unsigned int hash_coords_6(unsigned int x, unsigned int y, unsigned int z, unsig
                p257[(p257[(p257[(p257[(p257[(p257[(p257[x%257]+y)%257]+z)%257]+w)%257]+u)%257]+v)%257]+seed)%257]+
                p263[(p263[(p263[(p263[(p263[(p263[(p263[x%263]+y)%263]+z)%263]+w)%263]+u)%263]+v)%263]+seed)%263]
            );
+}
+
+#else
+unsigned int permute[512]=
+{
+	218,193,236,205,110,181,34,9,187,28,41,60,219,24,241,222,86,152,248,76,78,210,85,208,254,59,198,2,87,208,148,194,117,82,10,38,155,
+	74,242,238,93,65,206,24,162,158,146,94,51,77,12,159,123,235,234,55,47,226,54,240,187,53,40,255,213,148,192,209,68,153,85,83,57,75,
+	137,147,11,81,138,140,71,254,91,237,253,165,200,105,43,122,95,207,36,7,168,30,20,96,235,181,5,163,162,111,157,135,136,191,39,42,249,
+	103,174,251,248,229,96,111,252,70,63,92,244,233,120,210,21,205,23,80,168,166,53,36,15,29,71,37,66,100,89,49,176,216,45,45,39,76,97,
+	167,83,1,204,86,125,200,114,124,224,167,173,175,227,109,156,189,219,14,133,186,164,196,163,156,144,102,244,19,84,161,239,81,175,153,
+	1,157,251,107,180,149,212,137,193,211,17,230,126,122,54,182,115,101,211,151,91,198,238,116,149,72,150,233,80,120,58,220,154,199,202,
+	56,212,189,158,79,20,84,3,69,151,170,33,197,29,176,182,143,217,155,222,178,242,145,119,47,25,245,67,123,15,215,226,172,201,110,220,
+	14,104,44,236,68,64,160,46,89,104,48,201,188,133,132,4,128,135,121,225,63,225,27,130,26,142,249,62,140,23,237,190,202,28,108,192,8,
+	2,196,215,142,77,32,8,214,180,221,107,209,17,186,195,147,78,250,35,62,234,185,130,33,65,114,145,108,30,207,6,232,57,0,250,221,174,
+	239,252,246,203,52,3,97,183,247,255,99,66,88,5,129,61,73,43,12,152,16,112,177,93,232,138,90,129,214,166,102,98,13,35,79,118,27,50,
+	154,161,246,52,136,48,4,243,247,18,245,253,67,10,100,188,228,146,34,41,37,31,90,165,56,118,94,13,171,26,169,131,159,170,199,240,191,
+	25,139,121,9,113,50,116,141,21,177,127,231,64,51,40,132,169,134,18,164,82,61,88,105,184,217,172,119,72,131,227,46,223,73,87,38,206,
+	6,173,99,117,60,228,126,74,22,160,42,134,109,55,243,128,141,139,144,179,218,184,22,195,150,115,179,95,223,241,178,185,197,70,31,11,
+	143,75,69,125,103,183,112,124,19,16,32,213,171,7,44,98,59,106,230,58,203,113,204,92,0,106,231,229,101,224,190,127,216,49,194
+};
+
+
+unsigned int hash_coords_2(unsigned int x, unsigned int y, unsigned int seed)
+{
+   return permute[(x & 0xff) + permute[(y & 0xff) + permute[seed & 0xff]]];
+}
+
+unsigned int hash_coords_3(unsigned int x, unsigned int y, unsigned int z, unsigned int seed)
+{
+    return permute[(x & 0xff) + permute[(y & 0xff) + permute[(z & 0xff) + permute[seed & 0xff]]]];
+}
+
+unsigned int hash_coords_4(unsigned int x, unsigned int y, unsigned int z, unsigned int w, unsigned int seed)
+{
+    return permute[(x & 0xff) + permute[(y & 0xff) + permute[(z & 0xff) + permute[(w & 0xff ) + permute[seed & 0xff]]]]];
+}
+
+unsigned int hash_coords_6(unsigned int x, unsigned int y, unsigned int z, unsigned int w, unsigned int u, unsigned int v, unsigned int seed)
+{
+    return permute[(x & 0xff) + permute[(y & 0xff) + permute[(z & 0xff) + permute[(w & 0xff ) + permute[(u & 0xff) + permute[(v & 0xff) + permute[seed & 0xff]]]]]]];
+}
+
+#endif
+
+
+unsigned int fnv_32_a_buf(void *buf, unsigned int len)
+{
+    unsigned int hval=(unsigned int)FNV_32_INIT;
+    unsigned int *bp = (unsigned int *)buf;
+    unsigned int *be = bp+len;
+    while (bp<be)
+    {
+        hval ^=*bp++;
+        hval*=FNV_32_PRIME;
+    }
+    return hval;
+}
+
+unsigned int fnv_32_a_combine(unsigned int hash, unsigned int val)
+{
+    hash^=val;
+    hash*=FNV_32_PRIME;
+    return hash;
+}
+
+
+unsigned char xor_fold_hash(unsigned int hash)
+{
+    // Implement XOR-folding to reduce from 32 to 8-bit hash
+    return (unsigned char)((hash>>8) ^ (hash & FNV_MASK_8));
 }

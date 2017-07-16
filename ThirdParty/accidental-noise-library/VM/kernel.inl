@@ -563,23 +563,24 @@ CInstructionIndex CKernel::select(CInstructionIndex low, CInstructionIndex high,
     return lastIndex();
 }
 
-CInstructionIndex CKernel::simpleFractalLayer(unsigned int basistype, CInstructionIndex interpindex, double layerscale, double layerfreq, unsigned int seed, bool rot,
+CInstructionIndex CKernel::simpleFractalLayer(unsigned int basistype, CInstructionIndex interpindex, double layerscale, double layerfreq, unsigned int s, bool rot,
         double angle, double ax, double ay, double az)
 {
+	CInstructionIndex myseed=seed(s);
     CInstructionIndex base=nextIndex();
     switch(basistype)
     {
     case anl::OP_ValueBasis:
-        valueBasis(interpindex, seed);
+        valueBasis(interpindex, myseed);
         break;
     case anl::OP_GradientBasis:
-        gradientBasis(interpindex, seed);
+        gradientBasis(interpindex, myseed);
         break;
     case anl::OP_SimplexBasis:
-        simplexBasis(seed);
+        simplexBasis(myseed);
         break;
     default:
-        gradientBasis(interpindex, seed);
+        gradientBasis(interpindex, myseed);
         break;
     }
     constant(layerscale);
@@ -598,23 +599,24 @@ CInstructionIndex CKernel::simpleFractalLayer(unsigned int basistype, CInstructi
     return lastIndex();
 }
 
-CInstructionIndex CKernel::simpleRidgedLayer(unsigned int basistype, CInstructionIndex interpindex, double layerscale, double layerfreq, unsigned int seed, bool rot,
+CInstructionIndex CKernel::simpleRidgedLayer(unsigned int basistype, CInstructionIndex interpindex, double layerscale, double layerfreq, unsigned int s, bool rot,
         double angle, double ax, double ay, double az)
 {
+	CInstructionIndex myseed=seed(s);
     CInstructionIndex base=nextIndex();
     switch(basistype)
     {
     case anl::OP_ValueBasis:
-        valueBasis(interpindex, seed);
+        valueBasis(interpindex, myseed);
         break;
     case anl::OP_GradientBasis:
-        gradientBasis(interpindex, seed);
+        gradientBasis(interpindex, myseed);
         break;
     case anl::OP_SimplexBasis:
-        simplexBasis(seed);
+        simplexBasis(myseed);
         break;
     default:
-        gradientBasis(interpindex, seed);
+        gradientBasis(interpindex, myseed);
         break;
     }
     base=abs(base);
@@ -636,23 +638,24 @@ CInstructionIndex CKernel::simpleRidgedLayer(unsigned int basistype, CInstructio
     return lastIndex();
 }
 
-CInstructionIndex CKernel::simpleBillowLayer(unsigned int basistype, CInstructionIndex interpindex, double layerscale, double layerfreq, unsigned int seed, bool rot,
+CInstructionIndex CKernel::simpleBillowLayer(unsigned int basistype, CInstructionIndex interpindex, double layerscale, double layerfreq, unsigned int s, bool rot,
         double angle, double ax, double ay, double az)
 {
+	CInstructionIndex myseed=seed(s);
     CInstructionIndex base=nextIndex();
     switch(basistype)
     {
     case anl::OP_ValueBasis:
-        valueBasis(interpindex, seed);
+        valueBasis(interpindex, myseed);
         break;
     case anl::OP_GradientBasis:
-        gradientBasis(interpindex, seed);
+        gradientBasis(interpindex, myseed);
         break;
     case anl::OP_SimplexBasis:
-        simplexBasis(seed);
+        simplexBasis(myseed);
         break;
     default:
-        gradientBasis(interpindex, seed);
+        gradientBasis(interpindex, myseed);
         break;
     }
     base=abs(base);
