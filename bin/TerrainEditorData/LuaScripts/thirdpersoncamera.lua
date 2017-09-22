@@ -3,7 +3,7 @@
 
 scrollspeed=32
 scrollthreshold=64
-zoomspeed=80
+zoomspeed=1000
 
 function TopLevelNodeFromDrawable(drawable, scene)
 	local n=drawable:GetNode()
