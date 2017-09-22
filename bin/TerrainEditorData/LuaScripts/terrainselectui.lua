@@ -12,15 +12,40 @@ function TerrainSelectUI:Start()
 	self.layer=1
 	self.active=false
 	
+	self.editlayerui=ui:LoadLayout(cache:GetResource("XMLFile", "UI/TerrainLayerSettings.xml"))
+	self.editlayerui.visible=false
+	ui.root:AddChild(self.editlayerui)
+	
+	local apply=self.editlayerui:GetChild("Apply", true)
+	if apply then self:SubscribeToEvent(apply, "Pressed", "TerrainSelectUI:HandleEditLayerApply") end
+	
+	local cancel=self.editlayerui:GetChild("Cancel", true)
+	if cancel then self:SubscribeToEvent(cancel, "Pressed", "TerrainSelectUI:HandleEditLayerCancel") end
+	
 	self.brushpreview=Image(context)
 	self.brushpreview:SetSize(64,64,3)
 	self.brushtex=Texture2D:new(context)
 	--self.brushtex:SetSize(0,0,0,TEXTURE_DYNAMIC)
 	self.panel:GetChild("BrushPreview",true).texture=self.brushtex
 	
-	self:SubscribeToEvent("Pressed", "TerrainSelectUI:HandleButtonPress")
+	
+	--self:SubscribeToEvent("Pressed", "TerrainSelectUI:HandleButtonPress")
 	self:SubscribeToEvent("SliderChanged", "TerrainSelectUI:HandleSliderChanged")
 	
+	local c
+	for c=0,7,1 do
+		local eb=self.panel:GetChild("EditTerrain"..c, true)
+		if eb then
+			self:SubscribeToEvent(eb, "Pressed", "TerrainSelectUI:HandleEditLayerButton")
+		end
+	end
+	
+	for c=0,7,1 do
+		local eb=self.panel:GetChild("Terrain"..c, true)
+		if eb then
+			self:SubscribeToEvent(eb, "Pressed", "TerrainSelectUI:HandleButtonPress")
+		end
+	end
 	
 	self.power,self.max,self.radius,self.hardness,self.usemask=self:GetBrushSettings()
 	
@@ -37,6 +62,110 @@ function TerrainSelectUI:Start()
 	self.cursor:BuildCursorMesh(self.radius)
 	self.cursor:SetBrushPreview(self.brushtex)
 	self.cursor:Hide()
+	
+	print(graphics.apiName)
+	
+	self.diffuse=
+	{
+		"pebbles.png",
+		"sand.png",
+		"grass.png",
+		"pebbles2_diff.png",
+		"bigrocks1_diffdisp.png",
+		"cliff.png",
+		"rockface1.png",
+		"cliff2.png",
+	}
+	
+	self.normal=
+	{
+		"densenormal.png",
+		"sand_normal.png",
+		"grass_normal.png",
+		"pebbles2_normal.png",
+		"bigrocks1_normal.png",
+		"cliff_normal.png",
+		"rockface1_normal.png",
+		"cliff2_normal.png",
+	}
+	
+	self.difftex=Texture2DArray:new()
+	self.normaltex=Texture2DArray:new()
+	
+	self.diffthumbs={}
+	self.normalthumbs={}
+	
+	self:InitializeTextures()
+end
+
+function TerrainSelectUI:InitializeTextures()
+	local c
+	local diffs={}
+	local normals={}
+	local dthumbs={}
+	local nthumbs={}
+	
+	for c=1,8,1 do
+		diffs[c]=cache:GetResource("Image", "Textures/"..self.diffuse[c])
+		normals[c]=cache:GetResource("Image", "Textures/"..self.normal[c])
+		dthumbs[c]=self:GenerateThumbnailImage(diffs[c])
+		nthumbs[c]=self:GenerateThumbnailImage(normals[c])
+	end
+	
+	local w,h = diffs[1].width, diffs[1].height
+	for c=2,8,1 do
+		if diffs[c].width ~= w or diffs[c].height ~= h then
+			print("Error: Could not initialize textures. Diffuse textures not the same size.")
+			return
+		end
+	end
+	
+	self.difftex:SetSize(w,h,4)
+	
+	for c=1,8,1 do
+		self.difftex:SetData(c-1, diffs[c])
+		self.diffthumbs[c]=Texture2D:new()
+		self.diffthumbs[c]:SetData(dthumbs[c])
+	end
+	
+	w,h = normals[1].width, normals[1].height
+	for c=2,8,1 do
+		if normals[c].width ~= w or normals[c].height ~= h then
+			print("Error: Could not initialize textures. Normal textures not the same size.")
+			return
+		end
+	end
+	
+	self.normaltex:SetSize(w,h,3)
+	
+	for c=1,8,1 do
+		self.normaltex:SetData(c-1, normals[c])
+		self.normalthumbs[c]=Texture2D:new()
+		self.normalthumbs[c]:SetData(nthumbs[c])
+	end
+	
+	for c=0,7,1 do
+		local name="Terrain"..c
+		local button=self.panel:GetChild(name,true)
+		if button then button.texture=self.diffthumbs[c+1] end
+	end
+	
+end
+
+function TerrainSelectUI:GenerateThumbnailImage(img)
+	local i=Image()
+	i:SetSize(64,64,3)
+	
+	local x,y
+	
+	for x=0,63,1 do
+		for y=0,63,1 do
+			i:SetPixel(x,y,img:GetPixel(x,y))
+		end
+	end
+	
+	return i
+	
 end
 
 function TerrainSelectUI:LoadThumbnails(thumblist)
@@ -49,6 +178,31 @@ function TerrainSelectUI:LoadThumbnails(thumblist)
 		end
 	end
 	
+end
+
+function TerrainSelectUI:HandleEditLayerButton(eventType, eventData)
+	local element=eventData["Element"]:GetPtr("UIElement")
+	
+	if element.name=="EditTerrain0" then self.editlayer=1
+	elseif element.name=="EditTerrain1" then self.editlayer=2
+	elseif element.name=="EditTerrain2" then self.editlayer=3
+	elseif element.name=="EditTerrain3" then self.editlayer=4
+	elseif element.name=="EditTerrain4" then self.editlayer=5
+	elseif element.name=="EditTerrain5" then self.editlayer=6
+	elseif element.name=="EditTerrain6" then self.editlayer=7
+	elseif element.name=="EditTerrain7" then self.editlayer=8
+	end
+	
+	self.editlayerui.visible=true
+	
+end
+
+function TerrainSelectUI:HandleEditLayerApply(eventType, eventData)
+	self.editlayerui.visible=false
+end
+
+function TerrainSelectUI:HandleEditLayerCancel(eventType, eventData)
+	self.editlayerui.visible=false
 end
 
 function TerrainSelectUI:GetBrushSettings()

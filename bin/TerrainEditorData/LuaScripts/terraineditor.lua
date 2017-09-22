@@ -120,19 +120,6 @@ function CreateScene()
 	saveloadui=scene_:CreateScriptObject("SaveLoadUI")
 	--terrainselectui=scene_:CreateScriptObject("TerrainSelectUI")
 	
-	local thumbs=
-	{
-		"Textures/pebbles_thumb.png",
-		"Textures/sand_thumb.png",
-		"Textures/dirtgrass_thumb.png",
-		"Textures/stones_thumb.png",
-		"Textures/floor_thumb.png",
-		"Textures/cliff_thumb.png",
-		"Textures/cliff2_thumb.png",
-		"Textures/rockfield_thumb.png"
-	}
-	
-	terrainui:LoadThumbnails(thumbs)
    
     -- Create the camera. Set far clip to match the fog. Note: now we actually create the camera node outside
     -- the scene, because we want it to be unaffected by scene load / save

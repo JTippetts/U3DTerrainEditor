@@ -24,11 +24,11 @@ end
 
 function TerrainEditUI:BuildUI()
 	self.heightbrush=scene_:CreateScriptObject("EditHeightUI")
-	self.blendbrush=scene_:CreateScriptObject("TerrainSelectUI")
 	self.smoothbrush=scene_:CreateScriptObject("SmoothHeightUI")
 	self.maskbrush=scene_:CreateScriptObject("EditMaskUI")
 	self.newterrain=ui:LoadLayout(cache:GetResource("XMLFile", "UI/TerrainEditNewTerrain.xml"))
 	self.toolbar=ui:LoadLayout(cache:GetResource("XMLFile", "UI/TerrainEditToolbar.xml"))
+	self.blendbrush=scene_:CreateScriptObject("TerrainSelectUI")
 	
 	
 	self.blendbrush:Deactivate()
@@ -117,14 +117,23 @@ function TerrainEditUI:SetMaterial(blendwidth, blendheight, triplanar, smoothing
 	TerrainState.blendtex2:SetData(TerrainState.blend2, false)
 	
 	local buf=VectorBuffer()
+	local c
 	buf:WriteFloat(2)
+	if(graphics.apiName=="D3D11") then for c=1,3,1 do buf:WriteFloat(0.0) end end
 	buf:WriteFloat(2)
+	if(graphics.apiName=="D3D11") then for c=1,3,1 do buf:WriteFloat(0.0) end end
 	buf:WriteFloat(1.0)
+	if(graphics.apiName=="D3D11") then for c=1,3,1 do buf:WriteFloat(0.0) end end
 	buf:WriteFloat(1.0)
+	if(graphics.apiName=="D3D11") then for c=1,3,1 do buf:WriteFloat(0.0) end end
 	buf:WriteFloat(1.0)
+	if(graphics.apiName=="D3D11") then for c=1,3,1 do buf:WriteFloat(0.0) end end
 	buf:WriteFloat(1.0)
+	if(graphics.apiName=="D3D11") then for c=1,3,1 do buf:WriteFloat(0.0) end end
 	buf:WriteFloat(1.0)
+	if(graphics.apiName=="D3D11") then for c=1,3,1 do buf:WriteFloat(0.0) end end
 	buf:WriteFloat(0.25)
+	if(graphics.apiName=="D3D11") then for c=1,3,1 do buf:WriteFloat(0.0) end end
 	
 	local ary=Variant()
 	ary:Set(buf)
@@ -204,10 +213,6 @@ function TerrainEditUI:UpdateWaypointVis()
 	self.waypointpreview:SetMaterial(self.waypointpreviewmaterial)
 	local bbox=self.waypointpreview.worldBoundingBox
 	bbox:Define(Vector3(-1000,-1000,-1000), Vector3(1000,1000,1000))
-end
-
-function TerrainEditUI:LoadThumbnails(thumblist)
-	if self.blendbrush then self.blendbrush:LoadThumbnails(thumblist) end
 end
 
 function TerrainEditUI:AddWaypoint(groundx, groundz)
