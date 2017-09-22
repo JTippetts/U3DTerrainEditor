@@ -322,7 +322,7 @@ function TerrainSelectUI:HandleEditLayerButton(eventType, eventData)
 	self.terrainlayernormaltex:SetData(self.normalthumbimages[self.editlayer])
 	self.editlayerui:GetChild("DiffuseName", true).text=self.diffuse[self.editlayer]
 	self.editlayerui:GetChild("NormalName", true).text=self.normal[self.editlayer]
-	self.editlayerui:GetChild("LayerScale", true).text=String(self.layerscales[self.editlayer])
+	self.editlayerui:GetChild("LayerScale", true).text=tostring(self.layerscales[self.editlayer])
 end
 
 function TerrainSelectUI:HandleEditLayerApply(eventType, eventData)
@@ -353,7 +353,7 @@ function TerrainSelectUI:HandleEditLayerApply(eventType, eventData)
 		self.normalselected=false
 	end
 	
-	self.layerscales[self.editlayer]=tonumber(self.editlayerui:GetChild("LayerScale", true).text)
+	self.layerscales[self.editlayer]=tonumber(self.editlayerui:GetChild("LayerScale", true).text) or self.layerscales[self.editlayer]
 	
 	self:SetLayerScales()
 	
