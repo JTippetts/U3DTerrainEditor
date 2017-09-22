@@ -22,6 +22,7 @@ function TerrainSelectUI:Start()
 	local cancel=self.editlayerui:GetChild("Cancel", true)
 	if cancel then self:SubscribeToEvent(cancel, "Pressed", "TerrainSelectUI:HandleEditLayerCancel") end
 	
+	
 	self.brushpreview=Image(context)
 	self.brushpreview:SetSize(64,64,3)
 	self.brushtex=Texture2D:new(context)
@@ -47,6 +48,9 @@ function TerrainSelectUI:Start()
 		end
 	end
 	
+	self:SubscribeToEvent(self.editlayerui:GetChild("DiffusePick", true), "Pressed", "TerrainSelectUI:HandlePickDiffuse")
+	self:SubscribeToEvent(self.editlayerui:GetChild("NormalPick", true), "Pressed", "TerrainSelectUI:HandlePickNormal")
+	
 	self.power,self.max,self.radius,self.hardness,self.usemask=self:GetBrushSettings()
 	
 	local text=self.panel:GetChild("PowerText", true)
@@ -67,26 +71,26 @@ function TerrainSelectUI:Start()
 	
 	self.diffuse=
 	{
-		"pebbles.png",
-		"sand.png",
-		"grass.png",
-		"pebbles2_diff.png",
-		"bigrocks1_diffdisp.png",
-		"cliff.png",
-		"rockface1.png",
-		"cliff2.png",
+		"Textures/pebbles.png",
+		"Textures/sand.png",
+		"Textures/grass.png",
+		"Textures/pebbles2_diff.png",
+		"Textures/bigrocks1_diffdisp.png",
+		"Textures/cliff.png",
+		"Textures/rockface1.png",
+		"Textures/cliff2.png",
 	}
 	
 	self.normal=
 	{
-		"densenormal.png",
-		"sand_normal.png",
-		"grass_normal.png",
-		"pebbles2_normal.png",
-		"bigrocks1_normal.png",
-		"cliff_normal.png",
-		"rockface1_normal.png",
-		"cliff2_normal.png",
+		"Textures/densenormal.png",
+		"Textures/sand_normal.png",
+		"Textures/grass_normal.png",
+		"Textures/pebbles2_normal.png",
+		"Textures/bigrocks1_normal.png",
+		"Textures/cliff_normal.png",
+		"Textures/rockface1_normal.png",
+		"Textures/cliff2_normal.png",
 	}
 	
 	self.difftex=Texture2DArray:new()
@@ -95,7 +99,30 @@ function TerrainSelectUI:Start()
 	self.diffthumbs={}
 	self.normalthumbs={}
 	
+	self.terrainlayerdifftex=Texture2D:new()
+	self.terrainlayernormaltex=Texture2D:new()
+	
+	self.editlayerui:GetChild("DiffuseThumb", true).texture=self.terrainlayerdifftex
+	self.editlayerui:GetChild("NormalThumb", true).texture=self.terrainlayernormaltex
+	
 	self:InitializeTextures()
+	
+	TerrainState.terrainMaterial:SetTexture(2, self.difftex)
+	TerrainState.terrainMaterial:SetTexture(3, self.normaltex)
+end
+
+function TerrainSelectUI:CreateFileSelector(title, ok, cancel, initialPath, filters, initialFilter)
+	local fs=FileSelector()
+	fs.defaultStyle=uiStyle
+	fs.title=title
+	fs.path=initialPath
+	fs:SetButtonTexts(ok, cancel)
+	fs:SetFilters(filters, initialFilter)
+	
+	--local size=fs:GetSize()
+	--fs:SetPosition((ui.root.width - size.x)/2, (ui.root.height-size.y)/2)
+	
+	return fs
 end
 
 function TerrainSelectUI:InitializeTextures()
@@ -106,8 +133,8 @@ function TerrainSelectUI:InitializeTextures()
 	local nthumbs={}
 	
 	for c=1,8,1 do
-		diffs[c]=cache:GetResource("Image", "Textures/"..self.diffuse[c])
-		normals[c]=cache:GetResource("Image", "Textures/"..self.normal[c])
+		diffs[c]=cache:GetResource("Image", self.diffuse[c])
+		normals[c]=cache:GetResource("Image", self.normal[c])
 		dthumbs[c]=self:GenerateThumbnailImage(diffs[c])
 		nthumbs[c]=self:GenerateThumbnailImage(normals[c])
 	end
@@ -120,7 +147,7 @@ function TerrainSelectUI:InitializeTextures()
 		end
 	end
 	
-	self.difftex:SetSize(w,h,4)
+	self.difftex:SetLayers(8)
 	
 	for c=1,8,1 do
 		self.difftex:SetData(c-1, diffs[c])
@@ -136,7 +163,7 @@ function TerrainSelectUI:InitializeTextures()
 		end
 	end
 	
-	self.normaltex:SetSize(w,h,3)
+	self.normaltex:SetLayers(8)
 	
 	for c=1,8,1 do
 		self.normaltex:SetData(c-1, normals[c])
@@ -149,7 +176,10 @@ function TerrainSelectUI:InitializeTextures()
 		local button=self.panel:GetChild(name,true)
 		if button then button.texture=self.diffthumbs[c+1] end
 	end
-	
+	self.diffimages=diffs
+	self.normalimages=normals
+	self.diffthumbimages=dthumbs
+	self.normalthumbimages=nthumbs
 end
 
 function TerrainSelectUI:GenerateThumbnailImage(img)
@@ -162,22 +192,82 @@ function TerrainSelectUI:GenerateThumbnailImage(img)
 		for y=0,63,1 do
 			i:SetPixel(x,y,img:GetPixel(x,y))
 		end
+		collectgarbage()
 	end
 	
 	return i
 	
 end
 
-function TerrainSelectUI:LoadThumbnails(thumblist)
+function TerrainSelectUI:GetFilenameFromPath(path)
+	local resourceDirs = cache.resourceDirs
+	local pl=string.lower(path)
+	
 	local i
-	for i=0,7,1 do
-		local name="Terrain"..i
-		local button=self.panel:GetChild(name,true)
-		if button then
-			button.texture=cache:GetResource("Texture2D", thumblist[i+1])
+	for i=1,#resourceDirs,1 do
+		local rl=string.lower(resourceDirs[i])
+		local idx=string.find(pl, rl)
+		if idx~=nil then
+			local ssub=string.sub(path, idx+#resourceDirs[i])
+			return ssub
 		end
 	end
+	return ""
+end
+
+function TerrainSelectUI:HandlePickDiffuse(eventType, eventData)
+	self.fileselector=self:CreateFileSelector("Select Diffuse Texture", "Ok", "Cancel", "", {"*.png", "*.dds"}, 0)
+	self:SubscribeToEvent(self.fileselector, "FileSelected", "TerrainSelectUI:HandleSelectDiffuseFile")
+end
+
+
+function TerrainSelectUI:HandleSelectDiffuseFile(eventType, eventData)
+	if(eventData["Ok"]:GetBool()==false) then
+		self.fileselector=nil
+		
+	end
 	
+	local name=eventData["FileName"]:GetString()
+	local fname=self:GetFilenameFromPath(name)
+	print("Selected file: "..name.." ("..fname..")")
+	
+	if fname=="" then self.fileselector=nil return end
+	
+	self.selecteddiffimage=cache:GetResource("Image", fname)
+	self.selecteddiffthumbimage=self:GenerateThumbnailImage(self.selecteddiffimage)
+	self.selecteddiffimagename=fname
+	self.editlayerui:GetChild("DiffuseName", true).text=fname
+	
+	self.terrainlayerdifftex:SetData(self.selecteddiffthumbimage)
+	
+	self.fileselector=nil
+end
+
+function TerrainSelectUI:HandlePickNormal(eventType, eventData)
+	self.fileselector=self:CreateFileSelector("Select Normal Texture", "Ok", "Cancel", "", {"*.png", "*.dds"}, 0)
+	self:SubscribeToEvent(self.fileselector, "FileSelected", "TerrainSelectUI:HandleSelectNormalFile")
+end
+
+function TerrainSelectUI:HandleSelectNormalFile(eventType, eventData)
+	if(eventData["Ok"]:GetBool()==false) then
+		self.fileselector=nil
+		
+	end
+	
+	local name=eventData["FileName"]:GetString()
+	local fname=self:GetFilenameFromPath(name)
+	print("Selected file: "..name.." ("..fname..")")
+	
+	if fname=="" then self.fileselector=nil return end
+	
+	self.selectednormalimage=cache:GetResource("Image", fname)
+	self.selectednormalthumbimage=self:GenerateThumbnailImage(self.selectednormalimage)
+	self.selectednormalimagename=fname
+	self.editlayerui:GetChild("NormalName", true).text=fname
+	
+	self.terrainlayernormaltex:SetData(self.selectednormalthumbimage)
+	
+	self.fileselector=nil
 end
 
 function TerrainSelectUI:HandleEditLayerButton(eventType, eventData)
@@ -194,10 +284,35 @@ function TerrainSelectUI:HandleEditLayerButton(eventType, eventData)
 	end
 	
 	self.editlayerui.visible=true
+	self.terrainlayerdifftex:SetData(self.diffthumbimages[self.editlayer])
+	self.terrainlayernormaltex:SetData(self.normalthumbimages[self.editlayer])
+	self.editlayerui:GetChild("DiffuseName", true).text=self.diffuse[self.editlayer]
+	self.editlayerui:GetChild("NormalName", true).text=self.normal[self.editlayer]
 	
 end
 
 function TerrainSelectUI:HandleEditLayerApply(eventType, eventData)
+	self.diffuse[self.editlayer]=self.selecteddiffimagename
+	self.diffimages[self.editlayer]=self.selecteddiffimage
+	self.difftex:SetData(self.editlayer-1, self.diffimages[self.editlayer])
+	self.diffthumbimages[self.editlayer]=self.selecteddiffthumbimage
+	self.diffthumbs[self.editlayer]:SetData(self.diffthumbimages[self.editlayer])
+	
+	self.selecteddiffimagename=nil
+	self.selecteddiffimage=nil
+	self.selecteddiffthumbimage=nil
+	
+	self.normal[self.editlayer]=self.selectednormalimagename
+	self.normalimages[self.editlayer]=self.selectednormalimage
+	self.normaltex:SetData(self.editlayer-1, self.normalimages[self.editlayer])
+	self.normalthumbimages[self.editlayer]=self.selectednormalthumbimage
+	self.normalthumbs[self.editlayer]:SetData(self.normalthumbimages[self.editlayer])
+	
+	self.selectednormalimagename=nil
+	self.selectednormalimage=nil
+	self.selectednormalthumbimage=nil
+	
+	
 	self.editlayerui.visible=false
 end
 

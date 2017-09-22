@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <element type="Window">
 	<attribute name="Name" value="TerrainBrush" />
-	<attribute name="Position" value="0 180" />
-	<attribute name="Size" value="266 362" />
+	<attribute name="Position" value="-2 199" />
+	<attribute name="Size" value="266 375" />
 	<attribute name="Pivot" value="0 0" />
 	<attribute name="Layout Mode" value="Vertical" />
 	<attribute name="Layout Border" value="5 5 5 5" />
@@ -145,11 +145,6 @@
 		<attribute name="Max Size" value="2147483647 16" />
 		<attribute name="Pivot" value="0 0" />
 		<attribute name="Layout Mode" value="Horizontal" />
-		<element type="CheckBox">
-			<attribute name="Name" value="MaskCheck" />
-			<attribute name="Pivot" value="0 0" />
-			<attribute name="Is Checked" value="true" />
-		</element>
 		<element type="Text">
 			<attribute name="Pivot" value="0 0" />
 			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
@@ -159,6 +154,12 @@
 			<attribute name="Font Size" value="10" />
 			<attribute name="Text" value="Use Mask" />
 			<attribute name="Text Alignment" value="Center" />
+			<element type="CheckBox">
+				<attribute name="Name" value="MaskCheck" />
+				<attribute name="Size" value="16 16" />
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Is Checked" value="true" />
+			</element>
 		</element>
 	</element>
 	<element type="Window">
@@ -356,6 +357,26 @@
 			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Font Size" value="10" />
 			<attribute name="Text" value="Smooth Blending?" />
+			<attribute name="Text Alignment" value="Center" />
+		</element>
+	</element>
+	<element type="Window">
+		<attribute name="Max Size" value="2147483647 16" />
+		<attribute name="Pivot" value="0 0" />
+		<attribute name="Layout Mode" value="Horizontal" />
+		<element type="CheckBox">
+			<attribute name="Name" value="NormalMapCheck" />
+			<attribute name="Pivot" value="0 0" />
+			<attribute name="Is Checked" value="true" />
+		</element>
+		<element type="Text">
+			<attribute name="Pivot" value="0 0" />
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Font Size" value="10" />
+			<attribute name="Text" value="Normal Mapping?" />
 			<attribute name="Text Alignment" value="Center" />
 		</element>
 	</element>
