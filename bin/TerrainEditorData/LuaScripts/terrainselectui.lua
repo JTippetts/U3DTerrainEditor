@@ -272,6 +272,7 @@ function TerrainSelectUI:HandleSelectDiffuseFile(eventType, eventData)
 	
 	self.terrainlayerdifftex:SetData(self.selecteddiffthumbimage)
 	
+	self.diffuseselected=true
 	self.fileselector=nil
 end
 
@@ -299,6 +300,7 @@ function TerrainSelectUI:HandleSelectNormalFile(eventType, eventData)
 	
 	self.terrainlayernormaltex:SetData(self.selectednormalthumbimage)
 	
+	self.normalselected=true
 	self.fileselector=nil
 end
 
@@ -324,25 +326,32 @@ function TerrainSelectUI:HandleEditLayerButton(eventType, eventData)
 end
 
 function TerrainSelectUI:HandleEditLayerApply(eventType, eventData)
-	self.diffuse[self.editlayer]=self.selecteddiffimagename
-	self.diffimages[self.editlayer]=self.selecteddiffimage
-	self.difftex:SetData(self.editlayer-1, self.diffimages[self.editlayer])
-	self.diffthumbimages[self.editlayer]=self.selecteddiffthumbimage
-	self.diffthumbs[self.editlayer]:SetData(self.diffthumbimages[self.editlayer])
 	
-	self.selecteddiffimagename=nil
-	self.selecteddiffimage=nil
-	self.selecteddiffthumbimage=nil
+	if self.diffuseselected then
+		self.diffuse[self.editlayer]=self.selecteddiffimagename
+		self.diffimages[self.editlayer]=self.selecteddiffimage
+		self.difftex:SetData(self.editlayer-1, self.diffimages[self.editlayer])
+		self.diffthumbimages[self.editlayer]=self.selecteddiffthumbimage
+		self.diffthumbs[self.editlayer]:SetData(self.diffthumbimages[self.editlayer])
 	
-	self.normal[self.editlayer]=self.selectednormalimagename
-	self.normalimages[self.editlayer]=self.selectednormalimage
-	self.normaltex:SetData(self.editlayer-1, self.normalimages[self.editlayer])
-	self.normalthumbimages[self.editlayer]=self.selectednormalthumbimage
-	self.normalthumbs[self.editlayer]:SetData(self.normalthumbimages[self.editlayer])
+		self.selecteddiffimagename=nil
+		self.selecteddiffimage=nil
+		self.selecteddiffthumbimage=nil
+		self.diffuseselected=false
+	end
 	
-	self.selectednormalimagename=nil
-	self.selectednormalimage=nil
-	self.selectednormalthumbimage=nil
+	if self.normalselected then
+		self.normal[self.editlayer]=self.selectednormalimagename
+		self.normalimages[self.editlayer]=self.selectednormalimage
+		self.normaltex:SetData(self.editlayer-1, self.normalimages[self.editlayer])
+		self.normalthumbimages[self.editlayer]=self.selectednormalthumbimage
+		self.normalthumbs[self.editlayer]:SetData(self.normalthumbimages[self.editlayer])
+	
+		self.selectednormalimagename=nil
+		self.selectednormalimage=nil
+		self.selectednormalthumbimage=nil
+		self.normalselected=false
+	end
 	
 	self.layerscales[self.editlayer]=tonumber(self.editlayerui:GetChild("LayerScale", true).text)
 	
@@ -353,6 +362,8 @@ end
 
 function TerrainSelectUI:HandleEditLayerCancel(eventType, eventData)
 	self.editlayerui.visible=false
+	self.diffuseselected=false
+	self.normalselected=false
 end
 
 function TerrainSelectUI:GetBrushSettings()
