@@ -122,6 +122,7 @@ function TerrainSelectUI:Start()
 		1.0,
 	}
 	
+	self:SwitchLayer(1)
 	self:SetLayerScales()
 end
 
