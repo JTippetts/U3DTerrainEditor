@@ -116,28 +116,6 @@ function TerrainEditUI:SetMaterial(blendwidth, blendheight, triplanar, smoothing
 	TerrainState.blendtex1:SetData(TerrainState.blend1, false)
 	TerrainState.blendtex2:SetData(TerrainState.blend2, false)
 	
-	local buf=VectorBuffer()
-	local c
-	buf:WriteFloat(2)
-	if(graphics.apiName=="D3D11") then for c=1,3,1 do buf:WriteFloat(0.0) end end
-	buf:WriteFloat(2)
-	if(graphics.apiName=="D3D11") then for c=1,3,1 do buf:WriteFloat(0.0) end end
-	buf:WriteFloat(1.0)
-	if(graphics.apiName=="D3D11") then for c=1,3,1 do buf:WriteFloat(0.0) end end
-	buf:WriteFloat(1.0)
-	if(graphics.apiName=="D3D11") then for c=1,3,1 do buf:WriteFloat(0.0) end end
-	buf:WriteFloat(1.0)
-	if(graphics.apiName=="D3D11") then for c=1,3,1 do buf:WriteFloat(0.0) end end
-	buf:WriteFloat(1.0)
-	if(graphics.apiName=="D3D11") then for c=1,3,1 do buf:WriteFloat(0.0) end end
-	buf:WriteFloat(1.0)
-	if(graphics.apiName=="D3D11") then for c=1,3,1 do buf:WriteFloat(0.0) end end
-	buf:WriteFloat(0.25)
-	if(graphics.apiName=="D3D11") then for c=1,3,1 do buf:WriteFloat(0.0) end end
-	
-	local ary=Variant()
-	ary:Set(buf)
-	
 	
 	if TerrainState.masktex then TerrainState.masktex:delete() end
 	if TerrainState.mask then TerrainState.mask:delete() end

@@ -109,6 +109,38 @@ function TerrainSelectUI:Start()
 	
 	TerrainState.terrainMaterial:SetTexture(2, self.difftex)
 	TerrainState.terrainMaterial:SetTexture(3, self.normaltex)
+	
+	self.layerscales=
+	{
+		1.0,
+		1.0,
+		1.0,
+		1.0,
+		1.0,
+		1.0,
+		1.0,
+		1.0,
+	}
+	
+	self:SetLayerScales()
+end
+
+function TerrainSelectUI:SetLayerScales()
+	local buf=VectorBuffer()
+	local c
+	for c=1,8,1 do
+		buf:WriteFloat(1.0/self.layerscales[c])
+		if graphics.apiName=="D3D11" then
+			local d
+			for d=1,3,1 do
+				buf:WriteFloat(0.0)
+			end
+		end
+	end
+	
+	local ary=Variant()
+	ary:Set(buf)
+	TerrainState.terrainMaterial:SetShaderParameter("LayerScaling", ary)
 end
 
 function TerrainSelectUI:CreateFileSelector(title, ok, cancel, initialPath, filters, initialFilter)
@@ -288,7 +320,7 @@ function TerrainSelectUI:HandleEditLayerButton(eventType, eventData)
 	self.terrainlayernormaltex:SetData(self.normalthumbimages[self.editlayer])
 	self.editlayerui:GetChild("DiffuseName", true).text=self.diffuse[self.editlayer]
 	self.editlayerui:GetChild("NormalName", true).text=self.normal[self.editlayer]
-	
+	self.editlayerui:GetChild("LayerScale", true).text=String(self.layerscales[self.editlayer])
 end
 
 function TerrainSelectUI:HandleEditLayerApply(eventType, eventData)
@@ -312,6 +344,9 @@ function TerrainSelectUI:HandleEditLayerApply(eventType, eventData)
 	self.selectednormalimage=nil
 	self.selectednormalthumbimage=nil
 	
+	self.layerscales[self.editlayer]=tonumber(self.editlayerui:GetChild("LayerScale", true).text)
+	
+	self:SetLayerScales()
 	
 	self.editlayerui.visible=false
 end
