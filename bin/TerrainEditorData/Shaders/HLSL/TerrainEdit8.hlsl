@@ -5,6 +5,9 @@
 #include "Lighting.hlsl"
 #include "Fog.hlsl"
 
+static const int numblends=2;
+static const int numlayers=8;
+
 #ifndef D3D11
 	#error D3D9 Does not support texture arrays.
 #endif
@@ -31,8 +34,7 @@
 	#ifdef COMPILEPS
 		cbuffer CustomPS : register(b6)
 		{
-			float4 cLayerScaling1;
-			float4 cLayerScaling2;
+			float cLayerScaling[numlayers];
 		};
 	#endif
 #endif
@@ -62,6 +64,22 @@
 			SamplerState sMask4 : register(s4);
 		#endif
 	#endif
+	
+	// PS functions
+	float4 SampleDiffuse(float3 detailtexcoord, int layer, float3 blend)
+	{
+		return tDetailMap2.Sample(sDetailMap2, float3(detailtexcoord.zy*cLayerScaling[layer], layer))*blend.x +
+			tDetailMap2.Sample(sDetailMap2, float3(detailtexcoord.xy*cLayerScaling[layer], layer))*blend.z +
+			tDetailMap2.Sample(sDetailMap2, float3(detailtexcoord.xz*cLayerScaling[layer], layer))*blend.y;
+	}
+	
+	float3 SampleBump(float3 detailtexcoord, int layer, float3 blend)
+	{
+		return DecodeNormal(tNormal3.Sample(sNormal3, float3(detailtexcoord.zy*cLayerScaling[layer], layer)))*blend.x+
+			DecodeNormal(tNormal3.Sample(sNormal3, float3(detailtexcoord.xy*cLayerScaling[layer], layer)))*blend.z+
+			DecodeNormal(tNormal3.Sample(sNormal3, float3(detailtexcoord.xz*cLayerScaling[layer], layer)))*blend.y;
+	}
+
 #endif
 
 void VS(float4 iPos : POSITION,
@@ -233,39 +251,24 @@ void PS(
 		float b=blending.x+blending.y+blending.z;
 		blending=blending/b;
 		
-		float4 tex1=tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.zy*cLayerScaling1.r, 0))*blending.x +
-			tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xy*cLayerScaling1.r, 0))*blending.z +
-			tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xz*cLayerScaling1.r, 0))*blending.y;
-		float4 tex2=tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.zy*cLayerScaling1.g, 1))*blending.x +
-			tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xy*cLayerScaling1.g, 1))*blending.z +
-			tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xz*cLayerScaling1.g, 1))*blending.y;
-		float4 tex3=tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.zy*cLayerScaling1.b, 2))*blending.x +
-			tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xy*cLayerScaling1.b, 2))*blending.z +
-			tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xz*cLayerScaling1.b, 2))*blending.y;
-		float4 tex4=tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.zy*cLayerScaling1.a, 3))*blending.x +
-			tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xy*cLayerScaling1.a, 3))*blending.z +
-			tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xz*cLayerScaling1.a, 3))*blending.y;
-		float4 tex5=tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.zy*cLayerScaling2.r, 4))*blending.x +
-			tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xy*cLayerScaling2.r, 4))*blending.z +
-			tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xz*cLayerScaling2.r, 4))*blending.y;
-		float4 tex6=tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.zy*cLayerScaling2.g, 5))*blending.x +
-			tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xy*cLayerScaling2.g, 5))*blending.z +
-			tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xz*cLayerScaling2.g, 5))*blending.y;
-		float4 tex7=tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.zy*cLayerScaling2.b, 6))*blending.x +
-			tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xy*cLayerScaling2.b, 6))*blending.z +
-			tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xz*cLayerScaling2.b, 6))*blending.y;
-		float4 tex8=tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.zy*cLayerScaling2.a, 7))*blending.x +
-			tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xy*cLayerScaling2.a, 7))*blending.z +
-			tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xz*cLayerScaling2.a, 7))*blending.y;
+		float4 tex1=SampleDiffuse(iDetailTexCoord, 0, blending);
+		float4 tex2=SampleDiffuse(iDetailTexCoord, 1, blending);
+		float4 tex3=SampleDiffuse(iDetailTexCoord, 2, blending);
+		float4 tex4=SampleDiffuse(iDetailTexCoord, 3, blending);
+		float4 tex5=SampleDiffuse(iDetailTexCoord, 4, blending);
+		float4 tex6=SampleDiffuse(iDetailTexCoord, 5, blending);
+		float4 tex7=SampleDiffuse(iDetailTexCoord, 6, blending);
+		float4 tex8=SampleDiffuse(iDetailTexCoord, 7, blending);
+	
 	#else
-		float4 tex1=tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xz*cLayerScaling1.r, 0));
-		float4 tex2=tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xz*cLayerScaling1.g, 1));
-		float4 tex3=tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xz*cLayerScaling1.b, 2));
-		float4 tex4=tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xz*cLayerScaling1.a, 3));
-		float4 tex5=tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xz*cLayerScaling2.r, 4));
-		float4 tex6=tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xz*cLayerScaling2.g, 5));
-		float4 tex7=tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xz*cLayerScaling2.b, 6));
-		float4 tex8=tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xz*cLayerScaling2.a, 7));
+		float4 tex1=tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xz*cLayerScaling[0], 0));
+		float4 tex2=tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xz*cLayerScaling[1], 1));
+		float4 tex3=tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xz*cLayerScaling[2], 2));
+		float4 tex4=tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xz*cLayerScaling[3], 3));
+		float4 tex5=tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xz*cLayerScaling[4], 4));
+		float4 tex6=tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xz*cLayerScaling[5], 5));
+		float4 tex7=tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xz*cLayerScaling[6], 6));
+		float4 tex8=tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xz*cLayerScaling[7], 7));
 	#endif
 	
 	#ifndef SMOOTHBLEND
@@ -302,40 +305,24 @@ void PS(
     #ifdef BUMPMAP
 		float3x3 tbn = float3x3(iTangent.xyz, float3(iTexCoord.zw, iTangent.w), iNormal);
 		#ifdef TRIPLANAR
-			
-		float3 bump1=DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.zy*cLayerScaling1.r, 0)))*blending.x+
-			DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xy*cLayerScaling1.r, 0)))*blending.z+
-			DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xz*cLayerScaling1.r,0)))*blending.y;
-		float3 bump2=DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.zy*cLayerScaling1.g, 1)))*blending.x+
-			DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xy*cLayerScaling1.g, 1)))*blending.z+
-			DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xz*cLayerScaling1.g,1)))*blending.y;
-		float3 bump3=DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.zy*cLayerScaling1.b, 2)))*blending.x+
-			DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xy*cLayerScaling1.b, 2)))*blending.z+
-			DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xz*cLayerScaling1.b,2)))*blending.y;
-		float3 bump4=DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.zy*cLayerScaling1.a, 3)))*blending.x+
-			DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xy*cLayerScaling1.a, 3)))*blending.z+
-			DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xz*cLayerScaling1.a,3)))*blending.y;
-		float3 bump5=DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.zy*cLayerScaling2.r, 4)))*blending.x+
-			DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xy*cLayerScaling2.r, 4)))*blending.z+
-			DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xz*cLayerScaling2.r,4)))*blending.y;
-		float3 bump6=DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.zy*cLayerScaling2.g, 5)))*blending.x+
-			DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xy*cLayerScaling2.g, 5)))*blending.z+
-			DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xz*cLayerScaling2.g,5)))*blending.y;
-		float3 bump7=DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.zy*cLayerScaling2.b, 6)))*blending.x+
-			DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xy*cLayerScaling2.b, 6)))*blending.z+
-			DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xz*cLayerScaling2.b,6)))*blending.y;
-		float3 bump8=DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.zy*cLayerScaling2.a, 7)))*blending.x+
-			DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xy*cLayerScaling2.a, 7)))*blending.z+
-			DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xz*cLayerScaling2.a,7)))*blending.y;
+		float3 bump1=SampleBump(iDetailTexCoord, 0, blending);
+		float3 bump2=SampleBump(iDetailTexCoord, 1, blending);
+		float3 bump3=SampleBump(iDetailTexCoord, 2, blending);
+		float3 bump4=SampleBump(iDetailTexCoord, 3, blending);
+		float3 bump5=SampleBump(iDetailTexCoord, 4, blending);
+		float3 bump6=SampleBump(iDetailTexCoord, 5, blending);
+		float3 bump7=SampleBump(iDetailTexCoord, 6, blending);
+		float3 bump8=SampleBump(iDetailTexCoord, 7, blending);
+		
 		#else
-			float3 bump1=DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xz*cLayerScaling1.r,0)));
-			float3 bump2=DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xz*cLayerScaling1.g,1)));
-			float3 bump3=DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xz*cLayerScaling1.b,2)));
-			float3 bump4=DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xz*cLayerScaling1.a,3)));
-			float3 bump5=DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xz*cLayerScaling2.r,4)));
-			float3 bump6=DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xz*cLayerScaling2.g,5)));
-			float3 bump7=DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xz*cLayerScaling2.b,6)));
-			float3 bump8=DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xz*cLayerScaling2.a,7)));
+			float3 bump1=DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xz*cLayerScaling[0],0)));
+			float3 bump2=DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xz*cLayerScaling[1],1)));
+			float3 bump3=DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xz*cLayerScaling[2],2)));
+			float3 bump4=DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xz*cLayerScaling[3],3)));
+			float3 bump5=DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xz*cLayerScaling[4],4)));
+			float3 bump6=DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xz*cLayerScaling[5],5)));
+			float3 bump7=DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xz*cLayerScaling[6],6)));
+			float3 bump8=DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xz*cLayerScaling[7],7)));
 		#endif
 		
 		

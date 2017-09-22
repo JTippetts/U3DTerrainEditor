@@ -62,6 +62,13 @@ end
 function CreateScene()
     scene_ = Scene()
 	CreateCursor()
+	
+	local buf=VectorBuffer()
+	buf:WriteFloat(1.4)
+	buf:WriteFloat(2.3)
+	
+	local ary=Variant()
+	ary:Set(buf)
 
     -- Create octree, use default volume (-1000, -1000, -1000) to (1000, 1000, 1000)
     scene_:CreateComponent("Octree")

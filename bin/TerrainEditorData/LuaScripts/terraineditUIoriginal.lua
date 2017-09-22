@@ -116,6 +116,20 @@ function TerrainEditUI:SetMaterial(blendwidth, blendheight, triplanar, smoothing
 	TerrainState.blendtex1:SetData(TerrainState.blend1, false)
 	TerrainState.blendtex2:SetData(TerrainState.blend2, false)
 	
+	local buf=VectorBuffer()
+	buf:WriteFloat(2)
+	buf:WriteFloat(2)
+	buf:WriteFloat(1.0)
+	buf:WriteFloat(1.0)
+	buf:WriteFloat(1.0)
+	buf:WriteFloat(1.0)
+	buf:WriteFloat(1.0)
+	buf:WriteFloat(0.25)
+	
+	local ary=Variant()
+	ary:Set(buf)
+	
+	
 	if TerrainState.masktex then TerrainState.masktex:delete() end
 	if TerrainState.mask then TerrainState.mask:delete() end
 	
@@ -129,6 +143,7 @@ function TerrainEditUI:SetMaterial(blendwidth, blendheight, triplanar, smoothing
 		TerrainState.terrainMaterial:SetTexture(0, TerrainState.blendtex1)
 		TerrainState.terrainMaterial:SetTexture(1, TerrainState.blendtex2)
 		TerrainState.terrainMaterial:SetTexture(4, TerrainState.masktex)
+		TerrainState.terrainMaterial:SetShaderParameter("LayerScaling", ary)
 		
 		if TerrainState.terrain then
 			TerrainState.terrain.material=TerrainState.terrainMaterial
