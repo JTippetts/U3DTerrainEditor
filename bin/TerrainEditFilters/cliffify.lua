@@ -15,7 +15,7 @@ return
 	
 	execute=function(self)
 		local ops=GetOptions(self.options)
-		local bw,bh=blend1:GetWidth(), blend1:GetHeight()
+		local bw,bh=TerrainState.blend1:GetWidth(), TerrainState.blend1:GetHeight()
 		
 		local halffade=ops["Fade"]*0.5
 		local fade=ops["Fade"]
@@ -30,8 +30,8 @@ return
 		for x=0,bw-1,1 do
 			for y=0,bh-1,1 do
 				local nworld=Vector2(x/(bw-1), y/(bh-1))
-				local world=NormalizedToWorld(hmap,terrain,nworld)
-				local normal=terrain:GetNormal(world)
+				local world=NormalizedToWorld(TerrainState.hmap,TerrainState.terrain,nworld)
+				local normal=TerrainState.terrain:GetNormal(world)
 				
 				local steep=math.abs(normal:DotProduct(Vector3(0,1,0)))
 				local i=(steep-(thresh-halffade))/fade
@@ -43,8 +43,8 @@ return
 			collectgarbage()
 		end
 		
-		BlendRasterizedBuffer8Max(blend1,blend2,buffer,layer,mask,usemask,invertmask)
-		blendtex1:SetData(blend1,false)
-		blendtex2:SetData(blend2,false)
+		BlendRasterizedBuffer8Max(TerrainState.blend1,TerrainState.blend2,buffer,layer,mask,usemask,invertmask)
+		TerrainState.blendtex1:SetData(TerrainState.blend1,false)
+		TerrainState.blendtex2:SetData(TerrainState.blend2,false)
 	end,
 }

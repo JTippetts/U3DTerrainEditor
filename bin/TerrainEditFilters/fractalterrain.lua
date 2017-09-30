@@ -22,7 +22,7 @@ return
 		
 		local k=noisekernels[ops["Noise function"]](ops)
 		if k then
-			local hw,hh=hmap:GetWidth(),hmap:GetHeight()
+			local hw,hh=TerrainState.hmap:GetWidth(),TerrainState.hmap:GetHeight()
 			local buffer=CArray2Dd(hw,hh)
 			
 			map2D(SEAMLESS_NONE, buffer, k, SMappingRanges(0,1,0,1,0,1), 0, k:lastIndex())
@@ -36,11 +36,11 @@ return
 				end
 			end
 			
-			BlendRasterizedBuffer8(blend1,blend2,buffer,ops["Layer"],mask,ops["Use Mask?"],ops["Invert Mask?"])
+			BlendRasterizedBuffer8(TerrainState.blend1,TerrainState.blend2,buffer,ops["Layer"],mask,ops["Use Mask?"],ops["Invert Mask?"])
 		
 		
-			blendtex1:SetData(blend1,false)
-			blendtex2:SetData(blend2,false)
+			TerrainState.blendtex1:SetData(TerrainState.blend1,false)
+			TerrainState.blendtex2:SetData(TerrainState.blend2,false)
 		end
 	end,
 }

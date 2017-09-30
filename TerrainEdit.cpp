@@ -188,6 +188,7 @@ void ApplyHeightBrush(Terrain *terrain, Image *height, Image *mask, float x, flo
 				float d=std::sqrt(dx*dx+dz*dz);
 				float i=((d-radius)/(hardness*radius-radius));
 				i=std::max(0.0f, std::min(1.0f, i));
+				i=std::sin(i*1.57079633);
 				i=i*dt*power;
 				if(usemask)
 				{

@@ -74,7 +74,7 @@ return
 	description="Generate a terrain from a selection of noise functions.\n",
 	options=
 	{
-		{name="Noise function", type="list", value="simplefbm", list=noisekernelsindex},
+		{name="Noise function", type="list", value="simplefbm", list=noisekernels},
 		{name="Min scale", type="value", value=0},
 		{name="Max scale", type="value", value=1},
 		{name="Use Mask?", type="flag", value=false},
@@ -91,7 +91,7 @@ return
 		
 		local k=noisekernels[ops["Noise function"]](ops)
 		if k then
-			local hw,hh=hmap:GetWidth(),hmap:GetHeight()
+			local hw,hh=TerrainState.hmap:GetWidth(),TerrainState.hmap:GetHeight()
 			local buffer=CArray2Dd(hw,hh)
 			
 			map2D(SEAMLESS_NONE, buffer, k, SMappingRanges(0,1,0,1,0,1), 0, k:lastIndex())
@@ -105,9 +105,9 @@ return
 				end
 			end
 			
-			SetHeightFromRasterBuffer(hmap,buffer,mask,ops["Use Mask?"], ops["Invert Mask?"])
+			SetHeightFromRasterBuffer(TerrainState.hmap,buffer,mask,ops["Use Mask?"], ops["Invert Mask?"])
 		
-			terrain:ApplyHeightMap()
+			TerrainState.terrain:ApplyHeightMap()
 		end
 	end
 }

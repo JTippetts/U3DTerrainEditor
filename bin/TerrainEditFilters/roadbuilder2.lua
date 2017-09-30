@@ -27,8 +27,8 @@ return
 		local distort=self.options[7].value
 		local power=self.options[8].value
 		
-		local buffer=CArray2Dd(hmap:GetWidth(), hmap:GetHeight())
-		local blend=CArray2Dd(hmap:GetWidth(), hmap:GetHeight())
+		local buffer=CArray2Dd(TerrainState.hmap:GetWidth(), TerrainState.hmap:GetHeight())
+		local blend=CArray2Dd(TerrainState.hmap:GetWidth(), TerrainState.hmap:GetHeight())
 		blend:fill(0)
 		
 		local c
@@ -36,10 +36,10 @@ return
 		local plist=RasterVertexList()
 		for _,c in ipairs(waypoints) do
 			local pos=c.position
-			local norm=WorldToNormalized(hmap,terrain,pos)
-			local hx=math.floor(norm.x*hmap:GetWidth())
-			local hy=math.floor(norm.y*hmap:GetHeight())
-			local ht=GetHeightValue(hmap,hx,(hmap:GetHeight()-1)-hy)
+			local norm=WorldToNormalized(TerrainState.hmap,TerrainState.terrain,pos)
+			local hx=math.floor(norm.x*TerrainState.hmap:GetWidth())
+			local hy=math.floor(norm.y*TerrainState.hmap:GetHeight())
+			local ht=GetHeightValue(TerrainState.hmap,hx,(TerrainState.hmap:GetHeight()-1)-hy)
 			plist:push_back(RasterVertex(hx,hy,ht))
 		end
 		
@@ -65,8 +65,8 @@ return
 			DistortBuffer(blend, xdistort, ydistort, power)
 		end
 		
-		BlendHeightWithRasterizedBuffer(hmap, buffer, blend)
-		terrain:ApplyHeightMap()
+		BlendHeightWithRasterizedBuffer(TerrainState.hmap, buffer, blend)
+		TerrainState.terrain:ApplyHeightMap()
 		
 		quad=RasterVertexList()
 		BuildQuadStrip(curve, quad, pavingwidth)
@@ -89,8 +89,8 @@ return
 			DistortBuffer(blend, xdistort, ydistort, power)
 		end
 	
-		BlendRasterizedBuffer8Max(blend1,blend2,blend,pavinglayer,mask,usemask,invertmask)	
-		blendtex1:SetData(blend1, false)
-		blendtex2:SetData(blend2, false)
+		BlendRasterizedBuffer8Max(TerrainState.blend1,TerrainState.blend2,blend,pavinglayer,mask,usemask,invertmask)	
+		TerrainState.blendtex1:SetData(TerrainState.blend1, false)
+		TerrainState.blendtex2:SetData(TerrainState.blend2, false)
 	end,
 }
