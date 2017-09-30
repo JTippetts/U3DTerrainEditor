@@ -73,12 +73,14 @@ static const int numlayers=8;
 			tDetailMap2.Sample(sDetailMap2, float3(detailtexcoord.xz*cLayerScaling[layer], layer))*blend.y;
 	}
 	
+	#ifdef BUMPMAP
 	float3 SampleBump(float3 detailtexcoord, int layer, float3 blend)
 	{
 		return DecodeNormal(tNormal3.Sample(sNormal3, float3(detailtexcoord.zy*cLayerScaling[layer], layer)))*blend.x+
 			DecodeNormal(tNormal3.Sample(sNormal3, float3(detailtexcoord.xy*cLayerScaling[layer], layer)))*blend.z+
 			DecodeNormal(tNormal3.Sample(sNormal3, float3(detailtexcoord.xz*cLayerScaling[layer], layer)))*blend.y;
 	}
+	#endif
 
 #endif
 

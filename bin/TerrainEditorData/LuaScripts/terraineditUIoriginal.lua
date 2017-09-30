@@ -66,7 +66,7 @@ function TerrainEditUI:Start()
 	
 end
 
-function TerrainEditUI:NewTerrain(width, height, blendwidth, blendheight, triplanar, smoothing)
+function TerrainEditUI:NewTerrain(width, height, blendwidth, blendheight, triplanar, smoothing, normalmapping)
 	if TerrainState.terrainNode then TerrainState.terrainNode:Remove() end
 	
 	TerrainState.terrainNode=scene_:CreateChild()
@@ -82,21 +82,37 @@ function TerrainEditUI:NewTerrain(width, height, blendwidth, blendheight, tripla
 	TerrainState.terrain.heightMap=TerrainState.hmap
 	TerrainState.terrain.castShadows=true
 	
-	self:SetMaterial(blendwidth, blendheight, triplanar, smoothing)
+	self:SetMaterial(blendwidth, blendheight, triplanar, smoothing, normalmapping)
 end
 
-function TerrainEditUI:SetMaterial(blendwidth, blendheight, triplanar, smoothing)
+function TerrainEditUI:SetMaterial(blendwidth, blendheight, triplanar, smoothing, normalmapping)
 	if triplanar then
 		if smoothing then
-			TerrainState.terrainMaterial=cache:GetResource("Material", "Materials/TerrainEdit8TriplanarSmooth.xml")
+			if normalmapping then
+				TerrainState.terrainMaterial=cache:GetResource("Material", "Materials/TerrainEdit8TriplanarSmoothBump.xml")
+			else
+				TerrainState.terrainMaterial=cache:GetResource("Material", "Materials/TerrainEdit8TriplanarSmooth.xml")
+			end
 		else
-			TerrainState.terrainMaterial=cache:GetResource("Material", "Materials/TerrainEdit8Triplanar.xml")
+			if normalmapping then
+				TerrainState.terrainMaterial=cache:GetResource("Material", "Materials/TerrainEdit8TriplanarBump.xml")
+			else
+				TerrainState.terrainMaterial=cache:GetResource("Material", "Materials/TerrainEdit8Triplanar.xml")
+			end
 		end
 	else
 		if smoothing then
-			TerrainState.terrainMaterial=cache:GetResource("Material", "Materials/TerrainEdit8Smooth.xml")
+			if normalmapping then
+				TerrainState.terrainMaterial=cache:GetResource("Material", "Materials/TerrainEdit8SmoothBump.xml")
+			else
+				TerrainState.terrainMaterial=cache:GetResource("Material", "Materials/TerrainEdit8Smooth.xml")
+			end
 		else
-			TerrainState.terrainMaterial=cache:GetResource("Material", "Materials/TerrainEdit8.xml")
+			if normalmapping then
+				TerrainState.terrainMaterial=cache:GetResource("Material", "Materials/TerrainEdit8Bump.xml")
+			else
+				TerrainState.terrainMaterial=cache:GetResource("Material", "Materials/TerrainEdit8.xml")
+			end
 		end
 	end
 	

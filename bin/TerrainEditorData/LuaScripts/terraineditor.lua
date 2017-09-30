@@ -114,7 +114,7 @@ function CreateScene()
 	
 	terrainui=scene_:CreateScriptObject("TerrainEditUI")
 	
-	terrainui:NewTerrain(1025,1025,2048,2048,true,false)
+	terrainui:NewTerrain(1025,1025,2048,2048,true,false,true)
 	terrainui:BuildUI()
 	filterui=scene_:CreateScriptObject("FilterUI")
 	saveloadui=scene_:CreateScriptObject("SaveLoadUI")
