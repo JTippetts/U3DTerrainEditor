@@ -81,5 +81,7 @@ using namespace anl;
 	void SetLayerBlend(Image *blend1, Image *blend2, int x, int y, int layer, float v);
 	
 	bool LoadImage(Context *c, Image *i, const char *fname);
+	
+	void SteepnessTerrain(Image *blend0, Image *blend1, Image *hmap, Terrain *terrain, Image *mask, float threshold, float fade, unsigned int layer, bool usemask, bool invertmask);
 
 #endif

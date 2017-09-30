@@ -11,6 +11,7 @@ bin/Extra
 bin/*.png
 bin/TEdit
 bin/TEdit.exe
+bin/tolua++.exe
 !bin/TerrainEditorData/*.png
 bin/TerrainEditorData/Save
 *.bat

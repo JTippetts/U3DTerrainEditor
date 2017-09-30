@@ -79,3 +79,6 @@ Vector2 WorldToNormalized(Image *height, Terrain *terrain, Vector3 world);
 	
 	bool LoadImage(Context *c, Image *i, const char *fname);
 	void DistortBuffer(CArray2Dd *buffer, CArray2Dd *xd, CArray2Dd *yd, double power);
+	
+	void SteepnessTerrain(Image *blend0, Image *blend1, Image *hmap, Terrain *terrain, Image *mask, float threshold, float fade, unsigned int layer, bool usemask, bool invertmask);
+	

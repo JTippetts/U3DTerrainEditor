@@ -74,7 +74,7 @@ return
 	description="Generate a terrain from a selection of noise functions.\n",
 	options=
 	{
-		{name="Noise function", type="list", value="simplefbm", list=noisekernels},
+		{name="Noise function", type="list", value="simplefbm", list=noisekernelsindex},
 		{name="Min scale", type="value", value=0},
 		{name="Max scale", type="value", value=1},
 		{name="Use Mask?", type="flag", value=false},

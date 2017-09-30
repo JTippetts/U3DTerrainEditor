@@ -1207,3 +1207,29 @@ void DistortBuffer(CArray2Dd *buffer, CArray2Dd *xd, CArray2Dd *yd, double power
 		}
 	}
 }
+
+void SteepnessTerrain(Image *blend0, Image *blend1, Image *hmap, Terrain *terrain, Image *mask, float threshold, float fade, unsigned int layer, bool usemask, bool invertmask)
+{
+	unsigned int bw=blend0->GetWidth();
+	unsigned int bh=blend0->GetHeight();
+	float halffade=fade*0.5f;
+	
+	CArray2Dd buffer(bw,bh);
+	
+	for(unsigned int y=0; y<bh; ++y)
+	{
+		for(unsigned int x=0; x<bw; ++x)
+		{
+			Vector2 nworld=Vector2((float)(x)/(float)(bw-1), (float)(y)/(float)(bh-1));
+			Vector3 world=NormalizedToWorld(hmap, terrain, nworld);
+			Vector3 normal=terrain->GetNormal(world);
+			
+			float steep=std::abs(normal.DotProduct(Vector3(0,1,0)));
+			float i=(steep-(threshold-halffade))/fade;
+			i=std::max(0.0f, std::min(1.0f, i));
+			i=1.0f-i;
+			buffer.set(x,(bh-1)-y, i);
+		}
+	}
+	BlendRasterizedBuffer8Max(blend0, blend1, &buffer, layer, mask, usemask, invertmask);;
+}
