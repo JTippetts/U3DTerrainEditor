@@ -64,13 +64,15 @@ vec4 SampleDiffuse(vec3 detailtexcoord, int layer, vec3 blend)
 		texture(sDetailMap2, vec3(detailtexcoord.xy*cLayerScaling[layer], layer))*blend.z +
 		texture(sDetailMap2, vec3(detailtexcoord.xz*cLayerScaling[layer], layer))*blend.y;
 }
-	
+
+#ifdef BUMPMAP
 vec3 SampleBump(vec3 detailtexcoord, int layer, vec3 blend)
 {
 	return DecodeNormal(texture(sNormal3, vec3(detailtexcoord.zy*cLayerScaling[layer], layer)))*blend.x+
 		DecodeNormal(texture(sNormal3, vec3(detailtexcoord.xy*cLayerScaling[layer], layer)))*blend.z+
 		DecodeNormal(texture(sNormal3, vec3(detailtexcoord.xz*cLayerScaling[layer],layer)))*blend.y;
 }
+#endif
 #endif
 
 void VS()

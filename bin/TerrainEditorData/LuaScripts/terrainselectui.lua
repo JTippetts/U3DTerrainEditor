@@ -197,11 +197,16 @@ function TerrainSelectUI:ChangeMaterial(triplanar, smoothing, normalmapping)
 	TerrainState.terrainMaterial:SetTexture(1, TerrainState.blendtex2)
 	TerrainState.terrainMaterial:SetTexture(4, TerrainState.masktex)
 	TerrainState.terrainMaterial:SetTexture(2, self.difftex)
-	TerrainState.terrainMaterial:SetTexture(3, self.normaltex)
+	
+	if normalmapping then
+		TerrainState.terrainMaterial:SetTexture(3, self.normaltex)
+	end
 	
 	if TerrainState.terrain then
 		TerrainState.terrain.material=TerrainState.terrainMaterial
 	end
+	
+	self:SetLayerScales()
 end
 
 function TerrainSelectUI:HandleMaterialSettingToggled(eventType, eventData)
