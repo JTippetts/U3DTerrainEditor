@@ -428,7 +428,7 @@ end
 
 function TerrainSelectUI:GetBrushSettings()
 	local power,max,radius,hardness=0,0,5,0.9
-	local usemask=false
+	local usemask0, usemask1, usemask2=false
 	
 	local slider
 	slider=self.panel:GetChild("PowerSlider", true)
@@ -443,10 +443,14 @@ function TerrainSelectUI:GetBrushSettings()
 	slider=self.panel:GetChild("HardnessSlider", true)
 	if slider then hardness=(slider.value/slider.range) end
 	
-	local button=self.panel:GetChild("MaskCheck", true)
-	if button then usemask=button.checked end
+	local button=self.panel:GetChild("Mask0Check", true)
+	if button then usemask0=button.checked end
+	button=self.panel:GetChild("Mask1Check", true)
+	if button then usemask1=button.checked end
+	button=self.panel:GetChild("Mask2Check", true)
+	if button then usemask2=button.checked end
 	
-	return power,max,radius,math.min(1,hardness),usemask
+	return power,max,radius,math.min(1,hardness),usemask0,usemask1,usemask2
 end
 
 function TerrainSelectUI:GenerateBrushPreview()
@@ -535,7 +539,7 @@ function TerrainSelectUI:HandleSliderChanged(eventType, eventData)
 	local which=eventData["Element"]:GetPtr("UIElement")
 	if which==nil then return end
 	
-	self.power, self.max, self.radius, self.hardness, self.usemask=self:GetBrushSettings(self.panel)
+	self.power, self.max, self.radius, self.hardness, self.usemask0, self.usemask1, self.usemask2=self:GetBrushSettings(self.panel)
 	--self:BuildCursorMesh(self.radius)
 	
 	if which==self.panel:GetChild("PowerSlider", true) then
@@ -571,11 +575,11 @@ function TerrainSelectUI:Update(dt)
 	if ground then 
 		local world=Vector3(ground.x,0,ground.z)
 		self.cursor:SetPosition(world)
-		self.power, self.max, self.radius, self.hardness, self.usemask=self:GetBrushSettings()
+		self.power, self.max, self.radius, self.hardness, self.usemask0, self.usemask1, self.usemask2=self:GetBrushSettings()
 		
 		if input:GetMouseButtonDown(MOUSEB_LEFT) and ui:GetElementAt(mousepos.x, mousepos.y)==nil then
 			local gx,gz=ground.x,ground.z
-			ApplyBlendBrush8(TerrainState.terrain,TerrainState.hmap,TerrainState.blend1,TerrainState.blend2,TerrainState.mask,gx,gz,self.radius,self.max,self.power,self.hardness,self.layer-1,self.usemask,dt)TerrainState. blendtex1:SetData(TerrainState.blend1) TerrainState.blendtex2:SetData(TerrainState.blend2)
+			ApplyBlendBrush8(TerrainState.terrain,TerrainState.hmap,TerrainState.blend1,TerrainState.blend2,TerrainState.mask,gx,gz,self.radius,self.max,self.power,self.hardness,self.layer-1,self.usemask0, self.usemask1,self.usemask2,dt)TerrainState. blendtex1:SetData(TerrainState.blend1) TerrainState.blendtex2:SetData(TerrainState.blend2)
 		end
 	end
 	

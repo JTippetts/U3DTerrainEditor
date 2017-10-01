@@ -88,13 +88,16 @@ function EditMaskUI:GetBrushPreview()
 	return self.brushtex
 end
 
-function EditMaskUI:Activate()
+function EditMaskUI:Activate(which)
 	self.panel.visible=true
 	self.active=true
 	self:GenerateBrushPreview(self.hardness)
 	self.cursor:BuildCursorMesh(self.radius)
 	self.cursor:Show()
 	self.cursor:SetBrushPreview(self.brushtex)
+	self.which=math.max(0, math.min(2,which))
+	local name=self.panel:GetChild("MaskName", true)
+	if name then name.text = "Edit Mask "..self.which end
 end
 
 function EditMaskUI:Deactivate()
@@ -147,7 +150,7 @@ function EditMaskUI:Update(dt)
 		
 		if input:GetMouseButtonDown(MOUSEB_LEFT) and ui:GetElementAt(mousepos.x, mousepos.y)==nil then
 			local gx,gz=ground.x,ground.z
-			ApplyMaskBrush(TerrainState.terrain,TerrainState.hmap,TerrainState.mask,gx,gz,self.radius,self.max,self.power,self.hardness,dt) TerrainState.masktex:SetData(TerrainState.mask)
+			ApplyMaskBrush(TerrainState.terrain,TerrainState.hmap,TerrainState.mask,gx,gz,self.radius,self.max,self.power,self.hardness,dt,self.which) TerrainState.masktex:SetData(TerrainState.mask)
 		end
 	end
 	

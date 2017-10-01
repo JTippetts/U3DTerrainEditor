@@ -243,7 +243,7 @@ void PS(
 	float4 weights1 = tWeightMap1.Sample(sWeightMap1, iTexCoord.xy);
 	
 	#ifdef USEMASKTEXTURE
-		float mask=tMask4.Sample(sMask4, iTexCoord.xy).r;
+		float3 mask=tMask4.Sample(sMask4, iTexCoord.xy).rgb;
 	#endif
 	
 	#ifdef TRIPLANAR
@@ -297,7 +297,9 @@ void PS(
 	float4 diffColor=(tex1*b1+tex2*b2+tex3*b3+tex4*b4+tex5*b5+tex6*b6+tex7*b7+tex8*b8)/bsum;
 	
 	#ifdef USEMASKTEXTURE
-		diffColor=lerp(float4(1,0.5,0.3, diffColor.a), diffColor, mask);
+		diffColor.r=lerp(1.0, diffColor.r, mask.r);
+		diffColor.g=lerp(1.0, diffColor.g, mask.g);
+		diffColor.b=lerp(1.0, diffColor.b, mask.b);
 	#endif
 
     // Get material specular albedo

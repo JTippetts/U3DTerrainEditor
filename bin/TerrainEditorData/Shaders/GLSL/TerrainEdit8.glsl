@@ -143,7 +143,7 @@ void PS()
 	vec4 weights1 = texture(sWeightMap1, vTexCoord.xy);
 	
 	#ifdef USEMASKTEXTURE
-		float mask=texture(sMask4, vTexCoord.xy).r;
+		vec3 mask=texture(sMask4, vTexCoord.xy).rgb;
 	#endif
 	
 	#ifdef TRIPLANAR
@@ -199,7 +199,9 @@ void PS()
 	//vec4 diffColor=tex1;
 	
 	#ifdef USEMASKTEXTURE
-	diffColor=mix(vec4(1,0.5,0.3, diffColor.a), diffColor, mask);
+	diffColor=mix(vec4(1,0,0, diffColor.a), diffColor, mask.r);
+	diffColor=mix(vec4(0,1,0,diffColor.a), diffColor, mask.g);
+	diffColor=mix(vec4(0,0,1,diffColor.a), diffColor, mask.b);
 	#endif
 
     // Get material specular albedo

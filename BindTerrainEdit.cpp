@@ -235,8 +235,10 @@ static int tolua_BindTerrainEdit_ApplyHeightBrush00(lua_State* tolua_S)
  !tolua_isnumber(tolua_S,8,0,&tolua_err) ||
  !tolua_isnumber(tolua_S,9,0,&tolua_err) ||
  !tolua_isboolean(tolua_S,10,0,&tolua_err) ||
- !tolua_isnumber(tolua_S,11,0,&tolua_err) ||
- !tolua_isnoobj(tolua_S,12,&tolua_err)
+ !tolua_isboolean(tolua_S,11,0,&tolua_err) ||
+ !tolua_isboolean(tolua_S,12,0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,13,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,14,&tolua_err)
  )
  goto tolua_lerror;
  else
@@ -251,10 +253,12 @@ static int tolua_BindTerrainEdit_ApplyHeightBrush00(lua_State* tolua_S)
   float max = ((float)  tolua_tonumber(tolua_S,7,0));
   float power = ((float)  tolua_tonumber(tolua_S,8,0));
   float hardness = ((float)  tolua_tonumber(tolua_S,9,0));
-  bool usemask = ((bool)  tolua_toboolean(tolua_S,10,0));
-  float dt = ((float)  tolua_tonumber(tolua_S,11,0));
+  bool usemask0 = ((bool)  tolua_toboolean(tolua_S,10,0));
+  bool usemask1 = ((bool)  tolua_toboolean(tolua_S,11,0));
+  bool usemask2 = ((bool)  tolua_toboolean(tolua_S,12,0));
+  float dt = ((float)  tolua_tonumber(tolua_S,13,0));
  {
-  ApplyHeightBrush(terrain,height,mask,x,z,radius,max,power,hardness,usemask,dt);
+  ApplyHeightBrush(terrain,height,mask,x,z,radius,max,power,hardness,usemask0,usemask1,usemask2,dt);
  }
  }
  return 0;
@@ -285,8 +289,10 @@ static int tolua_BindTerrainEdit_ApplyBlendBrush00(lua_State* tolua_S)
  !tolua_isnumber(tolua_S,10,0,&tolua_err) ||
  !tolua_isnumber(tolua_S,11,0,&tolua_err) ||
  !tolua_isboolean(tolua_S,12,0,&tolua_err) ||
- !tolua_isnumber(tolua_S,13,0,&tolua_err) ||
- !tolua_isnoobj(tolua_S,14,&tolua_err)
+ !tolua_isboolean(tolua_S,13,0,&tolua_err) ||
+ !tolua_isboolean(tolua_S,14,0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,15,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,16,&tolua_err)
  )
  goto tolua_lerror;
  else
@@ -303,10 +309,12 @@ static int tolua_BindTerrainEdit_ApplyBlendBrush00(lua_State* tolua_S)
   float power = ((float)  tolua_tonumber(tolua_S,9,0));
   float hardness = ((float)  tolua_tonumber(tolua_S,10,0));
   int layer = ((int)  tolua_tonumber(tolua_S,11,0));
-  bool usemask = ((bool)  tolua_toboolean(tolua_S,12,0));
-  float dt = ((float)  tolua_tonumber(tolua_S,13,0));
+  bool usemask0 = ((bool)  tolua_toboolean(tolua_S,12,0));
+  bool usemask1 = ((bool)  tolua_toboolean(tolua_S,13,0));
+  bool usemask2 = ((bool)  tolua_toboolean(tolua_S,14,0));
+  float dt = ((float)  tolua_tonumber(tolua_S,15,0));
  {
-  ApplyBlendBrush(terrain,height,blend,mask,x,z,radius,mx,power,hardness,layer,usemask,dt);
+  ApplyBlendBrush(terrain,height,blend,mask,x,z,radius,mx,power,hardness,layer,usemask0,usemask1,usemask2,dt);
  }
  }
  return 0;
@@ -338,8 +346,10 @@ static int tolua_BindTerrainEdit_ApplyBlendBrush800(lua_State* tolua_S)
  !tolua_isnumber(tolua_S,11,0,&tolua_err) ||
  !tolua_isnumber(tolua_S,12,0,&tolua_err) ||
  !tolua_isboolean(tolua_S,13,0,&tolua_err) ||
- !tolua_isnumber(tolua_S,14,0,&tolua_err) ||
- !tolua_isnoobj(tolua_S,15,&tolua_err)
+ !tolua_isboolean(tolua_S,14,0,&tolua_err) ||
+ !tolua_isboolean(tolua_S,15,0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,16,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,17,&tolua_err)
  )
  goto tolua_lerror;
  else
@@ -357,10 +367,12 @@ static int tolua_BindTerrainEdit_ApplyBlendBrush800(lua_State* tolua_S)
   float power = ((float)  tolua_tonumber(tolua_S,10,0));
   float hardness = ((float)  tolua_tonumber(tolua_S,11,0));
   int layer = ((int)  tolua_tonumber(tolua_S,12,0));
-  bool usemask = ((bool)  tolua_toboolean(tolua_S,13,0));
-  float dt = ((float)  tolua_tonumber(tolua_S,14,0));
+  bool usemask0 = ((bool)  tolua_toboolean(tolua_S,13,0));
+  bool usemask1 = ((bool)  tolua_toboolean(tolua_S,14,0));
+  bool usemask2 = ((bool)  tolua_toboolean(tolua_S,15,0));
+  float dt = ((float)  tolua_tonumber(tolua_S,16,0));
  {
-  ApplyBlendBrush8(terrain,height,blend0,blend1,mask,x,z,radius,mx,power,hardness,layer,usemask,dt);
+  ApplyBlendBrush8(terrain,height,blend0,blend1,mask,x,z,radius,mx,power,hardness,layer,usemask0,usemask1,usemask2,dt);
  }
  }
  return 0;
@@ -389,7 +401,8 @@ static int tolua_BindTerrainEdit_ApplyMaskBrush00(lua_State* tolua_S)
  !tolua_isnumber(tolua_S,8,0,&tolua_err) ||
  !tolua_isnumber(tolua_S,9,0,&tolua_err) ||
  !tolua_isnumber(tolua_S,10,0,&tolua_err) ||
- !tolua_isnoobj(tolua_S,11,&tolua_err)
+ !tolua_isnumber(tolua_S,11,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,12,&tolua_err)
  )
  goto tolua_lerror;
  else
@@ -405,8 +418,9 @@ static int tolua_BindTerrainEdit_ApplyMaskBrush00(lua_State* tolua_S)
   float power = ((float)  tolua_tonumber(tolua_S,8,0));
   float hardness = ((float)  tolua_tonumber(tolua_S,9,0));
   float dt = ((float)  tolua_tonumber(tolua_S,10,0));
+  int which = ((int)  tolua_tonumber(tolua_S,11,0));
  {
-  ApplyMaskBrush(terrain,height,mask,x,z,radius,mx,power,hardness,dt);
+  ApplyMaskBrush(terrain,height,mask,x,z,radius,mx,power,hardness,dt,which);
  }
  }
  return 0;
@@ -435,8 +449,10 @@ static int tolua_BindTerrainEdit_ApplySmoothBrush00(lua_State* tolua_S)
  !tolua_isnumber(tolua_S,8,0,&tolua_err) ||
  !tolua_isnumber(tolua_S,9,0,&tolua_err) ||
  !tolua_isboolean(tolua_S,10,0,&tolua_err) ||
- !tolua_isnumber(tolua_S,11,0,&tolua_err) ||
- !tolua_isnoobj(tolua_S,12,&tolua_err)
+ !tolua_isboolean(tolua_S,11,0,&tolua_err) ||
+ !tolua_isboolean(tolua_S,12,0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,13,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,14,&tolua_err)
  )
  goto tolua_lerror;
  else
@@ -451,10 +467,12 @@ static int tolua_BindTerrainEdit_ApplySmoothBrush00(lua_State* tolua_S)
   float max = ((float)  tolua_tonumber(tolua_S,7,0));
   float power = ((float)  tolua_tonumber(tolua_S,8,0));
   float hardness = ((float)  tolua_tonumber(tolua_S,9,0));
-  bool usemask = ((bool)  tolua_toboolean(tolua_S,10,0));
-  float dt = ((float)  tolua_tonumber(tolua_S,11,0));
+  bool usemask0 = ((bool)  tolua_toboolean(tolua_S,10,0));
+  bool usemask1 = ((bool)  tolua_toboolean(tolua_S,11,0));
+  bool usemask2 = ((bool)  tolua_toboolean(tolua_S,12,0));
+  float dt = ((float)  tolua_tonumber(tolua_S,13,0));
  {
-  ApplySmoothBrush(terrain,height,mask,x,z,radius,max,power,hardness,usemask,dt);
+  ApplySmoothBrush(terrain,height,mask,x,z,radius,max,power,hardness,usemask0,usemask1,usemask2,dt);
  }
  }
  return 0;

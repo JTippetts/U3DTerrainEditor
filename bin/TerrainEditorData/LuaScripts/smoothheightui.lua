@@ -39,7 +39,7 @@ end
 
 function SmoothHeightUI:GetBrushSettings()
 	local power,max,radius,hardness=0,0,5,0.9
-	local usemask=false
+	local usemask0, usemask1, usemask2=false,false,false
 	
 	local slider
 	slider=self.panel:GetChild("PowerSlider", true)
@@ -57,7 +57,7 @@ function SmoothHeightUI:GetBrushSettings()
 	local button=self.panel:GetChild("MaskCheck", true)
 	if button then usemask=button.checked end
 	
-	return power,max,radius,math.min(1,hardness),usemask
+	return power,max,radius,math.min(1,hardness),usemask0,usemask1,usemask2
 end
 
 function SmoothHeightUI:GenerateBrushPreview()
@@ -107,7 +107,7 @@ function SmoothHeightUI:HandleSliderChanged(eventType, eventData)
 	local which=eventData["Element"]:GetPtr("UIElement")
 	if which==nil then return end
 	
-	self.power, self.max, self.radius, self.hardness, self.usemask=self:GetBrushSettings(self.panel)
+	self.power, self.max, self.radius, self.hardness, self.usemask0, self.usemask1, self.usemask2=self:GetBrushSettings(self.panel)
 	--self:BuildCursorMesh(self.radius)
 	
 	if which==self.panel:GetChild("PowerSlider", true) then
@@ -147,7 +147,7 @@ function SmoothHeightUI:Update(dt)
 		
 		if input:GetMouseButtonDown(MOUSEB_LEFT) and ui:GetElementAt(mousepos.x, mousepos.y)==nil then
 			local gx,gz=ground.x,ground.z
-			ApplySmoothBrush(TerrainState.terrain,TerrainState.hmap,TerrainState.mask,gx,gz,self.radius, self.max, self.power, self.hardness, self.usemask, dt) TerrainState.terrain:ApplyHeightMap()
+			ApplySmoothBrush(TerrainState.terrain,TerrainState.hmap,TerrainState.mask,gx,gz,self.radius, self.max, self.power, self.hardness, self.usemask0, self.usemask1, self.usemask2, dt) TerrainState.terrain:ApplyHeightMap()
 		end
 	end
 	

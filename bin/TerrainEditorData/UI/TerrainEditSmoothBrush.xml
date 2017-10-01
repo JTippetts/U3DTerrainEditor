@@ -107,7 +107,7 @@
 	<element type="Window">
 		<attribute name="Layout Mode" value="Horizontal" />
 		<element type="CheckBox">
-			<attribute name="Name" value="MaskCheck" />
+			<attribute name="Name" value="Mask0Check" />
 		</element>
 		<element type="Text">
 			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
@@ -115,7 +115,37 @@
 			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Font Size" value="10" />
-			<attribute name="Text" value="Use Mask" />
+			<attribute name="Text" value="Use Mask 0" />
+			<attribute name="Text Alignment" value="Center" />
+		</element>
+	</element>
+	<element type="Window">
+		<attribute name="Layout Mode" value="Horizontal" />
+		<element type="CheckBox">
+			<attribute name="Name" value="Mask1Check" />
+		</element>
+		<element type="Text">
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Font Size" value="10" />
+			<attribute name="Text" value="Use Mask 1" />
+			<attribute name="Text Alignment" value="Center" />
+		</element>
+	</element>
+	<element type="Window">
+		<attribute name="Layout Mode" value="Horizontal" />
+		<element type="CheckBox">
+			<attribute name="Name" value="Mask2Check" />
+		</element>
+		<element type="Text">
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Font Size" value="10" />
+			<attribute name="Text" value="Use Mask 2" />
 			<attribute name="Text Alignment" value="Center" />
 		</element>
 	</element>

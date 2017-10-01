@@ -39,7 +39,7 @@ end
 
 function EditHeightUI:GetBrushSettings()
 	local power,max,radius,hardness=0,0,5,0.9
-	local usemask=false
+	local usemask0, usemask1, usemask2=false,false,false
 	
 	local slider
 	slider=self.panel:GetChild("PowerSlider", true)
@@ -54,10 +54,16 @@ function EditHeightUI:GetBrushSettings()
 	slider=self.panel:GetChild("HardnessSlider", true)
 	if slider then hardness=(slider.value/slider.range) end
 	
-	local button=self.panel:GetChild("MaskCheck", true)
-	if button then usemask=button.checked end
+	local button=self.panel:GetChild("Mask0Check", true)
+	if button then usemask0=button.checked end
 	
-	return power,max,radius,math.min(1,hardness),usemask
+	button=self.panel:GetChild("Mask1Check", true)
+	if button then usemask1=button.checked end
+	
+	button=self.panel:GetChild("Mask2Check", true)
+	if button then usemask2=button.checked end
+	
+	return power,max,radius,math.min(1,hardness),usemask0, usemask1, usemask2
 end
 
 function EditHeightUI:GenerateBrushPreview()
@@ -118,7 +124,7 @@ function EditHeightUI:HandleSliderChanged(eventType, eventData)
 	local which=eventData["Element"]:GetPtr("UIElement")
 	if which==nil then return end
 	
-	self.power, self.max, self.radius, self.hardness, self.usemask=self:GetBrushSettings(self.panel)
+	self.power, self.max, self.radius, self.hardness, self.usemask0, self.usemask1, self.usemask2=self:GetBrushSettings(self.panel)
 	--self:BuildCursorMesh(self.radius)
 	
 	if which==self.panel:GetChild("PowerSlider", true) then
@@ -154,7 +160,7 @@ function EditHeightUI:Update(dt)
 	if ground then 
 		local world=Vector3(ground.x,0,ground.z)
 		self.cursor:SetPosition(world)
-		self.power, self.max, self.radius, self.hardness, self.usemask=self:GetBrushSettings()
+		self.power, self.max, self.radius, self.hardness, self.usemask0, self.usemask1, self.usemask2=self:GetBrushSettings()
 		
 		if input:GetMouseButtonDown(MOUSEB_LEFT) and ui:GetElementAt(mousepos.x, mousepos.y)==nil then
 			if input:GetQualifierDown(QUAL_CTRL) then
@@ -169,7 +175,7 @@ function EditHeightUI:Update(dt)
 				self:SetHeight(ht)
 			else
 				local gx,gz=ground.x,ground.z
-				ApplyHeightBrush(TerrainState.terrain,TerrainState.hmap,TerrainState.mask,gx,gz,self.radius, self.max, self.power, self.hardness, self.usemask, dt) TerrainState.terrain:ApplyHeightMap()
+				ApplyHeightBrush(TerrainState.terrain,TerrainState.hmap,TerrainState.mask,gx,gz,self.radius, self.max, self.power, self.hardness, self.usemask0, self.usemask1, self.usemask2, dt) TerrainState.terrain:ApplyHeightMap()
 			end
 		end
 	end

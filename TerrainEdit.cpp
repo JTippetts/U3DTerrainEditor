@@ -168,7 +168,7 @@ void BalanceColors(Color &col0, Color &col1, int layer)
 	}
 }
 	
-void ApplyHeightBrush(Terrain *terrain, Image *height, Image *mask, float x, float z, float radius, float max, float power, float hardness, bool usemask, float dt)
+void ApplyHeightBrush(Terrain *terrain, Image *height, Image *mask, float x, float z, float radius, float max, float power, float hardness, bool usemask0, bool usemask1, bool usemask2, float dt)
 {
 	if(!terrain || !height || !terrain) return;
 	
@@ -190,9 +190,19 @@ void ApplyHeightBrush(Terrain *terrain, Image *height, Image *mask, float x, flo
 				i=std::max(0.0f, std::min(1.0f, i));
 				i=std::sin(i*1.57079633);
 				i=i*dt*power;
-				if(usemask)
+				if(usemask0)
 				{
 					float m=mask->GetPixelBilinear((float)(hx)/(float)(height->GetWidth()), (float)(hz)/(float)(height->GetHeight())).r_;
+					i=i*m;
+				}
+				if(usemask1)
+				{
+					float m=mask->GetPixelBilinear((float)(hx)/(float)(height->GetWidth()), (float)(hz)/(float)(height->GetHeight())).g_;
+					i=i*m;
+				}
+				if(usemask2)
+				{
+					float m=mask->GetPixelBilinear((float)(hx)/(float)(height->GetWidth()), (float)(hz)/(float)(height->GetHeight())).b_;
 					i=i*m;
 				}
 				float hval=GetHeightValue(height,hx,hz);
@@ -204,7 +214,7 @@ void ApplyHeightBrush(Terrain *terrain, Image *height, Image *mask, float x, flo
 	}
 }
 
-void ApplyBlendBrush(Terrain *terrain, Image *height, Image *blend, Image *mask, float x, float z, float radius, float mx, float power, float hardness, int layer, bool usemask, float dt)
+void ApplyBlendBrush(Terrain *terrain, Image *height, Image *blend, Image *mask, float x, float z, float radius, float mx, float power, float hardness, int layer, bool usemask0, bool usemask1, bool usemask2, float dt)
 {
 	if(!blend || !height || !terrain) return;
 	
@@ -228,9 +238,19 @@ void ApplyBlendBrush(Terrain *terrain, Image *height, Image *blend, Image *mask,
 				float i=((d-rad)/(hardness*rad-rad));
 				i=std::max(0.0f, std::min(1.0f, i));
 				i=i*dt*power;
-				if(usemask)
+				if(usemask0)
 				{
 					float m=mask->GetPixelBilinear((float)(hx)/(float)(blend->GetWidth()), (float)(hz)/(float)(blend->GetHeight())).r_;
+					i=i*m;
+				}
+				if(usemask1)
+				{
+					float m=mask->GetPixelBilinear((float)(hx)/(float)(blend->GetWidth()), (float)(hz)/(float)(blend->GetHeight())).g_;
+					i=i*m;
+				}
+				if(usemask2)
+				{
+					float m=mask->GetPixelBilinear((float)(hx)/(float)(blend->GetWidth()), (float)(hz)/(float)(blend->GetHeight())).b_;
 					i=i*m;
 				}
 				Color col=blend->GetPixel(hx,hz);
@@ -277,7 +297,7 @@ void ApplyBlendBrush(Terrain *terrain, Image *height, Image *blend, Image *mask,
 	}
 }
 
-void ApplyBlendBrush8(Terrain *terrain, Image *height, Image *blend0, Image *blend1, Image *mask, float x, float z, float radius, float mx, float power, float hardness, int layer, bool usemask, float dt)
+void ApplyBlendBrush8(Terrain *terrain, Image *height, Image *blend0, Image *blend1, Image *mask, float x, float z, float radius, float mx, float power, float hardness, int layer, bool usemask0, bool usemask1, bool usemask2, float dt)
 {
 	if(!blend0 || !blend1 || !height || !terrain) return;
 	
@@ -301,9 +321,19 @@ void ApplyBlendBrush8(Terrain *terrain, Image *height, Image *blend0, Image *ble
 				float i=((d-rad)/(hardness*rad-rad));
 				i=std::max(0.0f, std::min(1.0f, i));
 				i=i*dt*power;
-				if(usemask)
+				if(usemask0)
 				{
 					float m=mask->GetPixelBilinear((float)(hx)/(float)(blend0->GetWidth()), (float)(hz)/(float)(blend0->GetHeight())).r_;
+					i=i*m;
+				}
+				if(usemask1)
+				{
+					float m=mask->GetPixelBilinear((float)(hx)/(float)(blend0->GetWidth()), (float)(hz)/(float)(blend0->GetHeight())).g_;
+					i=i*m;
+				}
+				if(usemask2)
+				{
+					float m=mask->GetPixelBilinear((float)(hx)/(float)(blend0->GetWidth()), (float)(hz)/(float)(blend0->GetHeight())).b_;
 					i=i*m;
 				}
 				Color col0=blend0->GetPixel(hx,hz);
@@ -349,7 +379,7 @@ void ApplyBlendBrush8(Terrain *terrain, Image *height, Image *blend0, Image *ble
 	}
 }
 
-void ApplyMaskBrush(Terrain *terrain, Image *height, Image *mask, float x, float z, float radius, float mx, float power, float hardness, float dt)
+void ApplyMaskBrush(Terrain *terrain, Image *height, Image *mask, float x, float z, float radius, float mx, float power, float hardness, float dt, int which)
 {
 	if(!mask || !height || !terrain) return;
 	
@@ -375,7 +405,12 @@ void ApplyMaskBrush(Terrain *terrain, Image *height, Image *mask, float x, float
 				i=i*dt*power;
 				
 				Color col=mask->GetPixel(hx,hz);
-				col.r_=col.r_+i*((1.0f-mx)-col.r_);
+				if(which==0)
+					col.r_=col.r_+i*((1.0f-mx)-col.r_);
+				else if(which==1)
+					col.g_=col.g_+i*((1.0f-mx)-col.g_);
+				else
+					col.b_=col.b_+i*((1.0f-mx)-col.b_);
 				mask->SetPixel(hx,hz,col);
 				//LOGINFO(String(hx)+String(",")+String(hz)+String(":")+String(col.r_));
 			}
@@ -448,7 +483,7 @@ float CalcSmooth(Image *height, float *kernel, int kernelsize, int terrainx, int
 	else return 0.0f;
 }
 
-void ApplySmoothBrush(Terrain *terrain, Image *height, Image *mask, float x, float z, float radius, float max, float power, float hardness, bool usemask, float dt)
+void ApplySmoothBrush(Terrain *terrain, Image *height, Image *mask, float x, float z, float radius, float max, float power, float hardness, bool usemask0, bool usemask1, bool usemask2, float dt)
 {
 	static float kernel[81]=
 	{
@@ -482,9 +517,19 @@ void ApplySmoothBrush(Terrain *terrain, Image *height, Image *mask, float x, flo
 				float i=((d-radius)/(hardness*radius-radius));
 				i=std::max(0.0f, std::min(1.0f, i));
 				i=i*dt*power;
-				if(usemask)
+				if(usemask0)
 				{
 					float m=mask->GetPixelBilinear((float)(hx)/(float)(height->GetWidth()), (float)(hz)/(float)(height->GetHeight())).r_;
+					i=i*m;
+				}
+				if(usemask1)
+				{
+					float m=mask->GetPixelBilinear((float)(hx)/(float)(height->GetWidth()), (float)(hz)/(float)(height->GetHeight())).g_;
+					i=i*m;
+				}
+				if(usemask2)
+				{
+					float m=mask->GetPixelBilinear((float)(hx)/(float)(height->GetWidth()), (float)(hz)/(float)(height->GetHeight())).b_;
 					i=i*m;
 				}
 				float hval=GetHeightValue(height,hx,hz);

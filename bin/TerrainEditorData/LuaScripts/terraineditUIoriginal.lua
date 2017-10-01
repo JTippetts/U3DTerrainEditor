@@ -248,10 +248,10 @@ function TerrainEditUI:ActivateSmoothBrush()
 	
 end
 
-function TerrainEditUI:ActivateMaskBrush()
+function TerrainEditUI:ActivateMaskBrush(which)
 	self.heightbrush:Deactivate()
 	self.blendbrush:Deactivate()
-	self.maskbrush:Activate()
+	self.maskbrush:Activate(which)
 	self.smoothbrush:Deactivate()
 end
 
@@ -300,8 +300,12 @@ function TerrainEditUI:HandleButtonPress(eventType, eventData)
 		self:ActivateSmoothBrush()
 	elseif name=="TerrainButton" then
 		self:ActivateBlendBrush()
-	elseif name=="MaskButton" then
-		self:ActivateMaskBrush()
+	elseif name=="Mask0Button" then
+		self:ActivateMaskBrush(0)
+	elseif name=="Mask1Button" then
+		self:ActivateMaskBrush(1)
+	elseif name=="Mask2Button" then
+		self:ActivateMaskBrush(2)
 	elseif name=="ClearMask" then
 		TerrainState.mask:Clear(Color(1,1,1))
 		TerrainState.masktex:SetData(TerrainState.mask)

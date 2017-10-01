@@ -1,11 +1,14 @@
 <?xml version="1.0"?>
 <element type="Window">
-	<attribute name="Position" value="113 589" />
+	<attribute name="Position" value="121 587" />
 	<attribute name="Size" value="191 179" />
+	<attribute name="Pivot" value="0 0" />
 	<attribute name="Layout Mode" value="Vertical" />
 	<attribute name="Layout Border" value="5 5 5 5" />
 	<attribute name="Is Movable" value="true" />
 	<element type="Text">
+		<attribute name="Name" value="MaskName" />
+		<attribute name="Pivot" value="0 0" />
 		<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
 		<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
 		<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
@@ -15,8 +18,10 @@
 		<attribute name="Text Alignment" value="Center" />
 	</element>
 	<element type="Window">
+		<attribute name="Pivot" value="0 0" />
 		<attribute name="Layout Mode" value="Horizontal" />
 		<element type="Text">
+			<attribute name="Pivot" value="0 0" />
 			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
@@ -26,12 +31,16 @@
 		</element>
 		<element type="Slider">
 			<attribute name="Name" value="PowerSlider" />
+			<attribute name="Pivot" value="0 0" />
 			<attribute name="Range" value="100" />
 			<attribute name="Value" value="100" />
-			<element type="BorderImage" internal="true" style="none" />
+			<element type="BorderImage" internal="true" style="none">
+				<attribute name="Pivot" value="0 0" />
+			</element>
 		</element>
 		<element type="Text">
 			<attribute name="Name" value="PowerText" />
+			<attribute name="Pivot" value="0 0" />
 			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
@@ -42,8 +51,10 @@
 		</element>
 	</element>
 	<element type="Window">
+		<attribute name="Pivot" value="0 0" />
 		<attribute name="Layout Mode" value="Horizontal" />
 		<element type="Text">
+			<attribute name="Pivot" value="0 0" />
 			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
@@ -53,12 +64,16 @@
 		</element>
 		<element type="Slider">
 			<attribute name="Name" value="RadiusSlider" />
+			<attribute name="Pivot" value="0 0" />
 			<attribute name="Range" value="100" />
 			<attribute name="Value" value="50" />
-			<element type="BorderImage" internal="true" style="none" />
+			<element type="BorderImage" internal="true" style="none">
+				<attribute name="Pivot" value="0 0" />
+			</element>
 		</element>
 		<element type="Text">
 			<attribute name="Name" value="RadiusText" />
+			<attribute name="Pivot" value="0 0" />
 			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
@@ -69,8 +84,10 @@
 		</element>
 	</element>
 	<element type="Window">
+		<attribute name="Pivot" value="0 0" />
 		<attribute name="Layout Mode" value="Horizontal" />
 		<element type="Text">
+			<attribute name="Pivot" value="0 0" />
 			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
@@ -80,12 +97,16 @@
 		</element>
 		<element type="Slider">
 			<attribute name="Name" value="MaxSlider" />
+			<attribute name="Pivot" value="0 0" />
 			<attribute name="Range" value="100" />
 			<attribute name="Value" value="50" />
-			<element type="BorderImage" internal="true" style="none" />
+			<element type="BorderImage" internal="true" style="none">
+				<attribute name="Pivot" value="0 0" />
+			</element>
 		</element>
 		<element type="Text">
 			<attribute name="Name" value="MaxText" />
+			<attribute name="Pivot" value="0 0" />
 			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
@@ -96,8 +117,10 @@
 		</element>
 	</element>
 	<element type="Window">
+		<attribute name="Pivot" value="0 0" />
 		<attribute name="Layout Mode" value="Horizontal" />
 		<element type="Text">
+			<attribute name="Pivot" value="0 0" />
 			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
@@ -107,12 +130,16 @@
 		</element>
 		<element type="Slider">
 			<attribute name="Name" value="HardnessSlider" />
+			<attribute name="Pivot" value="0 0" />
 			<attribute name="Range" value="99" />
 			<attribute name="Value" value="50" />
-			<element type="BorderImage" internal="true" style="none" />
+			<element type="BorderImage" internal="true" style="none">
+				<attribute name="Pivot" value="0 0" />
+			</element>
 		</element>
 		<element type="Text">
 			<attribute name="Name" value="HardnessText" />
+			<attribute name="Pivot" value="0 0" />
 			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
@@ -126,16 +153,21 @@
 		<attribute name="Name" value="BrushPreview" />
 		<attribute name="Min Size" value="64 64" />
 		<attribute name="Max Size" value="64 64" />
-		<attribute name="Horiz Alignment" value="Center" />
+		<attribute name="Min Anchor" value="0.5 0" />
+		<attribute name="Max Anchor" value="0.5 0" />
+		<attribute name="Pivot" value="0.5 0" />
 		<attribute name="Image Rect" value="0 0 64 64" />
 	</element>
 	<element type="Window">
 		<attribute name="Min Size" value="0 15" />
+		<attribute name="Pivot" value="0 0" />
 	</element>
 	<element type="Button">
 		<attribute name="Name" value="ClearMask" />
+		<attribute name="Pivot" value="0 0" />
 		<attribute name="Layout Mode" value="Horizontal" />
 		<element type="Text">
+			<attribute name="Pivot" value="0 0" />
 			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
