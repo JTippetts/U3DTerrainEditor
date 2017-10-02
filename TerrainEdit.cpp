@@ -872,29 +872,32 @@ RasterVertex CubicInterpolate(RasterVertex &p0, RasterVertex &p1, RasterVertex &
 (2*P0 - 5*P1 + 4*P2 - P3) * t2 +
 (-P0 + 3*P1- 3*P2 + P3) * t3)
 	*/
-	float t3=t*t*t;
+	
+	/*float t3=t*t*t;
 	float t2=t*t;
 	
 	return RasterVertex(
 		0.5*((2.0*p1.x_) + (-p0.x_ + p2.x_)*t + (2.0*p0.x_-5.0*p1.x_+4.0*p2.x_-p3.x_)*t2 + (-p0.x_+3.0*p1.x_-3.0*p2.x_+p3.x_)*t3),
 		0.5*((2.0*p1.y_) + (-p0.y_ + p2.y_)*t + (2.0*p0.y_-5.0*p1.y_+4.0*p2.y_-p3.y_)*t2 + (-p0.y_+3.0*p1.y_-3.0*p2.y_+p3.y_)*t3),
 		0.5*((2.0*p1.val_) + (-p0.val_ + p2.val_)*t + (2.0*p0.val_-5.0*p1.val_+4.0*p2.val_-p3.val_)*t2 + (-p0.val_+3.0*p1.val_-3.0*p2.val_+p3.val_)*t3)
-	);
+	);*/
+	
+	return ((p1*2.0f) + (p2-p0)*t + (p0*2.0f - p1*5.0f + p2*4.0f - p3) * t*t + (p1*3.0f - p2*3.0f + p3 - p0) * t*t*t)*0.5f;
 }
 
 void TessellateLineList(RasterVertexList *in, RasterVertexList *out, int steps)
 {
-	if(in->size()<4) return;
+	//if(in->size()<4) return;
 	
 	float tinc=1.0 / (float)steps;
 	out->resize(0);
 	
-	int A=0, B=0, C=1, D=2;
+	int A=0, B=0, C=std::min((int)in->size()-1,1), D=std::min((int)in->size()-1,2);
 	float t=0.0;
 	while(B != C)
 	{
 		t=0.0;
-		for (int i=0; i<steps; ++i)
+		for (int i=0; i<(C==D? steps+1 : steps); ++i)
 		{
 			RasterVertex p=CubicInterpolate((*in)[A], (*in)[B], (*in)[C], (*in)[D], t);
 			t+=tinc;
@@ -1031,8 +1034,8 @@ void BuildQuadStrip(RasterVertexList *in, RasterVertexList *out, float width)
 	ly/=d;
 	plx=-ly;
 	ply=lx;
-	v1=RasterVertex(p1.x_+0.5*width*plx, p1.y_+0.5*width*ply, p1.val_);
-	v2=RasterVertex(p1.x_-0.5*width*plx, p1.y_-0.5*width*ply, p1.val_);
+	v1=RasterVertex(p2.x_+0.5*width*plx, p2.y_+0.5*width*ply, p2.val_);
+	v2=RasterVertex(p2.x_-0.5*width*plx, p2.y_-0.5*width*ply, p2.val_);
 	out->push_back(v1);
 	out->push_back(v2);
 }
@@ -1130,8 +1133,8 @@ void BuildQuadStripVarying(RasterVertexList *in, RasterVertexList *out, float st
 	ply=lx;
 	width=startwidth+t*(endwidth-startwidth);
 	t+=tinc;
-	v1=RasterVertex(p1.x_+0.5*width*plx, p1.y_+0.5*width*ply, p1.val_);
-	v2=RasterVertex(p1.x_-0.5*width*plx, p1.y_-0.5*width*ply, p1.val_);
+	v1=RasterVertex(p2.x_+0.5*width*plx, p2.y_+0.5*width*ply, p2.val_);
+	v2=RasterVertex(p2.x_-0.5*width*plx, p2.y_-0.5*width*ply, p2.val_);
 	out->push_back(v1);
 	out->push_back(v2);
 }

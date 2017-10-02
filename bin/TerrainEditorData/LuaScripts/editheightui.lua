@@ -165,9 +165,9 @@ function EditHeightUI:Update(dt)
 		if input:GetMouseButtonDown(MOUSEB_LEFT) and ui:GetElementAt(mousepos.x, mousepos.y)==nil then
 			if input:GetQualifierDown(QUAL_CTRL) then
 				local norm=WorldToNormalized(TerrainState.hmap,TerrainState.terrain,ground)
-				local col=hmap:GetPixelBilinear(norm.x,1-norm.y)
+				local col=TerrainState.hmap:GetPixelBilinear(norm.x,1-norm.y)
 				local ht=0
-				if hmap.components==1 then ht=col.r
+				if TerrainState.hmap.components==1 then ht=col.r
 				else ht=col.r+col.g/256.0
 				end
 				print(ht)

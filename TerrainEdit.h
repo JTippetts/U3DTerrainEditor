@@ -53,6 +53,42 @@ using namespace anl;
 			val_=rhs.val_;
 		}
 		
+		RasterVertex operator-(const RasterVertex &rhs)
+		{
+			RasterVertex v;
+			v.x_=x_-rhs.x_;
+			v.y_=y_-rhs.y_;
+			v.val_=val_-rhs.val_;
+			return v;
+		}
+		
+		RasterVertex operator+(const RasterVertex &rhs)
+		{
+			RasterVertex v;
+			v.x_=x_+rhs.x_;
+			v.y_=y_+rhs.y_;
+			v.val_=val_+rhs.val_;
+			return v;
+		}
+		
+		RasterVertex operator*(const RasterVertex &rhs)
+		{
+			RasterVertex v;
+			v.x_=x_*rhs.x_;
+			v.y_=y_*rhs.y_;
+			v.val_=val_*rhs.val_;
+			return v;
+		}
+		
+		RasterVertex operator*(float t)
+		{
+			RasterVertex v;
+			v.x_=x_*t;
+			v.y_=y_*t;
+			v.val_=val_*t;
+			return v;
+		}
+		
 	};
 	
 	typedef TArray1D<RasterVertex> RasterVertexList;
