@@ -11,6 +11,7 @@
 #include <Urho3D/Resource/Image.h>
 #include <Urho3D/IO/Deserializer.h>
 #include <Urho3D/IO/File.h>
+#include "Spline.h"
 #include <iostream>
 
 bool LoadImage(Context *c, Image *i, const char *fname)
@@ -889,7 +890,22 @@ void TessellateLineList(RasterVertexList *in, RasterVertexList *out, int steps)
 {
 	//if(in->size()<4) return;
 	
-	float tinc=1.0 / (float)steps;
+	CRSpline<Vector3> ll;
+	for(int c=0; c<in->size(); ++c)
+	{
+		ll.Push(Vector3((*in)[c].x_, (*in)[c].y_, (*in)[c].val_));
+	}
+	
+	Vector<Vector3> lo;
+	ll.Solve(lo, steps*(ll.NumPoints()-1), 0.1);
+	
+	for(int c=0; c<lo.Size(); ++c)
+	{
+		out->push_back(RasterVertex(lo[c].x_, lo[c].y_, lo[c].z_));
+	}
+	
+	
+	/*float tinc=1.0 / (float)steps;
 	out->resize(0);
 	
 	int A=0, B=0, C=std::min((int)in->size()-1,1), D=std::min((int)in->size()-1,2);
@@ -908,7 +924,8 @@ void TessellateLineList(RasterVertexList *in, RasterVertexList *out, int steps)
 		C=D;
 		D=D+1;
 		if(D>in->size()-1) D=in->size()-1;
-	}
+	}*/
+	
 	
 }
 
@@ -952,7 +969,16 @@ RasterVertex CalculateLineIntersection(RasterVertex p0, RasterVertex p1, RasterV
 
 void BuildQuadStrip(RasterVertexList *in, RasterVertexList *out, float width)
 {
-	if(in->size()<3) return;
+	Vector<Vector3> points;
+	for(int c=0; c<in->size(); ++c) points.Push(Vector3((*in)[c].x_, (*in)[c].y_, (*in)[c].val_));
+	
+	Vector<Vector3> quads;
+	BuildQuadStripA(points, quads, width);
+	
+	out->resize(0);
+	
+	for(int c=0; c<quads.Size(); ++c) out->push_back(RasterVertex(quads[c].x_, quads[c].y_, quads[c].z_));
+	/*if(in->size()<3) return;
 	out->resize(0);
 	
 	RasterVertex p2=(*in)[1];
@@ -1037,7 +1063,8 @@ void BuildQuadStrip(RasterVertexList *in, RasterVertexList *out, float width)
 	v1=RasterVertex(p2.x_+0.5*width*plx, p2.y_+0.5*width*ply, p2.val_);
 	v2=RasterVertex(p2.x_-0.5*width*plx, p2.y_-0.5*width*ply, p2.val_);
 	out->push_back(v1);
-	out->push_back(v2);
+	out->push_back(v2);*/
+	
 }
 
 void BuildQuadStripVarying(RasterVertexList *in, RasterVertexList *out, float startwidth, float endwidth)
