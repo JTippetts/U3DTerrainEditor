@@ -1,5 +1,6 @@
 $#include <Urho3D/LuaScript/ToluaUtils.h>
 $#include "TerrainEdit.h"
+$#include "NodeGraphLink.h"
 
 $using namespace Urho3D;
 $using namespace anl;
@@ -173,3 +174,10 @@ Vector2 WorldToNormalized(Image *height, Terrain *terrain, Vector3 world);
 	
 	void SteepnessTerrain(Image *blend0, Image *blend1, Image *hmap, Terrain *terrain, Image *mask, float threshold, float fade, unsigned int layer, bool usemask, bool invertmask);
 	
+	
+class NodeGraphLink : public BorderImage
+{
+	public:
+	void SetTarget(UIElement *e);
+	void ClearTarget();
+};

@@ -72,7 +72,7 @@ return
 		ApplyBedFunction(blend, bedhardness, true)
 		
 		
-		if distort then
+		if distort and xdistort and ydistort then
 			DistortBuffer(blend, xdistort, ydistort, power)
 		end
 		

@@ -14,6 +14,7 @@ TOLUA_API int tolua_BindTerrainEdit_open (lua_State* tolua_S);
 
 #include <Urho3D/LuaScript/ToluaUtils.h>
 #include "TerrainEdit.h"
+#include "NodeGraphLink.h"
 using namespace Urho3D;
 using namespace anl;
 
@@ -82,6 +83,7 @@ static int tolua_collect_MaskSettings (lua_State* tolua_S)
 static void tolua_reg_types (lua_State* tolua_S)
 {
  tolua_usertype(tolua_S,"RasterVertexList");
+ tolua_usertype(tolua_S,"NodeGraphLink");
  tolua_usertype(tolua_S,"CustomGeometry");
  tolua_usertype(tolua_S,"Color");
  tolua_usertype(tolua_S,"MaskSettings");
@@ -92,6 +94,8 @@ static void tolua_reg_types (lua_State* tolua_S)
  tolua_usertype(tolua_S,"Vector3");
  tolua_usertype(tolua_S,"Scene");
  tolua_usertype(tolua_S,"Terrain");
+ tolua_usertype(tolua_S,"UIElement");
+ tolua_usertype(tolua_S,"BorderImage");
  tolua_usertype(tolua_S,"Context");
  tolua_usertype(tolua_S,"Vector2");
  tolua_usertype(tolua_S,"RasterVertex");
@@ -4803,6 +4807,70 @@ static int tolua_BindTerrainEdit_SteepnessTerrain00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: SetTarget of class  NodeGraphLink */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_NodeGraphLink_SetTarget00
+static int tolua_BindTerrainEdit_NodeGraphLink_SetTarget00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"NodeGraphLink",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"UIElement",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  NodeGraphLink* self = (NodeGraphLink*)  tolua_tousertype(tolua_S,1,0);
+  UIElement* e = ((UIElement*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'SetTarget'", NULL);
+#endif
+ {
+  self->SetTarget(e);
+ }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'SetTarget'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: ClearTarget of class  NodeGraphLink */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_NodeGraphLink_ClearTarget00
+static int tolua_BindTerrainEdit_NodeGraphLink_ClearTarget00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"NodeGraphLink",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  NodeGraphLink* self = (NodeGraphLink*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'ClearTarget'", NULL);
+#endif
+ {
+  self->ClearTarget();
+ }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'ClearTarget'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* Open function */
 TOLUA_API int tolua_BindTerrainEdit_open (lua_State* tolua_S)
 {
@@ -4993,6 +5061,11 @@ TOLUA_API int tolua_BindTerrainEdit_open (lua_State* tolua_S)
  tolua_function(tolua_S,"LoadImage",tolua_BindTerrainEdit_LoadImage00);
  tolua_function(tolua_S,"DistortBuffer",tolua_BindTerrainEdit_DistortBuffer00);
  tolua_function(tolua_S,"SteepnessTerrain",tolua_BindTerrainEdit_SteepnessTerrain00);
+ tolua_cclass(tolua_S,"NodeGraphLink","NodeGraphLink","BorderImage",NULL);
+ tolua_beginmodule(tolua_S,"NodeGraphLink");
+  tolua_function(tolua_S,"SetTarget",tolua_BindTerrainEdit_NodeGraphLink_SetTarget00);
+  tolua_function(tolua_S,"ClearTarget",tolua_BindTerrainEdit_NodeGraphLink_ClearTarget00);
+ tolua_endmodule(tolua_S);
  tolua_endmodule(tolua_S);
  return 1;
 }

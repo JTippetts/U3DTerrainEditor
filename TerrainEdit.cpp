@@ -1891,7 +1891,16 @@ void BuildQuadStrip(RasterVertexList *in, RasterVertexList *out, float width)
 
 void BuildQuadStripVarying(RasterVertexList *in, RasterVertexList *out, float startwidth, float endwidth)
 {
-	if(in->size()<3) return;
+	Vector<Vector3> points;
+	for(int c=0; c<in->size(); ++c) points.Push(Vector3((*in)[c].x_, (*in)[c].y_, (*in)[c].val_));
+	
+	Vector<Vector3> quads;
+	BuildQuadStripVaryingA(points, quads, startwidth, endwidth);
+	
+	out->resize(0);
+	
+	for(int c=0; c<quads.Size(); ++c) out->push_back(RasterVertex(quads[c].x_, quads[c].y_, quads[c].z_));
+	/*if(in->size()<3) return;
 	out->resize(0);
 	
 	float t=0.0f;
@@ -1985,7 +1994,7 @@ void BuildQuadStripVarying(RasterVertexList *in, RasterVertexList *out, float st
 	v1=RasterVertex(p2.x_+0.5*width*plx, p2.y_+0.5*width*ply, p2.val_);
 	v2=RasterVertex(p2.x_-0.5*width*plx, p2.y_-0.5*width*ply, p2.val_);
 	out->push_back(v1);
-	out->push_back(v2);
+	out->push_back(v2);*/
 }
 
 void CopyImageInto(Image *dest, Image *src, int x, int y)

@@ -12,6 +12,7 @@ require "LuaScripts/buildcomposite"
 require "LuaScripts/filterui"
 require "LuaScripts/saveloadui"
 require "LuaScripts/terrainselectui"
+require "LuaScripts/nodegraphui"
 
 require 'LuaScripts/Class'
 

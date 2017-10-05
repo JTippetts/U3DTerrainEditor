@@ -12,7 +12,7 @@ ui.root.defaultStyle = uiStyle;
 iconStyle = cache:GetResource("XMLFile", "UI/EditorIcons.xml");
 
 function CreateCursor()
-    local cursor = Cursor:new("Cursor")
+    cursor = Cursor:new("Cursor")
     --cursor.defaultStyle=uiStyle
 	--cursor.style=AUTO_STYLE
 	cursor:SetStyleAuto(uiStyle)
@@ -29,6 +29,9 @@ function TerrainEditUI:BuildUI()
 	self.newterrain=ui:LoadLayout(cache:GetResource("XMLFile", "UI/TerrainEditNewTerrain.xml"))
 	self.toolbar=ui:LoadLayout(cache:GetResource("XMLFile", "UI/TerrainEditToolbar.xml"))
 	self.blendbrush=scene_:CreateScriptObject("TerrainSelectUI")
+	
+	self.nodegraph=scene_:CreateScriptObject("NodeGraphUI")
+	self.nodegraph:Deactivate()
 	
 	
 	self.blendbrush:Deactivate()
@@ -301,6 +304,10 @@ function TerrainEditUI:Update(dt)
 			table.remove(waypoints)
 		end
 		self:UpdateWaypointVis()
+	elseif input:GetKeyPress(KEY_N) then
+		self.nodegraph:Activate()
+	elseif input:GetKeyPress(KEY_M) then
+		self.nodegraph:Deactivate()
 	end
 	
 	local c
