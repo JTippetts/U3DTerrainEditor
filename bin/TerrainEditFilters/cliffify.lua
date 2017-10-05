@@ -27,8 +27,11 @@ return
 		local layer=ops["Cliff Layer"]
 		local ms=MaskSettings(ops["Use Mask 0?"], ops["Invert Mask 0?"], ops["Use Mask 1?"], ops["Invert Mask 1?"], ops["Use Mask 2?"], ops["Invert Mask 2?"])
 		
-		SteepnessTerrain(TerrainState.blend1, TerrainState.blend2, TerrainState.hmap, TerrainState.terrain, mask, thresh, fade, layer, usemask, invertmask)
-		TerrainState.blendtex1:SetData(TerrainState.blend1,false)
-		TerrainState.blendtex2:SetData(TerrainState.blend2,false)
+		local buf=CArray2Dd()
+		TerrainState:GetSteepness(buf,thresh,fade)
+		TerrainState:SetLayerBuffer(buf,layer,ms)
+		--SteepnessTerrain(TerrainState.blend1, TerrainState.blend2, TerrainState.hmap, TerrainState.terrain, mask, thresh, fade, layer, usemask, invertmask)
+		--TerrainState.blendtex1:SetData(TerrainState.blend1,false)
+		--TerrainState.blendtex2:SetData(TerrainState.blend2,false)
 	end,
 }

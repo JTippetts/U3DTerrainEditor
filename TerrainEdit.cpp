@@ -278,9 +278,9 @@ void TerrainEdit::SetHeightBuffer(CArray2Dd &buffer, MaskSettings &masksettings)
 {
 	if(!terrain_) return;
 	
-	if(buffer.width()!=hmap_->GetWidth() || buffer.height()!=hmap_->GetHeight()) return;
-	int w=buffer.width();
-	int h=buffer.height();
+	//if(buffer.width()!=hmap_->GetWidth() || buffer.height()!=hmap_->GetHeight()) return;
+	int w=hmap_->GetWidth();
+	int h=hmap_->GetHeight();
 	
 	for(int x=0; x<=w; ++x)
 	{
@@ -289,7 +289,7 @@ void TerrainEdit::SetHeightBuffer(CArray2Dd &buffer, MaskSettings &masksettings)
 			float nx=(float)x/(float)(w);
 			float ny=(float)y/(float)(h);
 			
-			double v=buffer.get(x,y);
+			double v=buffer.getBilinear(nx,ny);
 			Color mask=mask_->GetPixelBilinear(nx,ny);
 			float oldheight=GetHeightValue(x,y);
 			float maskval=1.0f;
@@ -324,13 +324,13 @@ void TerrainEdit::SetLayerBuffer(CArray2Dd &buffer, int layer, MaskSettings &mas
 {
 	if(!terrain_) return;
 	
-	if(buffer.width()!=blend0_->GetWidth() || buffer.height()!=blend0_->GetHeight()) return;
-	int w=buffer.width();
-	int h=buffer.height();
+	//if(buffer.width()!=blend0_->GetWidth() || buffer.height()!=blend0_->GetHeight()) return;
+	int w=blend0_->GetWidth();
+	int h=blend0_->GetHeight();
 	
-	for(int x=0; x<=w; ++x)
+	for(int x=0; x<w; ++x)
 	{
-		for(int y=0; y<=h; ++y)
+		for(int y=0; y<h; ++y)
 		{
 			float nx=(float)x/(float)(w);
 			float ny=(float)y/(float)(h);
@@ -404,13 +404,13 @@ void TerrainEdit::SetLayerBufferMax(CArray2Dd &buffer, int layer, MaskSettings &
 {
 	if(!terrain_) return;
 	
-	if(buffer.width()!=blend0_->GetWidth() || buffer.height()!=blend0_->GetHeight()) return;
-	int w=buffer.width();
-	int h=buffer.height();
+	//if(buffer.width()!=blend0_->GetWidth() || buffer.height()!=blend0_->GetHeight()) return;
+	int w=blend0_->GetWidth();
+	int h=blend0_->GetHeight();
 	
-	for(int x=0; x<=w; ++x)
+	for(int x=0; x<w; ++x)
 	{
-		for(int y=0; y<=h; ++y)
+		for(int y=0; y<h; ++y)
 		{
 			float nx=(float)x/(float)(w);
 			float ny=(float)y/(float)(h);
@@ -482,6 +482,43 @@ void TerrainEdit::SetLayerBufferMax(CArray2Dd &buffer, int layer, MaskSettings &
 
 void TerrainEdit::BlendHeightBuffer(CArray2Dd &buffer, CArray2Dd &blend, MaskSettings &masksettings)
 {
+	for(int x=0; x<hmap_->GetWidth()-1; ++x)
+	{
+		for(int y=0; y<hmap_->GetHeight()-1; ++y)
+		{
+			float nx=(float)x / (float)(hmap_->GetWidth());
+			float ny=(float)y / (float)(hmap_->GetHeight());
+			
+			float v=buffer.getBilinear(nx,ny);
+			float bval=blend.getBilinear(nx,ny);
+			float ht=GetHeightValue(x, y);
+			Color mask=mask_->GetPixelBilinear(nx,ny);
+			float maskval=1.0f;
+			
+			if(masksettings.usemask0)
+			{
+				float m=mask.r_;
+				if(masksettings.invertmask0) m=1.0f-m;
+				bval*=m;
+			}
+			if(masksettings.usemask1)
+			{
+				float m=mask.g_;
+				if(masksettings.invertmask1) m=1.0f-m;
+				bval*=m;
+			}
+			if(masksettings.usemask2)
+			{
+				float m=mask.b_;
+				if(masksettings.invertmask2) m=1.0f-m;
+				bval*=m;
+			}
+			
+			float newht=ht+bval*(v-ht);
+			SetHeightValue(x,y,newht);
+		}
+	}
+	terrain_->SetHeightMap(hmap_);
 }
 	
 void TerrainEdit::ApplyHeightBrush(float x, float z, float dt, BrushSettings &brush, MaskSettings &masksettings)
@@ -838,7 +875,30 @@ void TerrainEdit::LoadMask(const String &filename)
 {
 }
 
-
+void TerrainEdit::GetSteepness(CArray2Dd &buffer, float threshold, float fade)
+{
+	unsigned int bw=blend0_->GetWidth();
+	unsigned int bh=blend0_->GetHeight();
+	float halffade=fade*0.5f;
+	
+	buffer.resize(bw,bh);
+	
+	for(unsigned int y=0; y<bh; ++y)
+	{
+		for(unsigned int x=0; x<bw; ++x)
+		{
+			Vector2 nworld=Vector2((float)(x)/(float)(bw-1), (float)(y)/(float)(bh-1));
+			Vector3 world=NormalizedToWorld(nworld);
+			Vector3 normal=terrain_->GetNormal(world);
+			
+			float steep=std::abs(normal.y_);
+			float i=(steep-(threshold-halffade))/fade;
+			i=std::max(0.0f, std::min(1.0f, i));
+			i=1.0f-i;
+			buffer.set(x,(bh-1)-y, i);
+		}
+	}
+}
 
 
 bool LoadImage(Context *c, Image *i, const char *fname)

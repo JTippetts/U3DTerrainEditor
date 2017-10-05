@@ -2177,6 +2177,43 @@ static int tolua_BindTerrainEdit_TerrainEdit_LoadMask00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: GetSteepness of class  TerrainEdit */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_TerrainEdit_GetSteepness00
+static int tolua_BindTerrainEdit_TerrainEdit_GetSteepness00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"TerrainEdit",0,&tolua_err) ||
+ (tolua_isvaluenil(tolua_S,2,&tolua_err) || !tolua_isusertype(tolua_S,2,"CArray2Dd",0,&tolua_err)) ||
+ !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,5,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  TerrainEdit* self = (TerrainEdit*)  tolua_tousertype(tolua_S,1,0);
+  CArray2Dd* buffer = ((CArray2Dd*)  tolua_tousertype(tolua_S,2,0));
+  float threshold = ((float)  tolua_tonumber(tolua_S,3,0));
+  float fade = ((float)  tolua_tonumber(tolua_S,4,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'GetSteepness'", NULL);
+#endif
+ {
+  self->GetSteepness(*buffer,threshold,fade);
+ }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'GetSteepness'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* function: WorldToNormalized */
 #ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_WorldToNormalized00
 static int tolua_BindTerrainEdit_WorldToNormalized00(lua_State* tolua_S)
@@ -4500,6 +4537,7 @@ TOLUA_API int tolua_BindTerrainEdit_open (lua_State* tolua_S)
   tolua_function(tolua_S,"LoadBlend0",tolua_BindTerrainEdit_TerrainEdit_LoadBlend000);
   tolua_function(tolua_S,"LoadBlend1",tolua_BindTerrainEdit_TerrainEdit_LoadBlend100);
   tolua_function(tolua_S,"LoadMask",tolua_BindTerrainEdit_TerrainEdit_LoadMask00);
+  tolua_function(tolua_S,"GetSteepness",tolua_BindTerrainEdit_TerrainEdit_GetSteepness00);
  tolua_endmodule(tolua_S);
  tolua_function(tolua_S,"WorldToNormalized",tolua_BindTerrainEdit_WorldToNormalized00);
  tolua_function(tolua_S,"NormalizedToWorld",tolua_BindTerrainEdit_NormalizedToWorld00);

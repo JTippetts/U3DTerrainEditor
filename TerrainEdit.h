@@ -100,6 +100,8 @@ public:
 	void LoadBlend1(const String &filename);
 	void LoadMask(const String &filename);
 	
+	void GetSteepness(CArray2Dd &buffer, float threshold, float fade);
+	
 protected:
 	Node *terrainNode_;
 	Terrain *terrain_;

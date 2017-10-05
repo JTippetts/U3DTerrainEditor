@@ -163,10 +163,10 @@ function TerrainEditUI:UpdateWaypointVis()
 	self.waypointpreview.occludee=false
 	self.waypointpreview:SetNumGeometries(1)
 	local c
-	print("1")
+	--print("1")
 	local spacing=TerrainState:GetTerrain():GetSpacing()
 	local plist=RasterVertexList()
-	print("2")
+	--print("2")
 	for _,c in ipairs(waypoints) do
 		local pos=c.position
 		--local norm=WorldToNormalized(TerrainState.hmap,TerrainState.terrain,pos)
@@ -181,7 +181,7 @@ function TerrainEditUI:UpdateWaypointVis()
 		local ht=TerrainState:GetHeightValue(hx,(TerrainState:GetTerrainHeight()-1)-hy)
 		plist:push_back(RasterVertex(hx, hy, ht))
 	end
-	print("3")
+	--print("3")
 	if plist:size()<4 then return end
 	--print("Num waypoints: "..plist:size())
 	local curve=RasterVertexList()
@@ -208,7 +208,7 @@ function TerrainEditUI:UpdateWaypointVis()
 		return v
 	end
 	
-	print("build geom")
+	--print("build geom")
 	for c=0,quad:size()-4,2 do
 		self.waypointpreview:DefineVertex(buildVertex(quad:at(c)))
 		self.waypointpreview:DefineVertex(buildVertex(quad:at(c+1)))
@@ -220,7 +220,7 @@ function TerrainEditUI:UpdateWaypointVis()
 		--print("hi")
 		
 	end
-	print("end")
+	--print("end")
 	self.waypointpreview:Commit()
 	self.waypointpreview:SetMaterial(self.waypointpreviewmaterial)
 	local bbox=self.waypointpreview.worldBoundingBox

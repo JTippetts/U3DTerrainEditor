@@ -15,9 +15,18 @@ return
 		{name="Segment steps", type="value", value=10},
 		{name="Distort?", type="flag", value=false},
 		{name="Distortion power", type="value", value=4},
+		{name="Use Mask 0?", type="flag", value=false},
+		{name="Invert Mask 0?", type="flag", value=false},
+		{name="Use Mask 1?", type="flag", value=false},
+		{name="Invert Mask 1?", type="flag", value=false},
+		{name="Use Mask 2?", type="flag", value=false},
+		{name="Invert Mask 2?", type="flag", value=false},
 	},
 	
 	execute=function(self)
+		--print("1")
+		local ops=GetOptions(self.options)
+		
 		local bedwidth=self.options[1].value
 		local bedhardness=self.options[2].value
 		local pavingwidth=self.options[3].value
@@ -27,8 +36,10 @@ return
 		local distort=self.options[7].value
 		local power=self.options[8].value
 		
-		local buffer=CArray2Dd(TerrainState.hmap:GetWidth(), TerrainState.hmap:GetHeight())
-		local blend=CArray2Dd(TerrainState.hmap:GetWidth(), TerrainState.hmap:GetHeight())
+		local ms=MaskSettings(ops["Use Mask 0?"], ops["Invert Mask 0?"], ops["Use Mask 1?"], ops["Invert Mask 1?"], ops["Use Mask 2?"], ops["Invert Mask 2?"])
+		
+		local buffer=CArray2Dd(TerrainState:GetTerrainWidth(), TerrainState:GetTerrainHeight())
+		local blend=CArray2Dd(TerrainState:GetTerrainWidth(), TerrainState:GetTerrainHeight())
 		blend:fill(0)
 		
 		local c
@@ -36,10 +47,10 @@ return
 		local plist=RasterVertexList()
 		for _,c in ipairs(waypoints) do
 			local pos=c.position
-			local norm=WorldToNormalized(TerrainState.hmap,TerrainState.terrain,pos)
-			local hx=math.floor(norm.x*TerrainState.hmap:GetWidth())
-			local hy=math.floor(norm.y*TerrainState.hmap:GetHeight())
-			local ht=GetHeightValue(TerrainState.hmap,hx,(TerrainState.hmap:GetHeight()-1)-hy)
+			local norm=TerrainState:WorldToNormalized(pos)
+			local hx=math.floor(norm.x*TerrainState:GetTerrainWidth())
+			local hy=math.floor(norm.y*TerrainState:GetTerrainHeight())
+			local ht=TerrainState:GetHeightValue(hx,(TerrainState:GetTerrainHeight()-1)-hy)
 			plist:push_back(RasterVertex(hx,hy,ht))
 		end
 		
@@ -65,8 +76,10 @@ return
 			DistortBuffer(blend, xdistort, ydistort, power)
 		end
 		
-		BlendHeightWithRasterizedBuffer(TerrainState.hmap, buffer, blend)
-		TerrainState.terrain:ApplyHeightMap()
+		--BlendHeightWithRasterizedBuffer(TerrainState.hmap, buffer, blend)
+		--TerrainState.terrain:ApplyHeightMap()
+		print("blend")
+		TerrainState:BlendHeightBuffer(buffer,blend,ms)
 		
 		quad=RasterVertexList()
 		BuildQuadStrip(curve, quad, pavingwidth)
@@ -88,9 +101,10 @@ return
 		if distort then
 			DistortBuffer(blend, xdistort, ydistort, power)
 		end
-	
-		BlendRasterizedBuffer8Max(TerrainState.blend1,TerrainState.blend2,blend,pavinglayer,mask,usemask,invertmask)	
-		TerrainState.blendtex1:SetData(TerrainState.blend1, false)
-		TerrainState.blendtex2:SetData(TerrainState.blend2, false)
+		
+		TerrainState:SetLayerBufferMax(blend,pavinglayer,ms)
+		--BlendRasterizedBuffer8Max(TerrainState.blend1,TerrainState.blend2,blend,pavinglayer,mask,usemask,invertmask)	
+		--TerrainState.blendtex1:SetData(TerrainState.blend1, false)
+		--TerrainState.blendtex2:SetData(TerrainState.blend2, false)
 	end,
 }
