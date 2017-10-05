@@ -43,6 +43,8 @@ public:
 	
 	int GetTerrainWidth();
 	int GetTerrainHeight();
+	int GetBlendWidth();
+	int GetBlendHeight();
 	
 	void SetHeightBuffer(CArray2Dd &buffer, MaskSettings &masksettings);
 	void SetLayerBuffer(CArray2Dd &buffer, int layer, MaskSettings &masksettings);

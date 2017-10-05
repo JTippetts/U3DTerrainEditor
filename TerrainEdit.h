@@ -58,6 +58,8 @@ public:
 	
 	int GetTerrainWidth(){if (hmap_) return hmap_->GetWidth(); return 0;}
 	int GetTerrainHeight(){if (hmap_) return hmap_->GetHeight(); return 0;}
+	int GetBlendWidth(){if (blend0_) return blend0_->GetWidth(); return 0;}
+	int GetBlendHeight(){if (blend0_) return blend0_->GetHeight(); return 0;}
 	
 	float GetHeightValue(Vector3 worldpos);
 	

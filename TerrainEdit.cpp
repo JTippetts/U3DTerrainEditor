@@ -200,6 +200,7 @@ void TerrainEdit::SetTerrainSize(int w, int h, Vector3 spacing, bool use16bit)
 {
 	if(!terrain_) return;
 	hmap_->SetSize(w, h, use16bit ? 3 : 1);
+	hmap_->Clear(Color(0,0,0));
 	terrain_->SetHeightMap(hmap_);
 	terrain_->SetSpacing(spacing);
 }
@@ -211,6 +212,10 @@ void TerrainEdit::SetBlendMaskSize(int w, int h)
 	blend0_->SetSize(w,h,4);
 	blend1_->SetSize(w,h,4);
 	mask_->SetSize(w,h,3);
+	
+	blend0_->Clear(Color(1,0,0,0));
+	blend1_->Clear(Color(0,0,0,0));
+	mask_->Clear(Color(1,1,1));
 	
 	blendtex0_->SetData(blend0_, false);
 	blendtex1_->SetData(blend1_, false);
@@ -271,14 +276,208 @@ float TerrainEdit::GetHeightValue(Vector3 worldpos)
 
 void TerrainEdit::SetHeightBuffer(CArray2Dd &buffer, MaskSettings &masksettings)
 {
+	if(!terrain_) return;
+	
+	if(buffer.width()!=hmap_->GetWidth() || buffer.height()!=hmap_->GetHeight()) return;
+	int w=buffer.width();
+	int h=buffer.height();
+	
+	for(int x=0; x<=w; ++x)
+	{
+		for(int y=0; y<=h; ++y)
+		{
+			float nx=(float)x/(float)(w);
+			float ny=(float)y/(float)(h);
+			
+			double v=buffer.get(x,y);
+			Color mask=mask_->GetPixelBilinear(nx,ny);
+			float oldheight=GetHeightValue(x,y);
+			float maskval=1.0f;
+			
+			if(masksettings.usemask0)
+			{
+				float mval=mask.r_;
+				if(masksettings.invertmask0) mval=1.0-mval;
+				maskval*=mval;
+			}
+			if(masksettings.usemask1)
+			{
+				float mval=mask.g_;
+				if(masksettings.invertmask1) mval=1.0-mval;
+				maskval*=mval;
+			}
+			if(masksettings.usemask2)
+			{
+				float mval=mask.b_;
+				if(masksettings.invertmask2) mval=1.0-mval;
+				maskval*=mval;
+			}
+			
+			v=oldheight+maskval*(v-oldheight);
+			SetHeightValue(x,y,v);
+		}
+	}
+	terrain_->SetHeightMap(hmap_);
 }
 
 void TerrainEdit::SetLayerBuffer(CArray2Dd &buffer, int layer, MaskSettings &masksettings)
 {
+	if(!terrain_) return;
+	
+	if(buffer.width()!=blend0_->GetWidth() || buffer.height()!=blend0_->GetHeight()) return;
+	int w=buffer.width();
+	int h=buffer.height();
+	
+	for(int x=0; x<=w; ++x)
+	{
+		for(int y=0; y<=h; ++y)
+		{
+			float nx=(float)x/(float)(w);
+			float ny=(float)y/(float)(h);
+			
+			float i=buffer.getBilinear(nx,ny);
+			i=std::max(0.0f, std::min(1.0f, i));
+			Color mask=mask_->GetPixelBilinear(nx,ny);
+			
+			if(masksettings.usemask0)
+			{
+				float m=mask.r_;
+				if(masksettings.invertmask0) m=1.0f-m;
+				i*=m;
+			}
+			if(masksettings.usemask1)
+			{
+				float m=mask.g_;
+				if(masksettings.invertmask1) m=1.0f-m;
+				i*=m;
+			}
+			if(masksettings.usemask2)
+			{
+				float m=mask.b_;
+				if(masksettings.invertmask2) m=1.0f-m;
+				i*=m;
+			}
+			Color col0=blend0_->GetPixel(x,y);
+			Color col1=blend1_->GetPixel(x,y);
+			if(layer==0)
+			{
+				col0.r_=i;
+			}
+			else if(layer==1)
+			{
+				col0.g_=i;
+			}
+			else if(layer==2)
+			{
+				col0.b_=i;
+			}
+			else if(layer==3)
+			{
+				col0.a_=i;
+			}
+			else if(layer==4)
+			{
+				col1.r_=i;
+			}
+			else if(layer==5)
+			{
+				col1.g_=i;
+			}
+			else if(layer==6)
+			{
+				col1.b_=i;
+			}
+			else if(layer==7)
+			{
+				col1.a_=i;
+			}
+			BalanceColors(col0, col1, layer);
+			blend0_->SetPixel(x,y,col0);
+			blend1_->SetPixel(x,y,col1);
+		}
+	}
+	blendtex0_->SetData(blend0_, false);
+	blendtex1_->SetData(blend1_, false);
 }
 
 void TerrainEdit::SetLayerBufferMax(CArray2Dd &buffer, int layer, MaskSettings &masksettings)
 {
+	if(!terrain_) return;
+	
+	if(buffer.width()!=blend0_->GetWidth() || buffer.height()!=blend0_->GetHeight()) return;
+	int w=buffer.width();
+	int h=buffer.height();
+	
+	for(int x=0; x<=w; ++x)
+	{
+		for(int y=0; y<=h; ++y)
+		{
+			float nx=(float)x/(float)(w);
+			float ny=(float)y/(float)(h);
+			
+			float i=buffer.getBilinear(nx,ny);
+			i=std::max(0.0f, std::min(1.0f, i));
+			Color mask=mask_->GetPixelBilinear(nx,ny);
+			
+			if(masksettings.usemask0)
+			{
+				float m=mask.r_;
+				if(masksettings.invertmask0) m=1.0f-m;
+				i*=m;
+			}
+			if(masksettings.usemask1)
+			{
+				float m=mask.g_;
+				if(masksettings.invertmask1) m=1.0f-m;
+				i*=m;
+			}
+			if(masksettings.usemask2)
+			{
+				float m=mask.b_;
+				if(masksettings.invertmask2) m=1.0f-m;
+				i*=m;
+			}
+			Color col0=blend0_->GetPixel(x,y);
+			Color col1=blend1_->GetPixel(x,y);
+			if(layer==0)
+			{
+				col0.r_=std::max(col0.r_,i);
+			}
+			else if(layer==1)
+			{
+				col0.g_=std::max(col0.g_,i);
+			}
+			else if(layer==2)
+			{
+				col0.b_=std::max(col0.b_,i);
+			}
+			else if(layer==3)
+			{
+				col0.a_=std::max(col0.a_,i);
+			}
+			else if(layer==4)
+			{
+				col1.r_=std::max(col1.r_,i);
+			}
+			else if(layer==5)
+			{
+				col1.g_=std::max(col1.g_,i);
+			}
+			else if(layer==6)
+			{
+				col1.b_=std::max(col1.b_,i);
+			}
+			else if(layer==7)
+			{
+				col1.a_=std::max(col1.a_,i);
+			}
+			BalanceColors(col0, col1, layer);
+			blend0_->SetPixel(x,y,col0);
+			blend1_->SetPixel(x,y,col1);
+		}
+	}
+	blendtex0_->SetData(blend0_, false);
+	blendtex1_->SetData(blend1_, false);
 }
 
 void TerrainEdit::BlendHeightBuffer(CArray2Dd &buffer, CArray2Dd &blend, MaskSettings &masksettings)

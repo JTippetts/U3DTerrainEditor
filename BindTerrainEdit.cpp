@@ -1133,6 +1133,70 @@ static int tolua_BindTerrainEdit_TerrainEdit_GetTerrainHeight00(lua_State* tolua
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: GetBlendWidth of class  TerrainEdit */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_TerrainEdit_GetBlendWidth00
+static int tolua_BindTerrainEdit_TerrainEdit_GetBlendWidth00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"TerrainEdit",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  TerrainEdit* self = (TerrainEdit*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'GetBlendWidth'", NULL);
+#endif
+ {
+  int tolua_ret = (int)  self->GetBlendWidth();
+ tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'GetBlendWidth'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: GetBlendHeight of class  TerrainEdit */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_TerrainEdit_GetBlendHeight00
+static int tolua_BindTerrainEdit_TerrainEdit_GetBlendHeight00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"TerrainEdit",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  TerrainEdit* self = (TerrainEdit*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'GetBlendHeight'", NULL);
+#endif
+ {
+  int tolua_ret = (int)  self->GetBlendHeight();
+ tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'GetBlendHeight'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: SetHeightBuffer of class  TerrainEdit */
 #ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_TerrainEdit_SetHeightBuffer00
 static int tolua_BindTerrainEdit_TerrainEdit_SetHeightBuffer00(lua_State* tolua_S)
@@ -4406,6 +4470,8 @@ TOLUA_API int tolua_BindTerrainEdit_open (lua_State* tolua_S)
   tolua_function(tolua_S,"GetHeightValue",tolua_BindTerrainEdit_TerrainEdit_GetHeightValue01);
   tolua_function(tolua_S,"GetTerrainWidth",tolua_BindTerrainEdit_TerrainEdit_GetTerrainWidth00);
   tolua_function(tolua_S,"GetTerrainHeight",tolua_BindTerrainEdit_TerrainEdit_GetTerrainHeight00);
+  tolua_function(tolua_S,"GetBlendWidth",tolua_BindTerrainEdit_TerrainEdit_GetBlendWidth00);
+  tolua_function(tolua_S,"GetBlendHeight",tolua_BindTerrainEdit_TerrainEdit_GetBlendHeight00);
   tolua_function(tolua_S,"SetHeightBuffer",tolua_BindTerrainEdit_TerrainEdit_SetHeightBuffer00);
   tolua_function(tolua_S,"SetLayerBuffer",tolua_BindTerrainEdit_TerrainEdit_SetLayerBuffer00);
   tolua_function(tolua_S,"SetLayerBufferMax",tolua_BindTerrainEdit_TerrainEdit_SetLayerBufferMax00);

@@ -77,8 +77,12 @@ return
 		{name="Noise function", type="list", value="simplefbm", list=noisekernelsindex},
 		{name="Min scale", type="value", value=0},
 		{name="Max scale", type="value", value=1},
-		{name="Use Mask?", type="flag", value=false},
-		{name="Invert Mask?", type="flag", value=false},
+		{name="Use Mask 0?", type="flag", value=false},
+		{name="Invert Mask 0?", type="flag", value=false},
+		{name="Use Mask 1?", type="flag", value=false},
+		{name="Invert Mask 1?", type="flag", value=false},
+		{name="Use Mask 2?", type="flag", value=false},
+		{name="Invert Mask 2?", type="flag", value=false},
 		{name="Frequency", type="value", value=16},
 		{name="Detail", type="value", value=10},
 		{name="Bias", type="value", value=0.5},
@@ -91,7 +95,7 @@ return
 		
 		local k=noisekernels[ops["Noise function"]](ops)
 		if k then
-			local hw,hh=TerrainState.hmap:GetWidth(),TerrainState.hmap:GetHeight()
+			local hw,hh=TerrainState:GetTerrainWidth(),TerrainState:GetTerrainHeight()
 			local buffer=CArray2Dd(hw,hh)
 			
 			map2D(SEAMLESS_NONE, buffer, k, SMappingRanges(0,1,0,1,0,1), 0, k:lastIndex())
@@ -105,9 +109,8 @@ return
 				end
 			end
 			
-			SetHeightFromRasterBuffer(TerrainState.hmap,buffer,mask,ops["Use Mask?"], ops["Invert Mask?"])
-		
-			TerrainState.terrain:ApplyHeightMap()
+			local ms=MaskSettings(ops["Use Mask 0?"], ops["Invert Mask 0?"], ops["Use Mask 1?"], ops["Invert Mask 1?"], ops["Use Mask 2?"], ops["Invert Mask 2?"])
+			TerrainState:SetHeightBuffer(buffer, ms)
 		end
 	end
 }
