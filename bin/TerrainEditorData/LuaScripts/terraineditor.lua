@@ -31,9 +31,11 @@ function ColorToHeight(col)
 	return (col.r+col.g/256)
 end
 
-TerrainState=
-{
-}
+--TerrainState=
+--{
+--}
+
+TerrainState=TerrainEdit()
 
 
 function Start()
@@ -79,8 +81,8 @@ function CreateScene()
     zone.boundingBox = BoundingBox(-1000.0, 1000.0)
     zone.ambientColor = Color(0.5, 0.5, 0.7)
     zone.fogColor = Color(0.7,0.8,0.9)
-    zone.fogStart = 300.0
-    zone.fogEnd = 375.0
+    zone.fogStart = 800.0
+    zone.fogEnd = 875.0
 
     -- Create a directional light to the world. Enable cascaded shadows on it
     local lightNode = scene_:CreateChild("DirectionalLight")
@@ -131,7 +133,7 @@ function CreateScene()
 	cam.allowpitch=true
 	cam.maxfollow=300
 	cam.follow=100
-	cam.clipdist=325
+	cam.clipdist=875
 	cam:Finalize()
 	
 	--local lt=cameraNode:CreateComponent("Light")

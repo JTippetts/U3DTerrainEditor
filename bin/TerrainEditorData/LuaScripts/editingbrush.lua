@@ -14,7 +14,8 @@ function EditingBrush:BuildCursorMesh(radius)
 	self.brushcursor:SetDynamic(true)
 	--self.brushcursor:SetMaterial(0, self.brushmat)
 	
-	local spacing=TerrainState.terrain:GetSpacing()
+	--local spacing=TerrainState.terrain:GetSpacing()
+	local spacing=TerrainState:GetTerrain():GetSpacing()
 	local spacingx=spacing.x
 	local spacingz=spacing.z
 	local meshsize=math.floor(radius)*2+2
@@ -71,7 +72,8 @@ function EditingBrush:SetBrushCursorHeight()
 	local ground=cam:GetScreenGround(mousepos.x, mousepos.y)
 	
 	if ground then
-		SetBrushCursorHeight(TerrainState.terrain, self.brushcursor, ground.x, ground.z)
+		--SetBrushCursorHeight(TerrainState.terrain, self.brushcursor, ground.x, ground.z)
+		TerrainState:SetBrushCursorHeight(self.brushcursor, ground.x, ground.z)
 	end
 end
 

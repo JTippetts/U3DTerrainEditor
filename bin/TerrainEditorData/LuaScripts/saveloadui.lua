@@ -106,7 +106,8 @@ function SaveLoadUI:HandleSaveHeightmap(eventType, eventData)
 	local fname=ExtractFilename(eventData, true)
 	if fname~="" then
 		print("Save at "..fname)
-		TerrainState.hmap:SavePNG(fname)
+		--TerrainState.hmap:SavePNG(fname)
+		TerrainState:SaveHeightMap(fname)
 	end
 	self:CloseFileSelector()
 end
@@ -115,16 +116,18 @@ function SaveLoadUI:HandleSaveBlend1(eventType, eventData)
 	local fname=ExtractFilename(eventData, true)
 	if fname~="" then
 		print("Save at "..fname)
-		TerrainState.blend1:SavePNG(fname)
+		--TerrainState.blend1:SavePNG(fname)
+		TerrainState:SaveBlend0(fname)
 	end
 	self:CloseFileSelector()
 end
 
 function SaveLoadUI:HandleSaveBlend2(eventType, eventData)
 	local fname=ExtractFilename(eventData, true)
-	if fname~="" and TerrainState.blend2 then
+	if fname~="" then
 		print("Save at "..fname)
-		TerrainState.blend2:SavePNG(fname)
+		--TerrainState.blend2:SavePNG(fname)
+		TerrainState:SaveBlend1(fname)
 	end
 	self:CloseFileSelector()
 end
@@ -132,8 +135,9 @@ end
 function SaveLoadUI:HandleLoadHeightmap(eventType, eventData)
 	local fname=ExtractFilename(eventData, true)
 	if fname~="" then
-		LoadImage(context, TerrainState.hmap, fname)
-		TerrainState.terrain:SetHeightMap(TerrainState.hmap)
+		--LoadImage(context, TerrainState.hmap, fname)
+		--TerrainState.terrain:SetHeightMap(TerrainState.hmap)
+		TerrainState:LoadHeightMap(fname)
 	end
 	self:CloseFileSelector()
 end
@@ -141,17 +145,19 @@ end
 function SaveLoadUI:HandleLoadBlend1(eventType, eventData)
 	local fname=ExtractFilename(eventData, true)
 	if fname~="" then
-		LoadImage(context, TerrainState.blend1, fname)
-		TerrainState.blendtex1:SetData(TerrainState.blend1, false)
+		--LoadImage(context, TerrainState.blend1, fname)
+		--TerrainState.blendtex1:SetData(TerrainState.blend1, false)
+		TerrainState:LoadBlend0(fname)
 	end
 	self:CloseFileSelector()
 end
 
 function SaveLoadUI:HandleLoadBlend2(eventType, eventData)
 	local fname=ExtractFilename(eventData, true)
-	if fname~="" and TerrainState.blend2 then
-		LoadImage(context, TerrainState.blend2, fname)
-		TerrainState.blendtex2:SetData(TerrainState.blend2, false)
+	if fname~="" then
+		--LoadImage(context, TerrainState.blend2, fname)
+		--TerrainState.blendtex2:SetData(TerrainState.blend2, false)
+		TerrainState:LoadBlend1(fname)
 	end
 	self:CloseFileSelector()
 end

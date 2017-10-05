@@ -17,6 +17,98 @@
 
 using namespace Urho3D;
 using namespace anl;
+
+struct BrushSettings
+{
+	float radius, max, power, hardness;
+	
+	BrushSettings() : radius(0), max(0), power(0), hardness(0){}
+	BrushSettings(float r, float mx, float p, float h) :
+		radius(r), max(mx), power(p), hardness(h){}
+};
+
+struct MaskSettings
+{
+	bool usemask0, usemask1, usemask2;
+	bool invertmask0, invertmask1, invertmask2;
+	
+	MaskSettings() : usemask0(false), usemask1(false), usemask2(false), invertmask0(false), invertmask1(false), invertmask2(false){}
+	MaskSettings(bool um0, bool im0, bool um1, bool im1, bool um2, bool im2) : usemask0(um0), usemask1(um1), usemask2(um2), invertmask0(im0),
+		invertmask1(im1), invertmask2(im2){}
+		
+};
+
+class TerrainEdit// : public Object
+{
+	//URHO3D_OBJECT(TerrainEdit, Object);
+public:
+	//TerrainEdit(Context *context);
+	TerrainEdit();
+	
+	bool Initialize(Scene *scene, int tw, int th, int bw, int bh, Vector3 spacing, bool use16bit=true);
+	void SetTerrainSize(int w, int h, Vector3 spacing, bool use16bit=true);
+	void SetBlendMaskSize(int w, int h);
+	void SetTerrainSpacing(Vector3 spacing);
+	
+	Vector2 WorldToNormalized(Vector3 world);
+	Vector3 NormalizedToWorld(Vector2 normalized);
+	
+	void SetHeightValue(int x, int y, float val);
+	float GetHeightValue(int x, int y);
+	
+	int GetTerrainWidth(){if (hmap_) return hmap_->GetWidth(); return 0;}
+	int GetTerrainHeight(){if (hmap_) return hmap_->GetHeight(); return 0;}
+	
+	float GetHeightValue(Vector3 worldpos);
+	
+	void SetHeightBuffer(CArray2Dd &buffer, MaskSettings &masksettings);
+	void SetLayerBuffer(CArray2Dd &buffer, int layer, MaskSettings &masksettings);
+	void SetLayerBufferMax(CArray2Dd &buffer, int layer, MaskSettings &masksettings);
+	void BlendHeightBuffer(CArray2Dd &buffer, CArray2Dd &blend, MaskSettings &masksettings);
+	
+	void ApplyHeightBrush(float x, float z, float dt, BrushSettings &brush, MaskSettings &masksettings);
+	void ApplyBlendBrush(float x, float z, int layer, float dt, BrushSettings &brush, MaskSettings &masksettings);
+	void ApplyMaskBrush(float x, float z, int which, float dt, BrushSettings &brush, MaskSettings &masksettings);
+	void ApplySmoothBrush(float x, float z, float dt, BrushSettings &brush, MaskSettings &masksettings);
+	
+	void SetBrushCursorHeight(CustomGeometry *brush, float groundx, float groundz);
+	
+	void InvertMask(int which);
+	void ClearMask(int which);
+	void ClearAllMasks();
+	
+	void InvertLayer(int which);
+	void ClearLayer(int which);
+	void ClearAllLayers();
+	
+	void InvertHeight();
+	void ClearHeight();
+	
+	Material *GetMaterial(){return material_;}
+	Terrain *GetTerrain(){return terrain_;}
+	void SetMaterialSettings(bool triplanar, bool smoothing, bool normalmapping);
+	
+	void SaveHeightMap(const String &filename);
+	void SaveBlend0(const String &filename);
+	void SaveBlend1(const String &filename);
+	void SaveMask(const String &filename);
+	
+	void LoadHeightMap(const String &filename);
+	void LoadBlend0(const String &filename);
+	void LoadBlend1(const String &filename);
+	void LoadMask(const String &filename);
+	
+protected:
+	Node *terrainNode_;
+	Terrain *terrain_;
+	Material *material_;
+	
+	Image *hmap_, *blend0_, *blend1_, *mask_;
+	SharedPtr<Texture2D> blendtex0_, blendtex1_, masktex_;
+	
+	bool use16bit_;
+	bool triplanar_, smoothing_, normalmapping_;
+};
 	
 	Vector2 WorldToNormalized(Image *height, Terrain *terrain, Vector3 world);
 	Vector3 NormalizedToWorld(Image *height, Terrain *terrain, Vector2 normalized);

@@ -11,62 +11,9 @@
 #include <Urho3D/Resource/Image.h>
 #include <Urho3D/IO/Deserializer.h>
 #include <Urho3D/IO/File.h>
+#include <Urho3D/Scene/Scene.h>
 #include "Spline.h"
 #include <iostream>
-
-bool LoadImage(Context *c, Image *i, const char *fname)
-{
-	SharedPtr<File> file(new File(c,fname));
-	if(!file) return false;
-	
-	auto success=i->Load(*(file.Get()));
-	return success;
-}
-	
-Vector2 WorldToNormalized(Image *height, Terrain *terrain, Vector3 world)
-{
-	if(!terrain || !height) return Vector2(0,0);
-	Vector3 spacing=terrain->GetSpacing();
-	int patchSize=terrain->GetPatchSize();
-	IntVector2 numPatches=IntVector2((height->GetWidth()-1) / patchSize, (height->GetHeight()-1) / patchSize);
-	Vector2 patchWorldSize=Vector2(spacing.x_*(float)(patchSize*numPatches.x_), spacing.z_*(float)(patchSize*numPatches.y_));
-	Vector2 patchWorldOrigin=Vector2(-0.5f * patchWorldSize.x_, -0.5f * patchWorldSize.y_);
-	return Vector2((world.x_-patchWorldOrigin.x_)/patchWorldSize.x_, (world.z_-patchWorldOrigin.y_)/patchWorldSize.y_);
-}
-
-Vector3 NormalizedToWorld(Image *height, Terrain *terrain, Vector2 normalized)
-{
-	if(!terrain || !height) return Vector2(0,0);
-	Vector3 spacing=terrain->GetSpacing();
-	int patchSize=terrain->GetPatchSize();
-	IntVector2 numPatches=IntVector2((height->GetWidth()-1) / patchSize, (height->GetHeight()-1) / patchSize);
-	Vector2 patchWorldSize=Vector2(spacing.x_*(float)(patchSize*numPatches.x_), spacing.z_*(float)(patchSize*numPatches.y_));
-	Vector2 patchWorldOrigin=Vector2(-0.5f * patchWorldSize.x_, -0.5f * patchWorldSize.y_);
-	return Vector3(patchWorldOrigin.x_+normalized.x_*patchWorldSize.x_, 0, patchWorldOrigin.y_+normalized.y_*patchWorldSize.y_);
-}
-
-void SetHeightValue(Image *height, int x, int y, float val)
-{
-	if(!height) return;
-	if(height->GetComponents()==1) height->SetPixel(x,y,Color(val,0,0));
-	else
-	{
-		float expht=std::floor(val*255.0f);
-		float rm=val*255.0f-expht;
-		height->SetPixel(x,y,Color(expht/255.0f, rm, 0));
-	}
-}
-
-float GetHeightValue(Image *height, int x, int y)
-{
-	if(!height) return 0.0f;
-	if(height->GetComponents()==1) return height->GetPixel(x,y).r_;
-	else
-	{
-		Color c=height->GetPixel(x,y);
-		return c.r_+c.g_/255.0f;
-	}
-}
 
 void BalanceColors(Color &col0, Color &col1, int layer)
 {
@@ -168,6 +115,587 @@ void BalanceColors(Color &col0, Color &col1, int layer)
 		col0.a_=(col0.a_/others)*(1.0f-col1.a_);
 	}
 }
+
+float CalcSmooth(Image *height, float *kernel, int kernelsize, int terrainx, int terrainz)
+{
+	float sum=0.0f;
+	float weight=0.0f;
+	int ox=terrainx-int(kernelsize/2);
+	int oz=terrainz-int(kernelsize/2);
+	
+	for(int x=0; x<kernelsize; ++x)
+	{
+		for(int z=0; z<kernelsize; ++z)
+		{
+			int nx=x+ox;
+			int nz=z+oz;
+			if(x>=0 && x<height->GetWidth() && z>=0 && z<height->GetHeight())
+			{
+				float hval=GetHeightValue(height,nx,nz);
+				sum+=hval*kernel[z*kernelsize+x];
+				weight+=kernel[z*kernelsize+x];
+			}
+		}
+	}
+	if(weight>0) return sum/weight;
+	else return 0.0f;
+}
+
+TerrainEdit::TerrainEdit() : terrainNode_(0), terrain_(0), material_(0), use16bit_(true), triplanar_(true), smoothing_(false), normalmapping_(true){}
+
+bool TerrainEdit::Initialize(Scene *scene, int tw, int th, int bw, int bh, Vector3 spacing, bool use16bit)
+{
+	if(terrainNode_) terrainNode_->Remove();
+	terrainNode_=scene->CreateChild("Terrain");
+	terrain_=terrainNode_->CreateComponent<Terrain>();
+	terrain_->SetPatchSize(64);
+	terrain_->SetSpacing(spacing);
+	terrain_->SetSmoothing(true);
+	
+	hmap_=new Image(scene->GetContext());
+	blend0_=new Image(scene->GetContext());
+	blend1_=new Image(scene->GetContext());
+	mask_=new Image(scene->GetContext());
+	
+	blend0_->SetSize(bw,bh,4);
+	blend1_->SetSize(bw,bh,4);
+	mask_->SetSize(bw,bh,3);
+	
+	use16bit_=true;
+	
+	hmap_->SetSize(tw, th, use16bit ? 3 : 1);
+	terrain_->SetHeightMap(hmap_);
+	terrain_->SetCastShadows(true);
+	material_=scene->GetSubsystem<ResourceCache>()->GetResource<Material>("Materials/TerrainEdit8TriplanarBump.xml");
+	blendtex0_=new Texture2D(scene->GetContext());
+	blendtex1_=new Texture2D(scene->GetContext());
+	masktex_=new Texture2D(scene->GetContext());
+	
+	mask_->Clear(Color(1.0f,1.0f,1.0f));	
+	blend0_->Clear(Color(1.0f,0.0f,0.0f,0.0f));
+	blend1_->Clear(Color(0,0,0,0));
+	
+	blendtex0_->SetData(blend0_, false);
+	blendtex1_->SetData(blend1_, false);
+	masktex_->SetData(mask_, false);
+	
+	material_->SetTexture(TU_DIFFUSE, blendtex0_);
+	material_->SetTexture(TU_NORMAL, blendtex1_);
+	material_->SetTexture(TU_ENVIRONMENT, masktex_);
+	terrain_->SetMaterial(material_);
+	SetBlendMaskSize(bw,bh);
+	SetMaterialSettings(true, false, true);
+	
+	return true;
+}
+
+void TerrainEdit::SetTerrainSpacing(Vector3 spacing)
+{
+	if(!terrain_) return;
+	
+	terrain_->SetSpacing(spacing);
+}
+
+void TerrainEdit::SetTerrainSize(int w, int h, Vector3 spacing, bool use16bit)
+{
+	if(!terrain_) return;
+	hmap_->SetSize(w, h, use16bit ? 3 : 1);
+	terrain_->SetHeightMap(hmap_);
+	terrain_->SetSpacing(spacing);
+}
+
+void TerrainEdit::SetBlendMaskSize(int w, int h)
+{
+	if(!material_ || !blendtex0_ || !blendtex1_ || !masktex_) return;
+	
+	blend0_->SetSize(w,h,4);
+	blend1_->SetSize(w,h,4);
+	mask_->SetSize(w,h,3);
+	
+	blendtex0_->SetData(blend0_, false);
+	blendtex1_->SetData(blend1_, false);
+	masktex_->SetData(mask_, false);
+}
+
+Vector2 TerrainEdit::WorldToNormalized(Vector3 world)
+{
+	if(!terrain_) return Vector2(0,0);
+	Vector3 spacing=terrain_->GetSpacing();
+	int patchSize=terrain_->GetPatchSize();
+	IntVector2 numPatches=IntVector2((hmap_->GetWidth()-1) / patchSize, (hmap_->GetHeight()-1) / patchSize);
+	Vector2 patchWorldSize=Vector2(spacing.x_*(float)(patchSize*numPatches.x_), spacing.z_*(float)(patchSize*numPatches.y_));
+	Vector2 patchWorldOrigin=Vector2(-0.5f * patchWorldSize.x_, -0.5f * patchWorldSize.y_);
+	return Vector2((world.x_-patchWorldOrigin.x_)/patchWorldSize.x_, (world.z_-patchWorldOrigin.y_)/patchWorldSize.y_);
+}
+
+Vector3 TerrainEdit::NormalizedToWorld(Vector2 normalized)
+{
+	if(!terrain_) return Vector2(0,0);
+	Vector3 spacing=terrain_->GetSpacing();
+	int patchSize=terrain_->GetPatchSize();
+	IntVector2 numPatches=IntVector2((hmap_->GetWidth()-1) / patchSize, (hmap_->GetHeight()-1) / patchSize);
+	Vector2 patchWorldSize=Vector2(spacing.x_*(float)(patchSize*numPatches.x_), spacing.z_*(float)(patchSize*numPatches.y_));
+	Vector2 patchWorldOrigin=Vector2(-0.5f * patchWorldSize.x_, -0.5f * patchWorldSize.y_);
+	return Vector3(patchWorldOrigin.x_+normalized.x_*patchWorldSize.x_, 0, patchWorldOrigin.y_+normalized.y_*patchWorldSize.y_);
+}
+
+void TerrainEdit::SetHeightValue(int x, int y, float val)
+{
+	if(hmap_->GetComponents()==1) hmap_->SetPixel(x,y,Color(val,0,0));
+	else
+	{
+		float expht=std::floor(val*255.0f);
+		float rm=val*255.0f-expht;
+		hmap_->SetPixel(x,y,Color(expht/255.0f, rm, 0));
+	}
+}
+
+float TerrainEdit::GetHeightValue(int x, int y)
+{
+	if(hmap_->GetComponents()==1) return hmap_->GetPixel(x,y).r_;
+	else
+	{
+		Color c=hmap_->GetPixel(x,y);
+		return c.r_+c.g_/255.0f;
+	}
+}
+
+float TerrainEdit::GetHeightValue(Vector3 worldpos)
+{
+	if(!terrain_) return 0.0f;
+	IntVector2 htm=terrain_->WorldToHeightMap(worldpos);
+	Color c=hmap_->GetPixelBilinear((float)htm.x_ / (float)hmap_->GetWidth(), (float)htm.y_ / (float)hmap_->GetHeight());
+	if(hmap_->GetComponents()==1) return c.r_;
+	else return c.r_+c.g_/255.0f;
+}
+
+void TerrainEdit::SetHeightBuffer(CArray2Dd &buffer, MaskSettings &masksettings)
+{
+}
+
+void TerrainEdit::SetLayerBuffer(CArray2Dd &buffer, int layer, MaskSettings &masksettings)
+{
+}
+
+void TerrainEdit::SetLayerBufferMax(CArray2Dd &buffer, int layer, MaskSettings &masksettings)
+{
+}
+
+void TerrainEdit::BlendHeightBuffer(CArray2Dd &buffer, CArray2Dd &blend, MaskSettings &masksettings)
+{
+}
+	
+void TerrainEdit::ApplyHeightBrush(float x, float z, float dt, BrushSettings &brush, MaskSettings &masksettings)
+{
+	if(!terrain_) return;
+	
+	Vector3 world=Vector3(x,0,z);
+	IntVector2 ht=terrain_->WorldToHeightMap(world);
+	
+	int sz=brush.radius+1;
+	int comp=hmap_->GetComponents();
+	for(int hx=ht.x_-sz; hx<=ht.x_+sz; ++hx)
+	{
+		for(int hz=ht.y_-sz; hz<=ht.y_+sz; ++hz)
+		{
+			if(hx>=0 && hx<hmap_->GetWidth() && hz>=0 && hz<hmap_->GetHeight())
+			{
+				float dx=(float)(hx-ht.x_);
+				float dz=(float)(hz-ht.y_);
+				float d=std::sqrt(dx*dx+dz*dz);
+				float i=((d-brush.radius)/(brush.hardness*brush.radius-brush.radius));
+				i=std::max(0.0f, std::min(1.0f, i));
+				i=std::sin(i*1.57079633);
+				i=i*dt*brush.power;
+				if(masksettings.usemask0)
+				{
+					float m=mask_->GetPixelBilinear((float)(hx)/(float)(hmap_->GetWidth()), (float)(hz)/(float)(hmap_->GetHeight())).r_;
+					if(masksettings.invertmask0) m=1.0f-m;
+					i=i*m;
+				}
+				if(masksettings.usemask1)
+				{
+					float m=mask_->GetPixelBilinear((float)(hx)/(float)(hmap_->GetWidth()), (float)(hz)/(float)(hmap_->GetHeight())).g_;
+					if(masksettings.invertmask1) m=1.0f-m;
+					i=i*m;
+				}
+				if(masksettings.usemask2)
+				{
+					float m=mask_->GetPixelBilinear((float)(hx)/(float)(hmap_->GetWidth()), (float)(hz)/(float)(hmap_->GetHeight())).b_;
+					if(masksettings.invertmask2) m=1.0f-m;
+					i=i*m;
+				}
+				float hval=GetHeightValue(hx,hz);
+				float newhval=hval+(brush.max-hval)*i;
+				SetHeightValue(hx,hz,newhval);
+				
+			}
+		}
+	}
+	
+	terrain_->SetHeightMap(hmap_);
+}
+
+void TerrainEdit::ApplyBlendBrush(float x, float z, int layer, float dt, BrushSettings &brush, MaskSettings &masksettings)
+{
+	if(!terrain_) return;
+	
+	Vector2 normalized=WorldToNormalized(Vector3(x,0,z));
+	float ratio=((float)blend0_->GetWidth()/(float)hmap_->GetWidth());
+	int ix=(normalized.x_*(float)(blend0_->GetWidth()-1));
+	int iy=(normalized.y_*(float)(blend0_->GetHeight()-1));
+	iy=blend0_->GetHeight()-iy;
+	float rad=brush.radius*ratio;
+	int sz=rad+1;
+	
+	for(int hx=ix-sz; hx<=ix+sz; ++hx)
+	{
+		for(int hz=iy-sz; hz<=iy+sz; ++hz)
+		{
+			if(hx>=0 && hx<blend0_->GetWidth() && hz>=0 && hz<blend0_->GetHeight())
+			{
+				float dx=(float)hx-(float)ix;
+				float dz=(float)hz-(float)iy;
+				float d=std::sqrt(dx*dx+dz*dz);
+				float i=((d-rad)/(brush.hardness*rad-rad));
+				i=std::max(0.0f, std::min(1.0f, i));
+				i=i*dt*brush.power;
+				if(masksettings.usemask0)
+				{
+					float m=mask_->GetPixelBilinear((float)(hx)/(float)(blend0_->GetWidth()), (float)(hz)/(float)(blend0_->GetHeight())).r_;
+					if(masksettings.invertmask0) m=1.0f-m;
+					i=i*m;
+				}
+				if(masksettings.usemask1)
+				{
+					float m=mask_->GetPixelBilinear((float)(hx)/(float)(blend0_->GetWidth()), (float)(hz)/(float)(blend0_->GetHeight())).g_;
+					if(masksettings.invertmask1) m=1.0f-m;
+					i=i*m;
+				}
+				if(masksettings.usemask2)
+				{
+					float m=mask_->GetPixelBilinear((float)(hx)/(float)(blend0_->GetWidth()), (float)(hz)/(float)(blend0_->GetHeight())).b_;
+					if(masksettings.invertmask2) m=1.0f-m;
+					i=i*m;
+				}
+				Color col0=blend0_->GetPixel(hx,hz);
+				Color col1=blend1_->GetPixel(hx,hz);
+				if(layer==0)
+				{
+					col0.r_=col0.r_+i*(1.0f-col0.r_);
+				}
+				else if(layer==1)
+				{
+					col0.g_=col0.g_+i*(1.0f-col0.g_);
+				}
+				else if(layer==2)
+				{
+					col0.b_=col0.b_+i*(1.0f-col0.b_);
+				}
+				else if(layer==3)
+				{
+					col0.a_=col0.a_+i*(1.0f-col0.a_);
+				}
+				else if(layer==4)
+				{
+					col1.r_=col1.r_+i*(1.0f-col1.r_);
+				}
+				else if(layer==5)
+				{
+					col1.g_=col1.g_+i*(1.0f-col1.g_);
+				}
+				else if(layer==6)
+				{
+					col1.b_=col1.b_+i*(1.0f-col1.b_);
+				}
+				else
+				{
+					col1.a_=col1.a_+i*(1.0f-col1.a_);
+				}
+				BalanceColors(col0, col1, layer);
+				blend0_->SetPixel(hx,hz,col0);
+				blend1_->SetPixel(hx,hz,col1);
+				//LOGINFO(String(col.r_)+String(",")+String(col.g_));
+			}
+		}
+	}
+	
+	blendtex0_->SetData(blend0_, false);
+	blendtex1_->SetData(blend1_, false);
+}
+
+void TerrainEdit::ApplyMaskBrush(float x, float z, int which, float dt, BrushSettings &brush, MaskSettings &masksettings)
+{
+	if(!terrain_) return;
+	
+	Vector2 normalized=WorldToNormalized(Vector3(x,0,z));
+	float ratio=((float)mask_->GetWidth()/(float)hmap_->GetWidth());
+	int ix=(normalized.x_*(float)(mask_->GetWidth()-1));
+	int iy=(normalized.y_*(float)(mask_->GetHeight()-1));
+	iy=mask_->GetHeight()-iy;
+	float rad=brush.radius*ratio;
+	int sz=rad+1;
+	
+	for(int hx=ix-sz; hx<=ix+sz; ++hx)
+	{
+		for(int hz=iy-sz; hz<=iy+sz; ++hz)
+		{
+			if(hx>=0 && hx<mask_->GetWidth() && hz>=0 && hz<mask_->GetHeight())
+			{
+				float dx=(float)hx-(float)ix;
+				float dz=(float)hz-(float)iy;
+				float d=std::sqrt(dx*dx+dz*dz);
+				float i=((d-rad)/(brush.hardness*rad-rad));
+				i=std::max(0.0f, std::min(1.0f, i));
+				i=i*dt*brush.power;
+				
+				Color col=mask_->GetPixel(hx,hz);
+				if(which==0)
+					col.r_=col.r_+i*((1.0f-brush.max)-col.r_);
+				else if(which==1)
+					col.g_=col.g_+i*((1.0f-brush.max)-col.g_);
+				else
+					col.b_=col.b_+i*((1.0f-brush.max)-col.b_);
+				mask_->SetPixel(hx,hz,col);
+			}
+		}
+	}
+	
+	masktex_->SetData(mask_, false);
+}
+
+void TerrainEdit::ApplySmoothBrush(float x, float z, float dt, BrushSettings &brush, MaskSettings &masksettings)
+{
+	static float kernel[81]=
+	{
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 
+		0, 0, 0.0058874471228999, 0.012503642863169, 0.014925760324933, 0.012503642863169, 0.0058874471228999, 0, 0, 
+		0, 0.0058874471228999, 0.017486615939231, 0.026328026597312, 0.029851520649865, 0.026328026597312, 0.017486615939231, 0.0058874471228999, 0, 
+		0, 0.012503642863169, 0.026328026597312, 0.038594828619481, 0.044777280974798, 0.038594828619481, 0.026328026597312, 0.012503642863169, 0, 
+		0, 0.014925760324933, 0.029851520649865, 0.044777280974798, 0.059703041299731, 0.044777280974798, 0.029851520649865, 0.014925760324933, 0, 
+		0, 0.012503642863169, 0.026328026597312, 0.038594828619481, 0.044777280974798, 0.038594828619481, 0.026328026597312, 0.012503642863169, 0, 
+		0, 0.0058874471228999, 0.017486615939231, 0.026328026597312, 0.029851520649865, 0.026328026597312, 0.017486615939231, 0.0058874471228999, 0, 
+		0, 0, 0.0058874471228999, 0.012503642863169, 0.014925760324933, 0.012503642863169, 0.0058874471228999, 0, 0, 
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 
+	};
+	
+	if(!terrain_) return;
+	
+	Vector3 world=Vector3(x,0,z);
+	IntVector2 ht=terrain_->WorldToHeightMap(world);
+	
+	int sz=brush.radius+1;
+	int comp=hmap_->GetComponents();
+	for(int hx=ht.x_-sz; hx<=ht.x_+sz; ++hx)
+	{
+		for(int hz=ht.y_-sz; hz<=ht.y_+sz; ++hz)
+		{
+			if(hx>=0 && hx<hmap_->GetWidth() && hz>=0 && hz<hmap_->GetHeight())
+			{
+				float dx=(float)(hx-ht.x_);
+				float dz=(float)(hz-ht.y_);
+				float d=std::sqrt(dx*dx+dz*dz);
+				float i=((d-brush.radius)/(brush.hardness*brush.radius-brush.radius));
+				i=std::max(0.0f, std::min(1.0f, i));
+				i=i*dt*brush.power;
+				if(masksettings.usemask0)
+				{
+					float m=mask_->GetPixelBilinear((float)(hx)/(float)(hmap_->GetWidth()), (float)(hz)/(float)(hmap_->GetHeight())).r_;
+					if(masksettings.invertmask0) m=1.0f-m;
+					i=i*m;
+				}
+				if(masksettings.usemask1)
+				{
+					float m=mask_->GetPixelBilinear((float)(hx)/(float)(hmap_->GetWidth()), (float)(hz)/(float)(hmap_->GetHeight())).g_;
+					if(masksettings.invertmask1) m=1.0f-m;
+					i=i*m;
+				}
+				if(masksettings.usemask2)
+				{
+					float m=mask_->GetPixelBilinear((float)(hx)/(float)(hmap_->GetWidth()), (float)(hz)/(float)(hmap_->GetHeight())).b_;
+					if(masksettings.invertmask2) m=1.0f-m;
+					i=i*m;
+				}
+				float hval=GetHeightValue(hx,hz);
+				float smooth=CalcSmooth(hmap_,kernel,9,hx,hz);
+				float newhval=hval+(smooth-hval)*i;
+				SetHeightValue(hx,hz,newhval);
+			}
+		}
+	}
+	terrain_->SetHeightMap(hmap_);
+}
+
+void TerrainEdit::SetBrushCursorHeight(CustomGeometry *brush, float groundx, float groundz)
+{
+	int numverts=brush->GetNumVertices(0);
+	for(int v=0; v<numverts-1; v++)
+	{
+		CustomGeometryVertex *vert=brush->GetVertex(0,v);
+		float ht=terrain_->GetHeight(Vector3(vert->position_.x_+groundx, 0, vert->position_.z_+groundz));
+		vert->position_.y_=ht;
+	}
+	brush->Commit();
+}
+	
+void TerrainEdit::InvertMask(int which)
+{
+}
+
+void TerrainEdit::ClearMask(int which)
+{
+}
+
+void TerrainEdit::ClearAllMasks()
+{
+}
+	
+void TerrainEdit::InvertLayer(int which)
+{
+}
+
+void TerrainEdit::ClearLayer(int which)
+{
+}
+
+void TerrainEdit::ClearAllLayers()
+{
+}
+
+void TerrainEdit::InvertHeight()
+{
+}
+
+void TerrainEdit::ClearHeight()
+{
+}
+	
+void TerrainEdit::SetMaterialSettings(bool triplanar, bool smoothing, bool normalmapping)
+{
+	if(!terrain_) return;
+	
+	ResourceCache *cache=terrainNode_->GetSubsystem<ResourceCache>();
+	if (triplanar) 
+		if (smoothing) 
+			if (normalmapping) 
+				material_=cache->GetResource<Material>("Materials/TerrainEdit8TriplanarSmoothBump.xml");
+			else
+				material_=cache->GetResource<Material>("Materials/TerrainEdit8TriplanarSmooth.xml");
+			
+		else
+			if (normalmapping) 
+				material_=cache->GetResource<Material>("Materials/TerrainEdit8TriplanarBump.xml");
+			else
+				material_=cache->GetResource<Material>("Materials/TerrainEdit8Triplanar.xml");
+			
+		
+	else
+		if (smoothing) 
+			if (normalmapping)
+				material_=cache->GetResource<Material>("Materials/TerrainEdit8SmoothBump.xml");
+			else
+				material_=cache->GetResource<Material>("Materials/TerrainEdit8Smooth.xml");
+			
+		else
+			if (normalmapping) 
+				material_=cache->GetResource<Material>("Materials/TerrainEdit8Bump.xml");
+			else
+				material_=cache->GetResource<Material>("Materials/TerrainEdit8.xml");
+	terrain_->SetMaterial(material_);
+	material_->SetTexture(TU_DIFFUSE, blendtex0_);
+	material_->SetTexture(TU_NORMAL, blendtex1_);
+	material_->SetTexture(TU_ENVIRONMENT, masktex_);
+}
+
+void TerrainEdit::SaveHeightMap(const String &filename)
+{
+}
+
+void TerrainEdit::SaveBlend0(const String &filename)
+{
+}
+
+void TerrainEdit::SaveBlend1(const String &filename)
+{
+}
+
+void TerrainEdit::SaveMask(const String &filename)
+{
+}
+
+void TerrainEdit::LoadHeightMap(const String &filename)
+{
+}
+
+void TerrainEdit::LoadBlend0(const String &filename)
+{
+}
+
+void TerrainEdit::LoadBlend1(const String &filename)
+{
+}
+
+void TerrainEdit::LoadMask(const String &filename)
+{
+}
+
+
+
+
+bool LoadImage(Context *c, Image *i, const char *fname)
+{
+	SharedPtr<File> file(new File(c,fname));
+	if(!file) return false;
+	
+	auto success=i->Load(*(file.Get()));
+	return success;
+}
+
+Vector2 WorldToNormalized(Image *height, Terrain *terrain, Vector3 world)
+{
+	if(!terrain || !height) return Vector2(0,0);
+	Vector3 spacing=terrain->GetSpacing();
+	int patchSize=terrain->GetPatchSize();
+	IntVector2 numPatches=IntVector2((height->GetWidth()-1) / patchSize, (height->GetHeight()-1) / patchSize);
+	Vector2 patchWorldSize=Vector2(spacing.x_*(float)(patchSize*numPatches.x_), spacing.z_*(float)(patchSize*numPatches.y_));
+	Vector2 patchWorldOrigin=Vector2(-0.5f * patchWorldSize.x_, -0.5f * patchWorldSize.y_);
+	return Vector2((world.x_-patchWorldOrigin.x_)/patchWorldSize.x_, (world.z_-patchWorldOrigin.y_)/patchWorldSize.y_);
+}
+
+Vector3 NormalizedToWorld(Image *height, Terrain *terrain, Vector2 normalized)
+{
+	if(!terrain || !height) return Vector2(0,0);
+	Vector3 spacing=terrain->GetSpacing();
+	int patchSize=terrain->GetPatchSize();
+	IntVector2 numPatches=IntVector2((height->GetWidth()-1) / patchSize, (height->GetHeight()-1) / patchSize);
+	Vector2 patchWorldSize=Vector2(spacing.x_*(float)(patchSize*numPatches.x_), spacing.z_*(float)(patchSize*numPatches.y_));
+	Vector2 patchWorldOrigin=Vector2(-0.5f * patchWorldSize.x_, -0.5f * patchWorldSize.y_);
+	return Vector3(patchWorldOrigin.x_+normalized.x_*patchWorldSize.x_, 0, patchWorldOrigin.y_+normalized.y_*patchWorldSize.y_);
+}
+
+void SetHeightValue(Image *height, int x, int y, float val)
+{
+	if(!height) return;
+	if(height->GetComponents()==1) height->SetPixel(x,y,Color(val,0,0));
+	else
+	{
+		float expht=std::floor(val*255.0f);
+		float rm=val*255.0f-expht;
+		height->SetPixel(x,y,Color(expht/255.0f, rm, 0));
+	}
+}
+
+float GetHeightValue(Image *height, int x, int y)
+{
+	if(!height) return 0.0f;
+	if(height->GetComponents()==1) return height->GetPixel(x,y).r_;
+	else
+	{
+		Color c=height->GetPixel(x,y);
+		return c.r_+c.g_/255.0f;
+	}
+}
+
 	
 void ApplyHeightBrush(Terrain *terrain, Image *height, Image *mask, float x, float z, float radius, float max, float power, float hardness, bool usemask0, bool usemask1, bool usemask2, float dt)
 {
@@ -459,30 +987,7 @@ void ApplySpeckleBrush(Terrain *terrain, Image *height, Image *color, Image *mas
 	}
 }
 
-float CalcSmooth(Image *height, float *kernel, int kernelsize, int terrainx, int terrainz)
-{
-	float sum=0.0f;
-	float weight=0.0f;
-	int ox=terrainx-int(kernelsize/2);
-	int oz=terrainz-int(kernelsize/2);
-	
-	for(int x=0; x<kernelsize; ++x)
-	{
-		for(int z=0; z<kernelsize; ++z)
-		{
-			int nx=x+ox;
-			int nz=z+oz;
-			if(x>=0 && x<height->GetWidth() && z>=0 && z<height->GetHeight())
-			{
-				float hval=GetHeightValue(height,nx,nz);
-				sum+=hval*kernel[z*kernelsize+x];
-				weight+=kernel[z*kernelsize+x];
-			}
-		}
-	}
-	if(weight>0) return sum/weight;
-	else return 0.0f;
-}
+
 
 void ApplySmoothBrush(Terrain *terrain, Image *height, Image *mask, float x, float z, float radius, float max, float power, float hardness, bool usemask0, bool usemask1, bool usemask2, float dt)
 {

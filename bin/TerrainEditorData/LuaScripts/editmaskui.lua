@@ -147,10 +147,13 @@ function EditMaskUI:Update(dt)
 		local world=Vector3(ground.x,0,ground.z)
 		self.cursor:SetPosition(world)
 		self.power, self.max, self.radius, self.hardness, self.usemask=self:GetBrushSettings()
+		local bs=BrushSettings(self.radius, self.max, self.power, self.hardness)
+		local ms=MaskSettings()
 		
 		if input:GetMouseButtonDown(MOUSEB_LEFT) and ui:GetElementAt(mousepos.x, mousepos.y)==nil then
 			local gx,gz=ground.x,ground.z
-			ApplyMaskBrush(TerrainState.terrain,TerrainState.hmap,TerrainState.mask,gx,gz,self.radius,self.max,self.power,self.hardness,dt,self.which) TerrainState.masktex:SetData(TerrainState.mask)
+			--ApplyMaskBrush(TerrainState.terrain,TerrainState.hmap,TerrainState.mask,gx,gz,self.radius,self.max,self.power,self.hardness,dt,self.which) TerrainState.masktex:SetData(TerrainState.mask)
+			TerrainState:ApplyMaskBrush(gx,gz,self.which,dt,bs,ms)
 		end
 	end
 	

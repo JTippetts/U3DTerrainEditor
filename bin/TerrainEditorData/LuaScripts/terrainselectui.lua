@@ -111,8 +111,11 @@ function TerrainSelectUI:Start()
 	
 	self:InitializeTextures()
 	
-	TerrainState.terrainMaterial:SetTexture(2, self.difftex)
-	TerrainState.terrainMaterial:SetTexture(3, self.normaltex)
+	--TerrainState.terrainMaterial:SetTexture(2, self.difftex)
+	--TerrainState.terrainMaterial:SetTexture(3, self.normaltex)
+	TerrainState:GetMaterial():SetTexture(2,self.difftex)
+	TerrainState:GetMaterial():SetTexture(3,self.normaltex)
+	
 	
 	self.layerscales=
 	{
@@ -145,7 +148,8 @@ function TerrainSelectUI:SetLayerScales()
 	
 	local ary=Variant()
 	ary:Set(buf)
-	TerrainState.terrainMaterial:SetShaderParameter("LayerScaling", ary)
+	--TerrainState.terrainMaterial:SetShaderParameter("LayerScaling", ary)
+	TerrainState:GetMaterial():SetShaderParameter("LayerScaling", ary)
 end
 
 function TerrainSelectUI:CreateFileSelector(title, ok, cancel, initialPath, filters, initialFilter)
@@ -163,7 +167,7 @@ function TerrainSelectUI:CreateFileSelector(title, ok, cancel, initialPath, filt
 end
 
 function TerrainSelectUI:ChangeMaterial(triplanar, smoothing, normalmapping)
-	if triplanar then
+	--[[if triplanar then
 		if smoothing then
 			if normalmapping then
 				TerrainState.terrainMaterial=cache:GetResource("Material", "Materials/TerrainEdit8TriplanarSmoothBump.xml")
@@ -205,7 +209,10 @@ function TerrainSelectUI:ChangeMaterial(triplanar, smoothing, normalmapping)
 	if TerrainState.terrain then
 		TerrainState.terrain.material=TerrainState.terrainMaterial
 	end
-	
+	]]
+	TerrainState:SetMaterialSettings(triplanar,smoothing,normalmapping)
+	TerrainState:GetMaterial():SetTexture(2,self.difftex)
+	if normalmapping then TerrainState:GetMaterial():SetTexture(3,self.normaltex) end
 	self:SetLayerScales()
 end
 
@@ -576,10 +583,13 @@ function TerrainSelectUI:Update(dt)
 		local world=Vector3(ground.x,0,ground.z)
 		self.cursor:SetPosition(world)
 		self.power, self.max, self.radius, self.hardness, self.usemask0, self.usemask1, self.usemask2=self:GetBrushSettings()
+		local bs=BrushSettings(self.radius, self.max, self.power, self.hardness)
+		local ms=MaskSettings(self.usemask0, false, self.usemask1, false, self.usemask2, false)
 		
 		if input:GetMouseButtonDown(MOUSEB_LEFT) and ui:GetElementAt(mousepos.x, mousepos.y)==nil then
 			local gx,gz=ground.x,ground.z
-			ApplyBlendBrush8(TerrainState.terrain,TerrainState.hmap,TerrainState.blend1,TerrainState.blend2,TerrainState.mask,gx,gz,self.radius,self.max,self.power,self.hardness,self.layer-1,self.usemask0, self.usemask1,self.usemask2,dt)TerrainState. blendtex1:SetData(TerrainState.blend1) TerrainState.blendtex2:SetData(TerrainState.blend2)
+			--ApplyBlendBrush8(TerrainState.terrain,TerrainState.hmap,TerrainState.blend1,TerrainState.blend2,TerrainState.mask,gx,gz,self.radius,self.max,self.power,self.hardness,self.layer-1,self.usemask0, self.usemask1,self.usemask2,dt)TerrainState. blendtex1:SetData(TerrainState.blend1) TerrainState.blendtex2:SetData(TerrainState.blend2)
+			TerrainState:ApplyBlendBrush(gx,gz,self.layer-1,dt,bs,ms)
 		end
 	end
 	

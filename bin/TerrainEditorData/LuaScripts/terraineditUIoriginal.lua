@@ -67,13 +67,13 @@ function TerrainEditUI:Start()
 end
 
 function TerrainEditUI:NewTerrain(width, height, blendwidth, blendheight, triplanar, smoothing, normalmapping)
-	if TerrainState.terrainNode then TerrainState.terrainNode:Remove() end
+	--[[if TerrainState.terrainNode then TerrainState.terrainNode:Remove() end
 	
 	TerrainState.terrainNode=scene_:CreateChild()
 	TerrainState.terrain=TerrainState.terrainNode:CreateComponent("Terrain")
 	TerrainState.terrain.patchSize=64
 	TerrainState.terrain.spacing=Vector3(1,0.5,1)
-	TerrainState.terrain.smoothing=false
+	TerrainState.terrain.smoothing=true
 	
 	if TerrainState.hmap then TerrainState.hmap:delete() end
 	TerrainState.hmap=Image:new(context)
@@ -82,11 +82,14 @@ function TerrainEditUI:NewTerrain(width, height, blendwidth, blendheight, tripla
 	TerrainState.terrain.heightMap=TerrainState.hmap
 	TerrainState.terrain.castShadows=true
 	
-	self:SetMaterial(blendwidth, blendheight, triplanar, smoothing, normalmapping)
+	self:SetMaterial(blendwidth, blendheight, triplanar, smoothing, normalmapping)]]
+	print("setting up new terrain.")
+	TerrainState:Initialize(scene_,width,height,blendwidth,blendheight,Vector3(1,0.5,1),true)
+	print("terrain set up")
 end
 
 function TerrainEditUI:SetMaterial(blendwidth, blendheight, triplanar, smoothing, normalmapping)
-	if triplanar then
+	--[[if triplanar then
 		if smoothing then
 			if normalmapping then
 				TerrainState.terrainMaterial=cache:GetResource("Material", "Materials/TerrainEdit8TriplanarSmoothBump.xml")
@@ -150,7 +153,8 @@ function TerrainEditUI:SetMaterial(blendwidth, blendheight, triplanar, smoothing
 		if TerrainState.terrain then
 			TerrainState.terrain.material=TerrainState.terrainMaterial
 		end
-	end
+	end]]
+	
 end
 
 function TerrainEditUI:UpdateWaypointVis()
@@ -159,17 +163,25 @@ function TerrainEditUI:UpdateWaypointVis()
 	self.waypointpreview.occludee=false
 	self.waypointpreview:SetNumGeometries(1)
 	local c
-	local spacing=TerrainState.terrain:GetSpacing()
+	print("1")
+	local spacing=TerrainState:GetTerrain():GetSpacing()
 	local plist=RasterVertexList()
+	print("2")
 	for _,c in ipairs(waypoints) do
 		local pos=c.position
-		local norm=WorldToNormalized(TerrainState.hmap,TerrainState.terrain,pos)
-		local hx=math.floor(norm.x*TerrainState.hmap:GetWidth())
-		local hy=math.floor(norm.y*TerrainState.hmap:GetHeight())
-		local ht=GetHeightValue(TerrainState.hmap,hx,(TerrainState.hmap:GetHeight()-1)-hy)
-		plist:push_back(RasterVertex(hx,hy,ht))
+		--local norm=WorldToNormalized(TerrainState.hmap,TerrainState.terrain,pos)
+		--local norm=TerrainState:WorldToNormalized(pos)
+		--local hx=math.floor(norm.x*TerrainState.hmap:GetWidth())
+		--local hy=math.floor(norm.y*TerrainState.hmap:GetHeight())
+		--local ht=GetHeightValue(TerrainState.hmap,hx,(TerrainState.hmap:GetHeight()-1)-hy)
+		
+		local norm=TerrainState:WorldToNormalized(pos)
+		local hx=math.floor(norm.x*TerrainState:GetTerrainWidth())
+		local hy=math.floor(norm.y*TerrainState:GetTerrainHeight())
+		local ht=TerrainState:GetHeightValue(hx,(TerrainState:GetTerrainHeight()-1)-hy)
+		plist:push_back(RasterVertex(hx, hy, ht))
 	end
-	
+	print("3")
 	if plist:size()<4 then return end
 	--print("Num waypoints: "..plist:size())
 	local curve=RasterVertexList()
@@ -183,13 +195,20 @@ function TerrainEditUI:UpdateWaypointVis()
 	self.waypointpreview:SetDynamic(true)
 	
 	function buildVertex(rv)
-		local nx=rv.x_/TerrainState.hmap:GetWidth()
-		local ny=rv.y_/TerrainState.hmap:GetHeight()
-		local v=NormalizedToWorld(TerrainState.hmap,TerrainState.terrain,Vector2(nx,ny))
+		--local nx=rv.x_/TerrainState.hmap:GetWidth()
+		--local ny=rv.y_/TerrainState.hmap:GetHeight()
+		--local v=TerrainState:NormalizedToWorld(Vector2(nx,ny))
+		--v.y=(rv.val_*255)*spacing.y
+		--local v=TerrainState:GetTerrain():HeightMapToWorld(IntVector2(rv.x_, rv.y_))
+		
+		local nx=rv.x_/TerrainState:GetTerrainWidth()
+		local ny=rv.y_/TerrainState:GetTerrainHeight()
+		local v=TerrainState:NormalizedToWorld(Vector2(nx,ny))
 		v.y=(rv.val_*255)*spacing.y
 		return v
 	end
 	
+	print("build geom")
 	for c=0,quad:size()-4,2 do
 		self.waypointpreview:DefineVertex(buildVertex(quad:at(c)))
 		self.waypointpreview:DefineVertex(buildVertex(quad:at(c+1)))
@@ -201,7 +220,7 @@ function TerrainEditUI:UpdateWaypointVis()
 		--print("hi")
 		
 	end
-	
+	print("end")
 	self.waypointpreview:Commit()
 	self.waypointpreview:SetMaterial(self.waypointpreviewmaterial)
 	local bbox=self.waypointpreview.worldBoundingBox
@@ -214,10 +233,11 @@ function TerrainEditUI:AddWaypoint(groundx, groundz)
 	model.material=cache:GetResource("Material", "Materials/Flag.xml")
 	model.model=cache:GetResource("Model", "Models/Flag.mdl")
 	model.castShadows=false
-	local ht=TerrainState.terrain:GetHeight(Vector3(groundx,0,groundz))
+	local ht=TerrainState:GetTerrain():GetHeight(Vector3(groundx,0,groundz))
 	waynode.position=Vector3(groundx, ht, groundz)
 	waynode.scale=Vector3(0.25,0.25,0.25)
 	table.insert(waypoints, waynode)
+	print("uwv")
 	self:UpdateWaypointVis()
 end
 
@@ -285,7 +305,7 @@ function TerrainEditUI:Update(dt)
 	
 	local c
 	for _,c in ipairs(waypoints) do
-		local ht=TerrainState.terrain:GetHeight(Vector3(c.position.x,0,c.position.z))
+		local ht=TerrainState:GetTerrain():GetHeight(Vector3(c.position.x,0,c.position.z))
 		c.position=Vector3(c.position.x,ht,c.position.z)
 	end
 	self:UpdateWaypointVis()
@@ -307,8 +327,9 @@ function TerrainEditUI:HandleButtonPress(eventType, eventData)
 	elseif name=="Mask2Button" then
 		self:ActivateMaskBrush(2)
 	elseif name=="ClearMask" then
-		TerrainState.mask:Clear(Color(1,1,1))
-		TerrainState.masktex:SetData(TerrainState.mask)
+		--TerrainState.mask:Clear(Color(1,1,1))
+		--TerrainState.masktex:SetData(TerrainState.mask)
+		TerrainState:ClearAllMasks()
 	end
 end
 

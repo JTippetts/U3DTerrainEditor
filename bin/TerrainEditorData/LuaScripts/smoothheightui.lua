@@ -143,11 +143,15 @@ function SmoothHeightUI:Update(dt)
 	if ground then 
 		local world=Vector3(ground.x,0,ground.z)
 		self.cursor:SetPosition(world)
-		self.power, self.max, self.radius, self.hardness, self.usemask=self:GetBrushSettings()
+		self.power, self.max, self.radius, self.hardness, self.usemask0, self.usemask1, self.usemask2=self:GetBrushSettings()
+		
+		local bs=BrushSettings(self.radius,self.max,self.power,self.hardness)
+		local ms=MaskSettings(self.usemask0, false, self.usemask1, false, self.usemask2, false)
 		
 		if input:GetMouseButtonDown(MOUSEB_LEFT) and ui:GetElementAt(mousepos.x, mousepos.y)==nil then
 			local gx,gz=ground.x,ground.z
-			ApplySmoothBrush(TerrainState.terrain,TerrainState.hmap,TerrainState.mask,gx,gz,self.radius, self.max, self.power, self.hardness, self.usemask0, self.usemask1, self.usemask2, dt) TerrainState.terrain:ApplyHeightMap()
+			--ApplySmoothBrush(TerrainState.terrain,TerrainState.hmap,TerrainState.mask,gx,gz,self.radius, self.max, self.power, self.hardness, self.usemask0, self.usemask1, self.usemask2, dt) TerrainState.terrain:ApplyHeightMap()
+			TerrainState:ApplySmoothBrush(gx,gz,dt,bs,ms)
 		end
 	end
 	

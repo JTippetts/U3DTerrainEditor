@@ -162,20 +162,24 @@ function EditHeightUI:Update(dt)
 		self.cursor:SetPosition(world)
 		self.power, self.max, self.radius, self.hardness, self.usemask0, self.usemask1, self.usemask2=self:GetBrushSettings()
 		
+		local bs=BrushSettings(self.radius, self.max, self.power, self.hardness)
+		local ms=MaskSettings(self.usemask0, false, self.usemask1, false, self.usemask2, false)
+		
 		if input:GetMouseButtonDown(MOUSEB_LEFT) and ui:GetElementAt(mousepos.x, mousepos.y)==nil then
 			if input:GetQualifierDown(QUAL_CTRL) then
-				local norm=WorldToNormalized(TerrainState.hmap,TerrainState.terrain,ground)
-				local col=TerrainState.hmap:GetPixelBilinear(norm.x,1-norm.y)
-				local ht=0
-				if TerrainState.hmap.components==1 then ht=col.r
-				else ht=col.r+col.g/256.0
-				end
-				print(ht)
-				
+				--local norm=WorldToNormalized(TerrainState.hmap,TerrainState.terrain,ground)
+				--local col=TerrainState.hmap:GetPixelBilinear(norm.x,1-norm.y)
+				--local ht=0
+				--if TerrainState.hmap.components==1 then ht=col.r
+				--else ht=col.r+col.g/256.0
+				--end
+				--print(ht)
+				local ht=TerrainState:GetHeightValue(world)
 				self:SetHeight(ht)
 			else
 				local gx,gz=ground.x,ground.z
-				ApplyHeightBrush(TerrainState.terrain,TerrainState.hmap,TerrainState.mask,gx,gz,self.radius, self.max, self.power, self.hardness, self.usemask0, self.usemask1, self.usemask2, dt) TerrainState.terrain:ApplyHeightMap()
+				--ApplyHeightBrush(TerrainState.terrain,TerrainState.hmap,TerrainState.mask,gx,gz,self.radius, self.max, self.power, self.hardness, self.usemask0, self.usemask1, self.usemask2, dt) TerrainState.terrain:ApplyHeightMap()
+				TerrainState:ApplyHeightBrush(gx,gz,dt,bs,ms)
 			end
 		end
 	end

@@ -295,7 +295,8 @@ function ThirdPersonCamera:HandleUpdate(eventType, eventData)
 				trans.z=trans.z+(oldy-newy)
 		
 				if self.tracksurface then
-					self.offset=TerrainState.terrain:GetHeight(Vector3(self.node.position.x+trans.x,self.offset,self.node.position.z+trans.z)) + 1
+					--self.offset=TerrainState.terrain:GetHeight(Vector3(self.node.position.x+trans.x,self.offset,self.node.position.z+trans.z)) + 1
+					self.offset=TerrainState:GetTerrain():GetHeight(Vector3(self.node.position.x+trans.x,self.offset,self.node.position.z+trans.z)) + 1
 				else
 					self.offset=1
 				end
