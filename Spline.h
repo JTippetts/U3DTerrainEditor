@@ -77,12 +77,23 @@ void BuildQuadStripA(Vector<Vector3> &points, Vector<Vector3> &out, float width,
 	
 	if(points.Size()<2) return;  // Need at least 2 points
 	
-	// Push first quad
+	// Push end quad and first quad
 	Vector3 p0=points[0];
 	Vector3 p1=points[1];
 	Vector3 forward=p1-p0;
+	Vector3 forwardnorm=forward;
+	forwardnorm.Normalize();
 	Vector3 right=forward.CrossProduct(up);
 	Vector3 rightnorm=right; rightnorm.Normalize();
+	
+	// First, push 2 verts behind start point
+	Vector3 pf=p0-forwardnorm*width*0.5f;
+	
+	out.Push(pf+rightnorm*width*0.5f);
+	out.Push(pf-rightnorm*width*0.5f);
+	
+	// Now, push first quad
+	
 	out.Push(p0+rightnorm*width*0.5f);
 	out.Push(p0-rightnorm*width*0.5f);
 	out.Push(p1+rightnorm*width*0.5f);
@@ -117,6 +128,13 @@ void BuildQuadStripA(Vector<Vector3> &points, Vector<Vector3> &out, float width,
 		out.Push(p1+rightnorm*width*0.5f);
 		out.Push(p1-rightnorm*width*0.5f);
 	}
+	
+	// Push two verts beyond end point
+	forwardnorm=forward;
+	forwardnorm.Normalize();
+	pf=p1+forwardnorm*width*0.5f;
+	out.Push(pf+rightnorm*width*0.5f);
+	out.Push(pf-rightnorm*width*0.5f);
 }
 
 

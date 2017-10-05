@@ -52,6 +52,14 @@ public:
 	
 	Vector2 WorldToNormalized(Vector3 world);
 	Vector3 NormalizedToWorld(Vector2 normalized);
+	IntVector2 WorldToTerrain(Vector3 world);
+	IntVector2 WorldToBlend(Vector3 world);
+	Vector3 TerrainToWorld(IntVector2 terrain);
+	Vector3 BlendToWorld(IntVector2 blend);
+	Vector2 TerrainToNormalized(IntVector2 terrain);
+	Vector2 BlendToNormalized(IntVector2 blend);
+	IntVector2 NormalizedToBlend(Vector2 norm);
+	IntVector2 NormalizedToTerrain(Vector2 norm);
 	
 	void SetHeightValue(int x, int y, float val);
 	float GetHeightValue(int x, int y);

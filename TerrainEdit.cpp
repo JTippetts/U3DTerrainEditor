@@ -244,6 +244,64 @@ Vector3 TerrainEdit::NormalizedToWorld(Vector2 normalized)
 	return Vector3(patchWorldOrigin.x_+normalized.x_*patchWorldSize.x_, 0, patchWorldOrigin.y_+normalized.y_*patchWorldSize.y_);
 }
 
+IntVector2 TerrainEdit::WorldToTerrain(Vector3 world)
+{
+	if(!terrain_) return IntVector2();
+	return terrain_->WorldToHeightMap(world);
+}
+
+IntVector2 TerrainEdit::WorldToBlend(Vector3 world)
+{
+	if(!terrain_) return IntVector2();
+	Vector2 norm=WorldToNormalized(world);
+	return IntVector2((int)(norm.x_*(float)blend0_->GetWidth()), (int)(norm.y_*(float)blend0_->GetHeight()));
+}
+
+Vector3 TerrainEdit::TerrainToWorld(IntVector2 terrain)
+{
+	if(!terrain_) return Vector3();
+	
+	return terrain_->HeightMapToWorld(terrain);
+}
+
+Vector3 TerrainEdit::BlendToWorld(IntVector2 blend)
+{
+	if(!terrain_) return Vector3();
+	
+	Vector2 norm((float)blend.x_ / (float)blend0_->GetWidth(), (float)blend.y_ / (float)blend0_->GetHeight());
+	return NormalizedToWorld(norm);
+}
+
+Vector2 TerrainEdit::TerrainToNormalized(IntVector2 terrain)
+{
+	if(!terrain_) return Vector2();
+	
+	Vector2 norm((float)terrain.x_ / (float)hmap_->GetWidth(), (float)terrain.y_ / (float)hmap_->GetHeight());
+	return norm;
+}
+
+Vector2 TerrainEdit::BlendToNormalized(IntVector2 blend)
+{
+	if(!terrain_) return Vector2();
+	
+	Vector2 norm((float)blend.x_ / (float)blend0_->GetWidth(), (float)blend.y_ / (float)blend0_->GetHeight());
+	return norm;
+}
+
+IntVector2 TerrainEdit::NormalizedToBlend(Vector2 norm)
+{
+	if(!terrain_) return IntVector2();
+	
+	return IntVector2((int)(norm.x_ * (float)blend0_->GetWidth()), (int)(norm.y_ * (float)blend0_->GetHeight()));
+}
+
+IntVector2 TerrainEdit::NormalizedToTerrain(Vector2 norm)
+{
+	if(!terrain_) return IntVector2();
+	
+	return IntVector2((int)(norm.x_ * (float)hmap_->GetWidth()), (int)(norm.y_ * (float)hmap_->GetHeight()));
+}
+	
 void TerrainEdit::SetHeightValue(int x, int y, float val)
 {
 	if(hmap_->GetComponents()==1) hmap_->SetPixel(x,y,Color(val,0,0));

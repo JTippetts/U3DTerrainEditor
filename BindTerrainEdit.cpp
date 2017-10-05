@@ -27,6 +27,13 @@ static int tolua_collect_RasterVertexList (lua_State* tolua_S)
  return 0;
 }
 
+static int tolua_collect_TerrainEdit (lua_State* tolua_S)
+{
+ TerrainEdit* self = (TerrainEdit*) tolua_tousertype(tolua_S,1,0);
+ Mtolua_delete(self);
+ return 0;
+}
+
 static int tolua_collect_RasterVertex (lua_State* tolua_S)
 {
  RasterVertex* self = (RasterVertex*) tolua_tousertype(tolua_S,1,0);
@@ -41,9 +48,9 @@ static int tolua_collect_BrushSettings (lua_State* tolua_S)
  return 0;
 }
 
-static int tolua_collect_TerrainEdit (lua_State* tolua_S)
+static int tolua_collect_IntVector2 (lua_State* tolua_S)
 {
- TerrainEdit* self = (TerrainEdit*) tolua_tousertype(tolua_S,1,0);
+ IntVector2* self = (IntVector2*) tolua_tousertype(tolua_S,1,0);
  Mtolua_delete(self);
  return 0;
 }
@@ -75,21 +82,22 @@ static int tolua_collect_MaskSettings (lua_State* tolua_S)
 static void tolua_reg_types (lua_State* tolua_S)
 {
  tolua_usertype(tolua_S,"RasterVertexList");
- tolua_usertype(tolua_S,"Context");
- tolua_usertype(tolua_S,"Scene");
- tolua_usertype(tolua_S,"TerrainEdit");
- tolua_usertype(tolua_S,"Terrain");
- tolua_usertype(tolua_S,"RasterVertex");
- tolua_usertype(tolua_S,"CKernel");
- tolua_usertype(tolua_S,"MaskSettings");
+ tolua_usertype(tolua_S,"CustomGeometry");
  tolua_usertype(tolua_S,"Color");
+ tolua_usertype(tolua_S,"MaskSettings");
  tolua_usertype(tolua_S,"Image");
  tolua_usertype(tolua_S,"BrushSettings");
- tolua_usertype(tolua_S,"Vector2");
- tolua_usertype(tolua_S,"CustomGeometry");
  tolua_usertype(tolua_S,"Material");
  tolua_usertype(tolua_S,"CArray2Dd");
  tolua_usertype(tolua_S,"Vector3");
+ tolua_usertype(tolua_S,"Scene");
+ tolua_usertype(tolua_S,"Terrain");
+ tolua_usertype(tolua_S,"Context");
+ tolua_usertype(tolua_S,"Vector2");
+ tolua_usertype(tolua_S,"RasterVertex");
+ tolua_usertype(tolua_S,"TerrainEdit");
+ tolua_usertype(tolua_S,"CKernel");
+ tolua_usertype(tolua_S,"IntVector2");
 }
 
 /* get function: radius of class  BrushSettings */
@@ -962,6 +970,358 @@ static int tolua_BindTerrainEdit_TerrainEdit_NormalizedToWorld00(lua_State* tolu
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'NormalizedToWorld'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: WorldToTerrain of class  TerrainEdit */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_TerrainEdit_WorldToTerrain00
+static int tolua_BindTerrainEdit_TerrainEdit_WorldToTerrain00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"TerrainEdit",0,&tolua_err) ||
+ (tolua_isvaluenil(tolua_S,2,&tolua_err) || !tolua_isusertype(tolua_S,2,"Vector3",0,&tolua_err)) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  TerrainEdit* self = (TerrainEdit*)  tolua_tousertype(tolua_S,1,0);
+  Vector3 world = *((Vector3*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'WorldToTerrain'", NULL);
+#endif
+ {
+  IntVector2 tolua_ret = (IntVector2)  self->WorldToTerrain(world);
+ {
+#ifdef __cplusplus
+ void* tolua_obj = Mtolua_new((IntVector2)(tolua_ret));
+  tolua_pushusertype(tolua_S,tolua_obj,"IntVector2");
+ tolua_register_gc(tolua_S,lua_gettop(tolua_S));
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(IntVector2));
+  tolua_pushusertype(tolua_S,tolua_obj,"IntVector2");
+ tolua_register_gc(tolua_S,lua_gettop(tolua_S));
+#endif
+ }
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'WorldToTerrain'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: WorldToBlend of class  TerrainEdit */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_TerrainEdit_WorldToBlend00
+static int tolua_BindTerrainEdit_TerrainEdit_WorldToBlend00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"TerrainEdit",0,&tolua_err) ||
+ (tolua_isvaluenil(tolua_S,2,&tolua_err) || !tolua_isusertype(tolua_S,2,"Vector3",0,&tolua_err)) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  TerrainEdit* self = (TerrainEdit*)  tolua_tousertype(tolua_S,1,0);
+  Vector3 world = *((Vector3*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'WorldToBlend'", NULL);
+#endif
+ {
+  IntVector2 tolua_ret = (IntVector2)  self->WorldToBlend(world);
+ {
+#ifdef __cplusplus
+ void* tolua_obj = Mtolua_new((IntVector2)(tolua_ret));
+  tolua_pushusertype(tolua_S,tolua_obj,"IntVector2");
+ tolua_register_gc(tolua_S,lua_gettop(tolua_S));
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(IntVector2));
+  tolua_pushusertype(tolua_S,tolua_obj,"IntVector2");
+ tolua_register_gc(tolua_S,lua_gettop(tolua_S));
+#endif
+ }
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'WorldToBlend'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: TerrainToWorld of class  TerrainEdit */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_TerrainEdit_TerrainToWorld00
+static int tolua_BindTerrainEdit_TerrainEdit_TerrainToWorld00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"TerrainEdit",0,&tolua_err) ||
+ (tolua_isvaluenil(tolua_S,2,&tolua_err) || !tolua_isusertype(tolua_S,2,"IntVector2",0,&tolua_err)) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  TerrainEdit* self = (TerrainEdit*)  tolua_tousertype(tolua_S,1,0);
+  IntVector2 terrain = *((IntVector2*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'TerrainToWorld'", NULL);
+#endif
+ {
+  Vector3 tolua_ret = (Vector3)  self->TerrainToWorld(terrain);
+ {
+#ifdef __cplusplus
+ void* tolua_obj = Mtolua_new((Vector3)(tolua_ret));
+  tolua_pushusertype(tolua_S,tolua_obj,"Vector3");
+ tolua_register_gc(tolua_S,lua_gettop(tolua_S));
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Vector3));
+  tolua_pushusertype(tolua_S,tolua_obj,"Vector3");
+ tolua_register_gc(tolua_S,lua_gettop(tolua_S));
+#endif
+ }
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'TerrainToWorld'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: BlendToWorld of class  TerrainEdit */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_TerrainEdit_BlendToWorld00
+static int tolua_BindTerrainEdit_TerrainEdit_BlendToWorld00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"TerrainEdit",0,&tolua_err) ||
+ (tolua_isvaluenil(tolua_S,2,&tolua_err) || !tolua_isusertype(tolua_S,2,"IntVector2",0,&tolua_err)) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  TerrainEdit* self = (TerrainEdit*)  tolua_tousertype(tolua_S,1,0);
+  IntVector2 blend = *((IntVector2*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'BlendToWorld'", NULL);
+#endif
+ {
+  Vector3 tolua_ret = (Vector3)  self->BlendToWorld(blend);
+ {
+#ifdef __cplusplus
+ void* tolua_obj = Mtolua_new((Vector3)(tolua_ret));
+  tolua_pushusertype(tolua_S,tolua_obj,"Vector3");
+ tolua_register_gc(tolua_S,lua_gettop(tolua_S));
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Vector3));
+  tolua_pushusertype(tolua_S,tolua_obj,"Vector3");
+ tolua_register_gc(tolua_S,lua_gettop(tolua_S));
+#endif
+ }
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'BlendToWorld'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: TerrainToNormalized of class  TerrainEdit */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_TerrainEdit_TerrainToNormalized00
+static int tolua_BindTerrainEdit_TerrainEdit_TerrainToNormalized00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"TerrainEdit",0,&tolua_err) ||
+ (tolua_isvaluenil(tolua_S,2,&tolua_err) || !tolua_isusertype(tolua_S,2,"IntVector2",0,&tolua_err)) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  TerrainEdit* self = (TerrainEdit*)  tolua_tousertype(tolua_S,1,0);
+  IntVector2 terrain = *((IntVector2*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'TerrainToNormalized'", NULL);
+#endif
+ {
+  Vector2 tolua_ret = (Vector2)  self->TerrainToNormalized(terrain);
+ {
+#ifdef __cplusplus
+ void* tolua_obj = Mtolua_new((Vector2)(tolua_ret));
+  tolua_pushusertype(tolua_S,tolua_obj,"Vector2");
+ tolua_register_gc(tolua_S,lua_gettop(tolua_S));
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Vector2));
+  tolua_pushusertype(tolua_S,tolua_obj,"Vector2");
+ tolua_register_gc(tolua_S,lua_gettop(tolua_S));
+#endif
+ }
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'TerrainToNormalized'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: BlendToNormalized of class  TerrainEdit */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_TerrainEdit_BlendToNormalized00
+static int tolua_BindTerrainEdit_TerrainEdit_BlendToNormalized00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"TerrainEdit",0,&tolua_err) ||
+ (tolua_isvaluenil(tolua_S,2,&tolua_err) || !tolua_isusertype(tolua_S,2,"IntVector2",0,&tolua_err)) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  TerrainEdit* self = (TerrainEdit*)  tolua_tousertype(tolua_S,1,0);
+  IntVector2 blend = *((IntVector2*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'BlendToNormalized'", NULL);
+#endif
+ {
+  Vector2 tolua_ret = (Vector2)  self->BlendToNormalized(blend);
+ {
+#ifdef __cplusplus
+ void* tolua_obj = Mtolua_new((Vector2)(tolua_ret));
+  tolua_pushusertype(tolua_S,tolua_obj,"Vector2");
+ tolua_register_gc(tolua_S,lua_gettop(tolua_S));
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Vector2));
+  tolua_pushusertype(tolua_S,tolua_obj,"Vector2");
+ tolua_register_gc(tolua_S,lua_gettop(tolua_S));
+#endif
+ }
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'BlendToNormalized'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: NormalizedToBlend of class  TerrainEdit */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_TerrainEdit_NormalizedToBlend00
+static int tolua_BindTerrainEdit_TerrainEdit_NormalizedToBlend00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"TerrainEdit",0,&tolua_err) ||
+ (tolua_isvaluenil(tolua_S,2,&tolua_err) || !tolua_isusertype(tolua_S,2,"Vector2",0,&tolua_err)) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  TerrainEdit* self = (TerrainEdit*)  tolua_tousertype(tolua_S,1,0);
+  Vector2 norm = *((Vector2*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'NormalizedToBlend'", NULL);
+#endif
+ {
+  IntVector2 tolua_ret = (IntVector2)  self->NormalizedToBlend(norm);
+ {
+#ifdef __cplusplus
+ void* tolua_obj = Mtolua_new((IntVector2)(tolua_ret));
+  tolua_pushusertype(tolua_S,tolua_obj,"IntVector2");
+ tolua_register_gc(tolua_S,lua_gettop(tolua_S));
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(IntVector2));
+  tolua_pushusertype(tolua_S,tolua_obj,"IntVector2");
+ tolua_register_gc(tolua_S,lua_gettop(tolua_S));
+#endif
+ }
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'NormalizedToBlend'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: NormalizedToTerrain of class  TerrainEdit */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_TerrainEdit_NormalizedToTerrain00
+static int tolua_BindTerrainEdit_TerrainEdit_NormalizedToTerrain00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"TerrainEdit",0,&tolua_err) ||
+ (tolua_isvaluenil(tolua_S,2,&tolua_err) || !tolua_isusertype(tolua_S,2,"Vector2",0,&tolua_err)) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  TerrainEdit* self = (TerrainEdit*)  tolua_tousertype(tolua_S,1,0);
+  Vector2 norm = *((Vector2*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'NormalizedToTerrain'", NULL);
+#endif
+ {
+  IntVector2 tolua_ret = (IntVector2)  self->NormalizedToTerrain(norm);
+ {
+#ifdef __cplusplus
+ void* tolua_obj = Mtolua_new((IntVector2)(tolua_ret));
+  tolua_pushusertype(tolua_S,tolua_obj,"IntVector2");
+ tolua_register_gc(tolua_S,lua_gettop(tolua_S));
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(IntVector2));
+  tolua_pushusertype(tolua_S,tolua_obj,"IntVector2");
+ tolua_register_gc(tolua_S,lua_gettop(tolua_S));
+#endif
+ }
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'NormalizedToTerrain'.",&tolua_err);
  return 0;
 #endif
 }
@@ -4502,6 +4862,14 @@ TOLUA_API int tolua_BindTerrainEdit_open (lua_State* tolua_S)
   tolua_function(tolua_S,"SetTerrainSpacing",tolua_BindTerrainEdit_TerrainEdit_SetTerrainSpacing00);
   tolua_function(tolua_S,"WorldToNormalized",tolua_BindTerrainEdit_TerrainEdit_WorldToNormalized00);
   tolua_function(tolua_S,"NormalizedToWorld",tolua_BindTerrainEdit_TerrainEdit_NormalizedToWorld00);
+  tolua_function(tolua_S,"WorldToTerrain",tolua_BindTerrainEdit_TerrainEdit_WorldToTerrain00);
+  tolua_function(tolua_S,"WorldToBlend",tolua_BindTerrainEdit_TerrainEdit_WorldToBlend00);
+  tolua_function(tolua_S,"TerrainToWorld",tolua_BindTerrainEdit_TerrainEdit_TerrainToWorld00);
+  tolua_function(tolua_S,"BlendToWorld",tolua_BindTerrainEdit_TerrainEdit_BlendToWorld00);
+  tolua_function(tolua_S,"TerrainToNormalized",tolua_BindTerrainEdit_TerrainEdit_TerrainToNormalized00);
+  tolua_function(tolua_S,"BlendToNormalized",tolua_BindTerrainEdit_TerrainEdit_BlendToNormalized00);
+  tolua_function(tolua_S,"NormalizedToBlend",tolua_BindTerrainEdit_TerrainEdit_NormalizedToBlend00);
+  tolua_function(tolua_S,"NormalizedToTerrain",tolua_BindTerrainEdit_TerrainEdit_NormalizedToTerrain00);
   tolua_function(tolua_S,"SetHeightValue",tolua_BindTerrainEdit_TerrainEdit_SetHeightValue00);
   tolua_function(tolua_S,"GetHeightValue",tolua_BindTerrainEdit_TerrainEdit_GetHeightValue00);
   tolua_function(tolua_S,"GetHeightValue",tolua_BindTerrainEdit_TerrainEdit_GetHeightValue01);
