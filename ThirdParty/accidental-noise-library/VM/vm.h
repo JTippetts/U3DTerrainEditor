@@ -115,6 +115,7 @@ public:
     SRGBA evaluateColor(double x, double y, double z, double w, CInstructionIndex idx);
     SRGBA evaluateColor(double x, double y, double z, double w, double u, double v, CInstructionIndex idx);
 private:
+	void seedSource(InstructionListType &kernel, EvaluatedType &evaluated, unsigned int index, unsigned int &seed);
     void evaluateInstruction(InstructionListType &kernel, EvaluatedType &evaluated, CoordCacheType &coordcache, CacheType &cache, unsigned int index, CCoordinate &coord);
     double evaluateParameter(InstructionListType &kernel, EvaluatedType &evaluated, CoordCacheType &coordcache, CacheType &cache, unsigned int index, CCoordinate &coord);
     SVMOutput evaluateBoth(InstructionListType &kernel, EvaluatedType &evaluated, CoordCacheType &coordcache, CacheType &cache, unsigned int index, CCoordinate &coord);

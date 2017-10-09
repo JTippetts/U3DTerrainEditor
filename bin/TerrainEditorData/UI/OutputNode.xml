@@ -97,6 +97,7 @@
 				<attribute name="Text" value="Low:" />
 			</element>
 			<element type="LineEdit">
+				<attribute name="Name" value="Low" />
 				<attribute name="Pivot" value="0 0" />
 				<element type="Text" internal="true" style="none">
 					<attribute name="Min Anchor" value="0 0.5" />
@@ -128,6 +129,7 @@
 				<attribute name="Text" value="High:" />
 			</element>
 			<element type="LineEdit">
+				<attribute name="Name" value="High" />
 				<attribute name="Pivot" value="0 0" />
 				<element type="Text" internal="true" style="none">
 					<attribute name="Min Anchor" value="0 0.5" />

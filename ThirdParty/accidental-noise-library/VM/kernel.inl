@@ -11,6 +11,18 @@ CKernel::CKernel()
     sqrt2_=constant(sqrt(2.0));
 }
 
+CKernel::CKernel(const CKernel &rhs)
+{
+	kernel_=rhs.kernel_;
+	pi_=rhs.pi_;
+	e_=rhs.e_;
+	one_=rhs.one_;
+	zero_=rhs.zero_;
+	point5_=rhs.point5_;
+	sqrt2_=rhs.sqrt2_;
+	vars_=rhs.vars_;
+}
+
 CInstructionIndex CKernel::pi()
 {
     return pi_;
@@ -60,6 +72,16 @@ CInstructionIndex CKernel::seed(unsigned int val)
     return lastIndex();
 }
 
+CInstructionIndex CKernel::seeder(CInstructionIndex src, unsigned int val)
+{
+	anl::SInstruction i;
+	i.outfloat_=(double)val;
+	i.sources_[0]=src.index_;
+	i.opcode_=anl::OP_Seeder;
+	kernel_.push_back(i);
+	return lastIndex();
+}
+
 CInstructionIndex CKernel::valueBasis(CInstructionIndex interpindex, CInstructionIndex seed)
 {
     anl::SInstruction i;
@@ -91,6 +113,20 @@ CInstructionIndex CKernel::simplexBasis(CInstructionIndex seed)
     //i.seed_=seed;
     kernel_.push_back(i);
     return lastIndex();
+}
+
+CInstructionIndex CKernel::fractal(unsigned int seed, CInstructionIndex layer, CInstructionIndex persistence, CInstructionIndex lacunarity, CInstructionIndex numoctaves, CInstructionIndex frequency)
+{
+	anl::SInstruction i;
+	i.opcode_=anl::OP_Fractal;
+	i.outfloat_=(double)seed;
+	i.sources_[0]=layer.index_;
+	i.sources_[1]=persistence.index_;
+	i.sources_[2]=lacunarity.index_;
+	i.sources_[3]=numoctaves.index_;
+	i.sources_[4]=frequency.index_;
+	kernel_.push_back(i);
+	return lastIndex();
 }
 
 CInstructionIndex CKernel::cellularBasis(CInstructionIndex f1, CInstructionIndex f2, CInstructionIndex f3, CInstructionIndex f4, CInstructionIndex d1, CInstructionIndex d2, CInstructionIndex d3, CInstructionIndex d4, CInstructionIndex dist, CInstructionIndex seed)

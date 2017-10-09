@@ -1749,6 +1749,52 @@ static int tolua__CKernel_seed00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: seeder of class  CKernel */
+#ifndef TOLUA_DISABLE_tolua__CKernel_seeder00
+static int tolua__CKernel_seeder00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"CKernel",0,&tolua_err) ||
+ (tolua_isvaluenil(tolua_S,2,&tolua_err) || !tolua_isusertype(tolua_S,2,"CInstructionIndex",0,&tolua_err)) ||
+ !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  CKernel* self = (CKernel*)  tolua_tousertype(tolua_S,1,0);
+  CInstructionIndex src = *((CInstructionIndex*)  tolua_tousertype(tolua_S,2,0));
+  unsigned int val = ((unsigned int)  tolua_tonumber(tolua_S,3,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'seeder'", NULL);
+#endif
+ {
+  CInstructionIndex tolua_ret = (CInstructionIndex)  self->seeder(src,val);
+ {
+#ifdef __cplusplus
+ void* tolua_obj = Mtolua_new((CInstructionIndex)(tolua_ret));
+  tolua_pushusertype(tolua_S,tolua_obj,"CInstructionIndex");
+ tolua_register_gc(tolua_S,lua_gettop(tolua_S));
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(CInstructionIndex));
+  tolua_pushusertype(tolua_S,tolua_obj,"CInstructionIndex");
+ tolua_register_gc(tolua_S,lua_gettop(tolua_S));
+#endif
+ }
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'seeder'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: valueBasis of class  CKernel */
 #ifndef TOLUA_DISABLE_tolua__CKernel_valueBasis00
 static int tolua__CKernel_valueBasis00(lua_State* tolua_S)
@@ -4409,6 +4455,60 @@ static int tolua__CKernel_sigmoid01(lua_State* tolua_S)
  return 1;
 tolua_lerror:
  return tolua__CKernel_sigmoid00(tolua_S);
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: fractal of class  CKernel */
+#ifndef TOLUA_DISABLE_tolua__CKernel_fractal00
+static int tolua__CKernel_fractal00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"CKernel",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ (tolua_isvaluenil(tolua_S,3,&tolua_err) || !tolua_isusertype(tolua_S,3,"CInstructionIndex",0,&tolua_err)) ||
+ (tolua_isvaluenil(tolua_S,4,&tolua_err) || !tolua_isusertype(tolua_S,4,"CInstructionIndex",0,&tolua_err)) ||
+ (tolua_isvaluenil(tolua_S,5,&tolua_err) || !tolua_isusertype(tolua_S,5,"CInstructionIndex",0,&tolua_err)) ||
+ (tolua_isvaluenil(tolua_S,6,&tolua_err) || !tolua_isusertype(tolua_S,6,"CInstructionIndex",0,&tolua_err)) ||
+ (tolua_isvaluenil(tolua_S,7,&tolua_err) || !tolua_isusertype(tolua_S,7,"CInstructionIndex",0,&tolua_err)) ||
+ !tolua_isnoobj(tolua_S,8,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  CKernel* self = (CKernel*)  tolua_tousertype(tolua_S,1,0);
+  unsigned int seed = ((unsigned int)  tolua_tonumber(tolua_S,2,0));
+  CInstructionIndex layer = *((CInstructionIndex*)  tolua_tousertype(tolua_S,3,0));
+  CInstructionIndex persistence = *((CInstructionIndex*)  tolua_tousertype(tolua_S,4,0));
+  CInstructionIndex lacunarity = *((CInstructionIndex*)  tolua_tousertype(tolua_S,5,0));
+  CInstructionIndex numoctaves = *((CInstructionIndex*)  tolua_tousertype(tolua_S,6,0));
+  CInstructionIndex freq = *((CInstructionIndex*)  tolua_tousertype(tolua_S,7,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'fractal'", NULL);
+#endif
+ {
+  CInstructionIndex tolua_ret = (CInstructionIndex)  self->fractal(seed,layer,persistence,lacunarity,numoctaves,freq);
+ {
+#ifdef __cplusplus
+ void* tolua_obj = Mtolua_new((CInstructionIndex)(tolua_ret));
+  tolua_pushusertype(tolua_S,tolua_obj,"CInstructionIndex");
+ tolua_register_gc(tolua_S,lua_gettop(tolua_S));
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(CInstructionIndex));
+  tolua_pushusertype(tolua_S,tolua_obj,"CInstructionIndex");
+ tolua_register_gc(tolua_S,lua_gettop(tolua_S));
+#endif
+ }
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'fractal'.",&tolua_err);
+ return 0;
+#endif
 }
 #endif //#ifndef TOLUA_DISABLE
 
@@ -10724,6 +10824,7 @@ TOLUA_API int tolua_bind_anl_open (lua_State* tolua_S)
   tolua_function(tolua_S,"sqrt2",tolua__CKernel_sqrt200);
   tolua_function(tolua_S,"constant",tolua__CKernel_constant00);
   tolua_function(tolua_S,"seed",tolua__CKernel_seed00);
+  tolua_function(tolua_S,"seeder",tolua__CKernel_seeder00);
   tolua_function(tolua_S,"valueBasis",tolua__CKernel_valueBasis00);
   tolua_function(tolua_S,"gradientBasis",tolua__CKernel_gradientBasis00);
   tolua_function(tolua_S,"simplexBasis",tolua__CKernel_simplexBasis00);
@@ -10782,6 +10883,7 @@ TOLUA_API int tolua_bind_anl_open (lua_State* tolua_S)
   tolua_function(tolua_S,"dv",tolua__CKernel_dv00);
   tolua_function(tolua_S,"sigmoid",tolua__CKernel_sigmoid00);
   tolua_function(tolua_S,"sigmoid",tolua__CKernel_sigmoid01);
+  tolua_function(tolua_S,"fractal",tolua__CKernel_fractal00);
   tolua_function(tolua_S,"radial",tolua__CKernel_radial00);
   tolua_function(tolua_S,"hexTile",tolua__CKernel_hexTile00);
   tolua_function(tolua_S,"hexBump",tolua__CKernel_hexBump00);
@@ -11057,7 +11159,7 @@ TOLUA_API int tolua_bind_anl_open (lua_State* tolua_S)
 
 
 #if defined(LUA_VERSION_NUM) && LUA_VERSION_NUM >= 501
- TOLUA_API int luaopen_bind_anl (lua_State* tolua_S) {
+ TOLUA_API int luaopen_ (lua_State* tolua_S) {
  return tolua_bind_anl_open(tolua_S);
 };
 #endif

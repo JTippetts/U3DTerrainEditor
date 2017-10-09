@@ -1,3 +1,4 @@
+#include <iostream>
 
 CoordPair closest_point(double vx, double vy, double x, double  y)
 {
@@ -181,6 +182,93 @@ SVMOutput CNoiseExecutor::evaluateBoth(InstructionListType &kernel, EvaluatedTyp
     return cache[index];
 }
 
+void CNoiseExecutor::seedSource(InstructionListType &kernel, EvaluatedType &evaluated, unsigned int index, unsigned int &seed)
+{
+	//std::cout << "Seed: " << seed << std::endl;
+	SInstruction &i=kernel[index];
+	evaluated[index]=false;
+	if(i.opcode_==OP_Seed)
+	{
+		i.outfloat_=(float)seed++;
+		return;
+	}
+	else
+	{
+		switch(i.opcode_)
+		{
+			case OP_NOP:
+			case OP_Seed:
+			case OP_Constant: return; break;
+			case OP_Seeder: seedSource(kernel, evaluated, i.sources_[0], seed); return; break;
+			case OP_ValueBasis: seedSource(kernel, evaluated, i.sources_[1], seed); return; break;
+			case OP_GradientBasis: seedSource(kernel, evaluated, i.sources_[1], seed); return; break;
+			case OP_SimplexBasis: seedSource(kernel, evaluated, i.sources_[0], seed); return; break;
+			case OP_CellularBasis: for(int c=0; c<10; ++c) seedSource(kernel, evaluated, i.sources_[c], seed); return; break;
+			case OP_Add:
+			case OP_Subtract:
+			case OP_Multiply:
+			case OP_Divide:
+			case OP_ScaleDomain: 
+			case OP_ScaleX:
+			case OP_ScaleY:
+			case OP_ScaleZ:
+			case OP_ScaleW:
+			case OP_ScaleU:
+			case OP_ScaleV:
+			case OP_TranslateDomain:
+			case OP_TranslateX:
+			case OP_TranslateY:
+			case OP_TranslateZ:
+			case OP_TranslateW:
+			case OP_TranslateU:
+			case OP_TranslateV: seedSource(kernel, evaluated, i.sources_[0], seed); seedSource(kernel, evaluated, i.sources_[1], seed); return; break;
+			case OP_RotateDomain: for(int c=0; c<6; ++c) seedSource(kernel, evaluated, i.sources_[c], seed); return; break;
+			case OP_Blend: for(int c=0; c<3; ++c) seedSource(kernel, evaluated, i.sources_[c], seed); return; break;
+			case OP_Select: for(int c=0; c<5; ++c) seedSource(kernel, evaluated, i.sources_[c], seed); return; break;
+			case OP_Min:
+			case OP_Max: seedSource(kernel, evaluated, i.sources_[0], seed); seedSource(kernel, evaluated, i.sources_[1], seed); return; break;
+			case OP_Abs: seedSource(kernel, evaluated, i.sources_[0], seed); return; break;
+			case OP_Pow: seedSource(kernel, evaluated, i.sources_[0], seed); seedSource(kernel, evaluated, i.sources_[1], seed); return; break;
+			case OP_Clamp: for(int c=0; c<3; ++c) seedSource(kernel, evaluated, i.sources_[c], seed); return; break;
+			case OP_Radial: return; break;
+			case OP_Sin:
+			case OP_Cos:
+			case OP_Tan:
+			case OP_ASin:
+			case OP_ACos:
+			case OP_ATan: seedSource(kernel, evaluated, i.sources_[0], seed); return; break;
+			case OP_Bias:
+			case OP_Gain: 
+			case OP_Tiers:
+			case OP_SmoothTiers: seedSource(kernel, evaluated, i.sources_[0], seed); seedSource(kernel, evaluated, i.sources_[1], seed); return; break;
+			case OP_X:
+			case OP_Y:
+			case OP_Z:
+			case OP_W:
+			case OP_U:
+			case OP_V: return; break;
+			case OP_DX:
+			case OP_DY:
+			case OP_DZ:
+			case OP_DW:
+			case OP_DU:
+			case OP_DV: seedSource(kernel, evaluated, i.sources_[0], seed); seedSource(kernel, evaluated, i.sources_[1], seed); return; break;
+			case OP_Sigmoid: for(int c=0; c<3; ++c) seedSource(kernel, evaluated, i.sources_[c], seed); return; break;
+			case OP_Fractal: i.outfloat_=(double)seed++; return; break;
+			case OP_HexTile: seedSource(kernel, evaluated, i.sources_[0], seed); return; break;
+			case OP_HexBump: return; break;
+			case OP_Color: return; break;
+			case OP_ExtractRed:
+			case OP_ExtractGreen:
+			case OP_ExtractBlue:
+			case OP_ExtractAlpha:
+			case OP_Grayscale: return; break;
+			case OP_CombineRGBA: for(int c=0; c<4; ++c) seedSource(kernel, evaluated, i.sources_[c], seed); return; break;
+			default: return; break;
+		}
+	}
+}
+
 void CNoiseExecutor::evaluateInstruction(InstructionListType &kernel, EvaluatedType &evaluated, CoordCacheType &coordcache, CacheType &cache, unsigned int index, CCoordinate &coord)
 {
     if(index>=kernel.size()) return;
@@ -199,7 +287,19 @@ void CNoiseExecutor::evaluateInstruction(InstructionListType &kernel, EvaluatedT
         cache[index].set(i.outfloat_);
         return;
         break;
-
+	case OP_Seeder:
+	{
+		// Need to iterate through source chain and set seeds based on current seed.
+		unsigned int seed=(unsigned int)i.outfloat_;
+		seedSource(kernel,evaluated,i.sources_[0],seed);
+		evaluated[index]=true;
+		SVMOutput s1;
+        s1=evaluateBoth(kernel,evaluated,coordcache,cache,i.sources_[0],coord);
+        cache[index].set(s1);
+		return;
+		break;
+	}
+		
     case OP_ValueBasis:
     {
         // Parameters
@@ -1096,6 +1196,61 @@ void CNoiseExecutor::evaluateInstruction(InstructionListType &kernel, EvaluatedT
         return;
     }
     break;
+	
+	case OP_Fractal:
+	{
+		//layer,pers,lac,octaves
+		unsigned int numoctaves=(unsigned int)evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[3],coord);
+		unsigned int seed=(unsigned int)i.outfloat_;
+		double val=0.0f;
+		double freq=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[4],coord);
+		double lac=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[2],coord);
+		double pers=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[1],coord);
+		double amp=1.0;
+		CCoordinate scale(1,1,1,1,1,1), fscale(1,1,1,1,1,1);
+        switch(coord.dimension_)
+        {
+			case 2:
+			{
+				scale.set(lac,lac);
+				fscale.set(freq,freq);
+				break;
+			}
+			case 3:
+			{
+				scale.set(lac,lac,lac);
+				fscale.set(freq,freq,freq);
+				break;
+			}
+			case 4:
+			{
+				scale.set(lac,lac,lac,lac);
+				fscale.set(freq,freq,freq,freq);
+				break;
+			}
+			default:
+			{
+				scale.set(lac,lac,lac,lac,lac,lac);
+				fscale.set(freq,freq,freq,freq,freq,freq);
+				break;
+			}
+        };
+		
+		coord=coord*freq;
+		
+		for(unsigned int c=0; c<numoctaves; ++c)
+		{
+			seedSource(kernel,evaluated,i.sources_[0],seed);
+			double v=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[0],coord);
+			val+=v*amp;
+			//val=v;
+			amp*=pers;
+			coord=coord*scale;
+		}
+		cache[index].set(val);
+		evaluated[index]=true;
+		return;
+	}
 
     case OP_Radial:
     {

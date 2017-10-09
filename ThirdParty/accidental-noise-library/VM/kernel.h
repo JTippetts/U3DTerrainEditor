@@ -36,6 +36,9 @@ class CKernel
 {
 public:
     CKernel();
+	CKernel(const CKernel &rhs);
+	
+	
 
     CInstructionIndex pi();
     CInstructionIndex e();
@@ -46,6 +49,7 @@ public:
 
     CInstructionIndex constant(double val);
     CInstructionIndex seed(unsigned int val);
+	CInstructionIndex seeder(CInstructionIndex src, unsigned int seed);
     CInstructionIndex valueBasis(CInstructionIndex interpindex, CInstructionIndex seed);
     CInstructionIndex gradientBasis(CInstructionIndex interpindex, CInstructionIndex seed);
     CInstructionIndex simplexBasis(CInstructionIndex seed);
@@ -118,6 +122,8 @@ public:
     CInstructionIndex sigmoid(CInstructionIndex src, CInstructionIndex center, CInstructionIndex ramp);
 
     CInstructionIndex radial();
+	
+	CInstructionIndex fractal(unsigned int seed, CInstructionIndex layer, CInstructionIndex persistence, CInstructionIndex lacunarity, CInstructionIndex numoctaves, CInstructionIndex freq);
 
     // Patterns
     CInstructionIndex hexTile(CInstructionIndex seed);

@@ -13,6 +13,7 @@ enum EOpcodes
     OP_NOP,
     OP_Seed,
     OP_Constant,
+	OP_Seeder,
     OP_ValueBasis,
     OP_GradientBasis,
     OP_SimplexBasis,
@@ -70,6 +71,8 @@ enum EOpcodes
     OP_DV,
 
     OP_Sigmoid,
+	
+	OP_Fractal,
 
     // Patterns
     OP_HexTile,

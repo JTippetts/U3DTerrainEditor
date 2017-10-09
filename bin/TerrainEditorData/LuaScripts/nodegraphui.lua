@@ -16,8 +16,10 @@ function GetSourceFromNode(node, inputname)
 	return false
 end
 
+
 function PackNodeGraph(output)
 	local nodes={}
+	local kernelindices={}
 	local isvisited=function(n)
 		local c
 		for _,c in ipairs(nodes) do
@@ -34,21 +36,300 @@ function PackNodeGraph(output)
 		return false
 	end
 	
+	function InstanceANLFunction(kernel, n)
+		if n.name=="Output" then
+			local s1,s2
+			local s=GetSourceFromNode(n,"Input0")
+			if s then
+				s1=kernelindices[nodeindex(s)]
+			else
+				local c=tonumber(n:GetChild("Value0",true).text)
+				s1=kernel:constant(c)
+			end
+			return s1
+			--local low=tonumber(n:GetChild("Low").text)
+			--local high=tonumber(n:GetChild("High").text)
+		elseif n.name=="Arithmetic" then
+			local s1,s2
+			local s=GetSourceFromNode(n,"Input0")
+			if s then
+				s1=kernelindices[nodeindex(s)]
+			else
+				local c=tonumber(n:GetChild("Value0",true).text)
+				s1=kernel:constant(c)
+			end
+			s=GetSourceFromNode(n, "Input1")
+			if s then
+				s2=kernelindices[nodeindex(s)]
+			else
+				local c=tonumber(n:GetChild("Value1",true).text)
+				s2=kernel:constant(c)
+			end
+			local op=n:GetChild("TypeList",true).selection
+			if op==0 then return kernel:multiply(s1,s2)
+			elseif op==1 then return kernel:add(s1,s2)
+			elseif op==2 then return kernel:subtract(s1,s2)
+			elseif op==3 then return kernel:divide(s1,s2)
+			elseif op==4 then return kernel:pow(s1,s2)
+			elseif op==5 then return kernel:minimum(s1,s2)
+			elseif op==6 then return kernel:maximum(s1,s2)
+			elseif op==7 then return kernel:bias(s1,s2)
+			elseif op==8 then return kernel:gain(s1,s2)
+			end
+		elseif n.name=="TranslateDomain" then
+			local s1,s2
+			local s=GetSourceFromNode(n,"Input0")
+			if s then
+				s1=kernelindices[nodeindex(s)]
+			else
+				local c=tonumber(n:GetChild("Value0",true).text)
+				s1=kernel:constant(c)
+			end
+			s=GetSourceFromNode(n, "Input1")
+			if s then
+				s2=kernelindices[nodeindex(s)]
+			else
+				local c=tonumber(n:GetChild("Value1",true).text)
+				s2=kernel:constant(c)
+			end
+			local op=n:GetChild("TypeList",true).selection
+			if op==0 then return kernel:translateDomain(s1,s2)
+			elseif op==1 then return kernel:translateX(s1,s2)
+			elseif op==2 then return kernel:translateY(s1,s2)
+			elseif op==3 then return kernel:translateZ(s1,s2)
+			elseif op==4 then return kernel:translateW(s1,s2)
+			elseif op==5 then return kernel:translateU(s1,s2)
+			elseif op==6 then return kernel:translateV(s1,s2)
+			end
+		elseif n.name=="ScaleDomain" then
+			local s1,s2
+			local s=GetSourceFromNode(n,"Input0")
+			if s then
+				s1=kernelindices[nodeindex(s)]
+			else
+				local c=tonumber(n:GetChild("Value0",true).text)
+				s1=kernel:constant(c)
+			end
+			s=GetSourceFromNode(n, "Input1")
+			if s then
+				s2=kernelindices[nodeindex(s)]
+			else
+				local c=tonumber(n:GetChild("Value1",true).text)
+				s2=kernel:constant(c)
+			end
+			local op=n:GetChild("TypeList",true).selection
+			if op==0 then return kernel:scaleDomain(s1,s2)
+			elseif op==1 then return kernel:scaleX(s1,s2)
+			elseif op==2 then return kernel:scaleY(s1,s2)
+			elseif op==3 then return kernel:scaleZ(s1,s2)
+			elseif op==4 then return kernel:scaleW(s1,s2)
+			elseif op==5 then return kernel:scaleU(s1,s2)
+			elseif op==6 then return kernel:scaleV(s1,s2)
+			end
+		elseif n.name=="Tiers" then
+			local s1,s2
+			local s=GetSourceFromNode(n,"Input0")
+			if s then
+				s1=kernelindices[nodeindex(s)]
+			else
+				local c=tonumber(n:GetChild("Value0",true).text)
+				s1=kernel:constant(c)
+			end
+			s=GetSourceFromNode(n, "Input1")
+			if s then
+				s2=kernelindices[nodeindex(s)]
+			else
+				local c=tonumber(n:GetChild("Value1",true).text)
+				--print("hi")
+				s2=kernel:constant(c)
+			end
+			print(s1,s2)
+			local smooth=n:GetChild("SmoothCheck",true).checked
+			if smooth then
+				return kernel:smoothTiers(s1,s2)
+			else
+				return kernel:tiers(s1,s2)
+			end
+		elseif n.name=="ValueBasis" then
+			local s1,s2
+			local s=GetSourceFromNode(n,"Input0")
+			if s then
+				s1=kernelindices[nodeindex(s)]
+			else
+				local c=tonumber(n:GetChild("Value0",true).text)
+				s1=kernel:constant(c)
+			end
+			s=GetSourceFromNode(n, "Input1")
+			if s then
+				s2=kernelindices[nodeindex(s)]
+			else
+				local c=tonumber(n:GetChild("Value1",true).text)
+				--print("hi")
+				s2=kernel:seed(c)
+			end
+			return kernel:valueBasis(s1,s2)
+		elseif n.name=="SimplexBasis" then
+			local s1,s2
+			local s=GetSourceFromNode(n,"Input0")
+			if s then
+				s1=kernelindices[nodeindex(s)]
+			else
+				local c=tonumber(n:GetChild("Value0",true).text)
+				s1=kernel:constant(c)
+			end
+			
+			return kernel:simplexBasis(s1)
+		elseif n.name=="GradientBasis" then
+			local s1,s2
+			local s=GetSourceFromNode(n,"Input0")
+			if s then
+				s1=kernelindices[nodeindex(s)]
+			else
+				local c=tonumber(n:GetChild("Value0",true).text)
+				s1=kernel:constant(c)
+			end
+			s=GetSourceFromNode(n, "Input1")
+			if s then
+				s2=kernelindices[nodeindex(s)]
+			else
+				local c=tonumber(n:GetChild("Value1",true).text)
+				--print("hi")
+				s2=kernel:seed(c)
+			end
+			return kernel:gradientBasis(s1,s2)
+		elseif n.name=="ScalarMath" then
+			local s1,s2
+			local s=GetSourceFromNode(n,"Input0")
+			if s then
+				s1=kernelindices[nodeindex(s)]
+			else
+				local c=tonumber(n:GetChild("Value0",true).text)
+				s1=kernel:constant(c)
+			end
+			local op=n:GetChild("TypeList",true).selection
+			if op==0 then return kernel:abs(s1)
+			elseif op==1 then return kernel:cos(s1)
+			elseif op==2 then return kernel:sin(s1)
+			elseif op==3 then return kernel:tan(s1)
+			elseif op==4 then return kernel:acos(s1)
+			elseif op==5 then return kernel:asin(s1)
+			elseif op==6 then return kernel:atan(s1)
+			end
+		elseif n.name=="CoordinateSource" then
+			local op=n:GetChild("TypeList",true).selection
+			if op==0 then return kernel:x()
+			elseif op==1 then return kernel:y()
+			elseif op==2 then return kernel:z()
+			elseif op==3 then return kernel:w()
+			elseif op==4 then return kernel:u()
+			elseif op==5 then return kernel:v()
+			end
+		elseif n.name=="Constant" then
+			local val=tonumber(n:GetChild("Value",true).text)
+			return kernel:constant(val)
+		elseif n.name=="Seed" then
+			local val=tonumber(n:GetChild("Value",true).text)
+			return kernel:seed(val)
+		elseif n.name=="Derivative" then
+			local s1,s2
+			local s=GetSourceFromNode(n,"Input0")
+			if s then
+				s1=kernelindices[nodeindex(s)]
+			else
+				local c=tonumber(n:GetChild("Value0",true).text)
+				s1=kernel:constant(c)
+			end
+			s=GetSourceFromNode(n, "Input1")
+			if s then
+				s2=kernelindices[nodeindex(s)]
+			else
+				local c=tonumber(n:GetChild("Value1",true).text)
+				s2=kernel:constant(c)
+			end
+			local op=n:GetChild("TypeList",true).selection
+			if op==0 then return kernel:dx(s1,s2)
+			elseif op==1 then return kernel:dy(s1,s2)
+			elseif op==2 then return kernel:dz(s1,s2)
+			elseif op==3 then return kernel:dw(s1,s2)
+			elseif op==4 then return kernel:du(s1,s2)
+			elseif op==5 then return kernel:dv(s1,s2)
+			end
+		elseif n.name=="Fractal" then
+			local s1,s2,s3,s4,s5
+			local s=GetSourceFromNode(n,"Input0")
+			if s then
+				s1=kernelindices[nodeindex(s)]
+			else
+				local c=tonumber(n:GetChild("Value0",true).text) or 1.0
+				s1=kernel:constant(c)
+			end
+			s=GetSourceFromNode(n, "Input1")
+			if s then
+				s2=kernelindices[nodeindex(s)]
+			else
+				local c=tonumber(n:GetChild("Value1",true).text) or 1.0
+				s2=kernel:constant(c)
+			end
+			s=GetSourceFromNode(n, "Input2")
+			if s then
+				s3=kernelindices[nodeindex(s)]
+			else
+				local c=tonumber(n:GetChild("Value2",true).text) or 1.0
+				s3=kernel:constant(c)
+			end
+			s=GetSourceFromNode(n, "Input3")
+			if s then
+				s4=kernelindices[nodeindex(s)]
+			else
+				local c=tonumber(n:GetChild("Value3",true).text) or 1.0
+				s4=kernel:constant(c)
+			end
+			s=GetSourceFromNode(n, "Input4")
+			if s then
+				s5=kernelindices[nodeindex(s)]
+			else
+				local c=tonumber(n:GetChild("Value4",true).text) or 1.0
+				s5=kernel:constant(c)
+			end
+			local seed=tonumber(n:GetChild("Seed", true).text)
+			
+			return kernel:fractal(seed,s1,s2,s3,s4,s5)
+			
+		end
+	end
+	
+	local kernel=CKernel()
+	
 	worker=function(n)
-		if n.name=="Arithmetic" or n.name=="Derivative" then
+		if n.name=="Arithmetic" or n.name=="Derivative" or n.name=="Tiers" or n.name=="ValueBasis" or n.name=="GradientBasis" or n.name=="TranslateDomain" or n.name=="ScaleDomain" then
 			local s=GetSourceFromNode(n,"Input0")
 			if s and not isvisited(s) then worker(s) end
 			s=GetSourceFromNode(n,"Input1")
 			if s and not isvisited(s) then worker(s) end
-		elseif n.name=="ScalarMath" or n.name=="Output" then
+		elseif n.name=="ScalarMath" or n.name=="Output" or n.name=="SimplexBasis" then
 			local s=GetSourceFromNode(n,"Input0")
+			if s and not isvisited(s) then worker(s) end
+		elseif n.name=="Fractal" then
+			local s=GetSourceFromNode(n,"Input0")
+			if s and not isvisited(s) then worker(s) end
+			s=GetSourceFromNode(n,"Input1")
+			if s and not isvisited(s) then worker(s) end
+			s=GetSourceFromNode(n,"Input2")
+			if s and not isvisited(s) then worker(s) end
+			s=GetSourceFromNode(n,"Input3")
+			if s and not isvisited(s) then worker(s) end
+			s=GetSourceFromNode(n,"Input4")
 			if s and not isvisited(s) then worker(s) end
 		end
 		table.insert(nodes,n)
+		table.insert(kernelindices, InstanceANLFunction(kernel, n))
 	end
 	print("Packing node graph.")
+	
 	worker(output)
-	return nodes
+	local c
+	for _,c in ipairs(nodes) do print(c.name) end
+	return kernel
 end
 
 NodeGraphUI=ScriptObject()
@@ -78,6 +359,13 @@ function NodeGraphUI:Start()
 	self:SubscribeToEvent(self.createnodemenu:GetChild("Seed", true), "Pressed", "NodeGraphUI:HandleCreateNode")
 	self:SubscribeToEvent(self.createnodemenu:GetChild("CoordSource", true), "Pressed", "NodeGraphUI:HandleCreateNode")
 	self:SubscribeToEvent(self.createnodemenu:GetChild("Derivative", true), "Pressed", "NodeGraphUI:HandleCreateNode")
+	self:SubscribeToEvent(self.createnodemenu:GetChild("Tiers", true), "Pressed", "NodeGraphUI:HandleCreateNode")
+	self:SubscribeToEvent(self.createnodemenu:GetChild("ValueBasis", true), "Pressed", "NodeGraphUI:HandleCreateNode")
+	self:SubscribeToEvent(self.createnodemenu:GetChild("GradientBasis", true), "Pressed", "NodeGraphUI:HandleCreateNode")
+	self:SubscribeToEvent(self.createnodemenu:GetChild("SimplexBasis", true), "Pressed", "NodeGraphUI:HandleCreateNode")
+	self:SubscribeToEvent(self.createnodemenu:GetChild("TranslateDomain", true), "Pressed", "NodeGraphUI:HandleCreateNode")
+	self:SubscribeToEvent(self.createnodemenu:GetChild("ScaleDomain", true), "Pressed", "NodeGraphUI:HandleCreateNode")
+	self:SubscribeToEvent(self.createnodemenu:GetChild("Fractal", true), "Pressed", "NodeGraphUI:HandleCreateNode")
 	self.createnodemenu.visible=false
 	
 	local cnmclose=self.createnodemenu:GetChild("Close", true)
@@ -135,6 +423,34 @@ function NodeGraphUI:HandleCreateNode(eventType, eventData)
 		table.insert(self.nodegroup.nodes, n)
 	elseif e.name=="Derivative" then
 		local n=self:DerivativeNode()
+		n.position=IntVector2(-self.pane.position.x + graphics.width/2, -self.pane.position.y + graphics.height/2)
+		table.insert(self.nodegroup.nodes, n)
+	elseif e.name=="Tiers" then
+		local n=self:TiersNode()
+		n.position=IntVector2(-self.pane.position.x + graphics.width/2, -self.pane.position.y + graphics.height/2)
+		table.insert(self.nodegroup.nodes, n)
+	elseif e.name=="ValueBasis" then
+		local n=self:ValueBasisNode()
+		n.position=IntVector2(-self.pane.position.x + graphics.width/2, -self.pane.position.y + graphics.height/2)
+		table.insert(self.nodegroup.nodes, n)
+	elseif e.name=="GradientBasis" then
+		local n=self:GradientBasisNode()
+		n.position=IntVector2(-self.pane.position.x + graphics.width/2, -self.pane.position.y + graphics.height/2)
+		table.insert(self.nodegroup.nodes, n)
+	elseif e.name=="SimplexBasis" then
+		local n=self:SimplexBasisNode()
+		n.position=IntVector2(-self.pane.position.x + graphics.width/2, -self.pane.position.y + graphics.height/2)
+		table.insert(self.nodegroup.nodes, n)
+	elseif e.name=="TranslateDomain" then
+		local n=self:TranslateDomainNode()
+		n.position=IntVector2(-self.pane.position.x + graphics.width/2, -self.pane.position.y + graphics.height/2)
+		table.insert(self.nodegroup.nodes, n)
+	elseif e.name=="ScaleDomain" then
+		local n=self:ScaleDomainNode()
+		n.position=IntVector2(-self.pane.position.x + graphics.width/2, -self.pane.position.y + graphics.height/2)
+		table.insert(self.nodegroup.nodes, n)
+	elseif e.name=="Fractal" then
+		local n=self:FractalNode()
 		n.position=IntVector2(-self.pane.position.x + graphics.width/2, -self.pane.position.y + graphics.height/2)
 		table.insert(self.nodegroup.nodes, n)
 	end
@@ -230,7 +546,141 @@ function NodeGraphUI:ArithmeticNode()
 		"Divide",
 		"Pow",
 		"Min",
-		"Max"
+		"Max",
+		"Bias",
+		"Gain",
+	}
+	
+	list:SetAlignment(HA_LEFT, VA_CENTER)
+	list.minSize=IntVector2(0,16)
+	local c
+	for _,c in ipairs(smtypes) do
+		local t=Text:new(context)
+		t:SetFont(cache:GetResource("Font", "Fonts/Anonymous Pro.ttf"), 11)
+		t.text=c
+		t.color=Color(1,1,1)
+		t.minSize=IntVector2(0,16)
+		list:AddItem(t)
+	end
+	list.selection=0
+	
+	local output=e:GetChild("Output0", true)
+	
+	self:SubscribeToEvent(output, "DragBegin", "NodeGraphUI:HandleOutputDragBegin")
+	self:SubscribeToEvent(output, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	output:SetRoot(e)
+	
+	local input=e:GetChild("Input0", true)
+	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
+	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	input=e:GetChild("Input1", true)
+	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
+	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	
+	self.pane:AddChild(e)
+	return e
+end
+
+function NodeGraphUI:FractalNode()
+	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/FractalNode.xml"))
+	
+	e.visible=true
+	self.pane.clipChildren=false
+	
+	local output=e:GetChild("Output0", true)
+	
+	self:SubscribeToEvent(output, "DragBegin", "NodeGraphUI:HandleOutputDragBegin")
+	self:SubscribeToEvent(output, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	output:SetRoot(e)
+	
+	local input=e:GetChild("Input0", true)
+	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
+	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	input=e:GetChild("Input1", true)
+	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
+	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	input=e:GetChild("Input2", true)
+	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
+	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	input=e:GetChild("Input3", true)
+	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
+	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	input=e:GetChild("Input4", true)
+	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
+	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	
+	self.pane:AddChild(e)
+	return e
+end
+
+function NodeGraphUI:TranslateDomainNode()
+	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/TranslateDomainNode.xml"))
+	
+	e.visible=true
+	self.pane.clipChildren=false
+	
+	local list=e:GetChild("TypeList", true)
+	list.resizePopup=true
+	
+	local smtypes=
+	{
+		"All",
+		"X",
+		"Y",
+		"Z",
+		"W",
+		"U",
+		"V"
+	}
+	
+	list:SetAlignment(HA_LEFT, VA_CENTER)
+	list.minSize=IntVector2(0,16)
+	local c
+	for _,c in ipairs(smtypes) do
+		local t=Text:new(context)
+		t:SetFont(cache:GetResource("Font", "Fonts/Anonymous Pro.ttf"), 11)
+		t.text=c
+		t.color=Color(1,1,1)
+		t.minSize=IntVector2(0,16)
+		list:AddItem(t)
+	end
+	list.selection=0
+	
+	local output=e:GetChild("Output0", true)
+	
+	self:SubscribeToEvent(output, "DragBegin", "NodeGraphUI:HandleOutputDragBegin")
+	self:SubscribeToEvent(output, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	output:SetRoot(e)
+	
+	local input=e:GetChild("Input0", true)
+	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
+	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	input=e:GetChild("Input1", true)
+	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
+	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	
+	self.pane:AddChild(e)
+	return e
+end
+
+function NodeGraphUI:ScaleDomainNode()
+	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/ScaleDomainNode.xml"))
+	
+	e.visible=true
+	self.pane.clipChildren=false
+	
+	local list=e:GetChild("TypeList", true)
+	list.resizePopup=true
+	
+	local smtypes=
+	{
+		"All",
+		"X",
+		"Y",
+		"Z",
+		"W",
+		"U",
+		"V"
 	}
 	
 	list:SetAlignment(HA_LEFT, VA_CENTER)
@@ -305,6 +755,95 @@ function NodeGraphUI:DerivativeNode()
 	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
 	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
 	input=e:GetChild("Input1", true)
+	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
+	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	
+	self.pane:AddChild(e)
+	return e
+end
+
+function NodeGraphUI:TiersNode()
+	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/TiersNode.xml"))
+	
+	e.visible=true
+	self.pane.clipChildren=false
+	
+	local output=e:GetChild("Output0", true)
+	
+	self:SubscribeToEvent(output, "DragBegin", "NodeGraphUI:HandleOutputDragBegin")
+	self:SubscribeToEvent(output, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	output:SetRoot(e)
+	
+	local input=e:GetChild("Input0", true)
+	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
+	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	input=e:GetChild("Input1", true)
+	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
+	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	
+	self.pane:AddChild(e)
+	return e
+end
+
+function NodeGraphUI:ValueBasisNode()
+	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/ValueBasisNode.xml"))
+	
+	e.visible=true
+	self.pane.clipChildren=false
+	
+	local output=e:GetChild("Output0", true)
+	
+	self:SubscribeToEvent(output, "DragBegin", "NodeGraphUI:HandleOutputDragBegin")
+	self:SubscribeToEvent(output, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	output:SetRoot(e)
+	
+	local input=e:GetChild("Input0", true)
+	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
+	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	input=e:GetChild("Input1", true)
+	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
+	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	
+	self.pane:AddChild(e)
+	return e
+end
+
+function NodeGraphUI:GradientBasisNode()
+	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/GradientBasisNode.xml"))
+	
+	e.visible=true
+	self.pane.clipChildren=false
+	
+	local output=e:GetChild("Output0", true)
+	
+	self:SubscribeToEvent(output, "DragBegin", "NodeGraphUI:HandleOutputDragBegin")
+	self:SubscribeToEvent(output, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	output:SetRoot(e)
+	
+	local input=e:GetChild("Input0", true)
+	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
+	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	input=e:GetChild("Input1", true)
+	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
+	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	
+	self.pane:AddChild(e)
+	return e
+end
+
+function NodeGraphUI:SimplexBasisNode()
+	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/SimplexBasisNode.xml"))
+	
+	e.visible=true
+	self.pane.clipChildren=false
+	
+	local output=e:GetChild("Output0", true)
+	
+	self:SubscribeToEvent(output, "DragBegin", "NodeGraphUI:HandleOutputDragBegin")
+	self:SubscribeToEvent(output, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	output:SetRoot(e)
+	
+	local input=e:GetChild("Input0", true)
 	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
 	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
 	
@@ -452,10 +991,11 @@ function NodeGraphUI:Update(dt)
 	end
 	
 	if input:GetKeyPress(KEY_B) then
-		local nodes=PackNodeGraph(self.nodegroup.output)
-		if nodes then
-			local c
-			for _,c in ipairs(nodes) do print(c.name) end
-		end
+		local kernel=PackNodeGraph(self.nodegroup.output)
+		
+		local img=CArray2Dd(256,256)
+		map2DNoZ(SEAMLESS_NONE, img, kernel, SMappingRanges(0,10,0,10,0,10), kernel:lastIndex())
+		img:scaleToRange(0,1)
+		saveDoubleArray("noise.png", img)
 	end
 end
