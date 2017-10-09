@@ -124,6 +124,7 @@ public:
     CInstructionIndex radial();
 	
 	CInstructionIndex fractal(unsigned int seed, CInstructionIndex layer, CInstructionIndex persistence, CInstructionIndex lacunarity, CInstructionIndex numoctaves, CInstructionIndex freq);
+	CInstructionIndex randomize(CInstructionIndex seed, CInstructionIndex low, CInstructionIndex high);
 
     // Patterns
     CInstructionIndex hexTile(CInstructionIndex seed);

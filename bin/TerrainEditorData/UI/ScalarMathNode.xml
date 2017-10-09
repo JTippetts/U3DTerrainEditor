@@ -5,7 +5,6 @@
 	<attribute name="Size" value="154 88" />
 	<attribute name="Pivot" value="0 0" />
 	<attribute name="Clip Children" value="false" />
-	<attribute name="Use Derived Opacity" value="false" />
 	<attribute name="Focus Mode" value="Focusable" />
 	<attribute name="Layout Mode" value="Vertical" />
 	<attribute name="Layout Border" value="4 4 4 4" />

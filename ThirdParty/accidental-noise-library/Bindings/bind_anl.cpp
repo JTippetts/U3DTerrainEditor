@@ -4512,6 +4512,54 @@ static int tolua__CKernel_fractal00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: randomize of class  CKernel */
+#ifndef TOLUA_DISABLE_tolua__CKernel_randomize00
+static int tolua__CKernel_randomize00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"CKernel",0,&tolua_err) ||
+ (tolua_isvaluenil(tolua_S,2,&tolua_err) || !tolua_isusertype(tolua_S,2,"CInstructionIndex",0,&tolua_err)) ||
+ (tolua_isvaluenil(tolua_S,3,&tolua_err) || !tolua_isusertype(tolua_S,3,"CInstructionIndex",0,&tolua_err)) ||
+ (tolua_isvaluenil(tolua_S,4,&tolua_err) || !tolua_isusertype(tolua_S,4,"CInstructionIndex",0,&tolua_err)) ||
+ !tolua_isnoobj(tolua_S,5,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  CKernel* self = (CKernel*)  tolua_tousertype(tolua_S,1,0);
+  CInstructionIndex seed = *((CInstructionIndex*)  tolua_tousertype(tolua_S,2,0));
+  CInstructionIndex low = *((CInstructionIndex*)  tolua_tousertype(tolua_S,3,0));
+  CInstructionIndex high = *((CInstructionIndex*)  tolua_tousertype(tolua_S,4,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'randomize'", NULL);
+#endif
+ {
+  CInstructionIndex tolua_ret = (CInstructionIndex)  self->randomize(seed,low,high);
+ {
+#ifdef __cplusplus
+ void* tolua_obj = Mtolua_new((CInstructionIndex)(tolua_ret));
+  tolua_pushusertype(tolua_S,tolua_obj,"CInstructionIndex");
+ tolua_register_gc(tolua_S,lua_gettop(tolua_S));
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(CInstructionIndex));
+  tolua_pushusertype(tolua_S,tolua_obj,"CInstructionIndex");
+ tolua_register_gc(tolua_S,lua_gettop(tolua_S));
+#endif
+ }
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'randomize'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: radial of class  CKernel */
 #ifndef TOLUA_DISABLE_tolua__CKernel_radial00
 static int tolua__CKernel_radial00(lua_State* tolua_S)
@@ -10884,6 +10932,7 @@ TOLUA_API int tolua_bind_anl_open (lua_State* tolua_S)
   tolua_function(tolua_S,"sigmoid",tolua__CKernel_sigmoid00);
   tolua_function(tolua_S,"sigmoid",tolua__CKernel_sigmoid01);
   tolua_function(tolua_S,"fractal",tolua__CKernel_fractal00);
+  tolua_function(tolua_S,"randomize",tolua__CKernel_randomize00);
   tolua_function(tolua_S,"radial",tolua__CKernel_radial00);
   tolua_function(tolua_S,"hexTile",tolua__CKernel_hexTile00);
   tolua_function(tolua_S,"hexBump",tolua__CKernel_hexBump00);

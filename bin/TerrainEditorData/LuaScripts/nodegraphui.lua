@@ -44,7 +44,16 @@ function PackNodeGraph(output)
 			else local c=tonumber(n:GetChild("Value"..which,true).text) or 1.0 s1=kernel:constant(c) end
 			return s1
 		end
-				
+		
+		local GetSeed=function(n,which)
+			local s=GetSourceFromNode(n,"Input"..which)
+			local s1
+			if s then s1=kernelindices[nodeindex(s)]
+			else local c=tonumber(n:GetChild("Value"..which,true).text) or 1.0 s1=kernel:seed(c) end
+			return s1
+		end
+		
+		print("Instancing "..n.name)
 		if n.name=="Output" then
 			local s1
 			local s1=GetValue(n,0)
@@ -93,50 +102,16 @@ function PackNodeGraph(output)
 				return kernel:tiers(s1,s2)
 			end
 		elseif n.name=="ValueBasis" then
-			local s1,s2
-			local s=GetSourceFromNode(n,"Input0")
-			if s then
-				s1=kernelindices[nodeindex(s)]
-			else
-				local c=tonumber(n:GetChild("Value0",true).text)
-				s1=kernel:constant(c)
-			end
-			s=GetSourceFromNode(n, "Input1")
-			if s then
-				s2=kernelindices[nodeindex(s)]
-			else
-				local c=tonumber(n:GetChild("Value1",true).text)
-				s2=kernel:seed(c)
-			end
+			local s1,s2=GetValue(n,0),GetSeed(n,1)
+			
 			return kernel:valueBasis(s1,s2)
 		elseif n.name=="SimplexBasis" then
-			local s1,s2
-			local s=GetSourceFromNode(n,"Input0")
-			if s then
-				s1=kernelindices[nodeindex(s)]
-			else
-				local c=tonumber(n:GetChild("Value0",true).text)
-				s1=kernel:seed(c)
-			end
+			local s1=GetSeed(n,0)
 			
 			return kernel:simplexBasis(s1)
 		elseif n.name=="GradientBasis" then
-			local s1,s2
-			local s=GetSourceFromNode(n,"Input0")
-			if s then
-				s1=kernelindices[nodeindex(s)]
-			else
-				local c=tonumber(n:GetChild("Value0",true).text)
-				s1=kernel:constant(c)
-			end
-			s=GetSourceFromNode(n, "Input1")
-			if s then
-				s2=kernelindices[nodeindex(s)]
-			else
-				local c=tonumber(n:GetChild("Value1",true).text)
-				--print("hi")
-				s2=kernel:seed(c)
-			end
+			local s1,s2=GetValue(n,0),GetSeed(n,1)
+			
 			return kernel:gradientBasis(s1,s2)
 		elseif n.name=="ScalarMath" then
 			local s1=GetValue(n,0)
@@ -179,7 +154,12 @@ function PackNodeGraph(output)
 			local seed=tonumber(n:GetChild("Seed", true).text)
 			
 			return kernel:fractal(seed,s1,s2,s3,s4,s5)
-			
+		elseif n.name=="RotateDomain" then
+			local s1,s2,s3,s4,s5=GetValue(n,0),GetValue(n,1),GetValue(n,2),GetValue(n,3),GetValue(n,4)
+			return kernel:rotateDomain(s1,s2,s3,s4,s5)
+		elseif n.name=="Randomize" then
+			local s1,s2,s3=GetSeed(n,0),GetValue(n,1),GetValue(n,2)
+			return kernel:randomize(s1,s2,s3)
 		end
 	end
 	
@@ -194,7 +174,7 @@ function PackNodeGraph(output)
 		elseif n.name=="ScalarMath" or n.name=="Output" or n.name=="SimplexBasis" then
 			local s=GetSourceFromNode(n,"Input0")
 			if s and not isvisited(s) then worker(s) end
-		elseif n.name=="Fractal" then
+		elseif n.name=="Fractal" or n.name=="RotateDomain" then
 			local s=GetSourceFromNode(n,"Input0")
 			if s and not isvisited(s) then worker(s) end
 			s=GetSourceFromNode(n,"Input1")
@@ -204,6 +184,13 @@ function PackNodeGraph(output)
 			s=GetSourceFromNode(n,"Input3")
 			if s and not isvisited(s) then worker(s) end
 			s=GetSourceFromNode(n,"Input4")
+			if s and not isvisited(s) then worker(s) end
+		elseif n.name=="Randomize" then
+			local s=GetSourceFromNode(n,"Input0")
+			if s and not isvisited(s) then worker(s) end
+			s=GetSourceFromNode(n,"Input1")
+			if s and not isvisited(s) then worker(s) end
+			s=GetSourceFromNode(n,"Input2")
 			if s and not isvisited(s) then worker(s) end
 		end
 		table.insert(nodes,n)
@@ -226,7 +213,7 @@ function NodeGraphUI:Start()
 	self.pane:SetImageRect(IntRect(208,0,223,15))
 	self.pane:SetImageBorder(IntRect(4,4,4,4))
 	self.pane:SetTexture(cache:GetResource("Texture2D", "Textures/UI.png"))
-	self.pane.opacity=0.85
+	self.pane.opacity=0.75
 	self.pane.bringToFront=true
 	self.pane.movable=true
 	
@@ -251,6 +238,8 @@ function NodeGraphUI:Start()
 	self:SubscribeToEvent(self.createnodemenu:GetChild("TranslateDomain", true), "Pressed", "NodeGraphUI:HandleCreateNode")
 	self:SubscribeToEvent(self.createnodemenu:GetChild("ScaleDomain", true), "Pressed", "NodeGraphUI:HandleCreateNode")
 	self:SubscribeToEvent(self.createnodemenu:GetChild("Fractal", true), "Pressed", "NodeGraphUI:HandleCreateNode")
+	self:SubscribeToEvent(self.createnodemenu:GetChild("RotateDomain", true), "Pressed", "NodeGraphUI:HandleCreateNode")
+	self:SubscribeToEvent(self.createnodemenu:GetChild("Randomize", true), "Pressed", "NodeGraphUI:HandleCreateNode")
 	self.createnodemenu.visible=false
 	
 	local cnmclose=self.createnodemenu:GetChild("Close", true)
@@ -285,60 +274,26 @@ end
 function NodeGraphUI:HandleCreateNode(eventType, eventData)
 	local e=eventData["Element"]:GetPtr("UIElement")
 	if not e then return end
-		
-	if e.name=="Arithmetic" then
-		local n=self:ArithmeticNode()
-		n.position=IntVector2(-self.pane.position.x + graphics.width/2, -self.pane.position.y + graphics.height/2)
-		table.insert(self.nodegroup.nodes, n)
-	elseif e.name=="ScalarMath" then
-		local n=self:ScalarMathNode()
-		n.position=IntVector2(-self.pane.position.x + graphics.width/2, -self.pane.position.y + graphics.height/2)
-		table.insert(self.nodegroup.nodes, n)
-	elseif e.name=="Constant" then
-		local n=self:ConstantNode()
-		n.position=IntVector2(-self.pane.position.x + graphics.width/2, -self.pane.position.y + graphics.height/2)
-		table.insert(self.nodegroup.nodes, n)
-	elseif e.name=="Seed" then
-		local n=self:SeedNode()
-		n.position=IntVector2(-self.pane.position.x + graphics.width/2, -self.pane.position.y + graphics.height/2)
-		table.insert(self.nodegroup.nodes, n)
-	elseif e.name=="CoordSource" then
-		local n=self:CoordinateSourceNode()
-		n.position=IntVector2(-self.pane.position.x + graphics.width/2, -self.pane.position.y + graphics.height/2)
-		table.insert(self.nodegroup.nodes, n)
-	elseif e.name=="Derivative" then
-		local n=self:DerivativeNode()
-		n.position=IntVector2(-self.pane.position.x + graphics.width/2, -self.pane.position.y + graphics.height/2)
-		table.insert(self.nodegroup.nodes, n)
-	elseif e.name=="Tiers" then
-		local n=self:TiersNode()
-		n.position=IntVector2(-self.pane.position.x + graphics.width/2, -self.pane.position.y + graphics.height/2)
-		table.insert(self.nodegroup.nodes, n)
-	elseif e.name=="ValueBasis" then
-		local n=self:ValueBasisNode()
-		n.position=IntVector2(-self.pane.position.x + graphics.width/2, -self.pane.position.y + graphics.height/2)
-		table.insert(self.nodegroup.nodes, n)
-	elseif e.name=="GradientBasis" then
-		local n=self:GradientBasisNode()
-		n.position=IntVector2(-self.pane.position.x + graphics.width/2, -self.pane.position.y + graphics.height/2)
-		table.insert(self.nodegroup.nodes, n)
-	elseif e.name=="SimplexBasis" then
-		local n=self:SimplexBasisNode()
-		n.position=IntVector2(-self.pane.position.x + graphics.width/2, -self.pane.position.y + graphics.height/2)
-		table.insert(self.nodegroup.nodes, n)
-	elseif e.name=="TranslateDomain" then
-		local n=self:TranslateDomainNode()
-		n.position=IntVector2(-self.pane.position.x + graphics.width/2, -self.pane.position.y + graphics.height/2)
-		table.insert(self.nodegroup.nodes, n)
-	elseif e.name=="ScaleDomain" then
-		local n=self:ScaleDomainNode()
-		n.position=IntVector2(-self.pane.position.x + graphics.width/2, -self.pane.position.y + graphics.height/2)
-		table.insert(self.nodegroup.nodes, n)
-	elseif e.name=="Fractal" then
-		local n=self:FractalNode()
-		n.position=IntVector2(-self.pane.position.x + graphics.width/2, -self.pane.position.y + graphics.height/2)
-		table.insert(self.nodegroup.nodes, n)
+	local n
+	if e.name=="Arithmetic" then n=self:ArithmeticNode()
+	elseif e.name=="ScalarMath" then n=self:ScalarMathNode()
+	elseif e.name=="Constant" then n=self:ConstantNode()
+	elseif e.name=="Seed" then n=self:SeedNode()
+	elseif e.name=="CoordSource" then n=self:CoordinateSourceNode()
+	elseif e.name=="Derivative" then n=self:DerivativeNode()
+	elseif e.name=="Tiers" then n=self:TiersNode()
+	elseif e.name=="ValueBasis" then n=self:ValueBasisNode()
+	elseif e.name=="GradientBasis" then n=self:GradientBasisNode()
+	elseif e.name=="SimplexBasis" then n=self:SimplexBasisNode()
+	elseif e.name=="TranslateDomain" then n=self:TranslateDomainNode()
+	elseif e.name=="ScaleDomain" then n=self:ScaleDomainNode()
+	elseif e.name=="Fractal" then n=self:FractalNode()
+	elseif e.name=="RotateDomain" then n=self:RotateDomainNode()
+	elseif e.name=="Randomize" then n=self:RandomizeNode()
 	end
+	
+	n.position=IntVector2(-self.pane.position.x + graphics.width/2, -self.pane.position.y + graphics.height/2)
+	table.insert(self.nodegroup.nodes, n)
 end
 
 function NodeGraphUI:HandleKeyDown(eventType, eventData)
@@ -459,6 +414,64 @@ function NodeGraphUI:ArithmeticNode()
 	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
 	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
 	input=e:GetChild("Input1", true)
+	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
+	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	
+	self.pane:AddChild(e)
+	return e
+end
+
+function NodeGraphUI:RotateDomainNode()
+	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/RotateDomainNode.xml"))
+	
+	e.visible=true
+	self.pane.clipChildren=false
+	
+	local output=e:GetChild("Output0", true)
+	
+	self:SubscribeToEvent(output, "DragBegin", "NodeGraphUI:HandleOutputDragBegin")
+	self:SubscribeToEvent(output, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	output:SetRoot(e)
+	
+	local input=e:GetChild("Input0", true)
+	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
+	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	input=e:GetChild("Input1", true)
+	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
+	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	input=e:GetChild("Input2", true)
+	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
+	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	input=e:GetChild("Input3", true)
+	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
+	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	input=e:GetChild("Input4", true)
+	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
+	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	
+	self.pane:AddChild(e)
+	return e
+end
+
+function NodeGraphUI:RandomizeNode()
+	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/RandomizeNode.xml"))
+	
+	e.visible=true
+	self.pane.clipChildren=false
+	
+	local output=e:GetChild("Output0", true)
+	
+	self:SubscribeToEvent(output, "DragBegin", "NodeGraphUI:HandleOutputDragBegin")
+	self:SubscribeToEvent(output, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	output:SetRoot(e)
+	
+	local input=e:GetChild("Input0", true)
+	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
+	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	input=e:GetChild("Input1", true)
+	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
+	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	input=e:GetChild("Input2", true)
 	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
 	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
 	

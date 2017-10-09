@@ -183,6 +183,7 @@ class CInstructionListType
 		CInstructionIndex sigmoid(CInstructionIndex src);
 		CInstructionIndex sigmoid(CInstructionIndex src, CInstructionIndex center, CInstructionIndex ramp);
 		CInstructionIndex fractal(unsigned int seed, CInstructionIndex layer, CInstructionIndex persistence, CInstructionIndex lacunarity, CInstructionIndex numoctaves, CInstructionIndex freq);
+		CInstructionIndex randomize(CInstructionIndex seed, CInstructionIndex low, CInstructionIndex high);
 
 		CInstructionIndex radial();
 		

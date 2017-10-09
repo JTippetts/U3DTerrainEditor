@@ -73,6 +73,7 @@ enum EOpcodes
     OP_Sigmoid,
 	
 	OP_Fractal,
+	OP_Randomize,
 
     // Patterns
     OP_HexTile,

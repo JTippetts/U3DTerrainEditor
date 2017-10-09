@@ -222,7 +222,7 @@ void CNoiseExecutor::seedSource(InstructionListType &kernel, EvaluatedType &eval
 			case OP_TranslateW:
 			case OP_TranslateU:
 			case OP_TranslateV: seedSource(kernel, evaluated, i.sources_[0], seed); seedSource(kernel, evaluated, i.sources_[1], seed); return; break;
-			case OP_RotateDomain: for(int c=0; c<6; ++c) seedSource(kernel, evaluated, i.sources_[c], seed); return; break;
+			case OP_RotateDomain: for(int c=0; c<5; ++c) seedSource(kernel, evaluated, i.sources_[c], seed); return; break;
 			case OP_Blend: for(int c=0; c<3; ++c) seedSource(kernel, evaluated, i.sources_[c], seed); return; break;
 			case OP_Select: for(int c=0; c<5; ++c) seedSource(kernel, evaluated, i.sources_[c], seed); return; break;
 			case OP_Min:
@@ -255,6 +255,7 @@ void CNoiseExecutor::seedSource(InstructionListType &kernel, EvaluatedType &eval
 			case OP_DV: seedSource(kernel, evaluated, i.sources_[0], seed); seedSource(kernel, evaluated, i.sources_[1], seed); return; break;
 			case OP_Sigmoid: for(int c=0; c<3; ++c) seedSource(kernel, evaluated, i.sources_[c], seed); return; break;
 			case OP_Fractal: i.outfloat_=(double)seed++; return; break;
+			case OP_Randomize: for(int c=0; c<3; ++c) seedSource(kernel,evaluated,i.sources_[c],seed); return; break;
 			case OP_HexTile: seedSource(kernel, evaluated, i.sources_[0], seed); return; break;
 			case OP_HexBump: return; break;
 			case OP_Color: return; break;
@@ -1207,34 +1208,6 @@ void CNoiseExecutor::evaluateInstruction(InstructionListType &kernel, EvaluatedT
 		double lac=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[2],coord);
 		double pers=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[1],coord);
 		double amp=1.0;
-		CCoordinate scale(1,1,1,1,1,1), fscale(1,1,1,1,1,1);
-        switch(coord.dimension_)
-        {
-			case 2:
-			{
-				scale.set(lac,lac);
-				fscale.set(freq,freq);
-				break;
-			}
-			case 3:
-			{
-				scale.set(lac,lac,lac);
-				fscale.set(freq,freq,freq);
-				break;
-			}
-			case 4:
-			{
-				scale.set(lac,lac,lac,lac);
-				fscale.set(freq,freq,freq,freq);
-				break;
-			}
-			default:
-			{
-				scale.set(lac,lac,lac,lac,lac,lac);
-				fscale.set(freq,freq,freq,freq,freq,freq);
-				break;
-			}
-        };
 		
 		coord=coord*freq;
 		
@@ -1245,9 +1218,21 @@ void CNoiseExecutor::evaluateInstruction(InstructionListType &kernel, EvaluatedT
 			val+=v*amp;
 			//val=v;
 			amp*=pers;
-			coord=coord*scale;
+			coord=coord*lac;
 		}
 		cache[index].set(val);
+		evaluated[index]=true;
+		return;
+	}
+	
+	case OP_Randomize:  // Randomize a value range based on seed
+	{
+		unsigned int seed=(unsigned int)evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[0],coord);
+		KISS rnd;
+		rnd.setSeed(seed);
+		double low=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[1],coord);
+		double high=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[2],coord);
+		cache[index].set(low+rnd.get01()*(high-low));
 		evaluated[index]=true;
 		return;
 	}

@@ -2,10 +2,9 @@
 <element type="Window">
 	<attribute name="Name" value="TranslateDomain" />
 	<attribute name="Position" value="444 150" />
-	<attribute name="Size" value="138 103" />
+	<attribute name="Size" value="152 103" />
 	<attribute name="Pivot" value="0 0" />
 	<attribute name="Clip Children" value="false" />
-	<attribute name="Use Derived Opacity" value="false" />
 	<attribute name="Focus Mode" value="Focusable" />
 	<attribute name="Layout Mode" value="Vertical" />
 	<attribute name="Layout Border" value="4 4 4 4" />

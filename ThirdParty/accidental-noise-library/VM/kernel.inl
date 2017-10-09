@@ -129,6 +129,17 @@ CInstructionIndex CKernel::fractal(unsigned int seed, CInstructionIndex layer, C
 	return lastIndex();
 }
 
+CInstructionIndex CKernel::randomize(CInstructionIndex seed, CInstructionIndex low, CInstructionIndex high)
+{
+	anl::SInstruction i;
+	i.opcode_=anl::OP_Randomize;
+	i.sources_[0]=seed.index_;
+	i.sources_[1]=low.index_;
+	i.sources_[2]=high.index_;
+	kernel_.push_back(i);
+	return lastIndex();
+}
+
 CInstructionIndex CKernel::cellularBasis(CInstructionIndex f1, CInstructionIndex f2, CInstructionIndex f3, CInstructionIndex f4, CInstructionIndex d1, CInstructionIndex d2, CInstructionIndex d3, CInstructionIndex d4, CInstructionIndex dist, CInstructionIndex seed)
 {
     anl::SInstruction i;
