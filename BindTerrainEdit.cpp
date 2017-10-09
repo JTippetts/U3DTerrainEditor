@@ -83,20 +83,26 @@ static int tolua_collect_MaskSettings (lua_State* tolua_S)
 static void tolua_reg_types (lua_State* tolua_S)
 {
  tolua_usertype(tolua_S,"RasterVertexList");
- tolua_usertype(tolua_S,"NodeGraphLink");
+ tolua_usertype(tolua_S,"UIElement");
  tolua_usertype(tolua_S,"CustomGeometry");
  tolua_usertype(tolua_S,"Color");
  tolua_usertype(tolua_S,"MaskSettings");
  tolua_usertype(tolua_S,"Image");
  tolua_usertype(tolua_S,"BrushSettings");
+ tolua_usertype(tolua_S,"Button");
  tolua_usertype(tolua_S,"Material");
  tolua_usertype(tolua_S,"CArray2Dd");
  tolua_usertype(tolua_S,"Vector3");
- tolua_usertype(tolua_S,"Scene");
- tolua_usertype(tolua_S,"Terrain");
- tolua_usertype(tolua_S,"UIElement");
  tolua_usertype(tolua_S,"BorderImage");
+ tolua_usertype(tolua_S,"Scene");
+ tolua_usertype(tolua_S,"NodeGraphLinkPane");
+ tolua_usertype(tolua_S,"Terrain");
+ tolua_usertype(tolua_S,"IntRect");
  tolua_usertype(tolua_S,"Context");
+ tolua_usertype(tolua_S,"NodeGraphLink");
+ tolua_usertype(tolua_S,"NodeGraphLinkDest");
+ tolua_usertype(tolua_S,"NodeGraphLinkSource");
+ tolua_usertype(tolua_S,"Object");
  tolua_usertype(tolua_S,"Vector2");
  tolua_usertype(tolua_S,"RasterVertex");
  tolua_usertype(tolua_S,"TerrainEdit");
@@ -4807,6 +4813,451 @@ static int tolua_BindTerrainEdit_SteepnessTerrain00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: AddLink of class  NodeGraphLinkSource */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_NodeGraphLinkSource_AddLink00
+static int tolua_BindTerrainEdit_NodeGraphLinkSource_AddLink00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"NodeGraphLinkSource",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"NodeGraphLink",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  NodeGraphLinkSource* self = (NodeGraphLinkSource*)  tolua_tousertype(tolua_S,1,0);
+  NodeGraphLink* link = ((NodeGraphLink*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'AddLink'", NULL);
+#endif
+ {
+  self->AddLink(link);
+ }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'AddLink'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: RemoveLink of class  NodeGraphLinkSource */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_NodeGraphLinkSource_RemoveLink00
+static int tolua_BindTerrainEdit_NodeGraphLinkSource_RemoveLink00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"NodeGraphLinkSource",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"NodeGraphLinkDest",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  NodeGraphLinkSource* self = (NodeGraphLinkSource*)  tolua_tousertype(tolua_S,1,0);
+  NodeGraphLinkDest* target = ((NodeGraphLinkDest*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'RemoveLink'", NULL);
+#endif
+ {
+  self->RemoveLink(target);
+ }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'RemoveLink'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: RemoveLink of class  NodeGraphLinkSource */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_NodeGraphLinkSource_RemoveLink01
+static int tolua_BindTerrainEdit_NodeGraphLinkSource_RemoveLink01(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"NodeGraphLinkSource",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"NodeGraphLink",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+ {
+  NodeGraphLinkSource* self = (NodeGraphLinkSource*)  tolua_tousertype(tolua_S,1,0);
+  NodeGraphLink* link = ((NodeGraphLink*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'RemoveLink'", NULL);
+#endif
+ {
+  self->RemoveLink(link);
+ }
+ }
+ return 0;
+tolua_lerror:
+ return tolua_BindTerrainEdit_NodeGraphLinkSource_RemoveLink00(tolua_S);
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: GetNumLinks of class  NodeGraphLinkSource */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_NodeGraphLinkSource_GetNumLinks00
+static int tolua_BindTerrainEdit_NodeGraphLinkSource_GetNumLinks00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"NodeGraphLinkSource",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  NodeGraphLinkSource* self = (NodeGraphLinkSource*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'GetNumLinks'", NULL);
+#endif
+ {
+  int tolua_ret = (int)  self->GetNumLinks();
+ tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'GetNumLinks'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: GetLink of class  NodeGraphLinkSource */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_NodeGraphLinkSource_GetLink00
+static int tolua_BindTerrainEdit_NodeGraphLinkSource_GetLink00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"NodeGraphLinkSource",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  NodeGraphLinkSource* self = (NodeGraphLinkSource*)  tolua_tousertype(tolua_S,1,0);
+  int which = ((int)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'GetLink'", NULL);
+#endif
+ {
+  NodeGraphLink* tolua_ret = (NodeGraphLink*)  self->GetLink(which);
+  tolua_pushusertype(tolua_S,(void*)tolua_ret,"NodeGraphLink");
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'GetLink'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: GetLink of class  NodeGraphLinkSource */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_NodeGraphLinkSource_GetLink01
+static int tolua_BindTerrainEdit_NodeGraphLinkSource_GetLink01(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"NodeGraphLinkSource",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"NodeGraphLinkDest",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+ {
+  NodeGraphLinkSource* self = (NodeGraphLinkSource*)  tolua_tousertype(tolua_S,1,0);
+  NodeGraphLinkDest* target = ((NodeGraphLinkDest*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'GetLink'", NULL);
+#endif
+ {
+  NodeGraphLink* tolua_ret = (NodeGraphLink*)  self->GetLink(target);
+  tolua_pushusertype(tolua_S,(void*)tolua_ret,"NodeGraphLink");
+ }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_BindTerrainEdit_NodeGraphLinkSource_GetLink00(tolua_S);
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: SetRoot of class  NodeGraphLinkSource */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_NodeGraphLinkSource_SetRoot00
+static int tolua_BindTerrainEdit_NodeGraphLinkSource_SetRoot00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"NodeGraphLinkSource",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"UIElement",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  NodeGraphLinkSource* self = (NodeGraphLinkSource*)  tolua_tousertype(tolua_S,1,0);
+  UIElement* root = ((UIElement*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'SetRoot'", NULL);
+#endif
+ {
+  self->SetRoot(root);
+ }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'SetRoot'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: ClearRoot of class  NodeGraphLinkSource */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_NodeGraphLinkSource_ClearRoot00
+static int tolua_BindTerrainEdit_NodeGraphLinkSource_ClearRoot00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"NodeGraphLinkSource",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  NodeGraphLinkSource* self = (NodeGraphLinkSource*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'ClearRoot'", NULL);
+#endif
+ {
+  self->ClearRoot();
+ }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'ClearRoot'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: GetRoot of class  NodeGraphLinkSource */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_NodeGraphLinkSource_GetRoot00
+static int tolua_BindTerrainEdit_NodeGraphLinkSource_GetRoot00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"NodeGraphLinkSource",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  NodeGraphLinkSource* self = (NodeGraphLinkSource*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'GetRoot'", NULL);
+#endif
+ {
+  UIElement* tolua_ret = (UIElement*)  self->GetRoot();
+  tolua_pushusertype(tolua_S,(void*)tolua_ret,"UIElement");
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'GetRoot'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: SetLink of class  NodeGraphLinkDest */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_NodeGraphLinkDest_SetLink00
+static int tolua_BindTerrainEdit_NodeGraphLinkDest_SetLink00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"NodeGraphLinkDest",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"NodeGraphLink",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  NodeGraphLinkDest* self = (NodeGraphLinkDest*)  tolua_tousertype(tolua_S,1,0);
+  NodeGraphLink* link = ((NodeGraphLink*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'SetLink'", NULL);
+#endif
+ {
+  self->SetLink(link);
+ }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'SetLink'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: ClearLink of class  NodeGraphLinkDest */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_NodeGraphLinkDest_ClearLink00
+static int tolua_BindTerrainEdit_NodeGraphLinkDest_ClearLink00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"NodeGraphLinkDest",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  NodeGraphLinkDest* self = (NodeGraphLinkDest*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'ClearLink'", NULL);
+#endif
+ {
+  self->ClearLink();
+ }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'ClearLink'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: GetLink of class  NodeGraphLinkDest */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_NodeGraphLinkDest_GetLink00
+static int tolua_BindTerrainEdit_NodeGraphLinkDest_GetLink00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"NodeGraphLinkDest",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  NodeGraphLinkDest* self = (NodeGraphLinkDest*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'GetLink'", NULL);
+#endif
+ {
+  NodeGraphLink* tolua_ret = (NodeGraphLink*)  self->GetLink();
+  tolua_pushusertype(tolua_S,(void*)tolua_ret,"NodeGraphLink");
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'GetLink'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: SetSource of class  NodeGraphLink */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_NodeGraphLink_SetSource00
+static int tolua_BindTerrainEdit_NodeGraphLink_SetSource00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"NodeGraphLink",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"NodeGraphLinkSource",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  NodeGraphLink* self = (NodeGraphLink*)  tolua_tousertype(tolua_S,1,0);
+  NodeGraphLinkSource* src = ((NodeGraphLinkSource*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'SetSource'", NULL);
+#endif
+ {
+  self->SetSource(src);
+ }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'SetSource'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: ClearSource of class  NodeGraphLink */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_NodeGraphLink_ClearSource00
+static int tolua_BindTerrainEdit_NodeGraphLink_ClearSource00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"NodeGraphLink",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  NodeGraphLink* self = (NodeGraphLink*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'ClearSource'", NULL);
+#endif
+ {
+  self->ClearSource();
+ }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'ClearSource'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: SetTarget of class  NodeGraphLink */
 #ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_NodeGraphLink_SetTarget00
 static int tolua_BindTerrainEdit_NodeGraphLink_SetTarget00(lua_State* tolua_S)
@@ -4815,7 +5266,7 @@ static int tolua_BindTerrainEdit_NodeGraphLink_SetTarget00(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
  !tolua_isusertype(tolua_S,1,"NodeGraphLink",0,&tolua_err) ||
- !tolua_isusertype(tolua_S,2,"UIElement",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"NodeGraphLinkDest",0,&tolua_err) ||
  !tolua_isnoobj(tolua_S,3,&tolua_err)
  )
  goto tolua_lerror;
@@ -4823,12 +5274,12 @@ static int tolua_BindTerrainEdit_NodeGraphLink_SetTarget00(lua_State* tolua_S)
 #endif
  {
   NodeGraphLink* self = (NodeGraphLink*)  tolua_tousertype(tolua_S,1,0);
-  UIElement* e = ((UIElement*)  tolua_tousertype(tolua_S,2,0));
+  NodeGraphLinkDest* dest = ((NodeGraphLinkDest*)  tolua_tousertype(tolua_S,2,0));
 #ifndef TOLUA_RELEASE
  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'SetTarget'", NULL);
 #endif
  {
-  self->SetTarget(e);
+  self->SetTarget(dest);
  }
  }
  return 0;
@@ -4866,6 +5317,172 @@ static int tolua_BindTerrainEdit_NodeGraphLink_ClearTarget00(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'ClearTarget'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: GetSource of class  NodeGraphLink */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_NodeGraphLink_GetSource00
+static int tolua_BindTerrainEdit_NodeGraphLink_GetSource00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"NodeGraphLink",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  NodeGraphLink* self = (NodeGraphLink*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'GetSource'", NULL);
+#endif
+ {
+  NodeGraphLinkSource* tolua_ret = (NodeGraphLinkSource*)  self->GetSource();
+  tolua_pushusertype(tolua_S,(void*)tolua_ret,"NodeGraphLinkSource");
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'GetSource'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: GetTarget of class  NodeGraphLink */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_NodeGraphLink_GetTarget00
+static int tolua_BindTerrainEdit_NodeGraphLink_GetTarget00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"NodeGraphLink",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  NodeGraphLink* self = (NodeGraphLink*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'GetTarget'", NULL);
+#endif
+ {
+  NodeGraphLinkDest* tolua_ret = (NodeGraphLinkDest*)  self->GetTarget();
+  tolua_pushusertype(tolua_S,(void*)tolua_ret,"NodeGraphLinkDest");
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'GetTarget'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: SetImageRect of class  NodeGraphLink */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_NodeGraphLink_SetImageRect00
+static int tolua_BindTerrainEdit_NodeGraphLink_SetImageRect00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"NodeGraphLink",0,&tolua_err) ||
+ (tolua_isvaluenil(tolua_S,2,&tolua_err) || !tolua_isusertype(tolua_S,2,"IntRect",0,&tolua_err)) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  NodeGraphLink* self = (NodeGraphLink*)  tolua_tousertype(tolua_S,1,0);
+  IntRect* rect = ((IntRect*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'SetImageRect'", NULL);
+#endif
+ {
+  self->SetImageRect(*rect);
+ }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'SetImageRect'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: CreateLink of class  NodeGraphLinkPane */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_NodeGraphLinkPane_CreateLink00
+static int tolua_BindTerrainEdit_NodeGraphLinkPane_CreateLink00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"NodeGraphLinkPane",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"NodeGraphLinkSource",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,3,"NodeGraphLinkDest",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  NodeGraphLinkPane* self = (NodeGraphLinkPane*)  tolua_tousertype(tolua_S,1,0);
+  NodeGraphLinkSource* source = ((NodeGraphLinkSource*)  tolua_tousertype(tolua_S,2,0));
+  NodeGraphLinkDest* target = ((NodeGraphLinkDest*)  tolua_tousertype(tolua_S,3,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'CreateLink'", NULL);
+#endif
+ {
+  NodeGraphLink* tolua_ret = (NodeGraphLink*)  self->CreateLink(source,target);
+  tolua_pushusertype(tolua_S,(void*)tolua_ret,"NodeGraphLink");
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'CreateLink'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: RemoveLink of class  NodeGraphLinkPane */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_NodeGraphLinkPane_RemoveLink00
+static int tolua_BindTerrainEdit_NodeGraphLinkPane_RemoveLink00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"NodeGraphLinkPane",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"NodeGraphLink",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  NodeGraphLinkPane* self = (NodeGraphLinkPane*)  tolua_tousertype(tolua_S,1,0);
+  NodeGraphLink* link = ((NodeGraphLink*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'RemoveLink'", NULL);
+#endif
+ {
+  self->RemoveLink(link);
+ }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'RemoveLink'.",&tolua_err);
  return 0;
 #endif
 }
@@ -5061,10 +5678,38 @@ TOLUA_API int tolua_BindTerrainEdit_open (lua_State* tolua_S)
  tolua_function(tolua_S,"LoadImage",tolua_BindTerrainEdit_LoadImage00);
  tolua_function(tolua_S,"DistortBuffer",tolua_BindTerrainEdit_DistortBuffer00);
  tolua_function(tolua_S,"SteepnessTerrain",tolua_BindTerrainEdit_SteepnessTerrain00);
- tolua_cclass(tolua_S,"NodeGraphLink","NodeGraphLink","BorderImage",NULL);
+ tolua_cclass(tolua_S,"NodeGraphLinkSource","NodeGraphLinkSource","Button",NULL);
+ tolua_beginmodule(tolua_S,"NodeGraphLinkSource");
+  tolua_function(tolua_S,"AddLink",tolua_BindTerrainEdit_NodeGraphLinkSource_AddLink00);
+  tolua_function(tolua_S,"RemoveLink",tolua_BindTerrainEdit_NodeGraphLinkSource_RemoveLink00);
+  tolua_function(tolua_S,"RemoveLink",tolua_BindTerrainEdit_NodeGraphLinkSource_RemoveLink01);
+  tolua_function(tolua_S,"GetNumLinks",tolua_BindTerrainEdit_NodeGraphLinkSource_GetNumLinks00);
+  tolua_function(tolua_S,"GetLink",tolua_BindTerrainEdit_NodeGraphLinkSource_GetLink00);
+  tolua_function(tolua_S,"GetLink",tolua_BindTerrainEdit_NodeGraphLinkSource_GetLink01);
+  tolua_function(tolua_S,"SetRoot",tolua_BindTerrainEdit_NodeGraphLinkSource_SetRoot00);
+  tolua_function(tolua_S,"ClearRoot",tolua_BindTerrainEdit_NodeGraphLinkSource_ClearRoot00);
+  tolua_function(tolua_S,"GetRoot",tolua_BindTerrainEdit_NodeGraphLinkSource_GetRoot00);
+ tolua_endmodule(tolua_S);
+ tolua_cclass(tolua_S,"NodeGraphLinkDest","NodeGraphLinkDest","Button",NULL);
+ tolua_beginmodule(tolua_S,"NodeGraphLinkDest");
+  tolua_function(tolua_S,"SetLink",tolua_BindTerrainEdit_NodeGraphLinkDest_SetLink00);
+  tolua_function(tolua_S,"ClearLink",tolua_BindTerrainEdit_NodeGraphLinkDest_ClearLink00);
+  tolua_function(tolua_S,"GetLink",tolua_BindTerrainEdit_NodeGraphLinkDest_GetLink00);
+ tolua_endmodule(tolua_S);
+ tolua_cclass(tolua_S,"NodeGraphLink","NodeGraphLink","Object",NULL);
  tolua_beginmodule(tolua_S,"NodeGraphLink");
+  tolua_function(tolua_S,"SetSource",tolua_BindTerrainEdit_NodeGraphLink_SetSource00);
+  tolua_function(tolua_S,"ClearSource",tolua_BindTerrainEdit_NodeGraphLink_ClearSource00);
   tolua_function(tolua_S,"SetTarget",tolua_BindTerrainEdit_NodeGraphLink_SetTarget00);
   tolua_function(tolua_S,"ClearTarget",tolua_BindTerrainEdit_NodeGraphLink_ClearTarget00);
+  tolua_function(tolua_S,"GetSource",tolua_BindTerrainEdit_NodeGraphLink_GetSource00);
+  tolua_function(tolua_S,"GetTarget",tolua_BindTerrainEdit_NodeGraphLink_GetTarget00);
+  tolua_function(tolua_S,"SetImageRect",tolua_BindTerrainEdit_NodeGraphLink_SetImageRect00);
+ tolua_endmodule(tolua_S);
+ tolua_cclass(tolua_S,"NodeGraphLinkPane","NodeGraphLinkPane","BorderImage",NULL);
+ tolua_beginmodule(tolua_S,"NodeGraphLinkPane");
+  tolua_function(tolua_S,"CreateLink",tolua_BindTerrainEdit_NodeGraphLinkPane_CreateLink00);
+  tolua_function(tolua_S,"RemoveLink",tolua_BindTerrainEdit_NodeGraphLinkPane_RemoveLink00);
  tolua_endmodule(tolua_S);
  tolua_endmodule(tolua_S);
  return 1;

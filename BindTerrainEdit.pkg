@@ -174,10 +174,42 @@ Vector2 WorldToNormalized(Image *height, Terrain *terrain, Vector3 world);
 	
 	void SteepnessTerrain(Image *blend0, Image *blend1, Image *hmap, Terrain *terrain, Image *mask, float threshold, float fade, unsigned int layer, bool usemask, bool invertmask);
 	
-	
-class NodeGraphLink : public BorderImage
+class NodeGraphLinkSource : public Button
 {
-	public:
-	void SetTarget(UIElement *e);
+	//NodeGraphLink *CreateLink(NodeGraphLinkDest *target);
+	void AddLink(NodeGraphLink *link);
+	void RemoveLink(NodeGraphLinkDest *target);
+	void RemoveLink(NodeGraphLink *link);
+	int GetNumLinks();
+	NodeGraphLink *GetLink(int which);
+	NodeGraphLink *GetLink(NodeGraphLinkDest *target);
+	void SetRoot(UIElement *root);
+	void ClearRoot();
+	UIElement *GetRoot();
+};
+
+class NodeGraphLinkDest : public Button
+{
+	void SetLink(NodeGraphLink *link);
+	void ClearLink();
+	NodeGraphLink *GetLink();
+};
+
+class NodeGraphLink : public Object
+{
+	void SetSource(NodeGraphLinkSource *src);
+	void ClearSource();
+	void SetTarget(NodeGraphLinkDest *dest);
 	void ClearTarget();
+	
+	NodeGraphLinkSource *GetSource();
+	NodeGraphLinkDest *GetTarget();
+	
+	void SetImageRect(IntRect &rect);
+};
+
+class NodeGraphLinkPane : public BorderImage
+{
+	NodeGraphLink *CreateLink(NodeGraphLinkSource *source, NodeGraphLinkDest *target);
+	void RemoveLink(NodeGraphLink *link);
 };
