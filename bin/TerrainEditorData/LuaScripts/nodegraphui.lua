@@ -37,34 +37,20 @@ function PackNodeGraph(output)
 	end
 	
 	function InstanceANLFunction(kernel, n)
-		if n.name=="Output" then
-			local s1,s2
-			local s=GetSourceFromNode(n,"Input0")
-			if s then
-				s1=kernelindices[nodeindex(s)]
-			else
-				local c=tonumber(n:GetChild("Value0",true).text)
-				s1=kernel:constant(c)
-			end
+		local GetValue=function(n,which)
+			local s=GetSourceFromNode(n,"Input"..which)
+			local s1
+			if s then s1=kernelindices[nodeindex(s)]
+			else local c=tonumber(n:GetChild("Value"..which,true).text) or 1.0 s1=kernel:constant(c) end
 			return s1
-			--local low=tonumber(n:GetChild("Low").text)
-			--local high=tonumber(n:GetChild("High").text)
+		end
+				
+		if n.name=="Output" then
+			local s1
+			local s1=GetValue(n,0)
+			return s1
 		elseif n.name=="Arithmetic" then
-			local s1,s2
-			local s=GetSourceFromNode(n,"Input0")
-			if s then
-				s1=kernelindices[nodeindex(s)]
-			else
-				local c=tonumber(n:GetChild("Value0",true).text)
-				s1=kernel:constant(c)
-			end
-			s=GetSourceFromNode(n, "Input1")
-			if s then
-				s2=kernelindices[nodeindex(s)]
-			else
-				local c=tonumber(n:GetChild("Value1",true).text)
-				s2=kernel:constant(c)
-			end
+			local s1,s2=GetValue(n,0),GetValue(n,1)
 			local op=n:GetChild("TypeList",true).selection
 			if op==0 then return kernel:multiply(s1,s2)
 			elseif op==1 then return kernel:add(s1,s2)
@@ -77,21 +63,7 @@ function PackNodeGraph(output)
 			elseif op==8 then return kernel:gain(s1,s2)
 			end
 		elseif n.name=="TranslateDomain" then
-			local s1,s2
-			local s=GetSourceFromNode(n,"Input0")
-			if s then
-				s1=kernelindices[nodeindex(s)]
-			else
-				local c=tonumber(n:GetChild("Value0",true).text)
-				s1=kernel:constant(c)
-			end
-			s=GetSourceFromNode(n, "Input1")
-			if s then
-				s2=kernelindices[nodeindex(s)]
-			else
-				local c=tonumber(n:GetChild("Value1",true).text)
-				s2=kernel:constant(c)
-			end
+			local s1,s2=GetValue(n,0),GetValue(n,1)
 			local op=n:GetChild("TypeList",true).selection
 			if op==0 then return kernel:translateDomain(s1,s2)
 			elseif op==1 then return kernel:translateX(s1,s2)
@@ -102,21 +74,7 @@ function PackNodeGraph(output)
 			elseif op==6 then return kernel:translateV(s1,s2)
 			end
 		elseif n.name=="ScaleDomain" then
-			local s1,s2
-			local s=GetSourceFromNode(n,"Input0")
-			if s then
-				s1=kernelindices[nodeindex(s)]
-			else
-				local c=tonumber(n:GetChild("Value0",true).text)
-				s1=kernel:constant(c)
-			end
-			s=GetSourceFromNode(n, "Input1")
-			if s then
-				s2=kernelindices[nodeindex(s)]
-			else
-				local c=tonumber(n:GetChild("Value1",true).text)
-				s2=kernel:constant(c)
-			end
+			local s1,s2=GetValue(n,0),GetValue(n,1)
 			local op=n:GetChild("TypeList",true).selection
 			if op==0 then return kernel:scaleDomain(s1,s2)
 			elseif op==1 then return kernel:scaleX(s1,s2)
@@ -127,23 +85,7 @@ function PackNodeGraph(output)
 			elseif op==6 then return kernel:scaleV(s1,s2)
 			end
 		elseif n.name=="Tiers" then
-			local s1,s2
-			local s=GetSourceFromNode(n,"Input0")
-			if s then
-				s1=kernelindices[nodeindex(s)]
-			else
-				local c=tonumber(n:GetChild("Value0",true).text)
-				s1=kernel:constant(c)
-			end
-			s=GetSourceFromNode(n, "Input1")
-			if s then
-				s2=kernelindices[nodeindex(s)]
-			else
-				local c=tonumber(n:GetChild("Value1",true).text)
-				--print("hi")
-				s2=kernel:constant(c)
-			end
-			print(s1,s2)
+			local s1,s2=GetValue(n,0),GetValue(n,1)
 			local smooth=n:GetChild("SmoothCheck",true).checked
 			if smooth then
 				return kernel:smoothTiers(s1,s2)
@@ -164,7 +106,6 @@ function PackNodeGraph(output)
 				s2=kernelindices[nodeindex(s)]
 			else
 				local c=tonumber(n:GetChild("Value1",true).text)
-				--print("hi")
 				s2=kernel:seed(c)
 			end
 			return kernel:valueBasis(s1,s2)
@@ -175,7 +116,7 @@ function PackNodeGraph(output)
 				s1=kernelindices[nodeindex(s)]
 			else
 				local c=tonumber(n:GetChild("Value0",true).text)
-				s1=kernel:constant(c)
+				s1=kernel:seed(c)
 			end
 			
 			return kernel:simplexBasis(s1)
@@ -198,14 +139,7 @@ function PackNodeGraph(output)
 			end
 			return kernel:gradientBasis(s1,s2)
 		elseif n.name=="ScalarMath" then
-			local s1,s2
-			local s=GetSourceFromNode(n,"Input0")
-			if s then
-				s1=kernelindices[nodeindex(s)]
-			else
-				local c=tonumber(n:GetChild("Value0",true).text)
-				s1=kernel:constant(c)
-			end
+			local s1=GetValue(n,0)
 			local op=n:GetChild("TypeList",true).selection
 			if op==0 then return kernel:abs(s1)
 			elseif op==1 then return kernel:cos(s1)
@@ -231,21 +165,7 @@ function PackNodeGraph(output)
 			local val=tonumber(n:GetChild("Value",true).text)
 			return kernel:seed(val)
 		elseif n.name=="Derivative" then
-			local s1,s2
-			local s=GetSourceFromNode(n,"Input0")
-			if s then
-				s1=kernelindices[nodeindex(s)]
-			else
-				local c=tonumber(n:GetChild("Value0",true).text)
-				s1=kernel:constant(c)
-			end
-			s=GetSourceFromNode(n, "Input1")
-			if s then
-				s2=kernelindices[nodeindex(s)]
-			else
-				local c=tonumber(n:GetChild("Value1",true).text)
-				s2=kernel:constant(c)
-			end
+			local s1,s2=GetValue(n,0),GetValue(n,1)
 			local op=n:GetChild("TypeList",true).selection
 			if op==0 then return kernel:dx(s1,s2)
 			elseif op==1 then return kernel:dy(s1,s2)
@@ -255,42 +175,7 @@ function PackNodeGraph(output)
 			elseif op==5 then return kernel:dv(s1,s2)
 			end
 		elseif n.name=="Fractal" then
-			local s1,s2,s3,s4,s5
-			local s=GetSourceFromNode(n,"Input0")
-			if s then
-				s1=kernelindices[nodeindex(s)]
-			else
-				local c=tonumber(n:GetChild("Value0",true).text) or 1.0
-				s1=kernel:constant(c)
-			end
-			s=GetSourceFromNode(n, "Input1")
-			if s then
-				s2=kernelindices[nodeindex(s)]
-			else
-				local c=tonumber(n:GetChild("Value1",true).text) or 1.0
-				s2=kernel:constant(c)
-			end
-			s=GetSourceFromNode(n, "Input2")
-			if s then
-				s3=kernelindices[nodeindex(s)]
-			else
-				local c=tonumber(n:GetChild("Value2",true).text) or 1.0
-				s3=kernel:constant(c)
-			end
-			s=GetSourceFromNode(n, "Input3")
-			if s then
-				s4=kernelindices[nodeindex(s)]
-			else
-				local c=tonumber(n:GetChild("Value3",true).text) or 1.0
-				s4=kernel:constant(c)
-			end
-			s=GetSourceFromNode(n, "Input4")
-			if s then
-				s5=kernelindices[nodeindex(s)]
-			else
-				local c=tonumber(n:GetChild("Value4",true).text) or 1.0
-				s5=kernel:constant(c)
-			end
+			local s1,s2,s3,s4,s5=GetValue(n,0),GetValue(n,1),GetValue(n,2),GetValue(n,3),GetValue(n,4)
 			local seed=tonumber(n:GetChild("Seed", true).text)
 			
 			return kernel:fractal(seed,s1,s2,s3,s4,s5)
