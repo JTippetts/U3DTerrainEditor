@@ -170,6 +170,11 @@ function PackNodeGraph(output)
 		elseif n.name=="Mix" then
 			local s1,s2,s3=GetValue(n,0),GetValue(n,1),GetValue(n,2)
 			return kernel:mix(s2,s3,s1)
+		elseif n.name=="Expression" then
+			local eb=CExpressionBuilder(kernel)
+			local exp=n:GetChild("Value",true).text
+			eb:eval(exp)
+			return kernel:lastIndex()
 		end
 	end
 	
@@ -252,6 +257,7 @@ function NodeGraphUI:Start()
 	self:SubscribeToEvent(self.createnodemenu:GetChild("Randomize", true), "Pressed", "NodeGraphUI:HandleCreateNode")
 	self:SubscribeToEvent(self.createnodemenu:GetChild("SmoothStep", true), "Pressed", "NodeGraphUI:HandleCreateNode")
 	self:SubscribeToEvent(self.createnodemenu:GetChild("Mix", true), "Pressed", "NodeGraphUI:HandleCreateNode")
+	self:SubscribeToEvent(self.createnodemenu:GetChild("Expression", true), "Pressed", "NodeGraphUI:HandleCreateNode")
 	self.createnodemenu.visible=false
 	
 	local cnmclose=self.createnodemenu:GetChild("Close", true)
@@ -304,6 +310,7 @@ function NodeGraphUI:HandleCreateNode(eventType, eventData)
 	elseif e.name=="Randomize" then n=self:RandomizeNode()
 	elseif e.name=="SmoothStep" then n=self:SmoothStepNode()
 	elseif e.name=="Mix" then n=self:MixNode()
+	elseif e.name=="Expression" then n=self:ExpressionNode()
 	end
 	
 	n.position=IntVector2(-self.pane.position.x + graphics.width/2, -self.pane.position.y + graphics.height/2)
@@ -881,6 +888,22 @@ end
 
 function NodeGraphUI:ConstantNode()
 	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/ConstantNode.xml"))
+	
+	e.visible=true
+	self.pane.clipChildren=false
+	
+	local output=e:GetChild("Output0", true)
+	
+	self:SubscribeToEvent(output, "DragBegin", "NodeGraphUI:HandleOutputDragBegin")
+	self:SubscribeToEvent(output, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	output:SetRoot(e)
+	
+	self.pane:AddChild(e)
+	return e
+end
+
+function NodeGraphUI:ExpressionNode()
+	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/ExpressionNode.xml"))
 	
 	e.visible=true
 	self.pane.clipChildren=false
