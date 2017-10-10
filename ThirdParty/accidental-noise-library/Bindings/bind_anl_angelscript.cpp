@@ -566,7 +566,7 @@ void RegisterANL(asIScriptEngine *as)
     as->RegisterObjectMethod("CKernel", "CInstructionIndex multiplySequence(CInstructionIndex baseindex, int number, int stride)", asMETHOD(CKernel, multiplySequence), asCALL_THISCALL);
     as->RegisterObjectMethod("CKernel", "CInstructionIndex maxSequence(CInstructionIndex baseindex, int number, int stride)", asMETHOD(CKernel, maxSequence), asCALL_THISCALL);
     as->RegisterObjectMethod("CKernel", "CInstructionIndex minSequence(CInstructionIndex baseindex, int number, int stride)", asMETHOD(CKernel, minSequence), asCALL_THISCALL);
-    as->RegisterObjectMethod("CKernel", "CInstructionIndex blend(CInstructionIndex low, CInstructionIndex high, CInstructionIndex control)", asMETHOD(CKernel, blend), asCALL_THISCALL);
+    as->RegisterObjectMethod("CKernel", "CInstructionIndex mix(CInstructionIndex low, CInstructionIndex high, CInstructionIndex control)", asMETHOD(CKernel, mix), asCALL_THISCALL);
     as->RegisterObjectMethod("CKernel", "CInstructionIndex select(CInstructionIndex low, CInstructionIndex high, CInstructionIndex control, CInstructionIndex threshold, CInstructionIndex falloff)", asMETHOD(CKernel, select), asCALL_THISCALL);
     as->RegisterObjectMethod("CKernel", "CInstructionIndex clamp(CInstructionIndex src, CInstructionIndex low, CInstructionIndex high)", asMETHOD(CKernel, clamp), asCALL_THISCALL);
     as->RegisterObjectMethod("CKernel", "CInstructionIndex cos(CInstructionIndex src)", asMETHOD(CKernel, cos), asCALL_THISCALL);

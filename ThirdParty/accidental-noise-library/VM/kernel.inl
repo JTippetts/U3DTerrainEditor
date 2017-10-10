@@ -586,7 +586,7 @@ CInstructionIndex CKernel::minSequence(CInstructionIndex baseindex, unsigned int
     return lastIndex();
 }
 
-CInstructionIndex CKernel::blend(CInstructionIndex low, CInstructionIndex high, CInstructionIndex control)
+CInstructionIndex CKernel::mix(CInstructionIndex low, CInstructionIndex high, CInstructionIndex control)
 {
     anl::SInstruction i;
     i.opcode_=anl::OP_Blend;
@@ -606,6 +606,46 @@ CInstructionIndex CKernel::select(CInstructionIndex low, CInstructionIndex high,
     i.sources_[2]=control.index_;
     i.sources_[3]=threshold.index_;
     i.sources_[4]=falloff.index_;
+    kernel_.push_back(i);
+    return lastIndex();
+}
+
+CInstructionIndex CKernel::step(CInstructionIndex val, CInstructionIndex control)
+{
+    anl::SInstruction i;
+    i.opcode_=anl::OP_Step;
+    i.sources_[0]=val.index_;
+    i.sources_[1]=control.index_;
+    kernel_.push_back(i);
+    return lastIndex();
+}
+CInstructionIndex CKernel::linearStep(CInstructionIndex low, CInstructionIndex high, CInstructionIndex control)
+{
+    anl::SInstruction i;
+    i.opcode_=anl::OP_LinearStep;
+    i.sources_[0]=low.index_;
+    i.sources_[1]=high.index_;
+    i.sources_[2]=control.index_;
+    kernel_.push_back(i);
+    return lastIndex();
+}
+CInstructionIndex CKernel::smoothStep(CInstructionIndex low, CInstructionIndex high, CInstructionIndex control)
+{
+    anl::SInstruction i;
+    i.opcode_=anl::OP_SmoothStep;
+    i.sources_[0]=low.index_;
+    i.sources_[1]=high.index_;
+    i.sources_[2]=control.index_;
+    kernel_.push_back(i);
+    return lastIndex();
+}
+CInstructionIndex CKernel::smootherStep(CInstructionIndex low, CInstructionIndex high, CInstructionIndex control)
+{
+    anl::SInstruction i;
+    i.opcode_=anl::OP_SmootherStep;
+    i.sources_[0]=low.index_;
+    i.sources_[1]=high.index_;
+    i.sources_[2]=control.index_;
     kernel_.push_back(i);
     return lastIndex();
 }

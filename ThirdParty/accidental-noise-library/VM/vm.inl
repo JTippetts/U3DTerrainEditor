@@ -255,7 +255,11 @@ void CNoiseExecutor::seedSource(InstructionListType &kernel, EvaluatedType &eval
 			case OP_DV: seedSource(kernel, evaluated, i.sources_[0], seed); seedSource(kernel, evaluated, i.sources_[1], seed); return; break;
 			case OP_Sigmoid: for(int c=0; c<3; ++c) seedSource(kernel, evaluated, i.sources_[c], seed); return; break;
 			case OP_Fractal: i.outfloat_=(double)seed++; return; break;
-			case OP_Randomize: for(int c=0; c<3; ++c) seedSource(kernel,evaluated,i.sources_[c],seed); return; break;
+			case OP_Randomize: 
+			case OP_SmoothStep: 
+			case OP_SmootherStep:
+			case OP_LinearStep: for(int c=0; c<3; ++c) seedSource(kernel,evaluated,i.sources_[c],seed); return; break;
+			case OP_Step: for(int c=0; c<2; ++c) seedSource(kernel,evaluated,i.sources_[c],seed); return; break;
 			case OP_HexTile: seedSource(kernel, evaluated, i.sources_[0], seed); return; break;
 			case OP_HexBump: return; break;
 			case OP_Color: return; break;
@@ -1233,6 +1237,58 @@ void CNoiseExecutor::evaluateInstruction(InstructionListType &kernel, EvaluatedT
 		double low=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[1],coord);
 		double high=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[2],coord);
 		cache[index].set(low+rnd.get01()*(high-low));
+		evaluated[index]=true;
+		return;
+	}
+	
+	case OP_SmoothStep:
+	{
+		double low,high;
+        double control;
+        low=evaluateParameter(kernel, evaluated, coordcache,cache, i.sources_[0], coord);
+        high=evaluateParameter(kernel, evaluated, coordcache,cache, i.sources_[1], coord);
+        control=evaluateParameter(kernel, evaluated, coordcache,cache, i.sources_[2], coord);
+		double t=std::min(1.0, std::max(0.0, (control-low)/(high-low)));
+		t=t*t*(3.0-2.0*t);
+        cache[index].set(t);
+		evaluated[index]=true;
+		return;
+	}
+	
+	case OP_SmootherStep:
+	{
+		double low,high;
+        double control;
+        low=evaluateParameter(kernel, evaluated, coordcache,cache, i.sources_[0], coord);
+        high=evaluateParameter(kernel, evaluated, coordcache,cache, i.sources_[1], coord);
+        control=evaluateParameter(kernel, evaluated, coordcache,cache, i.sources_[2], coord);
+		double t=std::min(1.0, std::max(0.0, (control-low)/(high-low)));
+		t=t*t*t*(t*(t*6 - 15) + 10);
+        cache[index].set(t);
+		evaluated[index]=true;
+		return;
+	}
+	
+	case OP_LinearStep:
+	{
+		double low,high;
+        double control;
+        low=evaluateParameter(kernel, evaluated, coordcache,cache, i.sources_[0], coord);
+        high=evaluateParameter(kernel, evaluated, coordcache,cache, i.sources_[1], coord);
+        control=evaluateParameter(kernel, evaluated, coordcache,cache, i.sources_[2], coord);
+		double t=(control-low)/(high-low);
+		cache[index].set(std::min(1.0, std::max(0.0, t)));
+		evaluated[index]=true;
+		return;
+	}
+	
+	case OP_Step:
+	{
+		double val;
+        double control;
+        val=evaluateParameter(kernel, evaluated, coordcache,cache, i.sources_[0], coord);
+        control=evaluateParameter(kernel, evaluated, coordcache,cache, i.sources_[1], coord);
+        cache[index].set(control<val ? 0.0 : 1.0);
 		evaluated[index]=true;
 		return;
 	}

@@ -74,6 +74,10 @@ enum EOpcodes
 	
 	OP_Fractal,
 	OP_Randomize,
+	OP_SmoothStep,
+	OP_SmootherStep,
+	OP_LinearStep,
+	OP_Step,
 
     // Patterns
     OP_HexTile,

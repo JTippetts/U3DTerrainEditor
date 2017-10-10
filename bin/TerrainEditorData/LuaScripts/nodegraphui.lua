@@ -160,6 +160,16 @@ function PackNodeGraph(output)
 		elseif n.name=="Randomize" then
 			local s1,s2,s3=GetSeed(n,0),GetValue(n,1),GetValue(n,2)
 			return kernel:randomize(s1,s2,s3)
+		elseif n.name=="SmoothStep" then
+			local s1,s2,s3=GetValue(n,0),GetValue(n,1),GetValue(n,2)
+			local op=n:GetChild("TypeList",true).selection
+			if op==0 then return kernel:linearStep(s2,s3,s1)
+			elseif op==1 then return kernel:smoothStep(s2,s3,s1)
+			elseif op==2 then return kernel:smootherStep(s2,s3,s1)
+			end
+		elseif n.name=="Mix" then
+			local s1,s2,s3=GetValue(n,0),GetValue(n,1),GetValue(n,2)
+			return kernel:mix(s2,s3,s1)
 		end
 	end
 	
@@ -185,7 +195,7 @@ function PackNodeGraph(output)
 			if s and not isvisited(s) then worker(s) end
 			s=GetSourceFromNode(n,"Input4")
 			if s and not isvisited(s) then worker(s) end
-		elseif n.name=="Randomize" then
+		elseif n.name=="Randomize" or n.name=="SmoothStep" or n.name=="Mix" then
 			local s=GetSourceFromNode(n,"Input0")
 			if s and not isvisited(s) then worker(s) end
 			s=GetSourceFromNode(n,"Input1")
@@ -240,6 +250,8 @@ function NodeGraphUI:Start()
 	self:SubscribeToEvent(self.createnodemenu:GetChild("Fractal", true), "Pressed", "NodeGraphUI:HandleCreateNode")
 	self:SubscribeToEvent(self.createnodemenu:GetChild("RotateDomain", true), "Pressed", "NodeGraphUI:HandleCreateNode")
 	self:SubscribeToEvent(self.createnodemenu:GetChild("Randomize", true), "Pressed", "NodeGraphUI:HandleCreateNode")
+	self:SubscribeToEvent(self.createnodemenu:GetChild("SmoothStep", true), "Pressed", "NodeGraphUI:HandleCreateNode")
+	self:SubscribeToEvent(self.createnodemenu:GetChild("Mix", true), "Pressed", "NodeGraphUI:HandleCreateNode")
 	self.createnodemenu.visible=false
 	
 	local cnmclose=self.createnodemenu:GetChild("Close", true)
@@ -290,6 +302,8 @@ function NodeGraphUI:HandleCreateNode(eventType, eventData)
 	elseif e.name=="Fractal" then n=self:FractalNode()
 	elseif e.name=="RotateDomain" then n=self:RotateDomainNode()
 	elseif e.name=="Randomize" then n=self:RandomizeNode()
+	elseif e.name=="SmoothStep" then n=self:SmoothStepNode()
+	elseif e.name=="Mix" then n=self:MixNode()
 	end
 	
 	n.position=IntVector2(-self.pane.position.x + graphics.width/2, -self.pane.position.y + graphics.height/2)
@@ -455,6 +469,80 @@ end
 
 function NodeGraphUI:RandomizeNode()
 	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/RandomizeNode.xml"))
+	
+	e.visible=true
+	self.pane.clipChildren=false
+	
+	local output=e:GetChild("Output0", true)
+	
+	self:SubscribeToEvent(output, "DragBegin", "NodeGraphUI:HandleOutputDragBegin")
+	self:SubscribeToEvent(output, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	output:SetRoot(e)
+	
+	local input=e:GetChild("Input0", true)
+	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
+	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	input=e:GetChild("Input1", true)
+	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
+	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	input=e:GetChild("Input2", true)
+	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
+	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	
+	self.pane:AddChild(e)
+	return e
+end
+
+function NodeGraphUI:SmoothStepNode()
+	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/SmoothStepNode.xml"))
+	
+	e.visible=true
+	self.pane.clipChildren=false
+	
+	local list=e:GetChild("TypeList", true)
+	list.resizePopup=true
+	
+	local smtypes=
+	{
+		"Linear",
+		"Smooth",
+		"Smoother"
+	}
+	
+	list:SetAlignment(HA_LEFT, VA_CENTER)
+	list.minSize=IntVector2(0,16)
+	local c
+	for _,c in ipairs(smtypes) do
+		local t=Text:new(context)
+		t:SetFont(cache:GetResource("Font", "Fonts/Anonymous Pro.ttf"), 11)
+		t.text=c
+		t.color=Color(1,1,1)
+		t.minSize=IntVector2(0,16)
+		list:AddItem(t)
+	end
+	list.selection=0
+	
+	local output=e:GetChild("Output0", true)
+	self:SubscribeToEvent(output, "DragBegin", "NodeGraphUI:HandleOutputDragBegin")
+	self:SubscribeToEvent(output, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	output:SetRoot(e)
+	
+	local input=e:GetChild("Input0", true)
+	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
+	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	input=e:GetChild("Input1", true)
+	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
+	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	input=e:GetChild("Input2", true)
+	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
+	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	
+	self.pane:AddChild(e)
+	return e
+end
+
+function NodeGraphUI:MixNode()
+	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/MixNode.xml"))
 	
 	e.visible=true
 	self.pane.clipChildren=false

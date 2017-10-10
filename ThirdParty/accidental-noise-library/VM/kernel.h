@@ -90,7 +90,7 @@ public:
     CInstructionIndex maxSequence(CInstructionIndex baseindex, unsigned int number, unsigned int stride);
     CInstructionIndex minSequence(CInstructionIndex baseindex, unsigned int number, unsigned int stride);
 
-    CInstructionIndex blend(CInstructionIndex low, CInstructionIndex high, CInstructionIndex control);
+    CInstructionIndex mix(CInstructionIndex low, CInstructionIndex high, CInstructionIndex control);
     CInstructionIndex select(CInstructionIndex low, CInstructionIndex high, CInstructionIndex control, CInstructionIndex threshold, CInstructionIndex falloff);
     CInstructionIndex clamp(CInstructionIndex src, CInstructionIndex low, CInstructionIndex high);
 
@@ -125,6 +125,10 @@ public:
 	
 	CInstructionIndex fractal(unsigned int seed, CInstructionIndex layer, CInstructionIndex persistence, CInstructionIndex lacunarity, CInstructionIndex numoctaves, CInstructionIndex freq);
 	CInstructionIndex randomize(CInstructionIndex seed, CInstructionIndex low, CInstructionIndex high);
+	CInstructionIndex step(CInstructionIndex val, CInstructionIndex control);
+	CInstructionIndex linearStep(CInstructionIndex low, CInstructionIndex high, CInstructionIndex control);
+	CInstructionIndex smoothStep(CInstructionIndex low, CInstructionIndex high, CInstructionIndex control);
+	CInstructionIndex smootherStep(CInstructionIndex low, CInstructionIndex high, CInstructionIndex control);
 
     // Patterns
     CInstructionIndex hexTile(CInstructionIndex seed);

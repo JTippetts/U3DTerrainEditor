@@ -60,7 +60,7 @@ CExpressionBuilder::CExpressionBuilder(CKernel &kernel) : kernel_(kernel)
     f_["translateU"]=2;
     f_["translateV"]=2;
     f_["rotateDomain"]=5;
-    f_["blend"]=3;
+    f_["mix"]=3;
     f_["select"]=5;
     f_["clamp"]=3;
     f_["cos"]=1;
@@ -451,7 +451,7 @@ void CExpressionBuilder::buildFunction(const std::string &token, std::stack<CIns
         stk.pop();
         stk.push(kernel_.rotateDomain(c0,c1,c2,c3,c4));
     }
-    else if(token=="blend")
+    else if(token=="mix")
     {
         CInstructionIndex c2=stk.top();
         stk.pop();
@@ -459,7 +459,7 @@ void CExpressionBuilder::buildFunction(const std::string &token, std::stack<CIns
         stk.pop();
         CInstructionIndex c0=stk.top();
         stk.pop();
-        stk.push(kernel_.blend(c0,c1,c2));
+        stk.push(kernel_.mix(c0,c1,c2));
     }
     else if(token=="select")
     {
