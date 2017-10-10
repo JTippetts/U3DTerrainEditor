@@ -57,15 +57,15 @@ void Urho3DPlayer::Setup()
     FileSystem* filesystem = GetSubsystem<FileSystem>();
 
     // On Android and iOS, read command line from a file as parameters can not otherwise be easily given
-    #if defined(ANDROID) || defined(IOS)
+#if defined(ANDROID) || defined(IOS)
     SharedPtr<File> commandFile(new File(context_, filesystem->GetProgramDir() + "Data/CommandLine.txt",
-        FILE_READ));
+                                         FILE_READ));
     String commandLine = commandFile->ReadLine();
     commandFile->Close();
     ParseArguments(commandLine, false);
     // Reparse engine startup parameters now
     engineParameters_ = Engine::ParseParameters(GetArguments());
-    #endif
+#endif
 
     // Check for script file name
     const Vector<String>& arguments = GetArguments();
@@ -83,45 +83,45 @@ void Urho3DPlayer::Setup()
     if (scriptFileName_.Empty())
     {
         ErrorExit("Usage: Urho3DPlayer <scriptfile> [options]\n\n"
-            "The script file should implement the function void Start() for initializing the "
-            "application and subscribing to all necessary events, such as the frame update.\n"
-            #ifndef WIN32
-            "\nCommand line options:\n"
-            "-x <res>     Horizontal resolution\n"
-            "-y <res>     Vertical resolution\n"
-            "-m <level>   Enable hardware multisampling\n"
-            "-v           Enable vertical sync\n"
-            "-t           Enable triple buffering\n"
-            "-w           Start in windowed mode\n"
-            "-s           Enable resizing when in windowed mode\n"
-            "-q           Enable quiet mode which does not log to standard output stream\n"
-            "-b <length>  Sound buffer length in milliseconds\n"
-            "-r <freq>    Sound mixing frequency in Hz\n"
-            "-p <paths>   Resource path(s) to use, separated by semicolons\n"
-            "-ap <paths>  Autoload resource path(s) to use, seperated by semicolons\n"
-            "-log <level> Change the log level, valid 'level' values are 'debug', 'info', 'warning', 'error'\n"
-            "-ds <file>   Dump used shader variations to a file for precaching\n"
-            "-mq <level>  Material quality level, default 2 (high)\n"
-            "-tq <level>  Texture quality level, default 2 (high)\n"
-            "-tf <level>  Texture filter mode, default 2 (trilinear)\n"
-            "-af <level>  Texture anisotropy level, default 4. Also sets anisotropic filter mode\n"
-            "-flushgpu    Flush GPU command queue each frame. Effective only on Direct3D9\n"
-            "-borderless  Borderless window mode\n"
-            "-headless    Headless mode. No application window will be created\n"
-            "-landscape   Use landscape orientations (iOS only, default)\n"
-            "-portrait    Use portrait orientations (iOS only)\n"
-            "-prepass     Use light pre-pass rendering\n"
-            "-deferred    Use deferred rendering\n"
-            "-lqshadows   Use low-quality (1-sample) shadow filtering\n"
-            "-noshadows   Disable shadow rendering\n"
-            "-nolimit     Disable frame limiter\n"
-            "-nothreads   Disable worker threads\n"
-            "-nosound     Disable sound output\n"
-            "-noip        Disable sound mixing interpolation\n"
-            "-sm2         Force SM2.0 rendering\n"
-            "-touch       Touch emulation on desktop platform\n"
-            #endif
-        );
+                  "The script file should implement the function void Start() for initializing the "
+                  "application and subscribing to all necessary events, such as the frame update.\n"
+#ifndef WIN32
+                  "\nCommand line options:\n"
+                  "-x <res>     Horizontal resolution\n"
+                  "-y <res>     Vertical resolution\n"
+                  "-m <level>   Enable hardware multisampling\n"
+                  "-v           Enable vertical sync\n"
+                  "-t           Enable triple buffering\n"
+                  "-w           Start in windowed mode\n"
+                  "-s           Enable resizing when in windowed mode\n"
+                  "-q           Enable quiet mode which does not log to standard output stream\n"
+                  "-b <length>  Sound buffer length in milliseconds\n"
+                  "-r <freq>    Sound mixing frequency in Hz\n"
+                  "-p <paths>   Resource path(s) to use, separated by semicolons\n"
+                  "-ap <paths>  Autoload resource path(s) to use, seperated by semicolons\n"
+                  "-log <level> Change the log level, valid 'level' values are 'debug', 'info', 'warning', 'error'\n"
+                  "-ds <file>   Dump used shader variations to a file for precaching\n"
+                  "-mq <level>  Material quality level, default 2 (high)\n"
+                  "-tq <level>  Texture quality level, default 2 (high)\n"
+                  "-tf <level>  Texture filter mode, default 2 (trilinear)\n"
+                  "-af <level>  Texture anisotropy level, default 4. Also sets anisotropic filter mode\n"
+                  "-flushgpu    Flush GPU command queue each frame. Effective only on Direct3D9\n"
+                  "-borderless  Borderless window mode\n"
+                  "-headless    Headless mode. No application window will be created\n"
+                  "-landscape   Use landscape orientations (iOS only, default)\n"
+                  "-portrait    Use portrait orientations (iOS only)\n"
+                  "-prepass     Use light pre-pass rendering\n"
+                  "-deferred    Use deferred rendering\n"
+                  "-lqshadows   Use low-quality (1-sample) shadow filtering\n"
+                  "-noshadows   Disable shadow rendering\n"
+                  "-nolimit     Disable frame limiter\n"
+                  "-nothreads   Disable worker threads\n"
+                  "-nosound     Disable sound output\n"
+                  "-noip        Disable sound mixing interpolation\n"
+                  "-sm2         Force SM2.0 rendering\n"
+                  "-touch       Touch emulation on desktop platform\n"
+#endif
+                 );
     }
     else
     {
@@ -132,22 +132,22 @@ void Urho3DPlayer::Setup()
 
 void Urho3DPlayer::Start()
 {
-	RegisterCustomComponents(context_);
-	GetSubsystem<ResourceCache>()->AddResourceDir("TerrainEditorData");
+    RegisterCustomComponents(context_);
+    GetSubsystem<ResourceCache>()->AddResourceDir("TerrainEditorData");
     String extension = GetExtension(scriptFileName_);
     if (extension != ".lua" && extension != ".luc")
     {
 #ifdef URHO3D_ANGELSCRIPT
         // Instantiate and register the AngelScript subsystem
-		Script *script = new Script(context_);
+        Script *script = new Script(context_);
         context_->RegisterSubsystem(script);
-		// Load any custom script bindings
-		LoadScriptBindings(script->GetScriptEngine());
+        // Load any custom script bindings
+        LoadScriptBindings(script->GetScriptEngine());
 
 
         // Hold a shared pointer to the script file to make sure it is not unloaded during runtime
         scriptFile_ = GetSubsystem<ResourceCache>()->GetResource<ScriptFile>(scriptFileName_);
-		
+
         /// \hack If we are running the editor, also instantiate Lua subsystem to enable editing Lua ScriptInstances
 #ifdef URHO3D_LUA
         if (scriptFileName_.Contains("Editor.as", false))
@@ -173,8 +173,8 @@ void Urho3DPlayer::Start()
         // Instantiate and register the Lua script subsystem
         LuaScript* luaScript = new LuaScript(context_);
         context_->RegisterSubsystem(luaScript);
-		// Load any custom Lua bindings
-		LoadLuaBindings(luaScript->GetState());
+        // Load any custom Lua bindings
+        LoadLuaBindings(luaScript->GetState());
 
         // If script loading is successful, proceed to main loop
         if (luaScript->ExecuteFile(scriptFileName_))
@@ -206,7 +206,7 @@ void Urho3DPlayer::Stop()
     {
     }
 #endif
-    
+
 #ifdef URHO3D_LUA
     else
     {

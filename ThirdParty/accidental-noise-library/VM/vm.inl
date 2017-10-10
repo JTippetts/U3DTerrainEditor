@@ -1217,7 +1217,7 @@ void CNoiseExecutor::evaluateInstruction(InstructionListType &kernel, EvaluatedT
 		
 		for(unsigned int c=0; c<numoctaves; ++c)
 		{
-			seedSource(kernel,evaluated,i.sources_[0],seed);
+			seedSource(kernel,evaluated,i.sources_[1],seed);
 			double v=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[1],coord);
 			val+=v*amp;
 			//val=v;

@@ -4,8 +4,8 @@
 
 void RegisterCustomComponents(Context *context)
 {
-	NodeGraphLinkPane::RegisterObject(context);
-	NodeGraphLink::RegisterObject(context);
-	NodeGraphLinkSource::RegisterObject(context);
-	NodeGraphLinkDest::RegisterObject(context);
+    NodeGraphLinkPane::RegisterObject(context);
+    NodeGraphLink::RegisterObject(context);
+    NodeGraphLinkSource::RegisterObject(context);
+    NodeGraphLinkDest::RegisterObject(context);
 }

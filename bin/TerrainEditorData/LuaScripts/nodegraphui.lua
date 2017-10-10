@@ -180,46 +180,27 @@ function PackNodeGraph(output)
 	
 	local kernel=CKernel()
 	
+	
+	
 	worker=function(n)
+		local visitnode=function(n,numparms)
+			local s,c
+			for c=0,numparms-1,1 do
+				s=GetSourceFromNode(n,"Input"..c)
+				if s and not isvisited(s) then worker(s) end
+			end
+		end
+		
 		if n.name=="Arithmetic" or n.name=="Derivative" or n.name=="Tiers" or n.name=="ValueBasis" or n.name=="GradientBasis" or n.name=="TranslateDomain" or n.name=="ScaleDomain" then
-			local s=GetSourceFromNode(n,"Input0")
-			if s and not isvisited(s) then worker(s) end
-			s=GetSourceFromNode(n,"Input1")
-			if s and not isvisited(s) then worker(s) end
+			visitnode(n,2)
 		elseif n.name=="ScalarMath" or n.name=="Output" or n.name=="SimplexBasis" then
-			local s=GetSourceFromNode(n,"Input0")
-			if s and not isvisited(s) then worker(s) end
+			visitnode(n,1)
 		elseif n.name=="RotateDomain" then
-			local s=GetSourceFromNode(n,"Input0")
-			if s and not isvisited(s) then worker(s) end
-			s=GetSourceFromNode(n,"Input1")
-			if s and not isvisited(s) then worker(s) end
-			s=GetSourceFromNode(n,"Input2")
-			if s and not isvisited(s) then worker(s) end
-			s=GetSourceFromNode(n,"Input3")
-			if s and not isvisited(s) then worker(s) end
-			s=GetSourceFromNode(n,"Input4")
-			if s and not isvisited(s) then worker(s) end
+			visitnode(n,5)
 		elseif n.name=="Fractal" then
-			local s=GetSourceFromNode(n,"Input0")
-			if s and not isvisited(s) then worker(s) end
-			s=GetSourceFromNode(n,"Input1")
-			if s and not isvisited(s) then worker(s) end
-			s=GetSourceFromNode(n,"Input2")
-			if s and not isvisited(s) then worker(s) end
-			s=GetSourceFromNode(n,"Input3")
-			if s and not isvisited(s) then worker(s) end
-			s=GetSourceFromNode(n,"Input4")
-			if s and not isvisited(s) then worker(s) end
-			s=GetSourceFromNode(n,"Input5")
-			if s and not isvisited(s) then worker(s) end
+			visitnode(n,6)
 		elseif n.name=="Randomize" or n.name=="SmoothStep" or n.name=="Mix" then
-			local s=GetSourceFromNode(n,"Input0")
-			if s and not isvisited(s) then worker(s) end
-			s=GetSourceFromNode(n,"Input1")
-			if s and not isvisited(s) then worker(s) end
-			s=GetSourceFromNode(n,"Input2")
-			if s and not isvisited(s) then worker(s) end
+			visitnode(n,3)
 		end
 		table.insert(nodes,n)
 		table.insert(kernelindices, InstanceANLFunction(kernel, n))

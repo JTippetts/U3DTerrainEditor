@@ -8,7 +8,7 @@ void RegisterANL(asIScriptEngine *as);
 
 void LoadScriptBindings(asIScriptEngine* engine)
 {
-	anl::RegisterANL(engine);
+    anl::RegisterANL(engine);
 }
 
 #endif
@@ -20,7 +20,7 @@ int  tolua_BindTerrainEdit_open (lua_State* tolua_S);
 
 void LoadLuaBindings(lua_State *l)
 {
-	tolua_bind_anl_open(l);
-	tolua_BindTerrainEdit_open(l);
+    tolua_bind_anl_open(l);
+    tolua_BindTerrainEdit_open(l);
 }
 #endif
