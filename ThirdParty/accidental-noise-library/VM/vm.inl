@@ -1205,12 +1205,12 @@ void CNoiseExecutor::evaluateInstruction(InstructionListType &kernel, EvaluatedT
 	case OP_Fractal:
 	{
 		//layer,pers,lac,octaves
-		unsigned int numoctaves=(unsigned int)evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[3],coord);
-		unsigned int seed=(unsigned int)i.outfloat_;
+		unsigned int numoctaves=(unsigned int)evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[4],coord);
+		unsigned int seed=(unsigned int)evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[0],coord);
 		double val=0.0f;
-		double freq=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[4],coord);
-		double lac=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[2],coord);
-		double pers=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[1],coord);
+		double freq=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[5],coord);
+		double lac=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[3],coord);
+		double pers=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[2],coord);
 		double amp=1.0;
 		
 		coord=coord*freq;
@@ -1218,7 +1218,7 @@ void CNoiseExecutor::evaluateInstruction(InstructionListType &kernel, EvaluatedT
 		for(unsigned int c=0; c<numoctaves; ++c)
 		{
 			seedSource(kernel,evaluated,i.sources_[0],seed);
-			double v=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[0],coord);
+			double v=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[1],coord);
 			val+=v*amp;
 			//val=v;
 			amp*=pers;

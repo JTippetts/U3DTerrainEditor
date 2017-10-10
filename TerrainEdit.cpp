@@ -1440,6 +1440,27 @@ void RenderANLKernelToBuffer(CArray2Dd *buffer, CKernel *kernel, float lowrange,
 	buffer->scaleToRange(lowrange, highrange);
 }
 
+void RenderANLKernelToImage(Image *buffer, CKernel *kernel, float lowrange, float highrange)
+{
+	if(!buffer) return;
+	CArray2Dd img;
+	
+	int w=buffer->GetWidth();
+	int h=buffer->GetHeight();
+	img.resize(w,h);
+	
+	map2D(SEAMLESS_NONE, img, *kernel, SMappingRanges(0,1,0,1,0,1), 0, kernel->lastIndex());
+	img.scaleToRange(lowrange, highrange);
+	for(int x=0; x<w; ++x)
+	{
+		for(int y=0; y<h; ++y)
+		{
+			float v=(float)img.get(x,y);
+			buffer->SetPixel(x,y,Color(v,v,v,1));
+		}
+	}
+}
+
 void SetHeightFromRasterBuffer(Image *height, CArray2Dd *buffer, Image *mask, bool useMask, bool invertMask)
 {
 	int w=height->GetWidth()-1;

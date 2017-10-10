@@ -115,16 +115,16 @@ CInstructionIndex CKernel::simplexBasis(CInstructionIndex seed)
     return lastIndex();
 }
 
-CInstructionIndex CKernel::fractal(unsigned int seed, CInstructionIndex layer, CInstructionIndex persistence, CInstructionIndex lacunarity, CInstructionIndex numoctaves, CInstructionIndex frequency)
+CInstructionIndex CKernel::fractal(CInstructionIndex seed, CInstructionIndex layer, CInstructionIndex persistence, CInstructionIndex lacunarity, CInstructionIndex numoctaves, CInstructionIndex frequency)
 {
 	anl::SInstruction i;
 	i.opcode_=anl::OP_Fractal;
-	i.outfloat_=(double)seed;
-	i.sources_[0]=layer.index_;
-	i.sources_[1]=persistence.index_;
-	i.sources_[2]=lacunarity.index_;
-	i.sources_[3]=numoctaves.index_;
-	i.sources_[4]=frequency.index_;
+	i.sources_[0]=seed.index_;
+	i.sources_[1]=layer.index_;
+	i.sources_[2]=persistence.index_;
+	i.sources_[3]=lacunarity.index_;
+	i.sources_[4]=numoctaves.index_;
+	i.sources_[5]=frequency.index_;
 	kernel_.push_back(i);
 	return lastIndex();
 }

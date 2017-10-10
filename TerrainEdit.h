@@ -209,6 +209,7 @@ protected:
 	void BuildQuadStrip(RasterVertexList *in, RasterVertexList *out, float width);
 	void BuildQuadStripVarying(RasterVertexList *in, RasterVertexList *out, float startwidth, float endwidth);
 	void RenderANLKernelToBuffer(CArray2Dd *buffer, CKernel *kernel, float lowrange=0, float highrange=1);
+	void RenderANLKernelToImage(Image *buffer, CKernel *kernel, float lowrange=0, float highrange=1);
 	void SetHeightFromRasterBuffer(Image *height, CArray2Dd *buffer, Image *mask=0, bool useMask=false, bool invertMask=false);
 	
 	void DistortBuffer(CArray2Dd *buffer, CArray2Dd *xd, CArray2Dd *yd, double power);

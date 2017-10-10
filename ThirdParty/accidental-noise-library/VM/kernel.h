@@ -123,7 +123,7 @@ public:
 
     CInstructionIndex radial();
 	
-	CInstructionIndex fractal(unsigned int seed, CInstructionIndex layer, CInstructionIndex persistence, CInstructionIndex lacunarity, CInstructionIndex numoctaves, CInstructionIndex freq);
+	CInstructionIndex fractal(CInstructionIndex seed, CInstructionIndex layer, CInstructionIndex persistence, CInstructionIndex lacunarity, CInstructionIndex numoctaves, CInstructionIndex freq);
 	CInstructionIndex randomize(CInstructionIndex seed, CInstructionIndex low, CInstructionIndex high);
 	CInstructionIndex step(CInstructionIndex val, CInstructionIndex control);
 	CInstructionIndex linearStep(CInstructionIndex low, CInstructionIndex high, CInstructionIndex control);

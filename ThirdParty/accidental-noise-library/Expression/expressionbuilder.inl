@@ -78,6 +78,12 @@ CExpressionBuilder::CExpressionBuilder(CKernel &kernel) : kernel_(kernel)
     f_["du"]=1;
     f_["dv"]=1;
     f_["sigmoid"]=3;
+	f_["randomize"]=3;
+	f_["fractal"]=6;
+	f_["step"]=2;
+	f_["linearStep"]=3;
+	f_["smoothStep"]=3;
+	f_["smootherStep"]=3;
     f_["index"]=1;
     f_["rindex"]=1;
 
@@ -609,6 +615,51 @@ void CExpressionBuilder::buildFunction(const std::string &token, std::stack<CIns
 
         stk.push(kernel_.sigmoid(src,cntr,rmp));
     }
+	else if(token=="randomize")
+	{
+		CInstructionIndex seed=stk.top();
+		stk.pop();
+		CInstructionIndex low=stk.top(); stk.pop();
+		CInstructionIndex high=stk.top(); stk.pop();
+		stk.push(kernel_.randomize(seed,low,high));
+	}
+	else if(token=="step")
+	{
+		CInstructionIndex control=stk.top(); stk.pop();
+		CInstructionIndex val=stk.top(); stk.pop();
+		stk.push(kernel_.step(val,control));
+	}
+	else if(token=="linearStep")
+	{
+		CInstructionIndex control=stk.top(); stk.pop();
+		CInstructionIndex high=stk.top(); stk.pop();
+		CInstructionIndex low=stk.top(); stk.pop();
+		stk.push(kernel_.linearStep(low,high,control));
+	}
+	else if(token=="smoothStep")
+	{
+		CInstructionIndex control=stk.top(); stk.pop();
+		CInstructionIndex high=stk.top(); stk.pop();
+		CInstructionIndex low=stk.top(); stk.pop();
+		stk.push(kernel_.smoothStep(low,high,control));
+	}
+	else if(token=="smootherStep")
+	{
+		CInstructionIndex control=stk.top(); stk.pop();
+		CInstructionIndex high=stk.top(); stk.pop();
+		CInstructionIndex low=stk.top(); stk.pop();
+		stk.push(kernel_.smootherStep(low,high,control));
+	}
+	else if(token=="fractal")
+	{
+		CInstructionIndex freq=stk.top(); stk.pop();
+		CInstructionIndex octaves=stk.top(); stk.pop();
+		CInstructionIndex lac=stk.top(); stk.pop();
+		CInstructionIndex pers=stk.top(); stk.pop();
+		CInstructionIndex layer=stk.top(); stk.pop();
+		CInstructionIndex seed=stk.top(); stk.pop();
+		stk.push(kernel_.fractal(seed,layer,pers,lac,octaves,freq));
+	}
     else if(token=="index")
     {
         InstructionListType *il=kernel_.getKernel();

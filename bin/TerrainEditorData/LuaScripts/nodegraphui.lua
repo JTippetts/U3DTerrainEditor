@@ -150,10 +150,9 @@ function PackNodeGraph(output)
 			elseif op==5 then return kernel:dv(s1,s2)
 			end
 		elseif n.name=="Fractal" then
-			local s1,s2,s3,s4,s5=GetValue(n,0),GetValue(n,1),GetValue(n,2),GetValue(n,3),GetValue(n,4)
-			local seed=tonumber(n:GetChild("Seed", true).text)
+			local s1,s2,s3,s4,s5,s6=GetSeed(n,0),GetValue(n,1),GetValue(n,2),GetValue(n,3),GetValue(n,4),GetValue(n,5)
 			
-			return kernel:fractal(seed,s1,s2,s3,s4,s5)
+			return kernel:fractal(s1,s2,s3,s4,s5,s6)
 		elseif n.name=="RotateDomain" then
 			local s1,s2,s3,s4,s5=GetValue(n,0),GetValue(n,1),GetValue(n,2),GetValue(n,3),GetValue(n,4)
 			return kernel:rotateDomain(s1,s2,s3,s4,s5)
@@ -237,6 +236,11 @@ function NodeGraphUI:Start()
 	self.linkpane.visible=true
 	self.linkpane.texture=cache:GetResource("Texture2D", "Data/Textures/UI.png")
 	
+	self.previewtex=Texture2D:new()
+	self.previewimg=Image()
+	self.previewimg:SetSize(256,256,3)
+	self.previewtex:SetData(self.previewimg)
+	
 	
 	self.createnodemenu=ui:LoadLayout(cache:GetResource("XMLFile", "UI/CreateNodeMenu.xml"))
 	self.pane:AddChild(self.createnodemenu)
@@ -258,6 +262,7 @@ function NodeGraphUI:Start()
 	self:SubscribeToEvent(self.createnodemenu:GetChild("SmoothStep", true), "Pressed", "NodeGraphUI:HandleCreateNode")
 	self:SubscribeToEvent(self.createnodemenu:GetChild("Mix", true), "Pressed", "NodeGraphUI:HandleCreateNode")
 	self:SubscribeToEvent(self.createnodemenu:GetChild("Expression", true), "Pressed", "NodeGraphUI:HandleCreateNode")
+	
 	self.createnodemenu.visible=false
 	
 	local cnmclose=self.createnodemenu:GetChild("Close", true)
@@ -273,6 +278,8 @@ function NodeGraphUI:Start()
 	}
 	self.nodegroup.output.position=IntVector2(graphics.width, graphics.height)
 	self.cursortarget=cursor:CreateChild("NodeGraphLinkDest")
+	self.nodegroup.output:GetChild("Preview",true).texture=self.previewtex
+	self:SubscribeToEvent(self.nodegroup.output:GetChild("Generate",true),"Pressed","NodeGraphUI:HandleGenerate")
 end
 
 function NodeGraphUI:Activate()
@@ -989,6 +996,13 @@ function NodeGraphUI:HandleInputDragBegin(eventType, eventData)
 	--print("Begin drag "..element.name)
 end
 
+function NodeGraphUI:HandleGenerate(eventType, eventData)
+	local kernel=PackNodeGraph(self.nodegroup.output)
+	RenderANLKernelToImage(self.previewimg,kernel,0,1)
+	self.previewtex:SetData(self.previewimg)
+	
+end
+
 function NodeGraphUI:Update(dt)
 	if input:GetMouseButtonDown(MOUSEB_RIGHT) then
 		local mmove=input:GetMouseMove()
@@ -999,12 +1013,5 @@ function NodeGraphUI:Update(dt)
 		self.pane:SetPosition(pos)
 	end
 	
-	if input:GetKeyPress(KEY_B) then
-		local kernel=PackNodeGraph(self.nodegroup.output)
-		
-		local img=CArray2Dd(256,256)
-		map2DNoZ(SEAMLESS_NONE, img, kernel, SMappingRanges(0,10,0,10,0,10), kernel:lastIndex())
-		img:scaleToRange(0,1)
-		saveDoubleArray("noise.png", img)
-	end
+	
 end

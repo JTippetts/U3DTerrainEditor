@@ -4466,7 +4466,7 @@ static int tolua__CKernel_fractal00(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
  !tolua_isusertype(tolua_S,1,"CKernel",0,&tolua_err) ||
- !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ (tolua_isvaluenil(tolua_S,2,&tolua_err) || !tolua_isusertype(tolua_S,2,"CInstructionIndex",0,&tolua_err)) ||
  (tolua_isvaluenil(tolua_S,3,&tolua_err) || !tolua_isusertype(tolua_S,3,"CInstructionIndex",0,&tolua_err)) ||
  (tolua_isvaluenil(tolua_S,4,&tolua_err) || !tolua_isusertype(tolua_S,4,"CInstructionIndex",0,&tolua_err)) ||
  (tolua_isvaluenil(tolua_S,5,&tolua_err) || !tolua_isusertype(tolua_S,5,"CInstructionIndex",0,&tolua_err)) ||
@@ -4479,7 +4479,7 @@ static int tolua__CKernel_fractal00(lua_State* tolua_S)
 #endif
  {
   CKernel* self = (CKernel*)  tolua_tousertype(tolua_S,1,0);
-  unsigned int seed = ((unsigned int)  tolua_tonumber(tolua_S,2,0));
+  CInstructionIndex seed = *((CInstructionIndex*)  tolua_tousertype(tolua_S,2,0));
   CInstructionIndex layer = *((CInstructionIndex*)  tolua_tousertype(tolua_S,3,0));
   CInstructionIndex persistence = *((CInstructionIndex*)  tolua_tousertype(tolua_S,4,0));
   CInstructionIndex lacunarity = *((CInstructionIndex*)  tolua_tousertype(tolua_S,5,0));
