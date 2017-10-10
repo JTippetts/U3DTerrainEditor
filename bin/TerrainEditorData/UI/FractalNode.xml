@@ -9,7 +9,6 @@
 	<attribute name="Layout Mode" value="Vertical" />
 	<attribute name="Layout Border" value="4 4 4 4" />
 	<attribute name="Is Movable" value="true" />
-	<attribute name="Is Resizable" value="true" />
 	<element>
 		<attribute name="Max Size" value="2147483647 16" />
 		<attribute name="Pivot" value="0 0" />
@@ -163,7 +162,7 @@
 						<attribute name="Top Right Color" value="0.9 1 0.9 1" />
 						<attribute name="Bottom Left Color" value="0.9 1 0.9 1" />
 						<attribute name="Bottom Right Color" value="0.9 1 0.9 1" />
-						<attribute name="Text" value="2.0" />
+						<attribute name="Text" value="0.5" />
 					</element>
 					<element type="BorderImage" internal="true" style="none">
 						<attribute name="Size" value="4 15" />
@@ -206,7 +205,7 @@
 						<attribute name="Top Right Color" value="0.9 1 0.9 1" />
 						<attribute name="Bottom Left Color" value="0.9 1 0.9 1" />
 						<attribute name="Bottom Right Color" value="0.9 1 0.9 1" />
-						<attribute name="Text" value="8" />
+						<attribute name="Text" value="2.0" />
 					</element>
 					<element type="BorderImage" internal="true" style="none">
 						<attribute name="Size" value="4 15" />
@@ -249,7 +248,7 @@
 						<attribute name="Top Right Color" value="0.9 1 0.9 1" />
 						<attribute name="Bottom Left Color" value="0.9 1 0.9 1" />
 						<attribute name="Bottom Right Color" value="0.9 1 0.9 1" />
-						<attribute name="Text" value="1.0" />
+						<attribute name="Text" value="8" />
 					</element>
 					<element type="BorderImage" internal="true" style="none">
 						<attribute name="Size" value="4 15" />

@@ -181,7 +181,7 @@ function HandleUpdate(eventType, eventData)
     local timeStep = eventData["TimeStep"]:GetFloat()
 	
 	
-	if input:GetKeyPress(KEY_A) then
+	if input:GetKeyPress(KEY_PRINTSCREEN) then
 		local img=Image(context)
 		graphics:TakeScreenShot(img)
 		local t=os.date("*t")

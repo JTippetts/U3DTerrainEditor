@@ -132,6 +132,7 @@ function PackNodeGraph(output)
 			elseif op==3 then return kernel:w()
 			elseif op==4 then return kernel:u()
 			elseif op==5 then return kernel:v()
+			elseif op==6 then return kernel:radial()
 			end
 		elseif n.name=="Constant" then
 			local val=tonumber(n:GetChild("Value",true).text)
@@ -188,7 +189,7 @@ function PackNodeGraph(output)
 		elseif n.name=="ScalarMath" or n.name=="Output" or n.name=="SimplexBasis" then
 			local s=GetSourceFromNode(n,"Input0")
 			if s and not isvisited(s) then worker(s) end
-		elseif n.name=="Fractal" or n.name=="RotateDomain" then
+		elseif n.name=="RotateDomain" then
 			local s=GetSourceFromNode(n,"Input0")
 			if s and not isvisited(s) then worker(s) end
 			s=GetSourceFromNode(n,"Input1")
@@ -198,6 +199,19 @@ function PackNodeGraph(output)
 			s=GetSourceFromNode(n,"Input3")
 			if s and not isvisited(s) then worker(s) end
 			s=GetSourceFromNode(n,"Input4")
+			if s and not isvisited(s) then worker(s) end
+		elseif n.name=="Fractal" then
+			local s=GetSourceFromNode(n,"Input0")
+			if s and not isvisited(s) then worker(s) end
+			s=GetSourceFromNode(n,"Input1")
+			if s and not isvisited(s) then worker(s) end
+			s=GetSourceFromNode(n,"Input2")
+			if s and not isvisited(s) then worker(s) end
+			s=GetSourceFromNode(n,"Input3")
+			if s and not isvisited(s) then worker(s) end
+			s=GetSourceFromNode(n,"Input4")
+			if s and not isvisited(s) then worker(s) end
+			s=GetSourceFromNode(n,"Input5")
 			if s and not isvisited(s) then worker(s) end
 		elseif n.name=="Randomize" or n.name=="SmoothStep" or n.name=="Mix" then
 			local s=GetSourceFromNode(n,"Input0")
@@ -239,7 +253,8 @@ function NodeGraphUI:Start()
 	self.previewtex=Texture2D:new()
 	self.previewimg=Image()
 	self.previewimg:SetSize(256,256,3)
-	self.previewtex:SetData(self.previewimg)
+	self.previewimg:Clear(Color(0,0,0))
+	self.previewtex:SetData(self.previewimg,false)
 	
 	
 	self.createnodemenu=ui:LoadLayout(cache:GetResource("XMLFile", "UI/CreateNodeMenu.xml"))
@@ -608,6 +623,9 @@ function NodeGraphUI:FractalNode()
 	input=e:GetChild("Input4", true)
 	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
 	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	input=e:GetChild("Input5", true)
+	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
+	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
 	
 	self.pane:AddChild(e)
 	return e
@@ -630,7 +648,7 @@ function NodeGraphUI:TranslateDomainNode()
 		"Z",
 		"W",
 		"U",
-		"V"
+		"V",
 	}
 	
 	list:SetAlignment(HA_LEFT, VA_CENTER)
@@ -868,6 +886,7 @@ function NodeGraphUI:CoordinateSourceNode()
 		"W",
 		"U",
 		"V",
+		"Radial",
 	}
 	
 	list:SetAlignment(HA_LEFT, VA_CENTER)
