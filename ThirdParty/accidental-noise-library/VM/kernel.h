@@ -49,7 +49,7 @@ public:
 
     CInstructionIndex constant(double val);
     CInstructionIndex seed(unsigned int val);
-	CInstructionIndex seeder(CInstructionIndex src, unsigned int seed);
+	CInstructionIndex seeder(CInstructionIndex sd, CInstructionIndex src);
     CInstructionIndex valueBasis(CInstructionIndex interpindex, CInstructionIndex seed);
     CInstructionIndex gradientBasis(CInstructionIndex interpindex, CInstructionIndex seed);
     CInstructionIndex simplexBasis(CInstructionIndex seed);

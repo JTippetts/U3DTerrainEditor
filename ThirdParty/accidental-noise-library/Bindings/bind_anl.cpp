@@ -1,5 +1,5 @@
 /*
-** Lua binding: 
+** Lua binding: bind_anl
 */
 
 #ifndef __cplusplus
@@ -174,8 +174,8 @@ static void tolua_reg_types (lua_State* tolua_S)
 }
 
 /* function: highresTime */
-#ifndef TOLUA_DISABLE_tolua__highresTime00
-static int tolua__highresTime00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_highresTime00
+static int tolua_bind_anl_highresTime00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -201,8 +201,8 @@ static int tolua__highresTime00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: get of class  CBasePRNG */
-#ifndef TOLUA_DISABLE_tolua__CBasePRNG_get00
-static int tolua__CBasePRNG_get00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CBasePRNG_get00
+static int tolua_bind_anl_CBasePRNG_get00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -233,8 +233,8 @@ static int tolua__CBasePRNG_get00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: setSeed of class  CBasePRNG */
-#ifndef TOLUA_DISABLE_tolua__CBasePRNG_setSeed00
-static int tolua__CBasePRNG_setSeed00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CBasePRNG_setSeed00
+static int tolua_bind_anl_CBasePRNG_setSeed00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -266,8 +266,8 @@ static int tolua__CBasePRNG_setSeed00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: setSeedTime of class  CBasePRNG */
-#ifndef TOLUA_DISABLE_tolua__CBasePRNG_setSeedTime00
-static int tolua__CBasePRNG_setSeedTime00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CBasePRNG_setSeedTime00
+static int tolua_bind_anl_CBasePRNG_setSeedTime00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -297,8 +297,8 @@ static int tolua__CBasePRNG_setSeedTime00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: getTarget of class  CBasePRNG */
-#ifndef TOLUA_DISABLE_tolua__CBasePRNG_getTarget00
-static int tolua__CBasePRNG_getTarget00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CBasePRNG_getTarget00
+static int tolua_bind_anl_CBasePRNG_getTarget00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -331,8 +331,8 @@ static int tolua__CBasePRNG_getTarget00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: getRange of class  CBasePRNG */
-#ifndef TOLUA_DISABLE_tolua__CBasePRNG_getRange00
-static int tolua__CBasePRNG_getRange00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CBasePRNG_getRange00
+static int tolua_bind_anl_CBasePRNG_getRange00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -367,8 +367,8 @@ static int tolua__CBasePRNG_getRange00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: get01 of class  CBasePRNG */
-#ifndef TOLUA_DISABLE_tolua__CBasePRNG_get0100
-static int tolua__CBasePRNG_get0100(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CBasePRNG_get0100
+static int tolua_bind_anl_CBasePRNG_get0100(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -399,8 +399,8 @@ static int tolua__CBasePRNG_get0100(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: new of class  LCG */
-#ifndef TOLUA_DISABLE_tolua__LCG_new00
-static int tolua__LCG_new00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_LCG_new00
+static int tolua_bind_anl_LCG_new00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -427,8 +427,8 @@ static int tolua__LCG_new00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: new_local of class  LCG */
-#ifndef TOLUA_DISABLE_tolua__LCG_new00_local
-static int tolua__LCG_new00_local(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_LCG_new00_local
+static int tolua_bind_anl_LCG_new00_local(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -456,8 +456,8 @@ static int tolua__LCG_new00_local(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: delete of class  LCG */
-#ifndef TOLUA_DISABLE_tolua__LCG_delete00
-static int tolua__LCG_delete00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_LCG_delete00
+static int tolua_bind_anl_LCG_delete00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -485,8 +485,8 @@ static int tolua__LCG_delete00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: new of class  Xorshift */
-#ifndef TOLUA_DISABLE_tolua__Xorshift_new00
-static int tolua__Xorshift_new00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_Xorshift_new00
+static int tolua_bind_anl_Xorshift_new00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -513,8 +513,8 @@ static int tolua__Xorshift_new00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: new_local of class  Xorshift */
-#ifndef TOLUA_DISABLE_tolua__Xorshift_new00_local
-static int tolua__Xorshift_new00_local(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_Xorshift_new00_local
+static int tolua_bind_anl_Xorshift_new00_local(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -542,8 +542,8 @@ static int tolua__Xorshift_new00_local(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: delete of class  Xorshift */
-#ifndef TOLUA_DISABLE_tolua__Xorshift_delete00
-static int tolua__Xorshift_delete00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_Xorshift_delete00
+static int tolua_bind_anl_Xorshift_delete00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -571,8 +571,8 @@ static int tolua__Xorshift_delete00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: new of class  MWC256 */
-#ifndef TOLUA_DISABLE_tolua__MWC256_new00
-static int tolua__MWC256_new00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_MWC256_new00
+static int tolua_bind_anl_MWC256_new00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -599,8 +599,8 @@ static int tolua__MWC256_new00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: new_local of class  MWC256 */
-#ifndef TOLUA_DISABLE_tolua__MWC256_new00_local
-static int tolua__MWC256_new00_local(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_MWC256_new00_local
+static int tolua_bind_anl_MWC256_new00_local(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -628,8 +628,8 @@ static int tolua__MWC256_new00_local(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: delete of class  MWC256 */
-#ifndef TOLUA_DISABLE_tolua__MWC256_delete00
-static int tolua__MWC256_delete00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_MWC256_delete00
+static int tolua_bind_anl_MWC256_delete00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -657,8 +657,8 @@ static int tolua__MWC256_delete00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: new of class  CMWC4096 */
-#ifndef TOLUA_DISABLE_tolua__CMWC4096_new00
-static int tolua__CMWC4096_new00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CMWC4096_new00
+static int tolua_bind_anl_CMWC4096_new00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -685,8 +685,8 @@ static int tolua__CMWC4096_new00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: new_local of class  CMWC4096 */
-#ifndef TOLUA_DISABLE_tolua__CMWC4096_new00_local
-static int tolua__CMWC4096_new00_local(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CMWC4096_new00_local
+static int tolua_bind_anl_CMWC4096_new00_local(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -714,8 +714,8 @@ static int tolua__CMWC4096_new00_local(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: delete of class  CMWC4096 */
-#ifndef TOLUA_DISABLE_tolua__CMWC4096_delete00
-static int tolua__CMWC4096_delete00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CMWC4096_delete00
+static int tolua_bind_anl_CMWC4096_delete00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -743,8 +743,8 @@ static int tolua__CMWC4096_delete00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: new of class  KISS */
-#ifndef TOLUA_DISABLE_tolua__KISS_new00
-static int tolua__KISS_new00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_KISS_new00
+static int tolua_bind_anl_KISS_new00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -771,8 +771,8 @@ static int tolua__KISS_new00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: new_local of class  KISS */
-#ifndef TOLUA_DISABLE_tolua__KISS_new00_local
-static int tolua__KISS_new00_local(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_KISS_new00_local
+static int tolua_bind_anl_KISS_new00_local(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -800,8 +800,8 @@ static int tolua__KISS_new00_local(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: delete of class  KISS */
-#ifndef TOLUA_DISABLE_tolua__KISS_delete00
-static int tolua__KISS_delete00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_KISS_delete00
+static int tolua_bind_anl_KISS_delete00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -829,8 +829,8 @@ static int tolua__KISS_delete00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: new of class  CCoordinate */
-#ifndef TOLUA_DISABLE_tolua__CCoordinate_new00
-static int tolua__CCoordinate_new00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CCoordinate_new00
+static int tolua_bind_anl_CCoordinate_new00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -857,8 +857,8 @@ static int tolua__CCoordinate_new00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: new_local of class  CCoordinate */
-#ifndef TOLUA_DISABLE_tolua__CCoordinate_new00_local
-static int tolua__CCoordinate_new00_local(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CCoordinate_new00_local
+static int tolua_bind_anl_CCoordinate_new00_local(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -886,8 +886,8 @@ static int tolua__CCoordinate_new00_local(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: new of class  CCoordinate */
-#ifndef TOLUA_DISABLE_tolua__CCoordinate_new01
-static int tolua__CCoordinate_new01(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CCoordinate_new01
+static int tolua_bind_anl_CCoordinate_new01(lua_State* tolua_S)
 {
  tolua_Error tolua_err;
  if (
@@ -908,13 +908,13 @@ static int tolua__CCoordinate_new01(lua_State* tolua_S)
  }
  return 1;
 tolua_lerror:
- return tolua__CCoordinate_new00(tolua_S);
+ return tolua_bind_anl_CCoordinate_new00(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: new_local of class  CCoordinate */
-#ifndef TOLUA_DISABLE_tolua__CCoordinate_new01_local
-static int tolua__CCoordinate_new01_local(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CCoordinate_new01_local
+static int tolua_bind_anl_CCoordinate_new01_local(lua_State* tolua_S)
 {
  tolua_Error tolua_err;
  if (
@@ -936,13 +936,13 @@ static int tolua__CCoordinate_new01_local(lua_State* tolua_S)
  }
  return 1;
 tolua_lerror:
- return tolua__CCoordinate_new00_local(tolua_S);
+ return tolua_bind_anl_CCoordinate_new00_local(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: new of class  CCoordinate */
-#ifndef TOLUA_DISABLE_tolua__CCoordinate_new02
-static int tolua__CCoordinate_new02(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CCoordinate_new02
+static int tolua_bind_anl_CCoordinate_new02(lua_State* tolua_S)
 {
  tolua_Error tolua_err;
  if (
@@ -965,13 +965,13 @@ static int tolua__CCoordinate_new02(lua_State* tolua_S)
  }
  return 1;
 tolua_lerror:
- return tolua__CCoordinate_new01(tolua_S);
+ return tolua_bind_anl_CCoordinate_new01(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: new_local of class  CCoordinate */
-#ifndef TOLUA_DISABLE_tolua__CCoordinate_new02_local
-static int tolua__CCoordinate_new02_local(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CCoordinate_new02_local
+static int tolua_bind_anl_CCoordinate_new02_local(lua_State* tolua_S)
 {
  tolua_Error tolua_err;
  if (
@@ -995,13 +995,13 @@ static int tolua__CCoordinate_new02_local(lua_State* tolua_S)
  }
  return 1;
 tolua_lerror:
- return tolua__CCoordinate_new01_local(tolua_S);
+ return tolua_bind_anl_CCoordinate_new01_local(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: new of class  CCoordinate */
-#ifndef TOLUA_DISABLE_tolua__CCoordinate_new03
-static int tolua__CCoordinate_new03(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CCoordinate_new03
+static int tolua_bind_anl_CCoordinate_new03(lua_State* tolua_S)
 {
  tolua_Error tolua_err;
  if (
@@ -1026,13 +1026,13 @@ static int tolua__CCoordinate_new03(lua_State* tolua_S)
  }
  return 1;
 tolua_lerror:
- return tolua__CCoordinate_new02(tolua_S);
+ return tolua_bind_anl_CCoordinate_new02(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: new_local of class  CCoordinate */
-#ifndef TOLUA_DISABLE_tolua__CCoordinate_new03_local
-static int tolua__CCoordinate_new03_local(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CCoordinate_new03_local
+static int tolua_bind_anl_CCoordinate_new03_local(lua_State* tolua_S)
 {
  tolua_Error tolua_err;
  if (
@@ -1058,13 +1058,13 @@ static int tolua__CCoordinate_new03_local(lua_State* tolua_S)
  }
  return 1;
 tolua_lerror:
- return tolua__CCoordinate_new02_local(tolua_S);
+ return tolua_bind_anl_CCoordinate_new02_local(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: new of class  CCoordinate */
-#ifndef TOLUA_DISABLE_tolua__CCoordinate_new04
-static int tolua__CCoordinate_new04(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CCoordinate_new04
+static int tolua_bind_anl_CCoordinate_new04(lua_State* tolua_S)
 {
  tolua_Error tolua_err;
  if (
@@ -1093,13 +1093,13 @@ static int tolua__CCoordinate_new04(lua_State* tolua_S)
  }
  return 1;
 tolua_lerror:
- return tolua__CCoordinate_new03(tolua_S);
+ return tolua_bind_anl_CCoordinate_new03(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: new_local of class  CCoordinate */
-#ifndef TOLUA_DISABLE_tolua__CCoordinate_new04_local
-static int tolua__CCoordinate_new04_local(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CCoordinate_new04_local
+static int tolua_bind_anl_CCoordinate_new04_local(lua_State* tolua_S)
 {
  tolua_Error tolua_err;
  if (
@@ -1129,13 +1129,13 @@ static int tolua__CCoordinate_new04_local(lua_State* tolua_S)
  }
  return 1;
 tolua_lerror:
- return tolua__CCoordinate_new03_local(tolua_S);
+ return tolua_bind_anl_CCoordinate_new03_local(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: new of class  CCoordinate */
-#ifndef TOLUA_DISABLE_tolua__CCoordinate_new05
-static int tolua__CCoordinate_new05(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CCoordinate_new05
+static int tolua_bind_anl_CCoordinate_new05(lua_State* tolua_S)
 {
  tolua_Error tolua_err;
  if (
@@ -1154,13 +1154,13 @@ static int tolua__CCoordinate_new05(lua_State* tolua_S)
  }
  return 1;
 tolua_lerror:
- return tolua__CCoordinate_new04(tolua_S);
+ return tolua_bind_anl_CCoordinate_new04(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: new_local of class  CCoordinate */
-#ifndef TOLUA_DISABLE_tolua__CCoordinate_new05_local
-static int tolua__CCoordinate_new05_local(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CCoordinate_new05_local
+static int tolua_bind_anl_CCoordinate_new05_local(lua_State* tolua_S)
 {
  tolua_Error tolua_err;
  if (
@@ -1180,13 +1180,13 @@ static int tolua__CCoordinate_new05_local(lua_State* tolua_S)
  }
  return 1;
 tolua_lerror:
- return tolua__CCoordinate_new04_local(tolua_S);
+ return tolua_bind_anl_CCoordinate_new04_local(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: set of class  CCoordinate */
-#ifndef TOLUA_DISABLE_tolua__CCoordinate_set00
-static int tolua__CCoordinate_set00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CCoordinate_set00
+static int tolua_bind_anl_CCoordinate_set00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -1220,8 +1220,8 @@ static int tolua__CCoordinate_set00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: set of class  CCoordinate */
-#ifndef TOLUA_DISABLE_tolua__CCoordinate_set01
-static int tolua__CCoordinate_set01(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CCoordinate_set01
+static int tolua_bind_anl_CCoordinate_set01(lua_State* tolua_S)
 {
  tolua_Error tolua_err;
  if (
@@ -1247,13 +1247,13 @@ static int tolua__CCoordinate_set01(lua_State* tolua_S)
  }
  return 0;
 tolua_lerror:
- return tolua__CCoordinate_set00(tolua_S);
+ return tolua_bind_anl_CCoordinate_set00(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: set of class  CCoordinate */
-#ifndef TOLUA_DISABLE_tolua__CCoordinate_set02
-static int tolua__CCoordinate_set02(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CCoordinate_set02
+static int tolua_bind_anl_CCoordinate_set02(lua_State* tolua_S)
 {
  tolua_Error tolua_err;
  if (
@@ -1281,13 +1281,13 @@ static int tolua__CCoordinate_set02(lua_State* tolua_S)
  }
  return 0;
 tolua_lerror:
- return tolua__CCoordinate_set01(tolua_S);
+ return tolua_bind_anl_CCoordinate_set01(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: set of class  CCoordinate */
-#ifndef TOLUA_DISABLE_tolua__CCoordinate_set03
-static int tolua__CCoordinate_set03(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CCoordinate_set03
+static int tolua_bind_anl_CCoordinate_set03(lua_State* tolua_S)
 {
  tolua_Error tolua_err;
  if (
@@ -1319,13 +1319,13 @@ static int tolua__CCoordinate_set03(lua_State* tolua_S)
  }
  return 0;
 tolua_lerror:
- return tolua__CCoordinate_set02(tolua_S);
+ return tolua_bind_anl_CCoordinate_set02(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: new of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_new00
-static int tolua__CKernel_new00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_new00
+static int tolua_bind_anl_CKernel_new00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -1352,8 +1352,8 @@ static int tolua__CKernel_new00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: new_local of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_new00_local
-static int tolua__CKernel_new00_local(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_new00_local
+static int tolua_bind_anl_CKernel_new00_local(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -1381,8 +1381,8 @@ static int tolua__CKernel_new00_local(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: delete of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_delete00
-static int tolua__CKernel_delete00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_delete00
+static int tolua_bind_anl_CKernel_delete00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -1410,8 +1410,8 @@ static int tolua__CKernel_delete00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: pi of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_pi00
-static int tolua__CKernel_pi00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_pi00
+static int tolua_bind_anl_CKernel_pi00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -1452,8 +1452,8 @@ static int tolua__CKernel_pi00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: e of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_e00
-static int tolua__CKernel_e00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_e00
+static int tolua_bind_anl_CKernel_e00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -1494,8 +1494,8 @@ static int tolua__CKernel_e00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: one of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_one00
-static int tolua__CKernel_one00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_one00
+static int tolua_bind_anl_CKernel_one00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -1536,8 +1536,8 @@ static int tolua__CKernel_one00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: zero of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_zero00
-static int tolua__CKernel_zero00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_zero00
+static int tolua_bind_anl_CKernel_zero00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -1578,8 +1578,8 @@ static int tolua__CKernel_zero00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: point5 of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_point500
-static int tolua__CKernel_point500(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_point500
+static int tolua_bind_anl_CKernel_point500(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -1620,8 +1620,8 @@ static int tolua__CKernel_point500(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: sqrt2 of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_sqrt200
-static int tolua__CKernel_sqrt200(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_sqrt200
+static int tolua_bind_anl_CKernel_sqrt200(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -1662,8 +1662,8 @@ static int tolua__CKernel_sqrt200(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: constant of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_constant00
-static int tolua__CKernel_constant00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_constant00
+static int tolua_bind_anl_CKernel_constant00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -1706,8 +1706,8 @@ static int tolua__CKernel_constant00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: seed of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_seed00
-static int tolua__CKernel_seed00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_seed00
+static int tolua_bind_anl_CKernel_seed00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -1750,15 +1750,15 @@ static int tolua__CKernel_seed00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: seeder of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_seeder00
-static int tolua__CKernel_seeder00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_seeder00
+static int tolua_bind_anl_CKernel_seeder00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (
  !tolua_isusertype(tolua_S,1,"CKernel",0,&tolua_err) ||
  (tolua_isvaluenil(tolua_S,2,&tolua_err) || !tolua_isusertype(tolua_S,2,"CInstructionIndex",0,&tolua_err)) ||
- !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+ (tolua_isvaluenil(tolua_S,3,&tolua_err) || !tolua_isusertype(tolua_S,3,"CInstructionIndex",0,&tolua_err)) ||
  !tolua_isnoobj(tolua_S,4,&tolua_err)
  )
  goto tolua_lerror;
@@ -1766,13 +1766,13 @@ static int tolua__CKernel_seeder00(lua_State* tolua_S)
 #endif
  {
   CKernel* self = (CKernel*)  tolua_tousertype(tolua_S,1,0);
-  CInstructionIndex src = *((CInstructionIndex*)  tolua_tousertype(tolua_S,2,0));
-  unsigned int val = ((unsigned int)  tolua_tonumber(tolua_S,3,0));
+  CInstructionIndex seed = *((CInstructionIndex*)  tolua_tousertype(tolua_S,2,0));
+  CInstructionIndex src = *((CInstructionIndex*)  tolua_tousertype(tolua_S,3,0));
 #ifndef TOLUA_RELEASE
  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'seeder'", NULL);
 #endif
  {
-  CInstructionIndex tolua_ret = (CInstructionIndex)  self->seeder(src,val);
+  CInstructionIndex tolua_ret = (CInstructionIndex)  self->seeder(seed,src);
  {
 #ifdef __cplusplus
  void* tolua_obj = Mtolua_new((CInstructionIndex)(tolua_ret));
@@ -1796,8 +1796,8 @@ static int tolua__CKernel_seeder00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: valueBasis of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_valueBasis00
-static int tolua__CKernel_valueBasis00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_valueBasis00
+static int tolua_bind_anl_CKernel_valueBasis00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -1842,8 +1842,8 @@ static int tolua__CKernel_valueBasis00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: gradientBasis of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_gradientBasis00
-static int tolua__CKernel_gradientBasis00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_gradientBasis00
+static int tolua_bind_anl_CKernel_gradientBasis00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -1888,8 +1888,8 @@ static int tolua__CKernel_gradientBasis00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: simplexBasis of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_simplexBasis00
-static int tolua__CKernel_simplexBasis00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_simplexBasis00
+static int tolua_bind_anl_CKernel_simplexBasis00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -1932,8 +1932,8 @@ static int tolua__CKernel_simplexBasis00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: cellularBasis of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_cellularBasis00
-static int tolua__CKernel_cellularBasis00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_cellularBasis00
+static int tolua_bind_anl_CKernel_cellularBasis00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -1994,8 +1994,8 @@ static int tolua__CKernel_cellularBasis00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: add of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_add00
-static int tolua__CKernel_add00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_add00
+static int tolua_bind_anl_CKernel_add00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -2040,8 +2040,8 @@ static int tolua__CKernel_add00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: subtract of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_subtract00
-static int tolua__CKernel_subtract00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_subtract00
+static int tolua_bind_anl_CKernel_subtract00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -2086,8 +2086,8 @@ static int tolua__CKernel_subtract00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: multiply of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_multiply00
-static int tolua__CKernel_multiply00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_multiply00
+static int tolua_bind_anl_CKernel_multiply00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -2132,8 +2132,8 @@ static int tolua__CKernel_multiply00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: divide of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_divide00
-static int tolua__CKernel_divide00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_divide00
+static int tolua_bind_anl_CKernel_divide00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -2178,8 +2178,8 @@ static int tolua__CKernel_divide00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: maximum of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_maximum00
-static int tolua__CKernel_maximum00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_maximum00
+static int tolua_bind_anl_CKernel_maximum00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -2224,8 +2224,8 @@ static int tolua__CKernel_maximum00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: minimum of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_minimum00
-static int tolua__CKernel_minimum00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_minimum00
+static int tolua_bind_anl_CKernel_minimum00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -2270,8 +2270,8 @@ static int tolua__CKernel_minimum00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: abs of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_abs00
-static int tolua__CKernel_abs00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_abs00
+static int tolua_bind_anl_CKernel_abs00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -2314,8 +2314,8 @@ static int tolua__CKernel_abs00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: pow of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_pow00
-static int tolua__CKernel_pow00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_pow00
+static int tolua_bind_anl_CKernel_pow00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -2360,8 +2360,8 @@ static int tolua__CKernel_pow00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: bias of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_bias00
-static int tolua__CKernel_bias00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_bias00
+static int tolua_bind_anl_CKernel_bias00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -2406,8 +2406,8 @@ static int tolua__CKernel_bias00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: gain of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_gain00
-static int tolua__CKernel_gain00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_gain00
+static int tolua_bind_anl_CKernel_gain00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -2452,8 +2452,8 @@ static int tolua__CKernel_gain00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: scaleDomain of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_scaleDomain00
-static int tolua__CKernel_scaleDomain00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_scaleDomain00
+static int tolua_bind_anl_CKernel_scaleDomain00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -2498,8 +2498,8 @@ static int tolua__CKernel_scaleDomain00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: scaleX of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_scaleX00
-static int tolua__CKernel_scaleX00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_scaleX00
+static int tolua_bind_anl_CKernel_scaleX00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -2544,8 +2544,8 @@ static int tolua__CKernel_scaleX00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: scaleY of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_scaleY00
-static int tolua__CKernel_scaleY00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_scaleY00
+static int tolua_bind_anl_CKernel_scaleY00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -2590,8 +2590,8 @@ static int tolua__CKernel_scaleY00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: scaleZ of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_scaleZ00
-static int tolua__CKernel_scaleZ00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_scaleZ00
+static int tolua_bind_anl_CKernel_scaleZ00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -2636,8 +2636,8 @@ static int tolua__CKernel_scaleZ00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: scaleW of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_scaleW00
-static int tolua__CKernel_scaleW00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_scaleW00
+static int tolua_bind_anl_CKernel_scaleW00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -2682,8 +2682,8 @@ static int tolua__CKernel_scaleW00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: scaleU of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_scaleU00
-static int tolua__CKernel_scaleU00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_scaleU00
+static int tolua_bind_anl_CKernel_scaleU00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -2728,8 +2728,8 @@ static int tolua__CKernel_scaleU00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: scaleV of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_scaleV00
-static int tolua__CKernel_scaleV00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_scaleV00
+static int tolua_bind_anl_CKernel_scaleV00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -2774,8 +2774,8 @@ static int tolua__CKernel_scaleV00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: translateDomain of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_translateDomain00
-static int tolua__CKernel_translateDomain00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_translateDomain00
+static int tolua_bind_anl_CKernel_translateDomain00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -2820,8 +2820,8 @@ static int tolua__CKernel_translateDomain00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: translateX of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_translateX00
-static int tolua__CKernel_translateX00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_translateX00
+static int tolua_bind_anl_CKernel_translateX00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -2866,8 +2866,8 @@ static int tolua__CKernel_translateX00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: translateY of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_translateY00
-static int tolua__CKernel_translateY00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_translateY00
+static int tolua_bind_anl_CKernel_translateY00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -2912,8 +2912,8 @@ static int tolua__CKernel_translateY00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: translateZ of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_translateZ00
-static int tolua__CKernel_translateZ00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_translateZ00
+static int tolua_bind_anl_CKernel_translateZ00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -2958,8 +2958,8 @@ static int tolua__CKernel_translateZ00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: translateW of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_translateW00
-static int tolua__CKernel_translateW00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_translateW00
+static int tolua_bind_anl_CKernel_translateW00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -3004,8 +3004,8 @@ static int tolua__CKernel_translateW00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: translateU of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_translateU00
-static int tolua__CKernel_translateU00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_translateU00
+static int tolua_bind_anl_CKernel_translateU00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -3050,8 +3050,8 @@ static int tolua__CKernel_translateU00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: translateV of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_translateV00
-static int tolua__CKernel_translateV00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_translateV00
+static int tolua_bind_anl_CKernel_translateV00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -3096,8 +3096,8 @@ static int tolua__CKernel_translateV00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: rotateDomain of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_rotateDomain00
-static int tolua__CKernel_rotateDomain00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_rotateDomain00
+static int tolua_bind_anl_CKernel_rotateDomain00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -3148,8 +3148,8 @@ static int tolua__CKernel_rotateDomain00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: addSequence of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_addSequence00
-static int tolua__CKernel_addSequence00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_addSequence00
+static int tolua_bind_anl_CKernel_addSequence00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -3196,8 +3196,8 @@ static int tolua__CKernel_addSequence00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: multiplySequence of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_multiplySequence00
-static int tolua__CKernel_multiplySequence00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_multiplySequence00
+static int tolua_bind_anl_CKernel_multiplySequence00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -3244,8 +3244,8 @@ static int tolua__CKernel_multiplySequence00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: maxSequence of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_maxSequence00
-static int tolua__CKernel_maxSequence00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_maxSequence00
+static int tolua_bind_anl_CKernel_maxSequence00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -3292,8 +3292,8 @@ static int tolua__CKernel_maxSequence00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: minSequence of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_minSequence00
-static int tolua__CKernel_minSequence00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_minSequence00
+static int tolua_bind_anl_CKernel_minSequence00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -3340,8 +3340,8 @@ static int tolua__CKernel_minSequence00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: mix of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_mix00
-static int tolua__CKernel_mix00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_mix00
+static int tolua_bind_anl_CKernel_mix00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -3388,8 +3388,8 @@ static int tolua__CKernel_mix00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: select of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_select00
-static int tolua__CKernel_select00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_select00
+static int tolua_bind_anl_CKernel_select00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -3440,8 +3440,8 @@ static int tolua__CKernel_select00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: clamp of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_clamp00
-static int tolua__CKernel_clamp00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_clamp00
+static int tolua_bind_anl_CKernel_clamp00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -3488,8 +3488,8 @@ static int tolua__CKernel_clamp00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: cos of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_cos00
-static int tolua__CKernel_cos00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_cos00
+static int tolua_bind_anl_CKernel_cos00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -3532,8 +3532,8 @@ static int tolua__CKernel_cos00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: sin of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_sin00
-static int tolua__CKernel_sin00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_sin00
+static int tolua_bind_anl_CKernel_sin00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -3576,8 +3576,8 @@ static int tolua__CKernel_sin00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: tan of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_tan00
-static int tolua__CKernel_tan00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_tan00
+static int tolua_bind_anl_CKernel_tan00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -3620,8 +3620,8 @@ static int tolua__CKernel_tan00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: acos of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_acos00
-static int tolua__CKernel_acos00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_acos00
+static int tolua_bind_anl_CKernel_acos00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -3664,8 +3664,8 @@ static int tolua__CKernel_acos00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: asin of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_asin00
-static int tolua__CKernel_asin00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_asin00
+static int tolua_bind_anl_CKernel_asin00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -3708,8 +3708,8 @@ static int tolua__CKernel_asin00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: atan of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_atan00
-static int tolua__CKernel_atan00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_atan00
+static int tolua_bind_anl_CKernel_atan00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -3752,8 +3752,8 @@ static int tolua__CKernel_atan00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: tiers of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_tiers00
-static int tolua__CKernel_tiers00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_tiers00
+static int tolua_bind_anl_CKernel_tiers00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -3798,8 +3798,8 @@ static int tolua__CKernel_tiers00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: smoothTiers of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_smoothTiers00
-static int tolua__CKernel_smoothTiers00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_smoothTiers00
+static int tolua_bind_anl_CKernel_smoothTiers00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -3844,8 +3844,8 @@ static int tolua__CKernel_smoothTiers00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: x of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_x00
-static int tolua__CKernel_x00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_x00
+static int tolua_bind_anl_CKernel_x00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -3886,8 +3886,8 @@ static int tolua__CKernel_x00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: y of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_y00
-static int tolua__CKernel_y00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_y00
+static int tolua_bind_anl_CKernel_y00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -3928,8 +3928,8 @@ static int tolua__CKernel_y00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: z of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_z00
-static int tolua__CKernel_z00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_z00
+static int tolua_bind_anl_CKernel_z00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -3970,8 +3970,8 @@ static int tolua__CKernel_z00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: w of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_w00
-static int tolua__CKernel_w00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_w00
+static int tolua_bind_anl_CKernel_w00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -4012,8 +4012,8 @@ static int tolua__CKernel_w00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: u of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_u00
-static int tolua__CKernel_u00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_u00
+static int tolua_bind_anl_CKernel_u00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -4054,8 +4054,8 @@ static int tolua__CKernel_u00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: v of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_v00
-static int tolua__CKernel_v00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_v00
+static int tolua_bind_anl_CKernel_v00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -4096,8 +4096,8 @@ static int tolua__CKernel_v00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: dx of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_dx00
-static int tolua__CKernel_dx00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_dx00
+static int tolua_bind_anl_CKernel_dx00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -4142,8 +4142,8 @@ static int tolua__CKernel_dx00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: dy of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_dy00
-static int tolua__CKernel_dy00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_dy00
+static int tolua_bind_anl_CKernel_dy00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -4188,8 +4188,8 @@ static int tolua__CKernel_dy00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: dz of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_dz00
-static int tolua__CKernel_dz00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_dz00
+static int tolua_bind_anl_CKernel_dz00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -4234,8 +4234,8 @@ static int tolua__CKernel_dz00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: dw of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_dw00
-static int tolua__CKernel_dw00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_dw00
+static int tolua_bind_anl_CKernel_dw00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -4280,8 +4280,8 @@ static int tolua__CKernel_dw00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: du of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_du00
-static int tolua__CKernel_du00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_du00
+static int tolua_bind_anl_CKernel_du00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -4326,8 +4326,8 @@ static int tolua__CKernel_du00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: dv of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_dv00
-static int tolua__CKernel_dv00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_dv00
+static int tolua_bind_anl_CKernel_dv00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -4372,8 +4372,8 @@ static int tolua__CKernel_dv00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: sigmoid of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_sigmoid00
-static int tolua__CKernel_sigmoid00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_sigmoid00
+static int tolua_bind_anl_CKernel_sigmoid00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -4416,8 +4416,8 @@ static int tolua__CKernel_sigmoid00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: sigmoid of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_sigmoid01
-static int tolua__CKernel_sigmoid01(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_sigmoid01
+static int tolua_bind_anl_CKernel_sigmoid01(lua_State* tolua_S)
 {
  tolua_Error tolua_err;
  if (
@@ -4454,13 +4454,13 @@ static int tolua__CKernel_sigmoid01(lua_State* tolua_S)
  }
  return 1;
 tolua_lerror:
- return tolua__CKernel_sigmoid00(tolua_S);
+ return tolua_bind_anl_CKernel_sigmoid00(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: fractal of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_fractal00
-static int tolua__CKernel_fractal00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_fractal00
+static int tolua_bind_anl_CKernel_fractal00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -4513,8 +4513,8 @@ static int tolua__CKernel_fractal00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: randomize of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_randomize00
-static int tolua__CKernel_randomize00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_randomize00
+static int tolua_bind_anl_CKernel_randomize00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -4561,8 +4561,8 @@ static int tolua__CKernel_randomize00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: step of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_step00
-static int tolua__CKernel_step00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_step00
+static int tolua_bind_anl_CKernel_step00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -4607,8 +4607,8 @@ static int tolua__CKernel_step00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: linearStep of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_linearStep00
-static int tolua__CKernel_linearStep00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_linearStep00
+static int tolua_bind_anl_CKernel_linearStep00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -4655,8 +4655,8 @@ static int tolua__CKernel_linearStep00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: smoothStep of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_smoothStep00
-static int tolua__CKernel_smoothStep00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_smoothStep00
+static int tolua_bind_anl_CKernel_smoothStep00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -4703,8 +4703,8 @@ static int tolua__CKernel_smoothStep00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: smootherStep of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_smootherStep00
-static int tolua__CKernel_smootherStep00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_smootherStep00
+static int tolua_bind_anl_CKernel_smootherStep00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -4751,8 +4751,8 @@ static int tolua__CKernel_smootherStep00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: radial of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_radial00
-static int tolua__CKernel_radial00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_radial00
+static int tolua_bind_anl_CKernel_radial00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -4793,8 +4793,8 @@ static int tolua__CKernel_radial00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: hexTile of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_hexTile00
-static int tolua__CKernel_hexTile00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_hexTile00
+static int tolua_bind_anl_CKernel_hexTile00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -4837,8 +4837,8 @@ static int tolua__CKernel_hexTile00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: hexBump of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_hexBump00
-static int tolua__CKernel_hexBump00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_hexBump00
+static int tolua_bind_anl_CKernel_hexBump00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -4879,8 +4879,8 @@ static int tolua__CKernel_hexBump00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: color of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_color00
-static int tolua__CKernel_color00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_color00
+static int tolua_bind_anl_CKernel_color00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -4923,8 +4923,8 @@ static int tolua__CKernel_color00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: color of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_color01
-static int tolua__CKernel_color01(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_color01
+static int tolua_bind_anl_CKernel_color01(lua_State* tolua_S)
 {
  tolua_Error tolua_err;
  if (
@@ -4963,13 +4963,13 @@ static int tolua__CKernel_color01(lua_State* tolua_S)
  }
  return 1;
 tolua_lerror:
- return tolua__CKernel_color00(tolua_S);
+ return tolua_bind_anl_CKernel_color00(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: combineRGBA of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_combineRGBA00
-static int tolua__CKernel_combineRGBA00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_combineRGBA00
+static int tolua_bind_anl_CKernel_combineRGBA00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -5018,8 +5018,8 @@ static int tolua__CKernel_combineRGBA00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: scaleOffset of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_scaleOffset00
-static int tolua__CKernel_scaleOffset00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_scaleOffset00
+static int tolua_bind_anl_CKernel_scaleOffset00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -5066,8 +5066,8 @@ static int tolua__CKernel_scaleOffset00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: simpleFractalLayer of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_simpleFractalLayer00
-static int tolua__CKernel_simpleFractalLayer00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_simpleFractalLayer00
+static int tolua_bind_anl_CKernel_simpleFractalLayer00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -5128,8 +5128,8 @@ static int tolua__CKernel_simpleFractalLayer00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: simpleRidgedLayer of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_simpleRidgedLayer00
-static int tolua__CKernel_simpleRidgedLayer00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_simpleRidgedLayer00
+static int tolua_bind_anl_CKernel_simpleRidgedLayer00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -5190,8 +5190,8 @@ static int tolua__CKernel_simpleRidgedLayer00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: simpleBillowLayer of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_simpleBillowLayer00
-static int tolua__CKernel_simpleBillowLayer00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_simpleBillowLayer00
+static int tolua_bind_anl_CKernel_simpleBillowLayer00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -5252,8 +5252,8 @@ static int tolua__CKernel_simpleBillowLayer00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: simplefBm of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_simplefBm00
-static int tolua__CKernel_simplefBm00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_simplefBm00
+static int tolua_bind_anl_CKernel_simplefBm00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -5306,8 +5306,8 @@ static int tolua__CKernel_simplefBm00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: simpleRidgedMultifractal of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_simpleRidgedMultifractal00
-static int tolua__CKernel_simpleRidgedMultifractal00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_simpleRidgedMultifractal00
+static int tolua_bind_anl_CKernel_simpleRidgedMultifractal00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -5360,8 +5360,8 @@ static int tolua__CKernel_simpleRidgedMultifractal00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: simpleBillow of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_simpleBillow00
-static int tolua__CKernel_simpleBillow00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_simpleBillow00
+static int tolua_bind_anl_CKernel_simpleBillow00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -5414,8 +5414,8 @@ static int tolua__CKernel_simpleBillow00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: getKernel of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_getKernel00
-static int tolua__CKernel_getKernel00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_getKernel00
+static int tolua_bind_anl_CKernel_getKernel00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -5446,8 +5446,8 @@ static int tolua__CKernel_getKernel00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: lastIndex of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_lastIndex00
-static int tolua__CKernel_lastIndex00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_lastIndex00
+static int tolua_bind_anl_CKernel_lastIndex00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -5488,8 +5488,8 @@ static int tolua__CKernel_lastIndex00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: nextIndex of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_nextIndex00
-static int tolua__CKernel_nextIndex00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_nextIndex00
+static int tolua_bind_anl_CKernel_nextIndex00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -5530,8 +5530,8 @@ static int tolua__CKernel_nextIndex00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: getVar of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_getVar00
-static int tolua__CKernel_getVar00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_getVar00
+static int tolua_bind_anl_CKernel_getVar00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -5574,8 +5574,8 @@ static int tolua__CKernel_getVar00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: setVar of class  CKernel */
-#ifndef TOLUA_DISABLE_tolua__CKernel_setVar00
-static int tolua__CKernel_setVar00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_setVar00
+static int tolua_bind_anl_CKernel_setVar00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -5609,8 +5609,8 @@ static int tolua__CKernel_setVar00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: new of class  SRGBA */
-#ifndef TOLUA_DISABLE_tolua__SRGBA_new00
-static int tolua__SRGBA_new00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_SRGBA_new00
+static int tolua_bind_anl_SRGBA_new00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -5637,8 +5637,8 @@ static int tolua__SRGBA_new00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: new_local of class  SRGBA */
-#ifndef TOLUA_DISABLE_tolua__SRGBA_new00_local
-static int tolua__SRGBA_new00_local(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_SRGBA_new00_local
+static int tolua_bind_anl_SRGBA_new00_local(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -5666,8 +5666,8 @@ static int tolua__SRGBA_new00_local(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: new of class  SRGBA */
-#ifndef TOLUA_DISABLE_tolua__SRGBA_new01
-static int tolua__SRGBA_new01(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_SRGBA_new01
+static int tolua_bind_anl_SRGBA_new01(lua_State* tolua_S)
 {
  tolua_Error tolua_err;
  if (
@@ -5686,13 +5686,13 @@ static int tolua__SRGBA_new01(lua_State* tolua_S)
  }
  return 1;
 tolua_lerror:
- return tolua__SRGBA_new00(tolua_S);
+ return tolua_bind_anl_SRGBA_new00(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: new_local of class  SRGBA */
-#ifndef TOLUA_DISABLE_tolua__SRGBA_new01_local
-static int tolua__SRGBA_new01_local(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_SRGBA_new01_local
+static int tolua_bind_anl_SRGBA_new01_local(lua_State* tolua_S)
 {
  tolua_Error tolua_err;
  if (
@@ -5712,13 +5712,13 @@ static int tolua__SRGBA_new01_local(lua_State* tolua_S)
  }
  return 1;
 tolua_lerror:
- return tolua__SRGBA_new00_local(tolua_S);
+ return tolua_bind_anl_SRGBA_new00_local(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: new of class  SRGBA */
-#ifndef TOLUA_DISABLE_tolua__SRGBA_new02
-static int tolua__SRGBA_new02(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_SRGBA_new02
+static int tolua_bind_anl_SRGBA_new02(lua_State* tolua_S)
 {
  tolua_Error tolua_err;
  if (
@@ -5737,13 +5737,13 @@ static int tolua__SRGBA_new02(lua_State* tolua_S)
  }
  return 1;
 tolua_lerror:
- return tolua__SRGBA_new01(tolua_S);
+ return tolua_bind_anl_SRGBA_new01(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: new_local of class  SRGBA */
-#ifndef TOLUA_DISABLE_tolua__SRGBA_new02_local
-static int tolua__SRGBA_new02_local(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_SRGBA_new02_local
+static int tolua_bind_anl_SRGBA_new02_local(lua_State* tolua_S)
 {
  tolua_Error tolua_err;
  if (
@@ -5763,13 +5763,13 @@ static int tolua__SRGBA_new02_local(lua_State* tolua_S)
  }
  return 1;
 tolua_lerror:
- return tolua__SRGBA_new01_local(tolua_S);
+ return tolua_bind_anl_SRGBA_new01_local(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: new of class  SRGBA */
-#ifndef TOLUA_DISABLE_tolua__SRGBA_new03
-static int tolua__SRGBA_new03(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_SRGBA_new03
+static int tolua_bind_anl_SRGBA_new03(lua_State* tolua_S)
 {
  tolua_Error tolua_err;
  if (
@@ -5794,13 +5794,13 @@ static int tolua__SRGBA_new03(lua_State* tolua_S)
  }
  return 1;
 tolua_lerror:
- return tolua__SRGBA_new02(tolua_S);
+ return tolua_bind_anl_SRGBA_new02(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: new_local of class  SRGBA */
-#ifndef TOLUA_DISABLE_tolua__SRGBA_new03_local
-static int tolua__SRGBA_new03_local(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_SRGBA_new03_local
+static int tolua_bind_anl_SRGBA_new03_local(lua_State* tolua_S)
 {
  tolua_Error tolua_err;
  if (
@@ -5826,13 +5826,13 @@ static int tolua__SRGBA_new03_local(lua_State* tolua_S)
  }
  return 1;
 tolua_lerror:
- return tolua__SRGBA_new02_local(tolua_S);
+ return tolua_bind_anl_SRGBA_new02_local(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: delete of class  SRGBA */
-#ifndef TOLUA_DISABLE_tolua__SRGBA_delete00
-static int tolua__SRGBA_delete00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_SRGBA_delete00
+static int tolua_bind_anl_SRGBA_delete00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -6040,8 +6040,8 @@ static int tolua_set_SVMOutput_outrgba_(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: new of class  SVMOutput */
-#ifndef TOLUA_DISABLE_tolua__SVMOutput_new00
-static int tolua__SVMOutput_new00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_SVMOutput_new00
+static int tolua_bind_anl_SVMOutput_new00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -6068,8 +6068,8 @@ static int tolua__SVMOutput_new00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: new_local of class  SVMOutput */
-#ifndef TOLUA_DISABLE_tolua__SVMOutput_new00_local
-static int tolua__SVMOutput_new00_local(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_SVMOutput_new00_local
+static int tolua_bind_anl_SVMOutput_new00_local(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -6097,8 +6097,8 @@ static int tolua__SVMOutput_new00_local(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: delete of class  SVMOutput */
-#ifndef TOLUA_DISABLE_tolua__SVMOutput_delete00
-static int tolua__SVMOutput_delete00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_SVMOutput_delete00
+static int tolua_bind_anl_SVMOutput_delete00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -6126,8 +6126,8 @@ static int tolua__SVMOutput_delete00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: new of class  CNoiseExecutor */
-#ifndef TOLUA_DISABLE_tolua__CNoiseExecutor_new00
-static int tolua__CNoiseExecutor_new00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CNoiseExecutor_new00
+static int tolua_bind_anl_CNoiseExecutor_new00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -6156,8 +6156,8 @@ static int tolua__CNoiseExecutor_new00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: new_local of class  CNoiseExecutor */
-#ifndef TOLUA_DISABLE_tolua__CNoiseExecutor_new00_local
-static int tolua__CNoiseExecutor_new00_local(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CNoiseExecutor_new00_local
+static int tolua_bind_anl_CNoiseExecutor_new00_local(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -6187,8 +6187,8 @@ static int tolua__CNoiseExecutor_new00_local(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: delete of class  CNoiseExecutor */
-#ifndef TOLUA_DISABLE_tolua__CNoiseExecutor_delete00
-static int tolua__CNoiseExecutor_delete00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CNoiseExecutor_delete00
+static int tolua_bind_anl_CNoiseExecutor_delete00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -6216,8 +6216,8 @@ static int tolua__CNoiseExecutor_delete00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: evaluate of class  CNoiseExecutor */
-#ifndef TOLUA_DISABLE_tolua__CNoiseExecutor_evaluate00
-static int tolua__CNoiseExecutor_evaluate00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CNoiseExecutor_evaluate00
+static int tolua_bind_anl_CNoiseExecutor_evaluate00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -6260,8 +6260,8 @@ static int tolua__CNoiseExecutor_evaluate00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: evaluateAt of class  CNoiseExecutor */
-#ifndef TOLUA_DISABLE_tolua__CNoiseExecutor_evaluateAt00
-static int tolua__CNoiseExecutor_evaluateAt00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CNoiseExecutor_evaluateAt00
+static int tolua_bind_anl_CNoiseExecutor_evaluateAt00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -6306,8 +6306,8 @@ static int tolua__CNoiseExecutor_evaluateAt00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: evaluateScalar of class  CNoiseExecutor */
-#ifndef TOLUA_DISABLE_tolua__CNoiseExecutor_evaluateScalar00
-static int tolua__CNoiseExecutor_evaluateScalar00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CNoiseExecutor_evaluateScalar00
+static int tolua_bind_anl_CNoiseExecutor_evaluateScalar00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -6344,8 +6344,8 @@ static int tolua__CNoiseExecutor_evaluateScalar00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: evaluateScalar of class  CNoiseExecutor */
-#ifndef TOLUA_DISABLE_tolua__CNoiseExecutor_evaluateScalar01
-static int tolua__CNoiseExecutor_evaluateScalar01(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CNoiseExecutor_evaluateScalar01
+static int tolua_bind_anl_CNoiseExecutor_evaluateScalar01(lua_State* tolua_S)
 {
  tolua_Error tolua_err;
  if (
@@ -6374,13 +6374,13 @@ static int tolua__CNoiseExecutor_evaluateScalar01(lua_State* tolua_S)
  }
  return 1;
 tolua_lerror:
- return tolua__CNoiseExecutor_evaluateScalar00(tolua_S);
+ return tolua_bind_anl_CNoiseExecutor_evaluateScalar00(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: evaluateScalar of class  CNoiseExecutor */
-#ifndef TOLUA_DISABLE_tolua__CNoiseExecutor_evaluateScalar02
-static int tolua__CNoiseExecutor_evaluateScalar02(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CNoiseExecutor_evaluateScalar02
+static int tolua_bind_anl_CNoiseExecutor_evaluateScalar02(lua_State* tolua_S)
 {
  tolua_Error tolua_err;
  if (
@@ -6411,13 +6411,13 @@ static int tolua__CNoiseExecutor_evaluateScalar02(lua_State* tolua_S)
  }
  return 1;
 tolua_lerror:
- return tolua__CNoiseExecutor_evaluateScalar01(tolua_S);
+ return tolua_bind_anl_CNoiseExecutor_evaluateScalar01(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: evaluateScalar of class  CNoiseExecutor */
-#ifndef TOLUA_DISABLE_tolua__CNoiseExecutor_evaluateScalar03
-static int tolua__CNoiseExecutor_evaluateScalar03(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CNoiseExecutor_evaluateScalar03
+static int tolua_bind_anl_CNoiseExecutor_evaluateScalar03(lua_State* tolua_S)
 {
  tolua_Error tolua_err;
  if (
@@ -6452,13 +6452,13 @@ static int tolua__CNoiseExecutor_evaluateScalar03(lua_State* tolua_S)
  }
  return 1;
 tolua_lerror:
- return tolua__CNoiseExecutor_evaluateScalar02(tolua_S);
+ return tolua_bind_anl_CNoiseExecutor_evaluateScalar02(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: evaluateColor of class  CNoiseExecutor */
-#ifndef TOLUA_DISABLE_tolua__CNoiseExecutor_evaluateColor00
-static int tolua__CNoiseExecutor_evaluateColor00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CNoiseExecutor_evaluateColor00
+static int tolua_bind_anl_CNoiseExecutor_evaluateColor00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -6505,8 +6505,8 @@ static int tolua__CNoiseExecutor_evaluateColor00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: evaluateColor of class  CNoiseExecutor */
-#ifndef TOLUA_DISABLE_tolua__CNoiseExecutor_evaluateColor01
-static int tolua__CNoiseExecutor_evaluateColor01(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CNoiseExecutor_evaluateColor01
+static int tolua_bind_anl_CNoiseExecutor_evaluateColor01(lua_State* tolua_S)
 {
  tolua_Error tolua_err;
  if (
@@ -6545,13 +6545,13 @@ static int tolua__CNoiseExecutor_evaluateColor01(lua_State* tolua_S)
  }
  return 1;
 tolua_lerror:
- return tolua__CNoiseExecutor_evaluateColor00(tolua_S);
+ return tolua_bind_anl_CNoiseExecutor_evaluateColor00(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: evaluateColor of class  CNoiseExecutor */
-#ifndef TOLUA_DISABLE_tolua__CNoiseExecutor_evaluateColor02
-static int tolua__CNoiseExecutor_evaluateColor02(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CNoiseExecutor_evaluateColor02
+static int tolua_bind_anl_CNoiseExecutor_evaluateColor02(lua_State* tolua_S)
 {
  tolua_Error tolua_err;
  if (
@@ -6592,13 +6592,13 @@ static int tolua__CNoiseExecutor_evaluateColor02(lua_State* tolua_S)
  }
  return 1;
 tolua_lerror:
- return tolua__CNoiseExecutor_evaluateColor01(tolua_S);
+ return tolua_bind_anl_CNoiseExecutor_evaluateColor01(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: evaluateColor of class  CNoiseExecutor */
-#ifndef TOLUA_DISABLE_tolua__CNoiseExecutor_evaluateColor03
-static int tolua__CNoiseExecutor_evaluateColor03(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CNoiseExecutor_evaluateColor03
+static int tolua_bind_anl_CNoiseExecutor_evaluateColor03(lua_State* tolua_S)
 {
  tolua_Error tolua_err;
  if (
@@ -6643,13 +6643,13 @@ static int tolua__CNoiseExecutor_evaluateColor03(lua_State* tolua_S)
  }
  return 1;
 tolua_lerror:
- return tolua__CNoiseExecutor_evaluateColor02(tolua_S);
+ return tolua_bind_anl_CNoiseExecutor_evaluateColor02(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: new of class  SMappingRanges */
-#ifndef TOLUA_DISABLE_tolua__SMappingRanges_new00
-static int tolua__SMappingRanges_new00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_SMappingRanges_new00
+static int tolua_bind_anl_SMappingRanges_new00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -6676,8 +6676,8 @@ static int tolua__SMappingRanges_new00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: new_local of class  SMappingRanges */
-#ifndef TOLUA_DISABLE_tolua__SMappingRanges_new00_local
-static int tolua__SMappingRanges_new00_local(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_SMappingRanges_new00_local
+static int tolua_bind_anl_SMappingRanges_new00_local(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -6705,8 +6705,8 @@ static int tolua__SMappingRanges_new00_local(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: new of class  SMappingRanges */
-#ifndef TOLUA_DISABLE_tolua__SMappingRanges_new01
-static int tolua__SMappingRanges_new01(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_SMappingRanges_new01
+static int tolua_bind_anl_SMappingRanges_new01(lua_State* tolua_S)
 {
  tolua_Error tolua_err;
  if (
@@ -6725,13 +6725,13 @@ static int tolua__SMappingRanges_new01(lua_State* tolua_S)
  }
  return 1;
 tolua_lerror:
- return tolua__SMappingRanges_new00(tolua_S);
+ return tolua_bind_anl_SMappingRanges_new00(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: new_local of class  SMappingRanges */
-#ifndef TOLUA_DISABLE_tolua__SMappingRanges_new01_local
-static int tolua__SMappingRanges_new01_local(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_SMappingRanges_new01_local
+static int tolua_bind_anl_SMappingRanges_new01_local(lua_State* tolua_S)
 {
  tolua_Error tolua_err;
  if (
@@ -6751,13 +6751,13 @@ static int tolua__SMappingRanges_new01_local(lua_State* tolua_S)
  }
  return 1;
 tolua_lerror:
- return tolua__SMappingRanges_new00_local(tolua_S);
+ return tolua_bind_anl_SMappingRanges_new00_local(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: new of class  SMappingRanges */
-#ifndef TOLUA_DISABLE_tolua__SMappingRanges_new02
-static int tolua__SMappingRanges_new02(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_SMappingRanges_new02
+static int tolua_bind_anl_SMappingRanges_new02(lua_State* tolua_S)
 {
  tolua_Error tolua_err;
  if (
@@ -6776,13 +6776,13 @@ static int tolua__SMappingRanges_new02(lua_State* tolua_S)
  }
  return 1;
 tolua_lerror:
- return tolua__SMappingRanges_new01(tolua_S);
+ return tolua_bind_anl_SMappingRanges_new01(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: new_local of class  SMappingRanges */
-#ifndef TOLUA_DISABLE_tolua__SMappingRanges_new02_local
-static int tolua__SMappingRanges_new02_local(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_SMappingRanges_new02_local
+static int tolua_bind_anl_SMappingRanges_new02_local(lua_State* tolua_S)
 {
  tolua_Error tolua_err;
  if (
@@ -6802,13 +6802,13 @@ static int tolua__SMappingRanges_new02_local(lua_State* tolua_S)
  }
  return 1;
 tolua_lerror:
- return tolua__SMappingRanges_new01_local(tolua_S);
+ return tolua_bind_anl_SMappingRanges_new01_local(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: new of class  SMappingRanges */
-#ifndef TOLUA_DISABLE_tolua__SMappingRanges_new03
-static int tolua__SMappingRanges_new03(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_SMappingRanges_new03
+static int tolua_bind_anl_SMappingRanges_new03(lua_State* tolua_S)
 {
  tolua_Error tolua_err;
  if (
@@ -6837,13 +6837,13 @@ static int tolua__SMappingRanges_new03(lua_State* tolua_S)
  }
  return 1;
 tolua_lerror:
- return tolua__SMappingRanges_new02(tolua_S);
+ return tolua_bind_anl_SMappingRanges_new02(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: new_local of class  SMappingRanges */
-#ifndef TOLUA_DISABLE_tolua__SMappingRanges_new03_local
-static int tolua__SMappingRanges_new03_local(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_SMappingRanges_new03_local
+static int tolua_bind_anl_SMappingRanges_new03_local(lua_State* tolua_S)
 {
  tolua_Error tolua_err;
  if (
@@ -6873,13 +6873,13 @@ static int tolua__SMappingRanges_new03_local(lua_State* tolua_S)
  }
  return 1;
 tolua_lerror:
- return tolua__SMappingRanges_new02_local(tolua_S);
+ return tolua_bind_anl_SMappingRanges_new02_local(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: delete of class  SMappingRanges */
-#ifndef TOLUA_DISABLE_tolua__SMappingRanges_delete00
-static int tolua__SMappingRanges_delete00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_SMappingRanges_delete00
+static int tolua_bind_anl_SMappingRanges_delete00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -7267,8 +7267,8 @@ static int tolua_set_SMappingRanges_loopz1(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: new of class  CExpressionBuilder */
-#ifndef TOLUA_DISABLE_tolua__CExpressionBuilder_new00
-static int tolua__CExpressionBuilder_new00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CExpressionBuilder_new00
+static int tolua_bind_anl_CExpressionBuilder_new00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -7297,8 +7297,8 @@ static int tolua__CExpressionBuilder_new00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: new_local of class  CExpressionBuilder */
-#ifndef TOLUA_DISABLE_tolua__CExpressionBuilder_new00_local
-static int tolua__CExpressionBuilder_new00_local(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CExpressionBuilder_new00_local
+static int tolua_bind_anl_CExpressionBuilder_new00_local(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -7328,8 +7328,8 @@ static int tolua__CExpressionBuilder_new00_local(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: delete of class  CExpressionBuilder */
-#ifndef TOLUA_DISABLE_tolua__CExpressionBuilder_delete00
-static int tolua__CExpressionBuilder_delete00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CExpressionBuilder_delete00
+static int tolua_bind_anl_CExpressionBuilder_delete00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -7357,8 +7357,8 @@ static int tolua__CExpressionBuilder_delete00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: eval of class  CExpressionBuilder */
-#ifndef TOLUA_DISABLE_tolua__CExpressionBuilder_eval00
-static int tolua__CExpressionBuilder_eval00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CExpressionBuilder_eval00
+static int tolua_bind_anl_CExpressionBuilder_eval00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -7401,8 +7401,8 @@ static int tolua__CExpressionBuilder_eval00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: evalAndStore of class  CExpressionBuilder */
-#ifndef TOLUA_DISABLE_tolua__CExpressionBuilder_evalAndStore00
-static int tolua__CExpressionBuilder_evalAndStore00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CExpressionBuilder_evalAndStore00
+static int tolua_bind_anl_CExpressionBuilder_evalAndStore00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -7445,8 +7445,8 @@ static int tolua__CExpressionBuilder_evalAndStore00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: store of class  CExpressionBuilder */
-#ifndef TOLUA_DISABLE_tolua__CExpressionBuilder_store00
-static int tolua__CExpressionBuilder_store00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CExpressionBuilder_store00
+static int tolua_bind_anl_CExpressionBuilder_store00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -7478,8 +7478,8 @@ static int tolua__CExpressionBuilder_store00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: setRandomSeed of class  CExpressionBuilder */
-#ifndef TOLUA_DISABLE_tolua__CExpressionBuilder_setRandomSeed00
-static int tolua__CExpressionBuilder_setRandomSeed00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CExpressionBuilder_setRandomSeed00
+static int tolua_bind_anl_CExpressionBuilder_setRandomSeed00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -7511,8 +7511,8 @@ static int tolua__CExpressionBuilder_setRandomSeed00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: storeVar of class  CExpressionBuilder */
-#ifndef TOLUA_DISABLE_tolua__CExpressionBuilder_storeVar00
-static int tolua__CExpressionBuilder_storeVar00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CExpressionBuilder_storeVar00
+static int tolua_bind_anl_CExpressionBuilder_storeVar00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -7546,8 +7546,8 @@ static int tolua__CExpressionBuilder_storeVar00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: evalAndStoreVar of class  CExpressionBuilder */
-#ifndef TOLUA_DISABLE_tolua__CExpressionBuilder_evalAndStoreVar00
-static int tolua__CExpressionBuilder_evalAndStoreVar00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CExpressionBuilder_evalAndStoreVar00
+static int tolua_bind_anl_CExpressionBuilder_evalAndStoreVar00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -7592,8 +7592,8 @@ static int tolua__CExpressionBuilder_evalAndStoreVar00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: retrieveVar of class  CExpressionBuilder */
-#ifndef TOLUA_DISABLE_tolua__CExpressionBuilder_retrieveVar00
-static int tolua__CExpressionBuilder_retrieveVar00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CExpressionBuilder_retrieveVar00
+static int tolua_bind_anl_CExpressionBuilder_retrieveVar00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -7636,8 +7636,8 @@ static int tolua__CExpressionBuilder_retrieveVar00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: new of class  CArray2Dd */
-#ifndef TOLUA_DISABLE_tolua__CArray2Dd_new00
-static int tolua__CArray2Dd_new00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Dd_new00
+static int tolua_bind_anl_CArray2Dd_new00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -7668,8 +7668,8 @@ static int tolua__CArray2Dd_new00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: new_local of class  CArray2Dd */
-#ifndef TOLUA_DISABLE_tolua__CArray2Dd_new00_local
-static int tolua__CArray2Dd_new00_local(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Dd_new00_local
+static int tolua_bind_anl_CArray2Dd_new00_local(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -7701,8 +7701,8 @@ static int tolua__CArray2Dd_new00_local(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: new of class  CArray2Dd */
-#ifndef TOLUA_DISABLE_tolua__CArray2Dd_new01
-static int tolua__CArray2Dd_new01(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Dd_new01
+static int tolua_bind_anl_CArray2Dd_new01(lua_State* tolua_S)
 {
  tolua_Error tolua_err;
  if (
@@ -7719,13 +7719,13 @@ static int tolua__CArray2Dd_new01(lua_State* tolua_S)
  }
  return 1;
 tolua_lerror:
- return tolua__CArray2Dd_new00(tolua_S);
+ return tolua_bind_anl_CArray2Dd_new00(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: new_local of class  CArray2Dd */
-#ifndef TOLUA_DISABLE_tolua__CArray2Dd_new01_local
-static int tolua__CArray2Dd_new01_local(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Dd_new01_local
+static int tolua_bind_anl_CArray2Dd_new01_local(lua_State* tolua_S)
 {
  tolua_Error tolua_err;
  if (
@@ -7743,13 +7743,13 @@ static int tolua__CArray2Dd_new01_local(lua_State* tolua_S)
  }
  return 1;
 tolua_lerror:
- return tolua__CArray2Dd_new00_local(tolua_S);
+ return tolua_bind_anl_CArray2Dd_new00_local(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: delete of class  CArray2Dd */
-#ifndef TOLUA_DISABLE_tolua__CArray2Dd_delete00
-static int tolua__CArray2Dd_delete00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Dd_delete00
+static int tolua_bind_anl_CArray2Dd_delete00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -7777,8 +7777,8 @@ static int tolua__CArray2Dd_delete00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: resize of class  CArray2Dd */
-#ifndef TOLUA_DISABLE_tolua__CArray2Dd_resize00
-static int tolua__CArray2Dd_resize00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Dd_resize00
+static int tolua_bind_anl_CArray2Dd_resize00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -7812,8 +7812,8 @@ static int tolua__CArray2Dd_resize00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: destroy of class  CArray2Dd */
-#ifndef TOLUA_DISABLE_tolua__CArray2Dd_destroy00
-static int tolua__CArray2Dd_destroy00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Dd_destroy00
+static int tolua_bind_anl_CArray2Dd_destroy00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -7843,8 +7843,8 @@ static int tolua__CArray2Dd_destroy00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: width of class  CArray2Dd */
-#ifndef TOLUA_DISABLE_tolua__CArray2Dd_width00
-static int tolua__CArray2Dd_width00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Dd_width00
+static int tolua_bind_anl_CArray2Dd_width00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -7875,8 +7875,8 @@ static int tolua__CArray2Dd_width00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: height of class  CArray2Dd */
-#ifndef TOLUA_DISABLE_tolua__CArray2Dd_height00
-static int tolua__CArray2Dd_height00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Dd_height00
+static int tolua_bind_anl_CArray2Dd_height00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -7907,8 +7907,8 @@ static int tolua__CArray2Dd_height00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: set of class  CArray2Dd */
-#ifndef TOLUA_DISABLE_tolua__CArray2Dd_set00
-static int tolua__CArray2Dd_set00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Dd_set00
+static int tolua_bind_anl_CArray2Dd_set00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -7944,8 +7944,8 @@ static int tolua__CArray2Dd_set00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: get of class  CArray2Dd */
-#ifndef TOLUA_DISABLE_tolua__CArray2Dd_get00
-static int tolua__CArray2Dd_get00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Dd_get00
+static int tolua_bind_anl_CArray2Dd_get00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -7980,8 +7980,8 @@ static int tolua__CArray2Dd_get00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: get of class  CArray2Dd */
-#ifndef TOLUA_DISABLE_tolua__CArray2Dd_get01
-static int tolua__CArray2Dd_get01(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Dd_get01
+static int tolua_bind_anl_CArray2Dd_get01(lua_State* tolua_S)
 {
  tolua_Error tolua_err;
  if (
@@ -8006,13 +8006,13 @@ static int tolua__CArray2Dd_get01(lua_State* tolua_S)
  }
  return 1;
 tolua_lerror:
- return tolua__CArray2Dd_get00(tolua_S);
+ return tolua_bind_anl_CArray2Dd_get00(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: getIndexed of class  CArray2Dd */
-#ifndef TOLUA_DISABLE_tolua__CArray2Dd_getIndexed00
-static int tolua__CArray2Dd_getIndexed00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Dd_getIndexed00
+static int tolua_bind_anl_CArray2Dd_getIndexed00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -8045,8 +8045,8 @@ static int tolua__CArray2Dd_getIndexed00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: fill of class  CArray2Dd */
-#ifndef TOLUA_DISABLE_tolua__CArray2Dd_fill00
-static int tolua__CArray2Dd_fill00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Dd_fill00
+static int tolua_bind_anl_CArray2Dd_fill00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -8078,8 +8078,8 @@ static int tolua__CArray2Dd_fill00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: copyFrom of class  CArray2Dd */
-#ifndef TOLUA_DISABLE_tolua__CArray2Dd_copyFrom00
-static int tolua__CArray2Dd_copyFrom00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Dd_copyFrom00
+static int tolua_bind_anl_CArray2Dd_copyFrom00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -8111,8 +8111,8 @@ static int tolua__CArray2Dd_copyFrom00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: addArray of class  CArray2Dd */
-#ifndef TOLUA_DISABLE_tolua__CArray2Dd_addArray00
-static int tolua__CArray2Dd_addArray00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Dd_addArray00
+static int tolua_bind_anl_CArray2Dd_addArray00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -8144,8 +8144,8 @@ static int tolua__CArray2Dd_addArray00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: subtractArray of class  CArray2Dd */
-#ifndef TOLUA_DISABLE_tolua__CArray2Dd_subtractArray00
-static int tolua__CArray2Dd_subtractArray00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Dd_subtractArray00
+static int tolua_bind_anl_CArray2Dd_subtractArray00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -8177,8 +8177,8 @@ static int tolua__CArray2Dd_subtractArray00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: multiplyArray of class  CArray2Dd */
-#ifndef TOLUA_DISABLE_tolua__CArray2Dd_multiplyArray00
-static int tolua__CArray2Dd_multiplyArray00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Dd_multiplyArray00
+static int tolua_bind_anl_CArray2Dd_multiplyArray00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -8210,8 +8210,8 @@ static int tolua__CArray2Dd_multiplyArray00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: copyFromSub of class  CArray2Dd */
-#ifndef TOLUA_DISABLE_tolua__CArray2Dd_copyFromSub00
-static int tolua__CArray2Dd_copyFromSub00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Dd_copyFromSub00
+static int tolua_bind_anl_CArray2Dd_copyFromSub00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -8247,8 +8247,8 @@ static int tolua__CArray2Dd_copyFromSub00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: addArraySub of class  CArray2Dd */
-#ifndef TOLUA_DISABLE_tolua__CArray2Dd_addArraySub00
-static int tolua__CArray2Dd_addArraySub00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Dd_addArraySub00
+static int tolua_bind_anl_CArray2Dd_addArraySub00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -8284,8 +8284,8 @@ static int tolua__CArray2Dd_addArraySub00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: subtractArraySub of class  CArray2Dd */
-#ifndef TOLUA_DISABLE_tolua__CArray2Dd_subtractArraySub00
-static int tolua__CArray2Dd_subtractArraySub00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Dd_subtractArraySub00
+static int tolua_bind_anl_CArray2Dd_subtractArraySub00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -8321,8 +8321,8 @@ static int tolua__CArray2Dd_subtractArraySub00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: multiplyArraySub of class  CArray2Dd */
-#ifndef TOLUA_DISABLE_tolua__CArray2Dd_multiplyArraySub00
-static int tolua__CArray2Dd_multiplyArraySub00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Dd_multiplyArraySub00
+static int tolua_bind_anl_CArray2Dd_multiplyArraySub00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -8358,8 +8358,8 @@ static int tolua__CArray2Dd_multiplyArraySub00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: scale of class  CArray2Dd */
-#ifndef TOLUA_DISABLE_tolua__CArray2Dd_scale00
-static int tolua__CArray2Dd_scale00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Dd_scale00
+static int tolua_bind_anl_CArray2Dd_scale00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -8391,8 +8391,8 @@ static int tolua__CArray2Dd_scale00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: getMax of class  CArray2Dd */
-#ifndef TOLUA_DISABLE_tolua__CArray2Dd_getMax00
-static int tolua__CArray2Dd_getMax00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Dd_getMax00
+static int tolua_bind_anl_CArray2Dd_getMax00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -8423,8 +8423,8 @@ static int tolua__CArray2Dd_getMax00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: getMin of class  CArray2Dd */
-#ifndef TOLUA_DISABLE_tolua__CArray2Dd_getMin00
-static int tolua__CArray2Dd_getMin00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Dd_getMin00
+static int tolua_bind_anl_CArray2Dd_getMin00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -8455,8 +8455,8 @@ static int tolua__CArray2Dd_getMin00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: scaleToRange of class  CArray2Dd */
-#ifndef TOLUA_DISABLE_tolua__CArray2Dd_scaleToRange00
-static int tolua__CArray2Dd_scaleToRange00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Dd_scaleToRange00
+static int tolua_bind_anl_CArray2Dd_scaleToRange00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -8490,8 +8490,8 @@ static int tolua__CArray2Dd_scaleToRange00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: wrapCoords of class  CArray2Dd */
-#ifndef TOLUA_DISABLE_tolua__CArray2Dd_wrapCoords00
-static int tolua__CArray2Dd_wrapCoords00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Dd_wrapCoords00
+static int tolua_bind_anl_CArray2Dd_wrapCoords00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -8527,8 +8527,8 @@ static int tolua__CArray2Dd_wrapCoords00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: offset of class  CArray2Dd */
-#ifndef TOLUA_DISABLE_tolua__CArray2Dd_offset00
-static int tolua__CArray2Dd_offset00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Dd_offset00
+static int tolua_bind_anl_CArray2Dd_offset00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -8562,8 +8562,8 @@ static int tolua__CArray2Dd_offset00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: flipVertical of class  CArray2Dd */
-#ifndef TOLUA_DISABLE_tolua__CArray2Dd_flipVertical00
-static int tolua__CArray2Dd_flipVertical00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Dd_flipVertical00
+static int tolua_bind_anl_CArray2Dd_flipVertical00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -8593,8 +8593,8 @@ static int tolua__CArray2Dd_flipVertical00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: flipHorizontal of class  CArray2Dd */
-#ifndef TOLUA_DISABLE_tolua__CArray2Dd_flipHorizontal00
-static int tolua__CArray2Dd_flipHorizontal00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Dd_flipHorizontal00
+static int tolua_bind_anl_CArray2Dd_flipHorizontal00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -8624,8 +8624,8 @@ static int tolua__CArray2Dd_flipHorizontal00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: blur of class  CArray2Dd */
-#ifndef TOLUA_DISABLE_tolua__CArray2Dd_blur00
-static int tolua__CArray2Dd_blur00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Dd_blur00
+static int tolua_bind_anl_CArray2Dd_blur00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -8659,8 +8659,8 @@ static int tolua__CArray2Dd_blur00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: subtractFilter of class  CArray2Dd */
-#ifndef TOLUA_DISABLE_tolua__CArray2Dd_subtractFilter00
-static int tolua__CArray2Dd_subtractFilter00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Dd_subtractFilter00
+static int tolua_bind_anl_CArray2Dd_subtractFilter00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -8692,8 +8692,8 @@ static int tolua__CArray2Dd_subtractFilter00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: addFilter of class  CArray2Dd */
-#ifndef TOLUA_DISABLE_tolua__CArray2Dd_addFilter00
-static int tolua__CArray2Dd_addFilter00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Dd_addFilter00
+static int tolua_bind_anl_CArray2Dd_addFilter00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -8725,8 +8725,8 @@ static int tolua__CArray2Dd_addFilter00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: scaleTo of class  CArray2Dd */
-#ifndef TOLUA_DISABLE_tolua__CArray2Dd_scaleTo00
-static int tolua__CArray2Dd_scaleTo00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Dd_scaleTo00
+static int tolua_bind_anl_CArray2Dd_scaleTo00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -8758,8 +8758,8 @@ static int tolua__CArray2Dd_scaleTo00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: new of class  CArray2Drgba */
-#ifndef TOLUA_DISABLE_tolua__CArray2Drgba_new00
-static int tolua__CArray2Drgba_new00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Drgba_new00
+static int tolua_bind_anl_CArray2Drgba_new00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -8790,8 +8790,8 @@ static int tolua__CArray2Drgba_new00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: new_local of class  CArray2Drgba */
-#ifndef TOLUA_DISABLE_tolua__CArray2Drgba_new00_local
-static int tolua__CArray2Drgba_new00_local(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Drgba_new00_local
+static int tolua_bind_anl_CArray2Drgba_new00_local(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -8823,8 +8823,8 @@ static int tolua__CArray2Drgba_new00_local(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: new of class  CArray2Drgba */
-#ifndef TOLUA_DISABLE_tolua__CArray2Drgba_new01
-static int tolua__CArray2Drgba_new01(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Drgba_new01
+static int tolua_bind_anl_CArray2Drgba_new01(lua_State* tolua_S)
 {
  tolua_Error tolua_err;
  if (
@@ -8841,13 +8841,13 @@ static int tolua__CArray2Drgba_new01(lua_State* tolua_S)
  }
  return 1;
 tolua_lerror:
- return tolua__CArray2Drgba_new00(tolua_S);
+ return tolua_bind_anl_CArray2Drgba_new00(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: new_local of class  CArray2Drgba */
-#ifndef TOLUA_DISABLE_tolua__CArray2Drgba_new01_local
-static int tolua__CArray2Drgba_new01_local(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Drgba_new01_local
+static int tolua_bind_anl_CArray2Drgba_new01_local(lua_State* tolua_S)
 {
  tolua_Error tolua_err;
  if (
@@ -8865,13 +8865,13 @@ static int tolua__CArray2Drgba_new01_local(lua_State* tolua_S)
  }
  return 1;
 tolua_lerror:
- return tolua__CArray2Drgba_new00_local(tolua_S);
+ return tolua_bind_anl_CArray2Drgba_new00_local(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: delete of class  CArray2Drgba */
-#ifndef TOLUA_DISABLE_tolua__CArray2Drgba_delete00
-static int tolua__CArray2Drgba_delete00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Drgba_delete00
+static int tolua_bind_anl_CArray2Drgba_delete00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -8899,8 +8899,8 @@ static int tolua__CArray2Drgba_delete00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: resize of class  CArray2Drgba */
-#ifndef TOLUA_DISABLE_tolua__CArray2Drgba_resize00
-static int tolua__CArray2Drgba_resize00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Drgba_resize00
+static int tolua_bind_anl_CArray2Drgba_resize00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -8934,8 +8934,8 @@ static int tolua__CArray2Drgba_resize00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: destroy of class  CArray2Drgba */
-#ifndef TOLUA_DISABLE_tolua__CArray2Drgba_destroy00
-static int tolua__CArray2Drgba_destroy00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Drgba_destroy00
+static int tolua_bind_anl_CArray2Drgba_destroy00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -8965,8 +8965,8 @@ static int tolua__CArray2Drgba_destroy00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: width of class  CArray2Drgba */
-#ifndef TOLUA_DISABLE_tolua__CArray2Drgba_width00
-static int tolua__CArray2Drgba_width00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Drgba_width00
+static int tolua_bind_anl_CArray2Drgba_width00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -8997,8 +8997,8 @@ static int tolua__CArray2Drgba_width00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: height of class  CArray2Drgba */
-#ifndef TOLUA_DISABLE_tolua__CArray2Drgba_height00
-static int tolua__CArray2Drgba_height00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Drgba_height00
+static int tolua_bind_anl_CArray2Drgba_height00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -9029,8 +9029,8 @@ static int tolua__CArray2Drgba_height00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: set of class  CArray2Drgba */
-#ifndef TOLUA_DISABLE_tolua__CArray2Drgba_set00
-static int tolua__CArray2Drgba_set00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Drgba_set00
+static int tolua_bind_anl_CArray2Drgba_set00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -9066,8 +9066,8 @@ static int tolua__CArray2Drgba_set00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: get of class  CArray2Drgba */
-#ifndef TOLUA_DISABLE_tolua__CArray2Drgba_get00
-static int tolua__CArray2Drgba_get00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Drgba_get00
+static int tolua_bind_anl_CArray2Drgba_get00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -9112,8 +9112,8 @@ static int tolua__CArray2Drgba_get00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: get of class  CArray2Drgba */
-#ifndef TOLUA_DISABLE_tolua__CArray2Drgba_get01
-static int tolua__CArray2Drgba_get01(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Drgba_get01
+static int tolua_bind_anl_CArray2Drgba_get01(lua_State* tolua_S)
 {
  tolua_Error tolua_err;
  if (
@@ -9148,13 +9148,13 @@ static int tolua__CArray2Drgba_get01(lua_State* tolua_S)
  }
  return 1;
 tolua_lerror:
- return tolua__CArray2Drgba_get00(tolua_S);
+ return tolua_bind_anl_CArray2Drgba_get00(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: getIndexed of class  CArray2Drgba */
-#ifndef TOLUA_DISABLE_tolua__CArray2Drgba_getIndexed00
-static int tolua__CArray2Drgba_getIndexed00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Drgba_getIndexed00
+static int tolua_bind_anl_CArray2Drgba_getIndexed00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -9197,8 +9197,8 @@ static int tolua__CArray2Drgba_getIndexed00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: fill of class  CArray2Drgba */
-#ifndef TOLUA_DISABLE_tolua__CArray2Drgba_fill00
-static int tolua__CArray2Drgba_fill00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Drgba_fill00
+static int tolua_bind_anl_CArray2Drgba_fill00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -9230,8 +9230,8 @@ static int tolua__CArray2Drgba_fill00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: copyFrom of class  CArray2Drgba */
-#ifndef TOLUA_DISABLE_tolua__CArray2Drgba_copyFrom00
-static int tolua__CArray2Drgba_copyFrom00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Drgba_copyFrom00
+static int tolua_bind_anl_CArray2Drgba_copyFrom00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -9263,8 +9263,8 @@ static int tolua__CArray2Drgba_copyFrom00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: addArray of class  CArray2Drgba */
-#ifndef TOLUA_DISABLE_tolua__CArray2Drgba_addArray00
-static int tolua__CArray2Drgba_addArray00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Drgba_addArray00
+static int tolua_bind_anl_CArray2Drgba_addArray00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -9296,8 +9296,8 @@ static int tolua__CArray2Drgba_addArray00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: subtractArray of class  CArray2Drgba */
-#ifndef TOLUA_DISABLE_tolua__CArray2Drgba_subtractArray00
-static int tolua__CArray2Drgba_subtractArray00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Drgba_subtractArray00
+static int tolua_bind_anl_CArray2Drgba_subtractArray00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -9329,8 +9329,8 @@ static int tolua__CArray2Drgba_subtractArray00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: multiplyArray of class  CArray2Drgba */
-#ifndef TOLUA_DISABLE_tolua__CArray2Drgba_multiplyArray00
-static int tolua__CArray2Drgba_multiplyArray00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Drgba_multiplyArray00
+static int tolua_bind_anl_CArray2Drgba_multiplyArray00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -9362,8 +9362,8 @@ static int tolua__CArray2Drgba_multiplyArray00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: copyFromSub of class  CArray2Drgba */
-#ifndef TOLUA_DISABLE_tolua__CArray2Drgba_copyFromSub00
-static int tolua__CArray2Drgba_copyFromSub00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Drgba_copyFromSub00
+static int tolua_bind_anl_CArray2Drgba_copyFromSub00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -9399,8 +9399,8 @@ static int tolua__CArray2Drgba_copyFromSub00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: addArraySub of class  CArray2Drgba */
-#ifndef TOLUA_DISABLE_tolua__CArray2Drgba_addArraySub00
-static int tolua__CArray2Drgba_addArraySub00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Drgba_addArraySub00
+static int tolua_bind_anl_CArray2Drgba_addArraySub00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -9436,8 +9436,8 @@ static int tolua__CArray2Drgba_addArraySub00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: subtractArraySub of class  CArray2Drgba */
-#ifndef TOLUA_DISABLE_tolua__CArray2Drgba_subtractArraySub00
-static int tolua__CArray2Drgba_subtractArraySub00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Drgba_subtractArraySub00
+static int tolua_bind_anl_CArray2Drgba_subtractArraySub00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -9473,8 +9473,8 @@ static int tolua__CArray2Drgba_subtractArraySub00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: multiplyArraySub of class  CArray2Drgba */
-#ifndef TOLUA_DISABLE_tolua__CArray2Drgba_multiplyArraySub00
-static int tolua__CArray2Drgba_multiplyArraySub00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Drgba_multiplyArraySub00
+static int tolua_bind_anl_CArray2Drgba_multiplyArraySub00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -9510,8 +9510,8 @@ static int tolua__CArray2Drgba_multiplyArraySub00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: scale of class  CArray2Drgba */
-#ifndef TOLUA_DISABLE_tolua__CArray2Drgba_scale00
-static int tolua__CArray2Drgba_scale00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Drgba_scale00
+static int tolua_bind_anl_CArray2Drgba_scale00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -9543,8 +9543,8 @@ static int tolua__CArray2Drgba_scale00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: wrapCoords of class  CArray2Drgba */
-#ifndef TOLUA_DISABLE_tolua__CArray2Drgba_wrapCoords00
-static int tolua__CArray2Drgba_wrapCoords00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Drgba_wrapCoords00
+static int tolua_bind_anl_CArray2Drgba_wrapCoords00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -9580,8 +9580,8 @@ static int tolua__CArray2Drgba_wrapCoords00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: offset of class  CArray2Drgba */
-#ifndef TOLUA_DISABLE_tolua__CArray2Drgba_offset00
-static int tolua__CArray2Drgba_offset00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Drgba_offset00
+static int tolua_bind_anl_CArray2Drgba_offset00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -9615,8 +9615,8 @@ static int tolua__CArray2Drgba_offset00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: flipVertical of class  CArray2Drgba */
-#ifndef TOLUA_DISABLE_tolua__CArray2Drgba_flipVertical00
-static int tolua__CArray2Drgba_flipVertical00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Drgba_flipVertical00
+static int tolua_bind_anl_CArray2Drgba_flipVertical00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -9646,8 +9646,8 @@ static int tolua__CArray2Drgba_flipVertical00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: flipHorizontal of class  CArray2Drgba */
-#ifndef TOLUA_DISABLE_tolua__CArray2Drgba_flipHorizontal00
-static int tolua__CArray2Drgba_flipHorizontal00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Drgba_flipHorizontal00
+static int tolua_bind_anl_CArray2Drgba_flipHorizontal00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -9677,8 +9677,8 @@ static int tolua__CArray2Drgba_flipHorizontal00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: blur of class  CArray2Drgba */
-#ifndef TOLUA_DISABLE_tolua__CArray2Drgba_blur00
-static int tolua__CArray2Drgba_blur00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Drgba_blur00
+static int tolua_bind_anl_CArray2Drgba_blur00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -9712,8 +9712,8 @@ static int tolua__CArray2Drgba_blur00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: new of class  CArray3Dd */
-#ifndef TOLUA_DISABLE_tolua__CArray3Dd_new00
-static int tolua__CArray3Dd_new00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray3Dd_new00
+static int tolua_bind_anl_CArray3Dd_new00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -9740,8 +9740,8 @@ static int tolua__CArray3Dd_new00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: new_local of class  CArray3Dd */
-#ifndef TOLUA_DISABLE_tolua__CArray3Dd_new00_local
-static int tolua__CArray3Dd_new00_local(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray3Dd_new00_local
+static int tolua_bind_anl_CArray3Dd_new00_local(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -9769,8 +9769,8 @@ static int tolua__CArray3Dd_new00_local(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: new of class  CArray3Dd */
-#ifndef TOLUA_DISABLE_tolua__CArray3Dd_new01
-static int tolua__CArray3Dd_new01(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray3Dd_new01
+static int tolua_bind_anl_CArray3Dd_new01(lua_State* tolua_S)
 {
  tolua_Error tolua_err;
  if (
@@ -9793,13 +9793,13 @@ static int tolua__CArray3Dd_new01(lua_State* tolua_S)
  }
  return 1;
 tolua_lerror:
- return tolua__CArray3Dd_new00(tolua_S);
+ return tolua_bind_anl_CArray3Dd_new00(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: new_local of class  CArray3Dd */
-#ifndef TOLUA_DISABLE_tolua__CArray3Dd_new01_local
-static int tolua__CArray3Dd_new01_local(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray3Dd_new01_local
+static int tolua_bind_anl_CArray3Dd_new01_local(lua_State* tolua_S)
 {
  tolua_Error tolua_err;
  if (
@@ -9823,13 +9823,13 @@ static int tolua__CArray3Dd_new01_local(lua_State* tolua_S)
  }
  return 1;
 tolua_lerror:
- return tolua__CArray3Dd_new00_local(tolua_S);
+ return tolua_bind_anl_CArray3Dd_new00_local(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: delete of class  CArray3Dd */
-#ifndef TOLUA_DISABLE_tolua__CArray3Dd_delete00
-static int tolua__CArray3Dd_delete00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray3Dd_delete00
+static int tolua_bind_anl_CArray3Dd_delete00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -9857,8 +9857,8 @@ static int tolua__CArray3Dd_delete00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: width of class  CArray3Dd */
-#ifndef TOLUA_DISABLE_tolua__CArray3Dd_width00
-static int tolua__CArray3Dd_width00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray3Dd_width00
+static int tolua_bind_anl_CArray3Dd_width00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -9889,8 +9889,8 @@ static int tolua__CArray3Dd_width00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: height of class  CArray3Dd */
-#ifndef TOLUA_DISABLE_tolua__CArray3Dd_height00
-static int tolua__CArray3Dd_height00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray3Dd_height00
+static int tolua_bind_anl_CArray3Dd_height00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -9921,8 +9921,8 @@ static int tolua__CArray3Dd_height00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: depth of class  CArray3Dd */
-#ifndef TOLUA_DISABLE_tolua__CArray3Dd_depth00
-static int tolua__CArray3Dd_depth00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray3Dd_depth00
+static int tolua_bind_anl_CArray3Dd_depth00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -9953,8 +9953,8 @@ static int tolua__CArray3Dd_depth00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: set of class  CArray3Dd */
-#ifndef TOLUA_DISABLE_tolua__CArray3Dd_set00
-static int tolua__CArray3Dd_set00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray3Dd_set00
+static int tolua_bind_anl_CArray3Dd_set00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -9992,8 +9992,8 @@ static int tolua__CArray3Dd_set00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: get of class  CArray3Dd */
-#ifndef TOLUA_DISABLE_tolua__CArray3Dd_get00
-static int tolua__CArray3Dd_get00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray3Dd_get00
+static int tolua_bind_anl_CArray3Dd_get00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -10030,8 +10030,8 @@ static int tolua__CArray3Dd_get00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: resize of class  CArray3Dd */
-#ifndef TOLUA_DISABLE_tolua__CArray3Dd_resize00
-static int tolua__CArray3Dd_resize00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray3Dd_resize00
+static int tolua_bind_anl_CArray3Dd_resize00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -10067,8 +10067,8 @@ static int tolua__CArray3Dd_resize00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: new of class  CArray3Drgba */
-#ifndef TOLUA_DISABLE_tolua__CArray3Drgba_new00
-static int tolua__CArray3Drgba_new00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray3Drgba_new00
+static int tolua_bind_anl_CArray3Drgba_new00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -10095,8 +10095,8 @@ static int tolua__CArray3Drgba_new00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: new_local of class  CArray3Drgba */
-#ifndef TOLUA_DISABLE_tolua__CArray3Drgba_new00_local
-static int tolua__CArray3Drgba_new00_local(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray3Drgba_new00_local
+static int tolua_bind_anl_CArray3Drgba_new00_local(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -10124,8 +10124,8 @@ static int tolua__CArray3Drgba_new00_local(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: new of class  CArray3Drgba */
-#ifndef TOLUA_DISABLE_tolua__CArray3Drgba_new01
-static int tolua__CArray3Drgba_new01(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray3Drgba_new01
+static int tolua_bind_anl_CArray3Drgba_new01(lua_State* tolua_S)
 {
  tolua_Error tolua_err;
  if (
@@ -10148,13 +10148,13 @@ static int tolua__CArray3Drgba_new01(lua_State* tolua_S)
  }
  return 1;
 tolua_lerror:
- return tolua__CArray3Drgba_new00(tolua_S);
+ return tolua_bind_anl_CArray3Drgba_new00(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: new_local of class  CArray3Drgba */
-#ifndef TOLUA_DISABLE_tolua__CArray3Drgba_new01_local
-static int tolua__CArray3Drgba_new01_local(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray3Drgba_new01_local
+static int tolua_bind_anl_CArray3Drgba_new01_local(lua_State* tolua_S)
 {
  tolua_Error tolua_err;
  if (
@@ -10178,13 +10178,13 @@ static int tolua__CArray3Drgba_new01_local(lua_State* tolua_S)
  }
  return 1;
 tolua_lerror:
- return tolua__CArray3Drgba_new00_local(tolua_S);
+ return tolua_bind_anl_CArray3Drgba_new00_local(tolua_S);
 }
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: delete of class  CArray3Drgba */
-#ifndef TOLUA_DISABLE_tolua__CArray3Drgba_delete00
-static int tolua__CArray3Drgba_delete00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray3Drgba_delete00
+static int tolua_bind_anl_CArray3Drgba_delete00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -10212,8 +10212,8 @@ static int tolua__CArray3Drgba_delete00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: width of class  CArray3Drgba */
-#ifndef TOLUA_DISABLE_tolua__CArray3Drgba_width00
-static int tolua__CArray3Drgba_width00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray3Drgba_width00
+static int tolua_bind_anl_CArray3Drgba_width00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -10244,8 +10244,8 @@ static int tolua__CArray3Drgba_width00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: height of class  CArray3Drgba */
-#ifndef TOLUA_DISABLE_tolua__CArray3Drgba_height00
-static int tolua__CArray3Drgba_height00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray3Drgba_height00
+static int tolua_bind_anl_CArray3Drgba_height00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -10276,8 +10276,8 @@ static int tolua__CArray3Drgba_height00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: depth of class  CArray3Drgba */
-#ifndef TOLUA_DISABLE_tolua__CArray3Drgba_depth00
-static int tolua__CArray3Drgba_depth00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray3Drgba_depth00
+static int tolua_bind_anl_CArray3Drgba_depth00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -10308,8 +10308,8 @@ static int tolua__CArray3Drgba_depth00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: resize of class  CArray3Drgba */
-#ifndef TOLUA_DISABLE_tolua__CArray3Drgba_resize00
-static int tolua__CArray3Drgba_resize00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray3Drgba_resize00
+static int tolua_bind_anl_CArray3Drgba_resize00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -10345,8 +10345,8 @@ static int tolua__CArray3Drgba_resize00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: set of class  CArray3Drgba */
-#ifndef TOLUA_DISABLE_tolua__CArray3Drgba_set00
-static int tolua__CArray3Drgba_set00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray3Drgba_set00
+static int tolua_bind_anl_CArray3Drgba_set00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -10384,8 +10384,8 @@ static int tolua__CArray3Drgba_set00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* method: get of class  CArray3Drgba */
-#ifndef TOLUA_DISABLE_tolua__CArray3Drgba_get00
-static int tolua__CArray3Drgba_get00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray3Drgba_get00
+static int tolua_bind_anl_CArray3Drgba_get00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -10432,8 +10432,8 @@ static int tolua__CArray3Drgba_get00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* function: map2D */
-#ifndef TOLUA_DISABLE_tolua__map2D00
-static int tolua__map2D00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_map2D00
+static int tolua_bind_anl_map2D00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -10470,8 +10470,8 @@ static int tolua__map2D00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* function: map2DNoZ */
-#ifndef TOLUA_DISABLE_tolua__map2DNoZ00
-static int tolua__map2DNoZ00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_map2DNoZ00
+static int tolua_bind_anl_map2DNoZ00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -10506,8 +10506,8 @@ static int tolua__map2DNoZ00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* function: map3D */
-#ifndef TOLUA_DISABLE_tolua__map3D00
-static int tolua__map3D00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_map3D00
+static int tolua_bind_anl_map3D00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -10542,8 +10542,8 @@ static int tolua__map3D00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* function: mapRGBA2D */
-#ifndef TOLUA_DISABLE_tolua__mapRGBA2D00
-static int tolua__mapRGBA2D00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_mapRGBA2D00
+static int tolua_bind_anl_mapRGBA2D00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -10580,8 +10580,8 @@ static int tolua__mapRGBA2D00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* function: mapRGBA2DNoZ */
-#ifndef TOLUA_DISABLE_tolua__mapRGBA2DNoZ00
-static int tolua__mapRGBA2DNoZ00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_mapRGBA2DNoZ00
+static int tolua_bind_anl_mapRGBA2DNoZ00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -10616,8 +10616,8 @@ static int tolua__mapRGBA2DNoZ00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* function: mapRGBA3D */
-#ifndef TOLUA_DISABLE_tolua__mapRGBA3D00
-static int tolua__mapRGBA3D00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_mapRGBA3D00
+static int tolua_bind_anl_mapRGBA3D00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -10652,8 +10652,8 @@ static int tolua__mapRGBA3D00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* function: saveDoubleArray */
-#ifndef TOLUA_DISABLE_tolua__saveDoubleArray00
-static int tolua__saveDoubleArray00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_saveDoubleArray00
+static int tolua_bind_anl_saveDoubleArray00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -10682,8 +10682,8 @@ static int tolua__saveDoubleArray00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* function: saveHeightmap */
-#ifndef TOLUA_DISABLE_tolua__saveHeightmap00
-static int tolua__saveHeightmap00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_saveHeightmap00
+static int tolua_bind_anl_saveHeightmap00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -10712,8 +10712,8 @@ static int tolua__saveHeightmap00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* function: saveRGBAArray */
-#ifndef TOLUA_DISABLE_tolua__saveRGBAArray00
-static int tolua__saveRGBAArray00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_saveRGBAArray00
+static int tolua_bind_anl_saveRGBAArray00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -10742,8 +10742,8 @@ static int tolua__saveRGBAArray00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* function: loadDoubleArray */
-#ifndef TOLUA_DISABLE_tolua__loadDoubleArray00
-static int tolua__loadDoubleArray00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_loadDoubleArray00
+static int tolua_bind_anl_loadDoubleArray00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -10772,8 +10772,8 @@ static int tolua__loadDoubleArray00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* function: loadRGBAArray */
-#ifndef TOLUA_DISABLE_tolua__loadRGBAArray00
-static int tolua__loadRGBAArray00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_loadRGBAArray00
+static int tolua_bind_anl_loadRGBAArray00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -10802,8 +10802,8 @@ static int tolua__loadRGBAArray00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* function: simpleErode */
-#ifndef TOLUA_DISABLE_tolua__simpleErode00
-static int tolua__simpleErode00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_simpleErode00
+static int tolua_bind_anl_simpleErode00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -10834,8 +10834,8 @@ static int tolua__simpleErode00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* function: calcNormalMap */
-#ifndef TOLUA_DISABLE_tolua__calcNormalMap00
-static int tolua__calcNormalMap00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_calcNormalMap00
+static int tolua_bind_anl_calcNormalMap00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -10870,8 +10870,8 @@ static int tolua__calcNormalMap00(lua_State* tolua_S)
 #endif //#ifndef TOLUA_DISABLE
 
 /* function: calcBumpMap */
-#ifndef TOLUA_DISABLE_tolua__calcBumpMap00
-static int tolua__calcBumpMap00(lua_State* tolua_S)
+#ifndef TOLUA_DISABLE_tolua_bind_anl_calcBumpMap00
+static int tolua_bind_anl_calcBumpMap00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
@@ -10929,15 +10929,15 @@ TOLUA_API int tolua_bind_anl_open (lua_State* tolua_S)
  tolua_reg_types(tolua_S);
  tolua_module(tolua_S,NULL,0);
  tolua_beginmodule(tolua_S,NULL);
- tolua_function(tolua_S,"highresTime",tolua__highresTime00);
+ tolua_function(tolua_S,"highresTime",tolua_bind_anl_highresTime00);
  tolua_cclass(tolua_S,"CBasePRNG","CBasePRNG","",NULL);
  tolua_beginmodule(tolua_S,"CBasePRNG");
-  tolua_function(tolua_S,"get",tolua__CBasePRNG_get00);
-  tolua_function(tolua_S,"setSeed",tolua__CBasePRNG_setSeed00);
-  tolua_function(tolua_S,"setSeedTime",tolua__CBasePRNG_setSeedTime00);
-  tolua_function(tolua_S,"getTarget",tolua__CBasePRNG_getTarget00);
-  tolua_function(tolua_S,"getRange",tolua__CBasePRNG_getRange00);
-  tolua_function(tolua_S,"get01",tolua__CBasePRNG_get0100);
+  tolua_function(tolua_S,"get",tolua_bind_anl_CBasePRNG_get00);
+  tolua_function(tolua_S,"setSeed",tolua_bind_anl_CBasePRNG_setSeed00);
+  tolua_function(tolua_S,"setSeedTime",tolua_bind_anl_CBasePRNG_setSeedTime00);
+  tolua_function(tolua_S,"getTarget",tolua_bind_anl_CBasePRNG_getTarget00);
+  tolua_function(tolua_S,"getRange",tolua_bind_anl_CBasePRNG_getRange00);
+  tolua_function(tolua_S,"get01",tolua_bind_anl_CBasePRNG_get0100);
  tolua_endmodule(tolua_S);
  #ifdef __cplusplus
  tolua_cclass(tolua_S,"LCG","LCG","CBasePRNG",tolua_collect_LCG);
@@ -10945,10 +10945,10 @@ TOLUA_API int tolua_bind_anl_open (lua_State* tolua_S)
  tolua_cclass(tolua_S,"LCG","LCG","CBasePRNG",NULL);
  #endif
  tolua_beginmodule(tolua_S,"LCG");
-  tolua_function(tolua_S,"new",tolua__LCG_new00);
-  tolua_function(tolua_S,"new_local",tolua__LCG_new00_local);
-  tolua_function(tolua_S,".call",tolua__LCG_new00_local);
-  tolua_function(tolua_S,"delete",tolua__LCG_delete00);
+  tolua_function(tolua_S,"new",tolua_bind_anl_LCG_new00);
+  tolua_function(tolua_S,"new_local",tolua_bind_anl_LCG_new00_local);
+  tolua_function(tolua_S,".call",tolua_bind_anl_LCG_new00_local);
+  tolua_function(tolua_S,"delete",tolua_bind_anl_LCG_delete00);
  tolua_endmodule(tolua_S);
  #ifdef __cplusplus
  tolua_cclass(tolua_S,"Xorshift","Xorshift","CBasePRNG",tolua_collect_Xorshift);
@@ -10956,10 +10956,10 @@ TOLUA_API int tolua_bind_anl_open (lua_State* tolua_S)
  tolua_cclass(tolua_S,"Xorshift","Xorshift","CBasePRNG",NULL);
  #endif
  tolua_beginmodule(tolua_S,"Xorshift");
-  tolua_function(tolua_S,"new",tolua__Xorshift_new00);
-  tolua_function(tolua_S,"new_local",tolua__Xorshift_new00_local);
-  tolua_function(tolua_S,".call",tolua__Xorshift_new00_local);
-  tolua_function(tolua_S,"delete",tolua__Xorshift_delete00);
+  tolua_function(tolua_S,"new",tolua_bind_anl_Xorshift_new00);
+  tolua_function(tolua_S,"new_local",tolua_bind_anl_Xorshift_new00_local);
+  tolua_function(tolua_S,".call",tolua_bind_anl_Xorshift_new00_local);
+  tolua_function(tolua_S,"delete",tolua_bind_anl_Xorshift_delete00);
  tolua_endmodule(tolua_S);
  #ifdef __cplusplus
  tolua_cclass(tolua_S,"MWC256","MWC256","CBasePRNG",tolua_collect_MWC256);
@@ -10967,10 +10967,10 @@ TOLUA_API int tolua_bind_anl_open (lua_State* tolua_S)
  tolua_cclass(tolua_S,"MWC256","MWC256","CBasePRNG",NULL);
  #endif
  tolua_beginmodule(tolua_S,"MWC256");
-  tolua_function(tolua_S,"new",tolua__MWC256_new00);
-  tolua_function(tolua_S,"new_local",tolua__MWC256_new00_local);
-  tolua_function(tolua_S,".call",tolua__MWC256_new00_local);
-  tolua_function(tolua_S,"delete",tolua__MWC256_delete00);
+  tolua_function(tolua_S,"new",tolua_bind_anl_MWC256_new00);
+  tolua_function(tolua_S,"new_local",tolua_bind_anl_MWC256_new00_local);
+  tolua_function(tolua_S,".call",tolua_bind_anl_MWC256_new00_local);
+  tolua_function(tolua_S,"delete",tolua_bind_anl_MWC256_delete00);
  tolua_endmodule(tolua_S);
  #ifdef __cplusplus
  tolua_cclass(tolua_S,"CMWC4096","CMWC4096","CBasePRNG",tolua_collect_CMWC4096);
@@ -10978,10 +10978,10 @@ TOLUA_API int tolua_bind_anl_open (lua_State* tolua_S)
  tolua_cclass(tolua_S,"CMWC4096","CMWC4096","CBasePRNG",NULL);
  #endif
  tolua_beginmodule(tolua_S,"CMWC4096");
-  tolua_function(tolua_S,"new",tolua__CMWC4096_new00);
-  tolua_function(tolua_S,"new_local",tolua__CMWC4096_new00_local);
-  tolua_function(tolua_S,".call",tolua__CMWC4096_new00_local);
-  tolua_function(tolua_S,"delete",tolua__CMWC4096_delete00);
+  tolua_function(tolua_S,"new",tolua_bind_anl_CMWC4096_new00);
+  tolua_function(tolua_S,"new_local",tolua_bind_anl_CMWC4096_new00_local);
+  tolua_function(tolua_S,".call",tolua_bind_anl_CMWC4096_new00_local);
+  tolua_function(tolua_S,"delete",tolua_bind_anl_CMWC4096_delete00);
  tolua_endmodule(tolua_S);
  #ifdef __cplusplus
  tolua_cclass(tolua_S,"KISS","KISS","CBasePRNG",tolua_collect_KISS);
@@ -10989,10 +10989,10 @@ TOLUA_API int tolua_bind_anl_open (lua_State* tolua_S)
  tolua_cclass(tolua_S,"KISS","KISS","CBasePRNG",NULL);
  #endif
  tolua_beginmodule(tolua_S,"KISS");
-  tolua_function(tolua_S,"new",tolua__KISS_new00);
-  tolua_function(tolua_S,"new_local",tolua__KISS_new00_local);
-  tolua_function(tolua_S,".call",tolua__KISS_new00_local);
-  tolua_function(tolua_S,"delete",tolua__KISS_delete00);
+  tolua_function(tolua_S,"new",tolua_bind_anl_KISS_new00);
+  tolua_function(tolua_S,"new_local",tolua_bind_anl_KISS_new00_local);
+  tolua_function(tolua_S,".call",tolua_bind_anl_KISS_new00_local);
+  tolua_function(tolua_S,"delete",tolua_bind_anl_KISS_delete00);
  tolua_endmodule(tolua_S);
  tolua_constant(tolua_S,"INTERP_NONE",INTERP_NONE);
  tolua_constant(tolua_S,"INTERP_LINEAR",INTERP_LINEAR);
@@ -11011,28 +11011,28 @@ TOLUA_API int tolua_bind_anl_open (lua_State* tolua_S)
  tolua_cclass(tolua_S,"CCoordinate","CCoordinate","",NULL);
  #endif
  tolua_beginmodule(tolua_S,"CCoordinate");
-  tolua_function(tolua_S,"new",tolua__CCoordinate_new00);
-  tolua_function(tolua_S,"new_local",tolua__CCoordinate_new00_local);
-  tolua_function(tolua_S,".call",tolua__CCoordinate_new00_local);
-  tolua_function(tolua_S,"new",tolua__CCoordinate_new01);
-  tolua_function(tolua_S,"new_local",tolua__CCoordinate_new01_local);
-  tolua_function(tolua_S,".call",tolua__CCoordinate_new01_local);
-  tolua_function(tolua_S,"new",tolua__CCoordinate_new02);
-  tolua_function(tolua_S,"new_local",tolua__CCoordinate_new02_local);
-  tolua_function(tolua_S,".call",tolua__CCoordinate_new02_local);
-  tolua_function(tolua_S,"new",tolua__CCoordinate_new03);
-  tolua_function(tolua_S,"new_local",tolua__CCoordinate_new03_local);
-  tolua_function(tolua_S,".call",tolua__CCoordinate_new03_local);
-  tolua_function(tolua_S,"new",tolua__CCoordinate_new04);
-  tolua_function(tolua_S,"new_local",tolua__CCoordinate_new04_local);
-  tolua_function(tolua_S,".call",tolua__CCoordinate_new04_local);
-  tolua_function(tolua_S,"new",tolua__CCoordinate_new05);
-  tolua_function(tolua_S,"new_local",tolua__CCoordinate_new05_local);
-  tolua_function(tolua_S,".call",tolua__CCoordinate_new05_local);
-  tolua_function(tolua_S,"set",tolua__CCoordinate_set00);
-  tolua_function(tolua_S,"set",tolua__CCoordinate_set01);
-  tolua_function(tolua_S,"set",tolua__CCoordinate_set02);
-  tolua_function(tolua_S,"set",tolua__CCoordinate_set03);
+  tolua_function(tolua_S,"new",tolua_bind_anl_CCoordinate_new00);
+  tolua_function(tolua_S,"new_local",tolua_bind_anl_CCoordinate_new00_local);
+  tolua_function(tolua_S,".call",tolua_bind_anl_CCoordinate_new00_local);
+  tolua_function(tolua_S,"new",tolua_bind_anl_CCoordinate_new01);
+  tolua_function(tolua_S,"new_local",tolua_bind_anl_CCoordinate_new01_local);
+  tolua_function(tolua_S,".call",tolua_bind_anl_CCoordinate_new01_local);
+  tolua_function(tolua_S,"new",tolua_bind_anl_CCoordinate_new02);
+  tolua_function(tolua_S,"new_local",tolua_bind_anl_CCoordinate_new02_local);
+  tolua_function(tolua_S,".call",tolua_bind_anl_CCoordinate_new02_local);
+  tolua_function(tolua_S,"new",tolua_bind_anl_CCoordinate_new03);
+  tolua_function(tolua_S,"new_local",tolua_bind_anl_CCoordinate_new03_local);
+  tolua_function(tolua_S,".call",tolua_bind_anl_CCoordinate_new03_local);
+  tolua_function(tolua_S,"new",tolua_bind_anl_CCoordinate_new04);
+  tolua_function(tolua_S,"new_local",tolua_bind_anl_CCoordinate_new04_local);
+  tolua_function(tolua_S,".call",tolua_bind_anl_CCoordinate_new04_local);
+  tolua_function(tolua_S,"new",tolua_bind_anl_CCoordinate_new05);
+  tolua_function(tolua_S,"new_local",tolua_bind_anl_CCoordinate_new05_local);
+  tolua_function(tolua_S,".call",tolua_bind_anl_CCoordinate_new05_local);
+  tolua_function(tolua_S,"set",tolua_bind_anl_CCoordinate_set00);
+  tolua_function(tolua_S,"set",tolua_bind_anl_CCoordinate_set01);
+  tolua_function(tolua_S,"set",tolua_bind_anl_CCoordinate_set02);
+  tolua_function(tolua_S,"set",tolua_bind_anl_CCoordinate_set03);
  tolua_endmodule(tolua_S);
  #ifdef __cplusplus
  tolua_cclass(tolua_S,"CInstructionIndex","CInstructionIndex","",tolua_collect_CInstructionIndex);
@@ -11050,101 +11050,101 @@ TOLUA_API int tolua_bind_anl_open (lua_State* tolua_S)
  tolua_cclass(tolua_S,"CKernel","CKernel","",NULL);
  #endif
  tolua_beginmodule(tolua_S,"CKernel");
-  tolua_function(tolua_S,"new",tolua__CKernel_new00);
-  tolua_function(tolua_S,"new_local",tolua__CKernel_new00_local);
-  tolua_function(tolua_S,".call",tolua__CKernel_new00_local);
-  tolua_function(tolua_S,"delete",tolua__CKernel_delete00);
-  tolua_function(tolua_S,"pi",tolua__CKernel_pi00);
-  tolua_function(tolua_S,"e",tolua__CKernel_e00);
-  tolua_function(tolua_S,"one",tolua__CKernel_one00);
-  tolua_function(tolua_S,"zero",tolua__CKernel_zero00);
-  tolua_function(tolua_S,"point5",tolua__CKernel_point500);
-  tolua_function(tolua_S,"sqrt2",tolua__CKernel_sqrt200);
-  tolua_function(tolua_S,"constant",tolua__CKernel_constant00);
-  tolua_function(tolua_S,"seed",tolua__CKernel_seed00);
-  tolua_function(tolua_S,"seeder",tolua__CKernel_seeder00);
-  tolua_function(tolua_S,"valueBasis",tolua__CKernel_valueBasis00);
-  tolua_function(tolua_S,"gradientBasis",tolua__CKernel_gradientBasis00);
-  tolua_function(tolua_S,"simplexBasis",tolua__CKernel_simplexBasis00);
-  tolua_function(tolua_S,"cellularBasis",tolua__CKernel_cellularBasis00);
-  tolua_function(tolua_S,"add",tolua__CKernel_add00);
-  tolua_function(tolua_S,"subtract",tolua__CKernel_subtract00);
-  tolua_function(tolua_S,"multiply",tolua__CKernel_multiply00);
-  tolua_function(tolua_S,"divide",tolua__CKernel_divide00);
-  tolua_function(tolua_S,"maximum",tolua__CKernel_maximum00);
-  tolua_function(tolua_S,"minimum",tolua__CKernel_minimum00);
-  tolua_function(tolua_S,"abs",tolua__CKernel_abs00);
-  tolua_function(tolua_S,"pow",tolua__CKernel_pow00);
-  tolua_function(tolua_S,"bias",tolua__CKernel_bias00);
-  tolua_function(tolua_S,"gain",tolua__CKernel_gain00);
-  tolua_function(tolua_S,"scaleDomain",tolua__CKernel_scaleDomain00);
-  tolua_function(tolua_S,"scaleX",tolua__CKernel_scaleX00);
-  tolua_function(tolua_S,"scaleY",tolua__CKernel_scaleY00);
-  tolua_function(tolua_S,"scaleZ",tolua__CKernel_scaleZ00);
-  tolua_function(tolua_S,"scaleW",tolua__CKernel_scaleW00);
-  tolua_function(tolua_S,"scaleU",tolua__CKernel_scaleU00);
-  tolua_function(tolua_S,"scaleV",tolua__CKernel_scaleV00);
-  tolua_function(tolua_S,"translateDomain",tolua__CKernel_translateDomain00);
-  tolua_function(tolua_S,"translateX",tolua__CKernel_translateX00);
-  tolua_function(tolua_S,"translateY",tolua__CKernel_translateY00);
-  tolua_function(tolua_S,"translateZ",tolua__CKernel_translateZ00);
-  tolua_function(tolua_S,"translateW",tolua__CKernel_translateW00);
-  tolua_function(tolua_S,"translateU",tolua__CKernel_translateU00);
-  tolua_function(tolua_S,"translateV",tolua__CKernel_translateV00);
-  tolua_function(tolua_S,"rotateDomain",tolua__CKernel_rotateDomain00);
-  tolua_function(tolua_S,"addSequence",tolua__CKernel_addSequence00);
-  tolua_function(tolua_S,"multiplySequence",tolua__CKernel_multiplySequence00);
-  tolua_function(tolua_S,"maxSequence",tolua__CKernel_maxSequence00);
-  tolua_function(tolua_S,"minSequence",tolua__CKernel_minSequence00);
-  tolua_function(tolua_S,"mix",tolua__CKernel_mix00);
-  tolua_function(tolua_S,"select",tolua__CKernel_select00);
-  tolua_function(tolua_S,"clamp",tolua__CKernel_clamp00);
-  tolua_function(tolua_S,"cos",tolua__CKernel_cos00);
-  tolua_function(tolua_S,"sin",tolua__CKernel_sin00);
-  tolua_function(tolua_S,"tan",tolua__CKernel_tan00);
-  tolua_function(tolua_S,"acos",tolua__CKernel_acos00);
-  tolua_function(tolua_S,"asin",tolua__CKernel_asin00);
-  tolua_function(tolua_S,"atan",tolua__CKernel_atan00);
-  tolua_function(tolua_S,"tiers",tolua__CKernel_tiers00);
-  tolua_function(tolua_S,"smoothTiers",tolua__CKernel_smoothTiers00);
-  tolua_function(tolua_S,"x",tolua__CKernel_x00);
-  tolua_function(tolua_S,"y",tolua__CKernel_y00);
-  tolua_function(tolua_S,"z",tolua__CKernel_z00);
-  tolua_function(tolua_S,"w",tolua__CKernel_w00);
-  tolua_function(tolua_S,"u",tolua__CKernel_u00);
-  tolua_function(tolua_S,"v",tolua__CKernel_v00);
-  tolua_function(tolua_S,"dx",tolua__CKernel_dx00);
-  tolua_function(tolua_S,"dy",tolua__CKernel_dy00);
-  tolua_function(tolua_S,"dz",tolua__CKernel_dz00);
-  tolua_function(tolua_S,"dw",tolua__CKernel_dw00);
-  tolua_function(tolua_S,"du",tolua__CKernel_du00);
-  tolua_function(tolua_S,"dv",tolua__CKernel_dv00);
-  tolua_function(tolua_S,"sigmoid",tolua__CKernel_sigmoid00);
-  tolua_function(tolua_S,"sigmoid",tolua__CKernel_sigmoid01);
-  tolua_function(tolua_S,"fractal",tolua__CKernel_fractal00);
-  tolua_function(tolua_S,"randomize",tolua__CKernel_randomize00);
-  tolua_function(tolua_S,"step",tolua__CKernel_step00);
-  tolua_function(tolua_S,"linearStep",tolua__CKernel_linearStep00);
-  tolua_function(tolua_S,"smoothStep",tolua__CKernel_smoothStep00);
-  tolua_function(tolua_S,"smootherStep",tolua__CKernel_smootherStep00);
-  tolua_function(tolua_S,"radial",tolua__CKernel_radial00);
-  tolua_function(tolua_S,"hexTile",tolua__CKernel_hexTile00);
-  tolua_function(tolua_S,"hexBump",tolua__CKernel_hexBump00);
-  tolua_function(tolua_S,"color",tolua__CKernel_color00);
-  tolua_function(tolua_S,"color",tolua__CKernel_color01);
-  tolua_function(tolua_S,"combineRGBA",tolua__CKernel_combineRGBA00);
-  tolua_function(tolua_S,"scaleOffset",tolua__CKernel_scaleOffset00);
-  tolua_function(tolua_S,"simpleFractalLayer",tolua__CKernel_simpleFractalLayer00);
-  tolua_function(tolua_S,"simpleRidgedLayer",tolua__CKernel_simpleRidgedLayer00);
-  tolua_function(tolua_S,"simpleBillowLayer",tolua__CKernel_simpleBillowLayer00);
-  tolua_function(tolua_S,"simplefBm",tolua__CKernel_simplefBm00);
-  tolua_function(tolua_S,"simpleRidgedMultifractal",tolua__CKernel_simpleRidgedMultifractal00);
-  tolua_function(tolua_S,"simpleBillow",tolua__CKernel_simpleBillow00);
-  tolua_function(tolua_S,"getKernel",tolua__CKernel_getKernel00);
-  tolua_function(tolua_S,"lastIndex",tolua__CKernel_lastIndex00);
-  tolua_function(tolua_S,"nextIndex",tolua__CKernel_nextIndex00);
-  tolua_function(tolua_S,"getVar",tolua__CKernel_getVar00);
-  tolua_function(tolua_S,"setVar",tolua__CKernel_setVar00);
+  tolua_function(tolua_S,"new",tolua_bind_anl_CKernel_new00);
+  tolua_function(tolua_S,"new_local",tolua_bind_anl_CKernel_new00_local);
+  tolua_function(tolua_S,".call",tolua_bind_anl_CKernel_new00_local);
+  tolua_function(tolua_S,"delete",tolua_bind_anl_CKernel_delete00);
+  tolua_function(tolua_S,"pi",tolua_bind_anl_CKernel_pi00);
+  tolua_function(tolua_S,"e",tolua_bind_anl_CKernel_e00);
+  tolua_function(tolua_S,"one",tolua_bind_anl_CKernel_one00);
+  tolua_function(tolua_S,"zero",tolua_bind_anl_CKernel_zero00);
+  tolua_function(tolua_S,"point5",tolua_bind_anl_CKernel_point500);
+  tolua_function(tolua_S,"sqrt2",tolua_bind_anl_CKernel_sqrt200);
+  tolua_function(tolua_S,"constant",tolua_bind_anl_CKernel_constant00);
+  tolua_function(tolua_S,"seed",tolua_bind_anl_CKernel_seed00);
+  tolua_function(tolua_S,"seeder",tolua_bind_anl_CKernel_seeder00);
+  tolua_function(tolua_S,"valueBasis",tolua_bind_anl_CKernel_valueBasis00);
+  tolua_function(tolua_S,"gradientBasis",tolua_bind_anl_CKernel_gradientBasis00);
+  tolua_function(tolua_S,"simplexBasis",tolua_bind_anl_CKernel_simplexBasis00);
+  tolua_function(tolua_S,"cellularBasis",tolua_bind_anl_CKernel_cellularBasis00);
+  tolua_function(tolua_S,"add",tolua_bind_anl_CKernel_add00);
+  tolua_function(tolua_S,"subtract",tolua_bind_anl_CKernel_subtract00);
+  tolua_function(tolua_S,"multiply",tolua_bind_anl_CKernel_multiply00);
+  tolua_function(tolua_S,"divide",tolua_bind_anl_CKernel_divide00);
+  tolua_function(tolua_S,"maximum",tolua_bind_anl_CKernel_maximum00);
+  tolua_function(tolua_S,"minimum",tolua_bind_anl_CKernel_minimum00);
+  tolua_function(tolua_S,"abs",tolua_bind_anl_CKernel_abs00);
+  tolua_function(tolua_S,"pow",tolua_bind_anl_CKernel_pow00);
+  tolua_function(tolua_S,"bias",tolua_bind_anl_CKernel_bias00);
+  tolua_function(tolua_S,"gain",tolua_bind_anl_CKernel_gain00);
+  tolua_function(tolua_S,"scaleDomain",tolua_bind_anl_CKernel_scaleDomain00);
+  tolua_function(tolua_S,"scaleX",tolua_bind_anl_CKernel_scaleX00);
+  tolua_function(tolua_S,"scaleY",tolua_bind_anl_CKernel_scaleY00);
+  tolua_function(tolua_S,"scaleZ",tolua_bind_anl_CKernel_scaleZ00);
+  tolua_function(tolua_S,"scaleW",tolua_bind_anl_CKernel_scaleW00);
+  tolua_function(tolua_S,"scaleU",tolua_bind_anl_CKernel_scaleU00);
+  tolua_function(tolua_S,"scaleV",tolua_bind_anl_CKernel_scaleV00);
+  tolua_function(tolua_S,"translateDomain",tolua_bind_anl_CKernel_translateDomain00);
+  tolua_function(tolua_S,"translateX",tolua_bind_anl_CKernel_translateX00);
+  tolua_function(tolua_S,"translateY",tolua_bind_anl_CKernel_translateY00);
+  tolua_function(tolua_S,"translateZ",tolua_bind_anl_CKernel_translateZ00);
+  tolua_function(tolua_S,"translateW",tolua_bind_anl_CKernel_translateW00);
+  tolua_function(tolua_S,"translateU",tolua_bind_anl_CKernel_translateU00);
+  tolua_function(tolua_S,"translateV",tolua_bind_anl_CKernel_translateV00);
+  tolua_function(tolua_S,"rotateDomain",tolua_bind_anl_CKernel_rotateDomain00);
+  tolua_function(tolua_S,"addSequence",tolua_bind_anl_CKernel_addSequence00);
+  tolua_function(tolua_S,"multiplySequence",tolua_bind_anl_CKernel_multiplySequence00);
+  tolua_function(tolua_S,"maxSequence",tolua_bind_anl_CKernel_maxSequence00);
+  tolua_function(tolua_S,"minSequence",tolua_bind_anl_CKernel_minSequence00);
+  tolua_function(tolua_S,"mix",tolua_bind_anl_CKernel_mix00);
+  tolua_function(tolua_S,"select",tolua_bind_anl_CKernel_select00);
+  tolua_function(tolua_S,"clamp",tolua_bind_anl_CKernel_clamp00);
+  tolua_function(tolua_S,"cos",tolua_bind_anl_CKernel_cos00);
+  tolua_function(tolua_S,"sin",tolua_bind_anl_CKernel_sin00);
+  tolua_function(tolua_S,"tan",tolua_bind_anl_CKernel_tan00);
+  tolua_function(tolua_S,"acos",tolua_bind_anl_CKernel_acos00);
+  tolua_function(tolua_S,"asin",tolua_bind_anl_CKernel_asin00);
+  tolua_function(tolua_S,"atan",tolua_bind_anl_CKernel_atan00);
+  tolua_function(tolua_S,"tiers",tolua_bind_anl_CKernel_tiers00);
+  tolua_function(tolua_S,"smoothTiers",tolua_bind_anl_CKernel_smoothTiers00);
+  tolua_function(tolua_S,"x",tolua_bind_anl_CKernel_x00);
+  tolua_function(tolua_S,"y",tolua_bind_anl_CKernel_y00);
+  tolua_function(tolua_S,"z",tolua_bind_anl_CKernel_z00);
+  tolua_function(tolua_S,"w",tolua_bind_anl_CKernel_w00);
+  tolua_function(tolua_S,"u",tolua_bind_anl_CKernel_u00);
+  tolua_function(tolua_S,"v",tolua_bind_anl_CKernel_v00);
+  tolua_function(tolua_S,"dx",tolua_bind_anl_CKernel_dx00);
+  tolua_function(tolua_S,"dy",tolua_bind_anl_CKernel_dy00);
+  tolua_function(tolua_S,"dz",tolua_bind_anl_CKernel_dz00);
+  tolua_function(tolua_S,"dw",tolua_bind_anl_CKernel_dw00);
+  tolua_function(tolua_S,"du",tolua_bind_anl_CKernel_du00);
+  tolua_function(tolua_S,"dv",tolua_bind_anl_CKernel_dv00);
+  tolua_function(tolua_S,"sigmoid",tolua_bind_anl_CKernel_sigmoid00);
+  tolua_function(tolua_S,"sigmoid",tolua_bind_anl_CKernel_sigmoid01);
+  tolua_function(tolua_S,"fractal",tolua_bind_anl_CKernel_fractal00);
+  tolua_function(tolua_S,"randomize",tolua_bind_anl_CKernel_randomize00);
+  tolua_function(tolua_S,"step",tolua_bind_anl_CKernel_step00);
+  tolua_function(tolua_S,"linearStep",tolua_bind_anl_CKernel_linearStep00);
+  tolua_function(tolua_S,"smoothStep",tolua_bind_anl_CKernel_smoothStep00);
+  tolua_function(tolua_S,"smootherStep",tolua_bind_anl_CKernel_smootherStep00);
+  tolua_function(tolua_S,"radial",tolua_bind_anl_CKernel_radial00);
+  tolua_function(tolua_S,"hexTile",tolua_bind_anl_CKernel_hexTile00);
+  tolua_function(tolua_S,"hexBump",tolua_bind_anl_CKernel_hexBump00);
+  tolua_function(tolua_S,"color",tolua_bind_anl_CKernel_color00);
+  tolua_function(tolua_S,"color",tolua_bind_anl_CKernel_color01);
+  tolua_function(tolua_S,"combineRGBA",tolua_bind_anl_CKernel_combineRGBA00);
+  tolua_function(tolua_S,"scaleOffset",tolua_bind_anl_CKernel_scaleOffset00);
+  tolua_function(tolua_S,"simpleFractalLayer",tolua_bind_anl_CKernel_simpleFractalLayer00);
+  tolua_function(tolua_S,"simpleRidgedLayer",tolua_bind_anl_CKernel_simpleRidgedLayer00);
+  tolua_function(tolua_S,"simpleBillowLayer",tolua_bind_anl_CKernel_simpleBillowLayer00);
+  tolua_function(tolua_S,"simplefBm",tolua_bind_anl_CKernel_simplefBm00);
+  tolua_function(tolua_S,"simpleRidgedMultifractal",tolua_bind_anl_CKernel_simpleRidgedMultifractal00);
+  tolua_function(tolua_S,"simpleBillow",tolua_bind_anl_CKernel_simpleBillow00);
+  tolua_function(tolua_S,"getKernel",tolua_bind_anl_CKernel_getKernel00);
+  tolua_function(tolua_S,"lastIndex",tolua_bind_anl_CKernel_lastIndex00);
+  tolua_function(tolua_S,"nextIndex",tolua_bind_anl_CKernel_nextIndex00);
+  tolua_function(tolua_S,"getVar",tolua_bind_anl_CKernel_getVar00);
+  tolua_function(tolua_S,"setVar",tolua_bind_anl_CKernel_setVar00);
  tolua_endmodule(tolua_S);
  #ifdef __cplusplus
  tolua_cclass(tolua_S,"SRGBA","SRGBA","",tolua_collect_SRGBA);
@@ -11152,19 +11152,19 @@ TOLUA_API int tolua_bind_anl_open (lua_State* tolua_S)
  tolua_cclass(tolua_S,"SRGBA","SRGBA","",NULL);
  #endif
  tolua_beginmodule(tolua_S,"SRGBA");
-  tolua_function(tolua_S,"new",tolua__SRGBA_new00);
-  tolua_function(tolua_S,"new_local",tolua__SRGBA_new00_local);
-  tolua_function(tolua_S,".call",tolua__SRGBA_new00_local);
-  tolua_function(tolua_S,"new",tolua__SRGBA_new01);
-  tolua_function(tolua_S,"new_local",tolua__SRGBA_new01_local);
-  tolua_function(tolua_S,".call",tolua__SRGBA_new01_local);
-  tolua_function(tolua_S,"new",tolua__SRGBA_new02);
-  tolua_function(tolua_S,"new_local",tolua__SRGBA_new02_local);
-  tolua_function(tolua_S,".call",tolua__SRGBA_new02_local);
-  tolua_function(tolua_S,"new",tolua__SRGBA_new03);
-  tolua_function(tolua_S,"new_local",tolua__SRGBA_new03_local);
-  tolua_function(tolua_S,".call",tolua__SRGBA_new03_local);
-  tolua_function(tolua_S,"delete",tolua__SRGBA_delete00);
+  tolua_function(tolua_S,"new",tolua_bind_anl_SRGBA_new00);
+  tolua_function(tolua_S,"new_local",tolua_bind_anl_SRGBA_new00_local);
+  tolua_function(tolua_S,".call",tolua_bind_anl_SRGBA_new00_local);
+  tolua_function(tolua_S,"new",tolua_bind_anl_SRGBA_new01);
+  tolua_function(tolua_S,"new_local",tolua_bind_anl_SRGBA_new01_local);
+  tolua_function(tolua_S,".call",tolua_bind_anl_SRGBA_new01_local);
+  tolua_function(tolua_S,"new",tolua_bind_anl_SRGBA_new02);
+  tolua_function(tolua_S,"new_local",tolua_bind_anl_SRGBA_new02_local);
+  tolua_function(tolua_S,".call",tolua_bind_anl_SRGBA_new02_local);
+  tolua_function(tolua_S,"new",tolua_bind_anl_SRGBA_new03);
+  tolua_function(tolua_S,"new_local",tolua_bind_anl_SRGBA_new03_local);
+  tolua_function(tolua_S,".call",tolua_bind_anl_SRGBA_new03_local);
+  tolua_function(tolua_S,"delete",tolua_bind_anl_SRGBA_delete00);
   tolua_variable(tolua_S,"r",tolua_get_SRGBA_r,tolua_set_SRGBA_r);
   tolua_variable(tolua_S,"g",tolua_get_SRGBA_g,tolua_set_SRGBA_g);
   tolua_variable(tolua_S,"b",tolua_get_SRGBA_b,tolua_set_SRGBA_b);
@@ -11178,10 +11178,10 @@ TOLUA_API int tolua_bind_anl_open (lua_State* tolua_S)
  tolua_beginmodule(tolua_S,"SVMOutput");
   tolua_variable(tolua_S,"outfloat_",tolua_get_SVMOutput_outfloat_,tolua_set_SVMOutput_outfloat_);
   tolua_variable(tolua_S,"outrgba_",tolua_get_SVMOutput_outrgba_,tolua_set_SVMOutput_outrgba_);
-  tolua_function(tolua_S,"new",tolua__SVMOutput_new00);
-  tolua_function(tolua_S,"new_local",tolua__SVMOutput_new00_local);
-  tolua_function(tolua_S,".call",tolua__SVMOutput_new00_local);
-  tolua_function(tolua_S,"delete",tolua__SVMOutput_delete00);
+  tolua_function(tolua_S,"new",tolua_bind_anl_SVMOutput_new00);
+  tolua_function(tolua_S,"new_local",tolua_bind_anl_SVMOutput_new00_local);
+  tolua_function(tolua_S,".call",tolua_bind_anl_SVMOutput_new00_local);
+  tolua_function(tolua_S,"delete",tolua_bind_anl_SVMOutput_delete00);
  tolua_endmodule(tolua_S);
  #ifdef __cplusplus
  tolua_cclass(tolua_S,"CNoiseExecutor","CNoiseExecutor","",tolua_collect_CNoiseExecutor);
@@ -11189,20 +11189,20 @@ TOLUA_API int tolua_bind_anl_open (lua_State* tolua_S)
  tolua_cclass(tolua_S,"CNoiseExecutor","CNoiseExecutor","",NULL);
  #endif
  tolua_beginmodule(tolua_S,"CNoiseExecutor");
-  tolua_function(tolua_S,"new",tolua__CNoiseExecutor_new00);
-  tolua_function(tolua_S,"new_local",tolua__CNoiseExecutor_new00_local);
-  tolua_function(tolua_S,".call",tolua__CNoiseExecutor_new00_local);
-  tolua_function(tolua_S,"delete",tolua__CNoiseExecutor_delete00);
-  tolua_function(tolua_S,"evaluate",tolua__CNoiseExecutor_evaluate00);
-  tolua_function(tolua_S,"evaluateAt",tolua__CNoiseExecutor_evaluateAt00);
-  tolua_function(tolua_S,"evaluateScalar",tolua__CNoiseExecutor_evaluateScalar00);
-  tolua_function(tolua_S,"evaluateScalar",tolua__CNoiseExecutor_evaluateScalar01);
-  tolua_function(tolua_S,"evaluateScalar",tolua__CNoiseExecutor_evaluateScalar02);
-  tolua_function(tolua_S,"evaluateScalar",tolua__CNoiseExecutor_evaluateScalar03);
-  tolua_function(tolua_S,"evaluateColor",tolua__CNoiseExecutor_evaluateColor00);
-  tolua_function(tolua_S,"evaluateColor",tolua__CNoiseExecutor_evaluateColor01);
-  tolua_function(tolua_S,"evaluateColor",tolua__CNoiseExecutor_evaluateColor02);
-  tolua_function(tolua_S,"evaluateColor",tolua__CNoiseExecutor_evaluateColor03);
+  tolua_function(tolua_S,"new",tolua_bind_anl_CNoiseExecutor_new00);
+  tolua_function(tolua_S,"new_local",tolua_bind_anl_CNoiseExecutor_new00_local);
+  tolua_function(tolua_S,".call",tolua_bind_anl_CNoiseExecutor_new00_local);
+  tolua_function(tolua_S,"delete",tolua_bind_anl_CNoiseExecutor_delete00);
+  tolua_function(tolua_S,"evaluate",tolua_bind_anl_CNoiseExecutor_evaluate00);
+  tolua_function(tolua_S,"evaluateAt",tolua_bind_anl_CNoiseExecutor_evaluateAt00);
+  tolua_function(tolua_S,"evaluateScalar",tolua_bind_anl_CNoiseExecutor_evaluateScalar00);
+  tolua_function(tolua_S,"evaluateScalar",tolua_bind_anl_CNoiseExecutor_evaluateScalar01);
+  tolua_function(tolua_S,"evaluateScalar",tolua_bind_anl_CNoiseExecutor_evaluateScalar02);
+  tolua_function(tolua_S,"evaluateScalar",tolua_bind_anl_CNoiseExecutor_evaluateScalar03);
+  tolua_function(tolua_S,"evaluateColor",tolua_bind_anl_CNoiseExecutor_evaluateColor00);
+  tolua_function(tolua_S,"evaluateColor",tolua_bind_anl_CNoiseExecutor_evaluateColor01);
+  tolua_function(tolua_S,"evaluateColor",tolua_bind_anl_CNoiseExecutor_evaluateColor02);
+  tolua_function(tolua_S,"evaluateColor",tolua_bind_anl_CNoiseExecutor_evaluateColor03);
  tolua_endmodule(tolua_S);
  tolua_constant(tolua_S,"SEAMLESS_NONE",SEAMLESS_NONE);
  tolua_constant(tolua_S,"SEAMLESS_X",SEAMLESS_X);
@@ -11218,19 +11218,19 @@ TOLUA_API int tolua_bind_anl_open (lua_State* tolua_S)
  tolua_cclass(tolua_S,"SMappingRanges","SMappingRanges","",NULL);
  #endif
  tolua_beginmodule(tolua_S,"SMappingRanges");
-  tolua_function(tolua_S,"new",tolua__SMappingRanges_new00);
-  tolua_function(tolua_S,"new_local",tolua__SMappingRanges_new00_local);
-  tolua_function(tolua_S,".call",tolua__SMappingRanges_new00_local);
-  tolua_function(tolua_S,"new",tolua__SMappingRanges_new01);
-  tolua_function(tolua_S,"new_local",tolua__SMappingRanges_new01_local);
-  tolua_function(tolua_S,".call",tolua__SMappingRanges_new01_local);
-  tolua_function(tolua_S,"new",tolua__SMappingRanges_new02);
-  tolua_function(tolua_S,"new_local",tolua__SMappingRanges_new02_local);
-  tolua_function(tolua_S,".call",tolua__SMappingRanges_new02_local);
-  tolua_function(tolua_S,"new",tolua__SMappingRanges_new03);
-  tolua_function(tolua_S,"new_local",tolua__SMappingRanges_new03_local);
-  tolua_function(tolua_S,".call",tolua__SMappingRanges_new03_local);
-  tolua_function(tolua_S,"delete",tolua__SMappingRanges_delete00);
+  tolua_function(tolua_S,"new",tolua_bind_anl_SMappingRanges_new00);
+  tolua_function(tolua_S,"new_local",tolua_bind_anl_SMappingRanges_new00_local);
+  tolua_function(tolua_S,".call",tolua_bind_anl_SMappingRanges_new00_local);
+  tolua_function(tolua_S,"new",tolua_bind_anl_SMappingRanges_new01);
+  tolua_function(tolua_S,"new_local",tolua_bind_anl_SMappingRanges_new01_local);
+  tolua_function(tolua_S,".call",tolua_bind_anl_SMappingRanges_new01_local);
+  tolua_function(tolua_S,"new",tolua_bind_anl_SMappingRanges_new02);
+  tolua_function(tolua_S,"new_local",tolua_bind_anl_SMappingRanges_new02_local);
+  tolua_function(tolua_S,".call",tolua_bind_anl_SMappingRanges_new02_local);
+  tolua_function(tolua_S,"new",tolua_bind_anl_SMappingRanges_new03);
+  tolua_function(tolua_S,"new_local",tolua_bind_anl_SMappingRanges_new03_local);
+  tolua_function(tolua_S,".call",tolua_bind_anl_SMappingRanges_new03_local);
+  tolua_function(tolua_S,"delete",tolua_bind_anl_SMappingRanges_delete00);
   tolua_variable(tolua_S,"mapx0",tolua_get_SMappingRanges_mapx0,tolua_set_SMappingRanges_mapx0);
   tolua_variable(tolua_S,"mapy0",tolua_get_SMappingRanges_mapy0,tolua_set_SMappingRanges_mapy0);
   tolua_variable(tolua_S,"mapz0",tolua_get_SMappingRanges_mapz0,tolua_set_SMappingRanges_mapz0);
@@ -11250,17 +11250,17 @@ TOLUA_API int tolua_bind_anl_open (lua_State* tolua_S)
  tolua_cclass(tolua_S,"CExpressionBuilder","CExpressionBuilder","",NULL);
  #endif
  tolua_beginmodule(tolua_S,"CExpressionBuilder");
-  tolua_function(tolua_S,"new",tolua__CExpressionBuilder_new00);
-  tolua_function(tolua_S,"new_local",tolua__CExpressionBuilder_new00_local);
-  tolua_function(tolua_S,".call",tolua__CExpressionBuilder_new00_local);
-  tolua_function(tolua_S,"delete",tolua__CExpressionBuilder_delete00);
-  tolua_function(tolua_S,"eval",tolua__CExpressionBuilder_eval00);
-  tolua_function(tolua_S,"evalAndStore",tolua__CExpressionBuilder_evalAndStore00);
-  tolua_function(tolua_S,"store",tolua__CExpressionBuilder_store00);
-  tolua_function(tolua_S,"setRandomSeed",tolua__CExpressionBuilder_setRandomSeed00);
-  tolua_function(tolua_S,"storeVar",tolua__CExpressionBuilder_storeVar00);
-  tolua_function(tolua_S,"evalAndStoreVar",tolua__CExpressionBuilder_evalAndStoreVar00);
-  tolua_function(tolua_S,"retrieveVar",tolua__CExpressionBuilder_retrieveVar00);
+  tolua_function(tolua_S,"new",tolua_bind_anl_CExpressionBuilder_new00);
+  tolua_function(tolua_S,"new_local",tolua_bind_anl_CExpressionBuilder_new00_local);
+  tolua_function(tolua_S,".call",tolua_bind_anl_CExpressionBuilder_new00_local);
+  tolua_function(tolua_S,"delete",tolua_bind_anl_CExpressionBuilder_delete00);
+  tolua_function(tolua_S,"eval",tolua_bind_anl_CExpressionBuilder_eval00);
+  tolua_function(tolua_S,"evalAndStore",tolua_bind_anl_CExpressionBuilder_evalAndStore00);
+  tolua_function(tolua_S,"store",tolua_bind_anl_CExpressionBuilder_store00);
+  tolua_function(tolua_S,"setRandomSeed",tolua_bind_anl_CExpressionBuilder_setRandomSeed00);
+  tolua_function(tolua_S,"storeVar",tolua_bind_anl_CExpressionBuilder_storeVar00);
+  tolua_function(tolua_S,"evalAndStoreVar",tolua_bind_anl_CExpressionBuilder_evalAndStoreVar00);
+  tolua_function(tolua_S,"retrieveVar",tolua_bind_anl_CExpressionBuilder_retrieveVar00);
  tolua_endmodule(tolua_S);
  #ifdef __cplusplus
  tolua_cclass(tolua_S,"CArray2Dd","CArray2Dd","",tolua_collect_CArray2Dd);
@@ -11268,42 +11268,42 @@ TOLUA_API int tolua_bind_anl_open (lua_State* tolua_S)
  tolua_cclass(tolua_S,"CArray2Dd","CArray2Dd","",NULL);
  #endif
  tolua_beginmodule(tolua_S,"CArray2Dd");
-  tolua_function(tolua_S,"new",tolua__CArray2Dd_new00);
-  tolua_function(tolua_S,"new_local",tolua__CArray2Dd_new00_local);
-  tolua_function(tolua_S,".call",tolua__CArray2Dd_new00_local);
-  tolua_function(tolua_S,"new",tolua__CArray2Dd_new01);
-  tolua_function(tolua_S,"new_local",tolua__CArray2Dd_new01_local);
-  tolua_function(tolua_S,".call",tolua__CArray2Dd_new01_local);
-  tolua_function(tolua_S,"delete",tolua__CArray2Dd_delete00);
-  tolua_function(tolua_S,"resize",tolua__CArray2Dd_resize00);
-  tolua_function(tolua_S,"destroy",tolua__CArray2Dd_destroy00);
-  tolua_function(tolua_S,"width",tolua__CArray2Dd_width00);
-  tolua_function(tolua_S,"height",tolua__CArray2Dd_height00);
-  tolua_function(tolua_S,"set",tolua__CArray2Dd_set00);
-  tolua_function(tolua_S,"get",tolua__CArray2Dd_get00);
-  tolua_function(tolua_S,"get",tolua__CArray2Dd_get01);
-  tolua_function(tolua_S,"getIndexed",tolua__CArray2Dd_getIndexed00);
-  tolua_function(tolua_S,"fill",tolua__CArray2Dd_fill00);
-  tolua_function(tolua_S,"copyFrom",tolua__CArray2Dd_copyFrom00);
-  tolua_function(tolua_S,"addArray",tolua__CArray2Dd_addArray00);
-  tolua_function(tolua_S,"subtractArray",tolua__CArray2Dd_subtractArray00);
-  tolua_function(tolua_S,"multiplyArray",tolua__CArray2Dd_multiplyArray00);
-  tolua_function(tolua_S,"copyFromSub",tolua__CArray2Dd_copyFromSub00);
-  tolua_function(tolua_S,"addArraySub",tolua__CArray2Dd_addArraySub00);
-  tolua_function(tolua_S,"subtractArraySub",tolua__CArray2Dd_subtractArraySub00);
-  tolua_function(tolua_S,"multiplyArraySub",tolua__CArray2Dd_multiplyArraySub00);
-  tolua_function(tolua_S,"scale",tolua__CArray2Dd_scale00);
-  tolua_function(tolua_S,"getMax",tolua__CArray2Dd_getMax00);
-  tolua_function(tolua_S,"getMin",tolua__CArray2Dd_getMin00);
-  tolua_function(tolua_S,"scaleToRange",tolua__CArray2Dd_scaleToRange00);
-  tolua_function(tolua_S,"wrapCoords",tolua__CArray2Dd_wrapCoords00);
-  tolua_function(tolua_S,"offset",tolua__CArray2Dd_offset00);
-  tolua_function(tolua_S,"flipVertical",tolua__CArray2Dd_flipVertical00);
-  tolua_function(tolua_S,"flipHorizontal",tolua__CArray2Dd_flipHorizontal00);
-  tolua_function(tolua_S,"blur",tolua__CArray2Dd_blur00);
-  tolua_function(tolua_S,"subtractFilter",tolua__CArray2Dd_subtractFilter00);
-  tolua_function(tolua_S,"addFilter",tolua__CArray2Dd_addFilter00);
-  tolua_function(tolua_S,"scaleTo",tolua__CArray2Dd_scaleTo00);
+  tolua_function(tolua_S,"new",tolua_bind_anl_CArray2Dd_new00);
+  tolua_function(tolua_S,"new_local",tolua_bind_anl_CArray2Dd_new00_local);
+  tolua_function(tolua_S,".call",tolua_bind_anl_CArray2Dd_new00_local);
+  tolua_function(tolua_S,"new",tolua_bind_anl_CArray2Dd_new01);
+  tolua_function(tolua_S,"new_local",tolua_bind_anl_CArray2Dd_new01_local);
+  tolua_function(tolua_S,".call",tolua_bind_anl_CArray2Dd_new01_local);
+  tolua_function(tolua_S,"delete",tolua_bind_anl_CArray2Dd_delete00);
+  tolua_function(tolua_S,"resize",tolua_bind_anl_CArray2Dd_resize00);
+  tolua_function(tolua_S,"destroy",tolua_bind_anl_CArray2Dd_destroy00);
+  tolua_function(tolua_S,"width",tolua_bind_anl_CArray2Dd_width00);
+  tolua_function(tolua_S,"height",tolua_bind_anl_CArray2Dd_height00);
+  tolua_function(tolua_S,"set",tolua_bind_anl_CArray2Dd_set00);
+  tolua_function(tolua_S,"get",tolua_bind_anl_CArray2Dd_get00);
+  tolua_function(tolua_S,"get",tolua_bind_anl_CArray2Dd_get01);
+  tolua_function(tolua_S,"getIndexed",tolua_bind_anl_CArray2Dd_getIndexed00);
+  tolua_function(tolua_S,"fill",tolua_bind_anl_CArray2Dd_fill00);
+  tolua_function(tolua_S,"copyFrom",tolua_bind_anl_CArray2Dd_copyFrom00);
+  tolua_function(tolua_S,"addArray",tolua_bind_anl_CArray2Dd_addArray00);
+  tolua_function(tolua_S,"subtractArray",tolua_bind_anl_CArray2Dd_subtractArray00);
+  tolua_function(tolua_S,"multiplyArray",tolua_bind_anl_CArray2Dd_multiplyArray00);
+  tolua_function(tolua_S,"copyFromSub",tolua_bind_anl_CArray2Dd_copyFromSub00);
+  tolua_function(tolua_S,"addArraySub",tolua_bind_anl_CArray2Dd_addArraySub00);
+  tolua_function(tolua_S,"subtractArraySub",tolua_bind_anl_CArray2Dd_subtractArraySub00);
+  tolua_function(tolua_S,"multiplyArraySub",tolua_bind_anl_CArray2Dd_multiplyArraySub00);
+  tolua_function(tolua_S,"scale",tolua_bind_anl_CArray2Dd_scale00);
+  tolua_function(tolua_S,"getMax",tolua_bind_anl_CArray2Dd_getMax00);
+  tolua_function(tolua_S,"getMin",tolua_bind_anl_CArray2Dd_getMin00);
+  tolua_function(tolua_S,"scaleToRange",tolua_bind_anl_CArray2Dd_scaleToRange00);
+  tolua_function(tolua_S,"wrapCoords",tolua_bind_anl_CArray2Dd_wrapCoords00);
+  tolua_function(tolua_S,"offset",tolua_bind_anl_CArray2Dd_offset00);
+  tolua_function(tolua_S,"flipVertical",tolua_bind_anl_CArray2Dd_flipVertical00);
+  tolua_function(tolua_S,"flipHorizontal",tolua_bind_anl_CArray2Dd_flipHorizontal00);
+  tolua_function(tolua_S,"blur",tolua_bind_anl_CArray2Dd_blur00);
+  tolua_function(tolua_S,"subtractFilter",tolua_bind_anl_CArray2Dd_subtractFilter00);
+  tolua_function(tolua_S,"addFilter",tolua_bind_anl_CArray2Dd_addFilter00);
+  tolua_function(tolua_S,"scaleTo",tolua_bind_anl_CArray2Dd_scaleTo00);
  tolua_endmodule(tolua_S);
  #ifdef __cplusplus
  tolua_cclass(tolua_S,"CArray2Drgba","CArray2Drgba","",tolua_collect_CArray2Drgba);
@@ -11311,36 +11311,36 @@ TOLUA_API int tolua_bind_anl_open (lua_State* tolua_S)
  tolua_cclass(tolua_S,"CArray2Drgba","CArray2Drgba","",NULL);
  #endif
  tolua_beginmodule(tolua_S,"CArray2Drgba");
-  tolua_function(tolua_S,"new",tolua__CArray2Drgba_new00);
-  tolua_function(tolua_S,"new_local",tolua__CArray2Drgba_new00_local);
-  tolua_function(tolua_S,".call",tolua__CArray2Drgba_new00_local);
-  tolua_function(tolua_S,"new",tolua__CArray2Drgba_new01);
-  tolua_function(tolua_S,"new_local",tolua__CArray2Drgba_new01_local);
-  tolua_function(tolua_S,".call",tolua__CArray2Drgba_new01_local);
-  tolua_function(tolua_S,"delete",tolua__CArray2Drgba_delete00);
-  tolua_function(tolua_S,"resize",tolua__CArray2Drgba_resize00);
-  tolua_function(tolua_S,"destroy",tolua__CArray2Drgba_destroy00);
-  tolua_function(tolua_S,"width",tolua__CArray2Drgba_width00);
-  tolua_function(tolua_S,"height",tolua__CArray2Drgba_height00);
-  tolua_function(tolua_S,"set",tolua__CArray2Drgba_set00);
-  tolua_function(tolua_S,"get",tolua__CArray2Drgba_get00);
-  tolua_function(tolua_S,"get",tolua__CArray2Drgba_get01);
-  tolua_function(tolua_S,"getIndexed",tolua__CArray2Drgba_getIndexed00);
-  tolua_function(tolua_S,"fill",tolua__CArray2Drgba_fill00);
-  tolua_function(tolua_S,"copyFrom",tolua__CArray2Drgba_copyFrom00);
-  tolua_function(tolua_S,"addArray",tolua__CArray2Drgba_addArray00);
-  tolua_function(tolua_S,"subtractArray",tolua__CArray2Drgba_subtractArray00);
-  tolua_function(tolua_S,"multiplyArray",tolua__CArray2Drgba_multiplyArray00);
-  tolua_function(tolua_S,"copyFromSub",tolua__CArray2Drgba_copyFromSub00);
-  tolua_function(tolua_S,"addArraySub",tolua__CArray2Drgba_addArraySub00);
-  tolua_function(tolua_S,"subtractArraySub",tolua__CArray2Drgba_subtractArraySub00);
-  tolua_function(tolua_S,"multiplyArraySub",tolua__CArray2Drgba_multiplyArraySub00);
-  tolua_function(tolua_S,"scale",tolua__CArray2Drgba_scale00);
-  tolua_function(tolua_S,"wrapCoords",tolua__CArray2Drgba_wrapCoords00);
-  tolua_function(tolua_S,"offset",tolua__CArray2Drgba_offset00);
-  tolua_function(tolua_S,"flipVertical",tolua__CArray2Drgba_flipVertical00);
-  tolua_function(tolua_S,"flipHorizontal",tolua__CArray2Drgba_flipHorizontal00);
-  tolua_function(tolua_S,"blur",tolua__CArray2Drgba_blur00);
+  tolua_function(tolua_S,"new",tolua_bind_anl_CArray2Drgba_new00);
+  tolua_function(tolua_S,"new_local",tolua_bind_anl_CArray2Drgba_new00_local);
+  tolua_function(tolua_S,".call",tolua_bind_anl_CArray2Drgba_new00_local);
+  tolua_function(tolua_S,"new",tolua_bind_anl_CArray2Drgba_new01);
+  tolua_function(tolua_S,"new_local",tolua_bind_anl_CArray2Drgba_new01_local);
+  tolua_function(tolua_S,".call",tolua_bind_anl_CArray2Drgba_new01_local);
+  tolua_function(tolua_S,"delete",tolua_bind_anl_CArray2Drgba_delete00);
+  tolua_function(tolua_S,"resize",tolua_bind_anl_CArray2Drgba_resize00);
+  tolua_function(tolua_S,"destroy",tolua_bind_anl_CArray2Drgba_destroy00);
+  tolua_function(tolua_S,"width",tolua_bind_anl_CArray2Drgba_width00);
+  tolua_function(tolua_S,"height",tolua_bind_anl_CArray2Drgba_height00);
+  tolua_function(tolua_S,"set",tolua_bind_anl_CArray2Drgba_set00);
+  tolua_function(tolua_S,"get",tolua_bind_anl_CArray2Drgba_get00);
+  tolua_function(tolua_S,"get",tolua_bind_anl_CArray2Drgba_get01);
+  tolua_function(tolua_S,"getIndexed",tolua_bind_anl_CArray2Drgba_getIndexed00);
+  tolua_function(tolua_S,"fill",tolua_bind_anl_CArray2Drgba_fill00);
+  tolua_function(tolua_S,"copyFrom",tolua_bind_anl_CArray2Drgba_copyFrom00);
+  tolua_function(tolua_S,"addArray",tolua_bind_anl_CArray2Drgba_addArray00);
+  tolua_function(tolua_S,"subtractArray",tolua_bind_anl_CArray2Drgba_subtractArray00);
+  tolua_function(tolua_S,"multiplyArray",tolua_bind_anl_CArray2Drgba_multiplyArray00);
+  tolua_function(tolua_S,"copyFromSub",tolua_bind_anl_CArray2Drgba_copyFromSub00);
+  tolua_function(tolua_S,"addArraySub",tolua_bind_anl_CArray2Drgba_addArraySub00);
+  tolua_function(tolua_S,"subtractArraySub",tolua_bind_anl_CArray2Drgba_subtractArraySub00);
+  tolua_function(tolua_S,"multiplyArraySub",tolua_bind_anl_CArray2Drgba_multiplyArraySub00);
+  tolua_function(tolua_S,"scale",tolua_bind_anl_CArray2Drgba_scale00);
+  tolua_function(tolua_S,"wrapCoords",tolua_bind_anl_CArray2Drgba_wrapCoords00);
+  tolua_function(tolua_S,"offset",tolua_bind_anl_CArray2Drgba_offset00);
+  tolua_function(tolua_S,"flipVertical",tolua_bind_anl_CArray2Drgba_flipVertical00);
+  tolua_function(tolua_S,"flipHorizontal",tolua_bind_anl_CArray2Drgba_flipHorizontal00);
+  tolua_function(tolua_S,"blur",tolua_bind_anl_CArray2Drgba_blur00);
  tolua_endmodule(tolua_S);
  #ifdef __cplusplus
  tolua_cclass(tolua_S,"CArray3Dd","CArray3Dd","",tolua_collect_CArray3Dd);
@@ -11348,19 +11348,19 @@ TOLUA_API int tolua_bind_anl_open (lua_State* tolua_S)
  tolua_cclass(tolua_S,"CArray3Dd","CArray3Dd","",NULL);
  #endif
  tolua_beginmodule(tolua_S,"CArray3Dd");
-  tolua_function(tolua_S,"new",tolua__CArray3Dd_new00);
-  tolua_function(tolua_S,"new_local",tolua__CArray3Dd_new00_local);
-  tolua_function(tolua_S,".call",tolua__CArray3Dd_new00_local);
-  tolua_function(tolua_S,"new",tolua__CArray3Dd_new01);
-  tolua_function(tolua_S,"new_local",tolua__CArray3Dd_new01_local);
-  tolua_function(tolua_S,".call",tolua__CArray3Dd_new01_local);
-  tolua_function(tolua_S,"delete",tolua__CArray3Dd_delete00);
-  tolua_function(tolua_S,"width",tolua__CArray3Dd_width00);
-  tolua_function(tolua_S,"height",tolua__CArray3Dd_height00);
-  tolua_function(tolua_S,"depth",tolua__CArray3Dd_depth00);
-  tolua_function(tolua_S,"set",tolua__CArray3Dd_set00);
-  tolua_function(tolua_S,"get",tolua__CArray3Dd_get00);
-  tolua_function(tolua_S,"resize",tolua__CArray3Dd_resize00);
+  tolua_function(tolua_S,"new",tolua_bind_anl_CArray3Dd_new00);
+  tolua_function(tolua_S,"new_local",tolua_bind_anl_CArray3Dd_new00_local);
+  tolua_function(tolua_S,".call",tolua_bind_anl_CArray3Dd_new00_local);
+  tolua_function(tolua_S,"new",tolua_bind_anl_CArray3Dd_new01);
+  tolua_function(tolua_S,"new_local",tolua_bind_anl_CArray3Dd_new01_local);
+  tolua_function(tolua_S,".call",tolua_bind_anl_CArray3Dd_new01_local);
+  tolua_function(tolua_S,"delete",tolua_bind_anl_CArray3Dd_delete00);
+  tolua_function(tolua_S,"width",tolua_bind_anl_CArray3Dd_width00);
+  tolua_function(tolua_S,"height",tolua_bind_anl_CArray3Dd_height00);
+  tolua_function(tolua_S,"depth",tolua_bind_anl_CArray3Dd_depth00);
+  tolua_function(tolua_S,"set",tolua_bind_anl_CArray3Dd_set00);
+  tolua_function(tolua_S,"get",tolua_bind_anl_CArray3Dd_get00);
+  tolua_function(tolua_S,"resize",tolua_bind_anl_CArray3Dd_resize00);
  tolua_endmodule(tolua_S);
  #ifdef __cplusplus
  tolua_cclass(tolua_S,"CArray3Drgba","CArray3Drgba","",tolua_collect_CArray3Drgba);
@@ -11368,41 +11368,41 @@ TOLUA_API int tolua_bind_anl_open (lua_State* tolua_S)
  tolua_cclass(tolua_S,"CArray3Drgba","CArray3Drgba","",NULL);
  #endif
  tolua_beginmodule(tolua_S,"CArray3Drgba");
-  tolua_function(tolua_S,"new",tolua__CArray3Drgba_new00);
-  tolua_function(tolua_S,"new_local",tolua__CArray3Drgba_new00_local);
-  tolua_function(tolua_S,".call",tolua__CArray3Drgba_new00_local);
-  tolua_function(tolua_S,"new",tolua__CArray3Drgba_new01);
-  tolua_function(tolua_S,"new_local",tolua__CArray3Drgba_new01_local);
-  tolua_function(tolua_S,".call",tolua__CArray3Drgba_new01_local);
-  tolua_function(tolua_S,"delete",tolua__CArray3Drgba_delete00);
-  tolua_function(tolua_S,"width",tolua__CArray3Drgba_width00);
-  tolua_function(tolua_S,"height",tolua__CArray3Drgba_height00);
-  tolua_function(tolua_S,"depth",tolua__CArray3Drgba_depth00);
-  tolua_function(tolua_S,"resize",tolua__CArray3Drgba_resize00);
-  tolua_function(tolua_S,"set",tolua__CArray3Drgba_set00);
-  tolua_function(tolua_S,"get",tolua__CArray3Drgba_get00);
+  tolua_function(tolua_S,"new",tolua_bind_anl_CArray3Drgba_new00);
+  tolua_function(tolua_S,"new_local",tolua_bind_anl_CArray3Drgba_new00_local);
+  tolua_function(tolua_S,".call",tolua_bind_anl_CArray3Drgba_new00_local);
+  tolua_function(tolua_S,"new",tolua_bind_anl_CArray3Drgba_new01);
+  tolua_function(tolua_S,"new_local",tolua_bind_anl_CArray3Drgba_new01_local);
+  tolua_function(tolua_S,".call",tolua_bind_anl_CArray3Drgba_new01_local);
+  tolua_function(tolua_S,"delete",tolua_bind_anl_CArray3Drgba_delete00);
+  tolua_function(tolua_S,"width",tolua_bind_anl_CArray3Drgba_width00);
+  tolua_function(tolua_S,"height",tolua_bind_anl_CArray3Drgba_height00);
+  tolua_function(tolua_S,"depth",tolua_bind_anl_CArray3Drgba_depth00);
+  tolua_function(tolua_S,"resize",tolua_bind_anl_CArray3Drgba_resize00);
+  tolua_function(tolua_S,"set",tolua_bind_anl_CArray3Drgba_set00);
+  tolua_function(tolua_S,"get",tolua_bind_anl_CArray3Drgba_get00);
  tolua_endmodule(tolua_S);
- tolua_function(tolua_S,"map2D",tolua__map2D00);
- tolua_function(tolua_S,"map2DNoZ",tolua__map2DNoZ00);
- tolua_function(tolua_S,"map3D",tolua__map3D00);
- tolua_function(tolua_S,"mapRGBA2D",tolua__mapRGBA2D00);
- tolua_function(tolua_S,"mapRGBA2DNoZ",tolua__mapRGBA2DNoZ00);
- tolua_function(tolua_S,"mapRGBA3D",tolua__mapRGBA3D00);
- tolua_function(tolua_S,"saveDoubleArray",tolua__saveDoubleArray00);
- tolua_function(tolua_S,"saveHeightmap",tolua__saveHeightmap00);
- tolua_function(tolua_S,"saveRGBAArray",tolua__saveRGBAArray00);
- tolua_function(tolua_S,"loadDoubleArray",tolua__loadDoubleArray00);
- tolua_function(tolua_S,"loadRGBAArray",tolua__loadRGBAArray00);
- tolua_function(tolua_S,"simpleErode",tolua__simpleErode00);
- tolua_function(tolua_S,"calcNormalMap",tolua__calcNormalMap00);
- tolua_function(tolua_S,"calcBumpMap",tolua__calcBumpMap00);
+ tolua_function(tolua_S,"map2D",tolua_bind_anl_map2D00);
+ tolua_function(tolua_S,"map2DNoZ",tolua_bind_anl_map2DNoZ00);
+ tolua_function(tolua_S,"map3D",tolua_bind_anl_map3D00);
+ tolua_function(tolua_S,"mapRGBA2D",tolua_bind_anl_mapRGBA2D00);
+ tolua_function(tolua_S,"mapRGBA2DNoZ",tolua_bind_anl_mapRGBA2DNoZ00);
+ tolua_function(tolua_S,"mapRGBA3D",tolua_bind_anl_mapRGBA3D00);
+ tolua_function(tolua_S,"saveDoubleArray",tolua_bind_anl_saveDoubleArray00);
+ tolua_function(tolua_S,"saveHeightmap",tolua_bind_anl_saveHeightmap00);
+ tolua_function(tolua_S,"saveRGBAArray",tolua_bind_anl_saveRGBAArray00);
+ tolua_function(tolua_S,"loadDoubleArray",tolua_bind_anl_loadDoubleArray00);
+ tolua_function(tolua_S,"loadRGBAArray",tolua_bind_anl_loadRGBAArray00);
+ tolua_function(tolua_S,"simpleErode",tolua_bind_anl_simpleErode00);
+ tolua_function(tolua_S,"calcNormalMap",tolua_bind_anl_calcNormalMap00);
+ tolua_function(tolua_S,"calcBumpMap",tolua_bind_anl_calcBumpMap00);
  tolua_endmodule(tolua_S);
  return 1;
 }
 
 
 #if defined(LUA_VERSION_NUM) && LUA_VERSION_NUM >= 501
- TOLUA_API int luaopen_ (lua_State* tolua_S) {
+ TOLUA_API int luaopen_bind_anl (lua_State* tolua_S) {
  return tolua_bind_anl_open(tolua_S);
 };
 #endif

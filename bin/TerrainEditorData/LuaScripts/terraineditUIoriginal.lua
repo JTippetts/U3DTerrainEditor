@@ -31,6 +31,7 @@ function TerrainEditUI:BuildUI()
 	self.blendbrush=scene_:CreateScriptObject("TerrainSelectUI")
 	
 	self.nodegraph=scene_:CreateScriptObject("NodeGraphUI")
+	self.nodegroup=self.nodegraph:CreateNodeGroup()
 	self.nodegraph:Deactivate()
 	
 	
@@ -70,93 +71,12 @@ function TerrainEditUI:Start()
 end
 
 function TerrainEditUI:NewTerrain(width, height, blendwidth, blendheight, triplanar, smoothing, normalmapping)
-	--[[if TerrainState.terrainNode then TerrainState.terrainNode:Remove() end
-	
-	TerrainState.terrainNode=scene_:CreateChild()
-	TerrainState.terrain=TerrainState.terrainNode:CreateComponent("Terrain")
-	TerrainState.terrain.patchSize=64
-	TerrainState.terrain.spacing=Vector3(1,0.5,1)
-	TerrainState.terrain.smoothing=true
-	
-	if TerrainState.hmap then TerrainState.hmap:delete() end
-	TerrainState.hmap=Image:new(context)
-	TerrainState.hmap:SetSize(width, height, 3)
-	TerrainState.hmap:Clear(Color(0,0,0))
-	TerrainState.terrain.heightMap=TerrainState.hmap
-	TerrainState.terrain.castShadows=true
-	
-	self:SetMaterial(blendwidth, blendheight, triplanar, smoothing, normalmapping)]]
 	print("setting up new terrain.")
 	TerrainState:Initialize(scene_,width,height,blendwidth,blendheight,Vector3(1,0.5,1),true)
 	print("terrain set up")
 end
 
 function TerrainEditUI:SetMaterial(blendwidth, blendheight, triplanar, smoothing, normalmapping)
-	--[[if triplanar then
-		if smoothing then
-			if normalmapping then
-				TerrainState.terrainMaterial=cache:GetResource("Material", "Materials/TerrainEdit8TriplanarSmoothBump.xml")
-			else
-				TerrainState.terrainMaterial=cache:GetResource("Material", "Materials/TerrainEdit8TriplanarSmooth.xml")
-			end
-		else
-			if normalmapping then
-				TerrainState.terrainMaterial=cache:GetResource("Material", "Materials/TerrainEdit8TriplanarBump.xml")
-			else
-				TerrainState.terrainMaterial=cache:GetResource("Material", "Materials/TerrainEdit8Triplanar.xml")
-			end
-		end
-	else
-		if smoothing then
-			if normalmapping then
-				TerrainState.terrainMaterial=cache:GetResource("Material", "Materials/TerrainEdit8SmoothBump.xml")
-			else
-				TerrainState.terrainMaterial=cache:GetResource("Material", "Materials/TerrainEdit8Smooth.xml")
-			end
-		else
-			if normalmapping then
-				TerrainState.terrainMaterial=cache:GetResource("Material", "Materials/TerrainEdit8Bump.xml")
-			else
-				TerrainState.terrainMaterial=cache:GetResource("Material", "Materials/TerrainEdit8.xml")
-			end
-		end
-	end
-	
-	if TerrainState.blendtex1 then TerrainState.blendtex1:delete() end
-	if TerrainState.blendtex2 then TerrainState.blendtex2:delete() end
-	if TerrainState.blend1 then TerrainState.blend1:delete() end
-	if TerrainState.blend2 then TerrainState.blend2:delete() end
-	
-	TerrainState.blend1=Image:new(context)
-	TerrainState.blend1:SetSize(blendwidth, blendheight, 4)
-	TerrainState.blend2=Image:new(context)
-	TerrainState.blend2:SetSize(blendwidth, blendheight, 4)
-	TerrainState.blendtex1=Texture2D:new(context)
-	TerrainState.blendtex2=Texture2D:new(context)
-	TerrainState.blend1:Clear(Color(1,0,0,0))
-	TerrainState.blend2:Clear(Color(0,0,0,0))
-	TerrainState.blendtex1:SetData(TerrainState.blend1, false)
-	TerrainState.blendtex2:SetData(TerrainState.blend2, false)
-	
-	
-	if TerrainState.masktex then TerrainState.masktex:delete() end
-	if TerrainState.mask then TerrainState.mask:delete() end
-	
-	TerrainState.mask=Image:new(context)
-	TerrainState.mask:SetSize(blendwidth, blendheight, 3)
-	TerrainState.masktex=Texture2D:new(context)
-	TerrainState.mask:Clear(Color(1,1,1))
-	TerrainState.masktex:SetData(TerrainState.mask, false)
-	
-	if TerrainState.terrainMaterial then
-		TerrainState.terrainMaterial:SetTexture(0, TerrainState.blendtex1)
-		TerrainState.terrainMaterial:SetTexture(1, TerrainState.blendtex2)
-		TerrainState.terrainMaterial:SetTexture(4, TerrainState.masktex)
-		
-		if TerrainState.terrain then
-			TerrainState.terrain.material=TerrainState.terrainMaterial
-		end
-	end]]
 	
 end
 
@@ -305,7 +225,7 @@ function TerrainEditUI:Update(dt)
 		end
 		self:UpdateWaypointVis()
 	elseif input:GetKeyPress(KEY_N) then
-		self.nodegraph:Activate()
+		self.nodegraph:Activate(self.nodegroup)
 	elseif input:GetKeyPress(KEY_M) then
 		self.nodegraph:Deactivate()
 	end

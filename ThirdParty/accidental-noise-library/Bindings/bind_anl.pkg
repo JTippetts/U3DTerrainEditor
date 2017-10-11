@@ -112,7 +112,7 @@ class CInstructionListType
 
         CInstructionIndex constant(double val);
 		CInstructionIndex seed(unsigned int val);
-		CInstructionIndex seeder(CInstructionIndex src, unsigned int val);
+		CInstructionIndex seeder(CInstructionIndex seed, CInstructionIndex src);
         CInstructionIndex valueBasis(CInstructionIndex interpindex, CInstructionIndex seed);
         CInstructionIndex gradientBasis(CInstructionIndex interpindex, CInstructionIndex seed);
         CInstructionIndex simplexBasis(CInstructionIndex seed);

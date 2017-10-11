@@ -7,12 +7,10 @@ function GetSourceFromNode(node, inputname)
 		if link then
 			local src=link:GetSource()
 			if src then
-				print("Got root")
 				return src:GetRoot()
 			end
 		end
 	end
-	print("Couldn't get source from node.")
 	return false
 end
 
@@ -49,11 +47,10 @@ function PackNodeGraph(output)
 			local s=GetSourceFromNode(n,"Input"..which)
 			local s1
 			if s then s1=kernelindices[nodeindex(s)]
-			else local c=tonumber(n:GetChild("Value"..which,true).text) or 1.0 s1=kernel:seed(c) end
+			else local c=tonumber(n:GetChild("Value"..which,true).text) or 12345 s1=kernel:seed(c) end
 			return s1
 		end
 		
-		print("Instancing "..n.name)
 		if n.name=="Output" then
 			local s1
 			local s1=GetValue(n,0)
@@ -175,6 +172,10 @@ function PackNodeGraph(output)
 			local exp=n:GetChild("Value",true).text
 			eb:eval(exp)
 			return kernel:lastIndex()
+		elseif n.name=="Seeder" then
+			--local val=tonumber(n:GetChild("Seed",true).text)
+			local s1,s2=GetSeed(n,0),GetValue(n,1)
+			return kernel:seeder(s1,s2)
 		end
 	end
 	
@@ -191,7 +192,8 @@ function PackNodeGraph(output)
 			end
 		end
 		
-		if n.name=="Arithmetic" or n.name=="Derivative" or n.name=="Tiers" or n.name=="ValueBasis" or n.name=="GradientBasis" or n.name=="TranslateDomain" or n.name=="ScaleDomain" then
+		if n.name=="Arithmetic" or n.name=="Derivative" or n.name=="Tiers" or n.name=="ValueBasis" or n.name=="GradientBasis" or n.name=="TranslateDomain" or n.name=="ScaleDomain" or
+			n.name=="Seeder" then
 			visitnode(n,2)
 		elseif n.name=="ScalarMath" or n.name=="Output" or n.name=="SimplexBasis" then
 			visitnode(n,1)
@@ -216,30 +218,9 @@ end
 NodeGraphUI=ScriptObject()
 
 function NodeGraphUI:Start()
-	self.pane=ui.root:CreateChild("Window")
-	self.pane.size=IntVector2(graphics.width*2, graphics.height*2)
-	self.pane.position=IntVector2(-graphics.width/2, -graphics.height/2)
-	self.pane:SetImageRect(IntRect(208,0,223,15))
-	self.pane:SetImageBorder(IntRect(4,4,4,4))
-	self.pane:SetTexture(cache:GetResource("Texture2D", "Textures/UI.png"))
-	self.pane.opacity=0.75
-	self.pane.bringToFront=true
-	self.pane.movable=true
-	
-	self.linkpane=self.pane:CreateChild("NodeGraphLinkPane")
-	self.linkpane.size=IntVector2(graphics.width*2, graphics.height*2)
-	self.linkpane.visible=true
-	self.linkpane.texture=cache:GetResource("Texture2D", "Data/Textures/UI.png")
-	
-	self.previewtex=Texture2D:new()
-	self.previewimg=Image()
-	self.previewimg:SetSize(256,256,3)
-	self.previewimg:Clear(Color(0,0,0))
-	self.previewtex:SetData(self.previewimg,false)
-	
-	
 	self.createnodemenu=ui:LoadLayout(cache:GetResource("XMLFile", "UI/CreateNodeMenu.xml"))
-	self.pane:AddChild(self.createnodemenu)
+	--self.pane:AddChild(self.createnodemenu)
+	
 	self:SubscribeToEvent(self.createnodemenu:GetChild("Arithmetic", true), "Pressed", "NodeGraphUI:HandleCreateNode")
 	self:SubscribeToEvent(self.createnodemenu:GetChild("ScalarMath", true), "Pressed", "NodeGraphUI:HandleCreateNode")
 	self:SubscribeToEvent(self.createnodemenu:GetChild("Constant", true), "Pressed", "NodeGraphUI:HandleCreateNode")
@@ -258,6 +239,7 @@ function NodeGraphUI:Start()
 	self:SubscribeToEvent(self.createnodemenu:GetChild("SmoothStep", true), "Pressed", "NodeGraphUI:HandleCreateNode")
 	self:SubscribeToEvent(self.createnodemenu:GetChild("Mix", true), "Pressed", "NodeGraphUI:HandleCreateNode")
 	self:SubscribeToEvent(self.createnodemenu:GetChild("Expression", true), "Pressed", "NodeGraphUI:HandleCreateNode")
+	self:SubscribeToEvent(self.createnodemenu:GetChild("Seeder", true), "Pressed", "NodeGraphUI:HandleCreateNode")
 	
 	self.createnodemenu.visible=false
 	
@@ -265,93 +247,201 @@ function NodeGraphUI:Start()
 	self:SubscribeToEvent(cnmclose, "Pressed", "NodeGraphUI:HandleCloseCreateNodeMenu")
 	self:SubscribeToEvent("KeyDown", "NodeGraphUI:HandleKeyDown")
 	
-	self.nodegroup=
-	{
-		output=self:OutputNode(),
-		nodes=
-		{
-		}
-	}
-	self.nodegroup.output.position=IntVector2(graphics.width, graphics.height)
+	self.nodegroup=nil
 	self.cursortarget=cursor:CreateChild("NodeGraphLinkDest")
-	self.nodegroup.output:GetChild("Preview",true).texture=self.previewtex
-	self:SubscribeToEvent(self.nodegroup.output:GetChild("Generate",true),"Pressed","NodeGraphUI:HandleGenerate")
+	
+	self.nodegroupslist=ui:LoadLayout(cache:GetResource("XMLFile", "UI/NoiseNodeGroups.xml"))
+	ui.root:AddChild(self.nodegroupslist)
+	--self:SubscribeToEvent(self.nodegroupslist:GetChild("New", true), "Pressed", "NodeGraphUI:HandleNewGroup")
+	--self:SubscribeToEvent(self.nodegroupslist:GetChild("Open", true), "Pressed", "NodeGraphUI:HandleOpenGroup")
+	--self:SubscribeToEvent(self.nodegroupslist:GetChild("Delete", true), "Pressed", "NodeGraphUI:HandleDeleteGroup")
+	--self:SubscribeToEvent(self.nodegroupslist:GetChild("Edit", true), "Pressed", "NodeGraphUI:HandleEditGroup")
+	--self:SubscribeToEvent(self.nodegroupslist:GetChild("Map", true), "Pressed", "NodeGraphUI:HandleMapGroup")
+	
+	self.nodegroups={}
+	local list=self.nodegroupslist:GetChild("List",true)
+	--self.nodegroupslist:SetHeight(200)
+	list:SetStyle("ListView", cache:GetResource("XMLFile", "UI/DefaultStyle.xml"))
+	list.highlightMode=HM_ALWAYS
+	--list:SetSize(IntVector2(self.nodegroupslist.size.x, 200))
+	local c
+	for c=1,100,1 do
+		--[[local b=UIElement:new(context)
+		b.layoutMode=LM_VERTICAL
+		local t=b:CreateChild("Button")
+		t:SetStyle("Button", cache:GetResource("XMLFile","UI/DefaultStyle.xml"))
+		t.layoutMode=LM_HORIZONTAL
+		local d=t:CreateChild("Text")
+		d:SetHorizontalAlignment(HA_CENTER)
+		d:SetVerticalAlignment(VA_CENTER)
+		d:SetStyle("Text",cache:GetResource("XMLFile","UI/DefaultStyle.xml"))
+		d.text="Test"..c
+		list:AddItem(b)]]
+		local t=Text:new()
+		t:SetStyle("FileSelectorListText", cache:GetResource("XMLFile","UI/DefaultStyle.xml"))
+		t.text="Test"..c
+		list:AddItem(t)
+	end
+	
+	
+	--list.contentElement:UpdateLayout();
+	--list.selection=0
+	
+	--self.nodegroup.output:GetChild("Preview",true).texture=self.previewtex
+	--self:SubscribeToEvent(self.nodegroup.output:GetChild("Generate",true),"Pressed","NodeGraphUI:HandleGenerate")
 end
 
-function NodeGraphUI:Activate()
-	self.pane.visible=true
-	self.pane.focus=true
+function NodeGraphUI:HandleNewGroup(eventType, eventData)
+
+end
+
+function NodeGraphUI:HandleOpenGroup(eventType, eventData)
+
+end
+
+function NodeGraphUI:HandleDeleteGroup(eventType, eventData)
+
+end
+
+function NodeGraphUI:HandleEditGroup(eventType, eventData)
+
+end
+
+function NodeGraphUI:HandleMapGroup(eventType, eventData)
+
+end
+
+function NodeGraphUI:CreateNodeGroup()
+	local nodegroup=
+	{
+		nodes={}
+	}
+	nodegroup.pane=ui.root:CreateChild("Window")
+	nodegroup.pane.size=IntVector2(graphics.width*2, graphics.height*2)
+	nodegroup.pane.position=IntVector2(-graphics.width/2, -graphics.height/2)
+	nodegroup.pane:SetImageRect(IntRect(208,0,223,15))
+	nodegroup.pane:SetImageBorder(IntRect(4,4,4,4))
+	nodegroup.pane:SetTexture(cache:GetResource("Texture2D", "Textures/UI.png"))
+	nodegroup.pane.opacity=0.75
+	nodegroup.pane.bringToFront=true
+	nodegroup.pane.movable=true
+	nodegroup.pane.clipChildren=false
+	
+	nodegroup.linkpane=nodegroup.pane:CreateChild("NodeGraphLinkPane")
+	nodegroup.linkpane.size=IntVector2(graphics.width*2, graphics.height*2)
+	nodegroup.linkpane.visible=true
+	nodegroup.linkpane.texture=cache:GetResource("Texture2D", "Data/Textures/UI.png")
+	
+	nodegroup.previewtex=Texture2D:new()
+	nodegroup.previewimg=Image()
+	nodegroup.previewimg:SetSize(256,256,3)
+	nodegroup.previewimg:Clear(Color(0,0,0))
+	nodegroup.previewtex:SetData(nodegroup.previewimg,false)
+	
+	nodegroup.output=self:OutputNode(nodegroup)
+	nodegroup.output.position=IntVector2(-nodegroup.pane.position.x + graphics.width/2, -nodegroup.pane.position.y + graphics.height/2)
+	
+	nodegroup.output:GetChild("Preview",true).texture=nodegroup.previewtex
+	
+	nodegroup.pane:AddChild(self.createnodemenu)
+	
+	self:SubscribeToEvent(nodegroup.output:GetChild("Generate",true),"Pressed","NodeGraphUI:HandleGenerate")
+	nodegroup.pane.visible=false
+	return nodegroup
+end
+
+function NodeGraphUI:Activate(nodegroup)
+	if self.nodegroup then
+		nodegroup.pane.visible=false
+		nodegroup.pane.focus=false
+		
+	end
+	self.nodegroup=nodegroup
+	nodegroup.pane.visible=true
+	nodegroup.pane.focus=true
+	nodegroup.pane:AddChild(self.createnodemenu)
+	--self.pane.visible=true
+	--self.pane.focus=true
 end
 
 function NodeGraphUI:Deactivate()
-	self.pane.visible=false
-	self.pane.focus=false
+	if self.nodegroup then
+		self.nodegroup.pane.visible=false
+		self.nodegroup.pane.focus=false
+	end
+	--self.pane.visible=false
+	--self.pane.focus=false
 end
+
 
 function NodeGraphUI:HandleCloseCreateNodeMenu(eventType, eventData)
 	self.createnodemenu.visible=false
 end
 
 function NodeGraphUI:HandleCreateNode(eventType, eventData)
+	if not self.nodegroup then return end
 	local e=eventData["Element"]:GetPtr("UIElement")
 	if not e then return end
 	local n
-	if e.name=="Arithmetic" then n=self:ArithmeticNode()
-	elseif e.name=="ScalarMath" then n=self:ScalarMathNode()
-	elseif e.name=="Constant" then n=self:ConstantNode()
-	elseif e.name=="Seed" then n=self:SeedNode()
-	elseif e.name=="CoordSource" then n=self:CoordinateSourceNode()
-	elseif e.name=="Derivative" then n=self:DerivativeNode()
-	elseif e.name=="Tiers" then n=self:TiersNode()
-	elseif e.name=="ValueBasis" then n=self:ValueBasisNode()
-	elseif e.name=="GradientBasis" then n=self:GradientBasisNode()
-	elseif e.name=="SimplexBasis" then n=self:SimplexBasisNode()
-	elseif e.name=="TranslateDomain" then n=self:TranslateDomainNode()
-	elseif e.name=="ScaleDomain" then n=self:ScaleDomainNode()
-	elseif e.name=="Fractal" then n=self:FractalNode()
-	elseif e.name=="RotateDomain" then n=self:RotateDomainNode()
-	elseif e.name=="Randomize" then n=self:RandomizeNode()
-	elseif e.name=="SmoothStep" then n=self:SmoothStepNode()
-	elseif e.name=="Mix" then n=self:MixNode()
-	elseif e.name=="Expression" then n=self:ExpressionNode()
+	if e.name=="Arithmetic" then n=self:ArithmeticNode(self.nodegroup)
+	elseif e.name=="ScalarMath" then n=self:ScalarMathNode(self.nodegroup)
+	elseif e.name=="Constant" then n=self:ConstantNode(self.nodegroup)
+	elseif e.name=="Seed" then n=self:SeedNode(self.nodegroup)
+	elseif e.name=="CoordSource" then n=self:CoordinateSourceNode(self.nodegroup)
+	elseif e.name=="Derivative" then n=self:DerivativeNode(self.nodegroup)
+	elseif e.name=="Tiers" then n=self:TiersNode(self.nodegroup)
+	elseif e.name=="ValueBasis" then n=self:ValueBasisNode(self.nodegroup)
+	elseif e.name=="GradientBasis" then n=self:GradientBasisNode(self.nodegroup)
+	elseif e.name=="SimplexBasis" then n=self:SimplexBasisNode(self.nodegroup)
+	elseif e.name=="TranslateDomain" then n=self:TranslateDomainNode(self.nodegroup)
+	elseif e.name=="ScaleDomain" then n=self:ScaleDomainNode(self.nodegroup)
+	elseif e.name=="Fractal" then n=self:FractalNode(self.nodegroup)
+	elseif e.name=="RotateDomain" then n=self:RotateDomainNode(self.nodegroup)
+	elseif e.name=="Randomize" then n=self:RandomizeNode(self.nodegroup)
+	elseif e.name=="SmoothStep" then n=self:SmoothStepNode(self.nodegroup)
+	elseif e.name=="Mix" then n=self:MixNode(self.nodegroup)
+	elseif e.name=="Expression" then n=self:ExpressionNode(self.nodegroup)
+	elseif e.name=="Seeder" then n=self:SeederNode(self.nodegroup)
 	end
 	
-	n.position=IntVector2(-self.pane.position.x + graphics.width/2, -self.pane.position.y + graphics.height/2)
+	n.position=IntVector2(-self.nodegroup.pane.position.x + graphics.width/2, -self.nodegroup.pane.position.y + graphics.height/2)
 	table.insert(self.nodegroup.nodes, n)
 end
 
 function NodeGraphUI:HandleKeyDown(eventType, eventData)
+	if not self.nodegroup then print("no node group") return end
 	local key = eventData["Key"]:GetInt()
+	
 
 	if key==KEY_SPACE then
+		self.nodegroup.pane:AddChild(self.createnodemenu)
 		if self.createnodemenu.visible==false then
 			self.createnodemenu.visible=true
-			self.createnodemenu.position=IntVector2(-self.pane.position.x,-self.pane.position.y+graphics.height/2)
+			self.createnodemenu.position=IntVector2(-self.nodegroup.pane.position.x,-self.nodegroup.pane.position.y+graphics.height/2)
+			print("cnm")
 		else
 			self.createnodemenu.visible=false
 		end
 	end
 end
 
-function NodeGraphUI:OutputNode()
+function NodeGraphUI:OutputNode(nodegroup)
 	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/OutputNode.xml"))
 	
 	e.visible=true
-	self.pane.clipChildren=false
 	
 	local input=e:GetChild("Input0", true)
 	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
 	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
 	
-	self.pane:AddChild(e)
+	nodegroup.pane:AddChild(e)
 	return e
 end
 
-function NodeGraphUI:ScalarMathNode()
+function NodeGraphUI:ScalarMathNode(nodegroup)
 	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/ScalarMathNode.xml"))
 	
 	e.visible=true
-	self.pane.clipChildren=false
 	
 	local list=e:GetChild("TypeList", true)
 	list.resizePopup=true
@@ -389,15 +479,34 @@ function NodeGraphUI:ScalarMathNode()
 	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
 	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
 	
-	self.pane:AddChild(e)
+	nodegroup.pane:AddChild(e)
 	return e
 end
 
-function NodeGraphUI:ArithmeticNode()
+function NodeGraphUI:SeederNode(nodegroup)
+	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/SeederNode.xml"))
+	e.visible=true
+	local output=e:GetChild("Output0", true)
+	self:SubscribeToEvent(output, "DragBegin", "NodeGraphUI:HandleOutputDragBegin")
+	self:SubscribeToEvent(output, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	output:SetRoot(e)
+	
+	local input=e:GetChild("Input0", true)
+	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
+	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	input=e:GetChild("Input1", true)
+	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
+	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	
+	nodegroup.pane:AddChild(e)
+	return e
+end
+
+function NodeGraphUI:ArithmeticNode(nodegroup)
 	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/ArithmeticNode.xml"))
 	
 	e.visible=true
-	self.pane.clipChildren=false
+	
 	
 	local list=e:GetChild("TypeList", true)
 	list.resizePopup=true
@@ -441,15 +550,14 @@ function NodeGraphUI:ArithmeticNode()
 	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
 	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
 	
-	self.pane:AddChild(e)
+	nodegroup.pane:AddChild(e)
 	return e
 end
 
-function NodeGraphUI:RotateDomainNode()
+function NodeGraphUI:RotateDomainNode(nodegroup)
 	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/RotateDomainNode.xml"))
 	
 	e.visible=true
-	self.pane.clipChildren=false
 	
 	local output=e:GetChild("Output0", true)
 	
@@ -473,16 +581,14 @@ function NodeGraphUI:RotateDomainNode()
 	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
 	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
 	
-	self.pane:AddChild(e)
+	nodegroup.pane:AddChild(e)
 	return e
 end
 
-function NodeGraphUI:RandomizeNode()
+function NodeGraphUI:RandomizeNode(nodegroup)
 	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/RandomizeNode.xml"))
 	
 	e.visible=true
-	self.pane.clipChildren=false
-	
 	local output=e:GetChild("Output0", true)
 	
 	self:SubscribeToEvent(output, "DragBegin", "NodeGraphUI:HandleOutputDragBegin")
@@ -499,16 +605,14 @@ function NodeGraphUI:RandomizeNode()
 	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
 	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
 	
-	self.pane:AddChild(e)
+	nodegroup.pane:AddChild(e)
 	return e
 end
 
-function NodeGraphUI:SmoothStepNode()
+function NodeGraphUI:SmoothStepNode(nodegroup)
 	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/SmoothStepNode.xml"))
 	
 	e.visible=true
-	self.pane.clipChildren=false
-	
 	local list=e:GetChild("TypeList", true)
 	list.resizePopup=true
 	
@@ -547,16 +651,14 @@ function NodeGraphUI:SmoothStepNode()
 	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
 	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
 	
-	self.pane:AddChild(e)
+	nodegroup.pane:AddChild(e)
 	return e
 end
 
-function NodeGraphUI:MixNode()
+function NodeGraphUI:MixNode(nodegroup)
 	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/MixNode.xml"))
 	
 	e.visible=true
-	self.pane.clipChildren=false
-	
 	local output=e:GetChild("Output0", true)
 	
 	self:SubscribeToEvent(output, "DragBegin", "NodeGraphUI:HandleOutputDragBegin")
@@ -573,16 +675,14 @@ function NodeGraphUI:MixNode()
 	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
 	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
 	
-	self.pane:AddChild(e)
+	nodegroup.pane:AddChild(e)
 	return e
 end
 
-function NodeGraphUI:FractalNode()
+function NodeGraphUI:FractalNode(nodegroup)
 	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/FractalNode.xml"))
 	
 	e.visible=true
-	self.pane.clipChildren=false
-	
 	local output=e:GetChild("Output0", true)
 	
 	self:SubscribeToEvent(output, "DragBegin", "NodeGraphUI:HandleOutputDragBegin")
@@ -608,16 +708,14 @@ function NodeGraphUI:FractalNode()
 	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
 	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
 	
-	self.pane:AddChild(e)
+	nodegroup.pane:AddChild(e)
 	return e
 end
 
-function NodeGraphUI:TranslateDomainNode()
+function NodeGraphUI:TranslateDomainNode(nodegroup)
 	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/TranslateDomainNode.xml"))
 	
 	e.visible=true
-	self.pane.clipChildren=false
-	
 	local list=e:GetChild("TypeList", true)
 	list.resizePopup=true
 	
@@ -658,16 +756,14 @@ function NodeGraphUI:TranslateDomainNode()
 	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
 	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
 	
-	self.pane:AddChild(e)
+	nodegroup.pane:AddChild(e)
 	return e
 end
 
-function NodeGraphUI:ScaleDomainNode()
+function NodeGraphUI:ScaleDomainNode(nodegroup)
 	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/ScaleDomainNode.xml"))
 	
 	e.visible=true
-	self.pane.clipChildren=false
-	
 	local list=e:GetChild("TypeList", true)
 	list.resizePopup=true
 	
@@ -708,16 +804,14 @@ function NodeGraphUI:ScaleDomainNode()
 	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
 	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
 	
-	self.pane:AddChild(e)
+	nodegroup.pane:AddChild(e)
 	return e
 end
 
-function NodeGraphUI:DerivativeNode()
+function NodeGraphUI:DerivativeNode(nodegroup)
 	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/DerivativeNode.xml"))
 	
 	e.visible=true
-	self.pane.clipChildren=false
-	
 	local list=e:GetChild("TypeList", true)
 	list.resizePopup=true
 	
@@ -757,16 +851,14 @@ function NodeGraphUI:DerivativeNode()
 	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
 	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
 	
-	self.pane:AddChild(e)
+	nodegroup.pane:AddChild(e)
 	return e
 end
 
-function NodeGraphUI:TiersNode()
+function NodeGraphUI:TiersNode(nodegroup)
 	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/TiersNode.xml"))
 	
 	e.visible=true
-	self.pane.clipChildren=false
-	
 	local output=e:GetChild("Output0", true)
 	
 	self:SubscribeToEvent(output, "DragBegin", "NodeGraphUI:HandleOutputDragBegin")
@@ -780,16 +872,14 @@ function NodeGraphUI:TiersNode()
 	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
 	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
 	
-	self.pane:AddChild(e)
+	nodegroup.pane:AddChild(e)
 	return e
 end
 
-function NodeGraphUI:ValueBasisNode()
+function NodeGraphUI:ValueBasisNode(nodegroup)
 	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/ValueBasisNode.xml"))
 	
 	e.visible=true
-	self.pane.clipChildren=false
-	
 	local output=e:GetChild("Output0", true)
 	
 	self:SubscribeToEvent(output, "DragBegin", "NodeGraphUI:HandleOutputDragBegin")
@@ -803,16 +893,14 @@ function NodeGraphUI:ValueBasisNode()
 	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
 	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
 	
-	self.pane:AddChild(e)
+	nodegroup.pane:AddChild(e)
 	return e
 end
 
-function NodeGraphUI:GradientBasisNode()
+function NodeGraphUI:GradientBasisNode(nodegroup)
 	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/GradientBasisNode.xml"))
 	
 	e.visible=true
-	self.pane.clipChildren=false
-	
 	local output=e:GetChild("Output0", true)
 	
 	self:SubscribeToEvent(output, "DragBegin", "NodeGraphUI:HandleOutputDragBegin")
@@ -826,16 +914,14 @@ function NodeGraphUI:GradientBasisNode()
 	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
 	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
 	
-	self.pane:AddChild(e)
+	nodegroup.pane:AddChild(e)
 	return e
 end
 
-function NodeGraphUI:SimplexBasisNode()
+function NodeGraphUI:SimplexBasisNode(nodegroup)
 	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/SimplexBasisNode.xml"))
 	
 	e.visible=true
-	self.pane.clipChildren=false
-	
 	local output=e:GetChild("Output0", true)
 	
 	self:SubscribeToEvent(output, "DragBegin", "NodeGraphUI:HandleOutputDragBegin")
@@ -846,16 +932,14 @@ function NodeGraphUI:SimplexBasisNode()
 	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
 	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
 	
-	self.pane:AddChild(e)
+	nodegroup.pane:AddChild(e)
 	return e
 end
 
-function NodeGraphUI:CoordinateSourceNode()
+function NodeGraphUI:CoordinateSourceNode(nodegroup)
 	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/CoordinateSourceNode.xml"))
 	
 	e.visible=true
-	self.pane.clipChildren=false
-	
 	local list=e:GetChild("TypeList", true)
 	list.resizePopup=true
 	
@@ -889,68 +973,63 @@ function NodeGraphUI:CoordinateSourceNode()
 	self:SubscribeToEvent(output, "DragEnd", "NodeGraphUI:HandleDragEnd")
 	output:SetRoot(e)
 	
-	self.pane:AddChild(e)
+	nodegroup.pane:AddChild(e)
 	return e
 end
 
-function NodeGraphUI:ConstantNode()
+function NodeGraphUI:ConstantNode(nodegroup)
 	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/ConstantNode.xml"))
 	
 	e.visible=true
-	self.pane.clipChildren=false
-	
 	local output=e:GetChild("Output0", true)
 	
 	self:SubscribeToEvent(output, "DragBegin", "NodeGraphUI:HandleOutputDragBegin")
 	self:SubscribeToEvent(output, "DragEnd", "NodeGraphUI:HandleDragEnd")
 	output:SetRoot(e)
 	
-	self.pane:AddChild(e)
+	nodegroup.pane:AddChild(e)
 	return e
 end
 
-function NodeGraphUI:ExpressionNode()
+function NodeGraphUI:ExpressionNode(nodegroup)
 	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/ExpressionNode.xml"))
 	
 	e.visible=true
-	self.pane.clipChildren=false
-	
 	local output=e:GetChild("Output0", true)
 	
 	self:SubscribeToEvent(output, "DragBegin", "NodeGraphUI:HandleOutputDragBegin")
 	self:SubscribeToEvent(output, "DragEnd", "NodeGraphUI:HandleDragEnd")
 	output:SetRoot(e)
 	
-	self.pane:AddChild(e)
+	nodegroup.pane:AddChild(e)
 	return e
 end
 
-function NodeGraphUI:SeedNode()
+function NodeGraphUI:SeedNode(nodegroup)
 	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/SeedNode.xml"))
 	
 	e.visible=true
-	self.pane.clipChildren=false
-	
 	local output=e:GetChild("Output0", true)
 	
 	self:SubscribeToEvent(output, "DragBegin", "NodeGraphUI:HandleOutputDragBegin")
 	self:SubscribeToEvent(output, "DragEnd", "NodeGraphUI:HandleDragEnd")
 	output:SetRoot(e)
 	
-	self.pane:AddChild(e)
+	nodegroup.pane:AddChild(e)
 	return e
 end
 
 function NodeGraphUI:HandleOutputDragBegin(eventType, eventData)
-	print("dragging")
+	if not self.nodegroup then return end
 	local element=eventData["Element"]:GetPtr("NodeGraphLinkSource")
-	self.link=self.linkpane:CreateLink(element,self.cursortarget)
+	self.link=self.nodegroup.linkpane:CreateLink(element,self.cursortarget)
 	self.link:SetImageRect(IntRect(19,19,29,29))
 	
 end
 
 function NodeGraphUI:HandleDragEnd(eventType, eventData)
 	if not self.link then return end
+	if not self.nodegroup then return end
 	
 	local at=ui:GetElementAt(cursor.position)
 	if at then
@@ -962,7 +1041,7 @@ function NodeGraphUI:HandleDragEnd(eventType, eventData)
 				local src=thislink:GetSource()
 				if src then src:RemoveLink(thislink) end
 				--thislink:Remove()
-				self.linkpane:RemoveLink(thislink)
+				self.nodegroup.linkpane:RemoveLink(thislink)
 			end
 			self.link:SetTarget(at)
 			return
@@ -974,7 +1053,7 @@ function NodeGraphUI:HandleDragEnd(eventType, eventData)
 	local source=self.link:GetSource()
 	if(source) then source:RemoveLink(self.link) end
 	--self.link:Remove()
-	self.linkpane:RemoveLink(self.link)
+	self.nodegroup.linkpane:RemoveLink(self.link)
 	--self.link:ClearTarget()
 	self.link=nil
 	--print("End drag "..element.name)
@@ -997,21 +1076,13 @@ function NodeGraphUI:HandleInputDragBegin(eventType, eventData)
 end
 
 function NodeGraphUI:HandleGenerate(eventType, eventData)
+	if not self.nodegroup then return end
 	local kernel=PackNodeGraph(self.nodegroup.output)
-	RenderANLKernelToImage(self.previewimg,kernel,0,1)
-	self.previewtex:SetData(self.previewimg)
+	RenderANLKernelToImage(self.nodegroup.previewimg,kernel,0,1)
+	self.nodegroup.previewtex:SetData(self.nodegroup.previewimg)
 	
 end
 
 function NodeGraphUI:Update(dt)
-	if input:GetMouseButtonDown(MOUSEB_RIGHT) then
-		local mmove=input:GetMouseMove()
-		local pos=self.pane.position
-		pos.x = pos.x + mmove.x
-		pos.y = pos.y + mmove.y
-		print(pos.x,pos.y)
-		self.pane:SetPosition(pos)
-	end
-	
 	
 end

@@ -72,11 +72,11 @@ CInstructionIndex CKernel::seed(unsigned int val)
     return lastIndex();
 }
 
-CInstructionIndex CKernel::seeder(CInstructionIndex src, unsigned int val)
+CInstructionIndex CKernel::seeder(CInstructionIndex sd, CInstructionIndex src)
 {
 	anl::SInstruction i;
-	i.outfloat_=(double)val;
-	i.sources_[0]=src.index_;
+	i.sources_[0]=sd.index_;
+	i.sources_[1]=src.index_;
 	i.opcode_=anl::OP_Seeder;
 	kernel_.push_back(i);
 	return lastIndex();

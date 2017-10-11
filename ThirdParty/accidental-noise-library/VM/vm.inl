@@ -199,7 +199,7 @@ void CNoiseExecutor::seedSource(InstructionListType &kernel, EvaluatedType &eval
 			case OP_NOP:
 			case OP_Seed:
 			case OP_Constant: return; break;
-			case OP_Seeder: seedSource(kernel, evaluated, i.sources_[0], seed); return; break;
+			case OP_Seeder: for(int c=0; c<2; ++c) seedSource(kernel, evaluated, i.sources_[c], seed); return; break;
 			case OP_ValueBasis: seedSource(kernel, evaluated, i.sources_[1], seed); return; break;
 			case OP_GradientBasis: seedSource(kernel, evaluated, i.sources_[1], seed); return; break;
 			case OP_SimplexBasis: seedSource(kernel, evaluated, i.sources_[0], seed); return; break;
@@ -254,7 +254,7 @@ void CNoiseExecutor::seedSource(InstructionListType &kernel, EvaluatedType &eval
 			case OP_DU:
 			case OP_DV: seedSource(kernel, evaluated, i.sources_[0], seed); seedSource(kernel, evaluated, i.sources_[1], seed); return; break;
 			case OP_Sigmoid: for(int c=0; c<3; ++c) seedSource(kernel, evaluated, i.sources_[c], seed); return; break;
-			case OP_Fractal: i.outfloat_=(double)seed++; return; break;
+			case OP_Fractal: for(int c=0; c<6; ++c) seedSource(kernel,evaluated,i.sources_[c],seed); return; break;//i.outfloat_=(double)seed++; return; break;
 			case OP_Randomize: 
 			case OP_SmoothStep: 
 			case OP_SmootherStep:
@@ -295,11 +295,11 @@ void CNoiseExecutor::evaluateInstruction(InstructionListType &kernel, EvaluatedT
 	case OP_Seeder:
 	{
 		// Need to iterate through source chain and set seeds based on current seed.
-		unsigned int seed=(unsigned int)i.outfloat_;
-		seedSource(kernel,evaluated,i.sources_[0],seed);
+		unsigned int seed=(unsigned int)evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[0],coord);
+		seedSource(kernel,evaluated,i.sources_[1],seed);
 		evaluated[index]=true;
 		SVMOutput s1;
-        s1=evaluateBoth(kernel,evaluated,coordcache,cache,i.sources_[0],coord);
+        s1=evaluateBoth(kernel,evaluated,coordcache,cache,i.sources_[1],coord);
         cache[index].set(s1);
 		return;
 		break;
@@ -750,7 +750,7 @@ void CNoiseExecutor::evaluateInstruction(InstructionListType &kernel, EvaluatedT
         double val=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[0],coord);
         double Tb=std::floor(val*(double)numsteps);
         evaluated[index]=true;
-        cache[index].set(Tb);
+        cache[index].set(Tb/(double)numsteps);
     }
     break;
     case OP_SmoothTiers:
@@ -1212,17 +1212,17 @@ void CNoiseExecutor::evaluateInstruction(InstructionListType &kernel, EvaluatedT
 		double lac=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[3],coord);
 		double pers=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[2],coord);
 		double amp=1.0;
-		
-		coord=coord*freq;
+		CCoordinate mycoord=coord;
+		mycoord=mycoord*freq;
 		
 		for(unsigned int c=0; c<numoctaves; ++c)
 		{
 			seedSource(kernel,evaluated,i.sources_[1],seed);
-			double v=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[1],coord);
+			double v=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[1],mycoord);
 			val+=v*amp;
 			//val=v;
 			amp*=pers;
-			coord=coord*lac;
+			mycoord=mycoord*lac;
 		}
 		cache[index].set(val);
 		evaluated[index]=true;
