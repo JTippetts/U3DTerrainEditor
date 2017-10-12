@@ -39,7 +39,7 @@ function PackNodeGraph(output)
 			local s=GetSourceFromNode(n,"Input"..which)
 			local s1
 			if s then s1=kernelindices[nodeindex(s)]
-			else local c=tonumber(n:GetChild("Value"..which,true).text) or 1.0 s1=kernel:constant(c) end
+			else local c=tonumber(n:GetChild("Value"..which,true).text) or 1.0 s1=kernel:constant(c) print("Value: "..c) end
 			return s1
 		end
 		
@@ -47,7 +47,7 @@ function PackNodeGraph(output)
 			local s=GetSourceFromNode(n,"Input"..which)
 			local s1
 			if s then s1=kernelindices[nodeindex(s)]
-			else local c=tonumber(n:GetChild("Value"..which,true).text) or 12345 s1=kernel:seed(c) end
+			else local c=tonumber(n:GetChild("Value"..which,true).text) or 12345 s1=kernel:seed(c) print("Seed: "..c) end
 			return s1
 		end
 		
@@ -1074,7 +1074,7 @@ function NodeGraphUI:HandleGenerate(eventType, eventData)
 	local kernel=PackNodeGraph(self.nodegroup.output)
 	RenderANLKernelToImage(self.nodegroup.previewimg,kernel,0,1)
 	self.nodegroup.previewtex:SetData(self.nodegroup.previewimg)
-	
+	--self.nodegroup.previewimg:SavePNG("preview.png")
 end
 
 function NodeGraphUI:Update(dt)

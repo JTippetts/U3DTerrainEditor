@@ -125,11 +125,13 @@ function TerrainEditUI:HandleNewGroup(eventType, eventData)
 	local name="Group "..self.nodegroupcounter
 	self.nodegroupcounter=self.nodegroupcounter+1
 	local list=self.nodegroupslist:GetChild("List",true)
+	local sel=list.selection
 	
 	local t=Text:new()
 	t:SetStyle("FileSelectorListText", cache:GetResource("XMLFile","UI/DefaultStyle.xml"))
 	t.text=name
 	list:AddItem(t)
+	list.selection=list:GetNumItems()-1
 	table.insert(self.nodegroups, newgroup)
 	
 end
@@ -155,6 +157,7 @@ function TerrainEditUI:HandleMapGroup(eventType, eventData)
 	if which==-1 then return end
 	
 	self.currentnodegroup=which
+	self.nodegroup=self.nodegroups[self.currentnodegroup+1]
 	self.nodemapping.visible=true
 end
 

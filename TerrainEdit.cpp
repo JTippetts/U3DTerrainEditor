@@ -1446,7 +1446,7 @@ void RenderANLKernelToImage(Image *buffer, CKernel *kernel, float lowrange, floa
     int h=buffer->GetHeight();
     img.resize(w,h);
 
-    map2D(SEAMLESS_NONE, img, *kernel, SMappingRanges(0,1,0,1,0,1), 0, kernel->lastIndex());
+    map2DNoZ(SEAMLESS_NONE, img, *kernel, SMappingRanges(0,1,0,1,0,1), kernel->lastIndex());
     img.scaleToRange(lowrange, highrange);
     for(int x=0; x<w; ++x)
     {
