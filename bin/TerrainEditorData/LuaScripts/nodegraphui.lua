@@ -255,65 +255,6 @@ function NodeGraphUI:Start()
 	self.nodegroup=nil
 	self.cursortarget=cursor:CreateChild("NodeGraphLinkDest")
 	
-	self.nodegroupslist=ui:LoadLayout(cache:GetResource("XMLFile", "UI/NoiseNodeGroups.xml"))
-	ui.root:AddChild(self.nodegroupslist)
-	--self:SubscribeToEvent(self.nodegroupslist:GetChild("New", true), "Pressed", "NodeGraphUI:HandleNewGroup")
-	--self:SubscribeToEvent(self.nodegroupslist:GetChild("Open", true), "Pressed", "NodeGraphUI:HandleOpenGroup")
-	--self:SubscribeToEvent(self.nodegroupslist:GetChild("Delete", true), "Pressed", "NodeGraphUI:HandleDeleteGroup")
-	--self:SubscribeToEvent(self.nodegroupslist:GetChild("Edit", true), "Pressed", "NodeGraphUI:HandleEditGroup")
-	--self:SubscribeToEvent(self.nodegroupslist:GetChild("Map", true), "Pressed", "NodeGraphUI:HandleMapGroup")
-	
-	self.nodegroups={}
-	local list=self.nodegroupslist:GetChild("List",true)
-	--self.nodegroupslist:SetHeight(200)
-	list:SetStyle("ListView", cache:GetResource("XMLFile", "UI/DefaultStyle.xml"))
-	list.highlightMode=HM_ALWAYS
-	--list:SetSize(IntVector2(self.nodegroupslist.size.x, 200))
-	local c
-	for c=1,100,1 do
-		--[[local b=UIElement:new(context)
-		b.layoutMode=LM_VERTICAL
-		local t=b:CreateChild("Button")
-		t:SetStyle("Button", cache:GetResource("XMLFile","UI/DefaultStyle.xml"))
-		t.layoutMode=LM_HORIZONTAL
-		local d=t:CreateChild("Text")
-		d:SetHorizontalAlignment(HA_CENTER)
-		d:SetVerticalAlignment(VA_CENTER)
-		d:SetStyle("Text",cache:GetResource("XMLFile","UI/DefaultStyle.xml"))
-		d.text="Test"..c
-		list:AddItem(b)]]
-		local t=Text:new()
-		t:SetStyle("FileSelectorListText", cache:GetResource("XMLFile","UI/DefaultStyle.xml"))
-		t.text="Test"..c
-		list:AddItem(t)
-	end
-	
-	
-	--list.contentElement:UpdateLayout();
-	--list.selection=0
-	
-	--self.nodegroup.output:GetChild("Preview",true).texture=self.previewtex
-	--self:SubscribeToEvent(self.nodegroup.output:GetChild("Generate",true),"Pressed","NodeGraphUI:HandleGenerate")
-end
-
-function NodeGraphUI:HandleNewGroup(eventType, eventData)
-
-end
-
-function NodeGraphUI:HandleOpenGroup(eventType, eventData)
-
-end
-
-function NodeGraphUI:HandleDeleteGroup(eventType, eventData)
-
-end
-
-function NodeGraphUI:HandleEditGroup(eventType, eventData)
-
-end
-
-function NodeGraphUI:HandleMapGroup(eventType, eventData)
-
 end
 
 function NodeGraphUI:CreateNodeGroup()
@@ -365,6 +306,7 @@ function NodeGraphUI:Activate(nodegroup)
 	nodegroup.pane.visible=true
 	nodegroup.pane.focus=true
 	nodegroup.pane:AddChild(self.createnodemenu)
+	self.createnodemenu.visible=true
 	--self.pane.visible=true
 	--self.pane.focus=true
 end

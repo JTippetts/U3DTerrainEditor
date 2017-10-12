@@ -31,8 +31,56 @@ function TerrainEditUI:BuildUI()
 	self.blendbrush=scene_:CreateScriptObject("TerrainSelectUI")
 	
 	self.nodegraph=scene_:CreateScriptObject("NodeGraphUI")
-	self.nodegroup=self.nodegraph:CreateNodeGroup()
+	--self.nodegroup=self.nodegraph:CreateNodeGroup()
 	self.nodegraph:Deactivate()
+	
+	self.nodegroups={}
+	
+	self.nodegroupslist=ui:LoadLayout(cache:GetResource("XMLFile", "UI/NoiseNodeGroups.xml"))
+	local list=self.nodegroupslist:GetChild("List",true)
+	ui.root:AddChild(self.nodegroupslist)
+	list:SetStyle("ListView", cache:GetResource("XMLFile", "UI/DefaultStyle.xml"))
+	list.highlightMode=HM_ALWAYS
+	self:SubscribeToEvent(self.nodegroupslist:GetChild("New", true), "Pressed", "TerrainEditUI:HandleNewGroup")
+	self:SubscribeToEvent(self.nodegroupslist:GetChild("Open", true), "Pressed", "TerrainEditUI:HandleOpenGroup")
+	self:SubscribeToEvent(self.nodegroupslist:GetChild("Delete", true), "Pressed", "TerrainEditUI:HandleDeleteGroup")
+	self:SubscribeToEvent(self.nodegroupslist:GetChild("Edit", true), "Pressed", "TerrainEditUI:HandleEditGroup")
+	self:SubscribeToEvent(self.nodegroupslist:GetChild("Map", true), "Pressed", "TerrainEditUI:HandleMapGroup")
+	
+	self.nodegroupslist:SetPosition(IntVector2(graphics.width-self.nodegroupslist.width, graphics.height-self.nodegroupslist.height))
+	
+	self.nodemapping=ui:LoadLayout(cache:GetResource("XMLFile", "UI/MapNodeWindow.xml"))
+	ui.root:AddChild(self.nodemapping)
+	list=self.nodemapping:GetChild("TargetList",true)
+	local smtypes=
+	{
+		"Terrain",
+		"Layer 1",
+		"Layer 2",
+		"Layer 3",
+		"Layer 4",
+		"Layer 5",
+		"Layer 6",
+		"Layer 7",
+		"Layer 8",
+		"Mask 1",
+		"Mask 2",
+		"Mask 3"
+	}
+	
+	local c
+	for _,c in ipairs(smtypes) do
+		local t=Text:new(context)
+		t:SetFont(cache:GetResource("Font", "Fonts/Anonymous Pro.ttf"), 11)
+		t.text=c
+		t.color=Color(1,1,1)
+		t.minSize=IntVector2(0,16)
+		list:AddItem(t)
+	end
+	list.selection=0
+	self:SubscribeToEvent(self.nodemapping:GetChild("Go",true), "Pressed", "TerrainEditUI:HandleMakeItHappen")
+	self:SubscribeToEvent(self.nodemapping:GetChild("Close",true),"Pressed","TerrainEditUI:HandleCloseMapping")
+	self.nodemapping.visible=false
 	
 	
 	self.blendbrush:Deactivate()
@@ -64,10 +112,96 @@ function TerrainEditUI:BuildUI()
 	self.counter=0
 	-- Waypoints
 	waypoints={}
+	
+	self.nodegroupcounter=0
 end
 
 function TerrainEditUI:Start()
 	
+end
+
+function TerrainEditUI:HandleNewGroup(eventType, eventData)
+	local newgroup=self.nodegraph:CreateNodeGroup()
+	local name="Group "..self.nodegroupcounter
+	self.nodegroupcounter=self.nodegroupcounter+1
+	local list=self.nodegroupslist:GetChild("List",true)
+	
+	local t=Text:new()
+	t:SetStyle("FileSelectorListText", cache:GetResource("XMLFile","UI/DefaultStyle.xml"))
+	t.text=name
+	list:AddItem(t)
+	table.insert(self.nodegroups, newgroup)
+	
+end
+
+function TerrainEditUI:HandleOpenGroup(eventType, eventData)
+
+end
+
+function TerrainEditUI:HandleDeleteGroup(eventType, eventData)
+
+end
+
+function TerrainEditUI:HandleEditGroup(eventType, eventData)
+	local which=self.nodegroupslist:GetChild("List",true).selection
+	if which==-1 then return end
+	self.nodegroup=self.nodegroups[which+1]
+	if not self.nodegroup then return end
+	self.nodegraph:Activate(self.nodegroup)
+end
+
+function TerrainEditUI:HandleMapGroup(eventType, eventData)
+	local which=self.nodegroupslist:GetChild("List",true).selection
+	if which==-1 then return end
+	
+	self.currentnodegroup=which
+	self.nodemapping.visible=true
+end
+
+function TerrainEditUI:HandleMakeItHappen(eventType, eventData)
+	if not self.currentnodegroup then return end
+	local target=self.nodemapping:GetChild("TargetList",true).selection
+	
+	local um1,im1=self.nodemapping:GetChild("UseMask1",true).checked,self.nodemapping:GetChild("InvertMask1",true).checked
+	local um2,im2=self.nodemapping:GetChild("UseMask2",true).checked,self.nodemapping:GetChild("InvertMask2",true).checked
+	local um3,im3=self.nodemapping:GetChild("UseMask3",true).checked,self.nodemapping:GetChild("InvertMask3",true).checked
+	local ms=MaskSettings(um1,im1,um2,im2,um3,im3)
+	
+	local low=tonumber(self.nodemapping:GetChild("Low",true).text) or 0.0
+	local high=tonumber(self.nodemapping:GetChild("High",true).text) or 1.0
+	
+	if target==0 then
+		-- Map terrain
+		if not self.nodegroup then return end
+		local kernel=PackNodeGraph(self.nodegroup.output)
+		local arr=CArray2Dd(TerrainState:GetTerrainWidth(), TerrainState:GetTerrainHeight())
+		map2DNoZ(SEAMLESS_NONE,arr,kernel,SMappingRanges(0,1,0,1,0,1), kernel:lastIndex())
+		arr:scaleToRange(low,high)
+		TerrainState:SetHeightBuffer(arr,ms)
+		self.nodemapping.visible=false
+		return
+		--RenderANLKernelToImage(self.nodegroup.previewimg,kernel,0,1)
+		--self.nodegroup.previewtex:SetData(self.nodegroup.previewimg)
+	elseif target>=1 and target<=8 then
+		if not self.nodegroup then return end
+		local kernel=PackNodeGraph(self.nodegroup.output)
+		local arr=CArray2Dd(TerrainState:GetBlendWidth(), TerrainState:GetBlendHeight())
+		map2DNoZ(SEAMLESS_NONE,arr,kernel,SMappingRanges(0,1,0,1,0,1), kernel:lastIndex())
+		arr:scaleToRange(low,high)
+		TerrainState:SetLayerBuffer(arr,target-1,ms)
+		self.nodemapping.visible=false
+		return
+	elseif target==9 then
+	
+	elseif target==10 then
+	
+	else
+	
+	end
+end
+
+function TerrainEditUI:HandleCloseMapping(eventType, eventData)
+	self.nodemapping.visible=false
 end
 
 function TerrainEditUI:NewTerrain(width, height, blendwidth, blendheight, triplanar, smoothing, normalmapping)
@@ -225,7 +359,7 @@ function TerrainEditUI:Update(dt)
 		end
 		self:UpdateWaypointVis()
 	elseif input:GetKeyPress(KEY_N) then
-		self.nodegraph:Activate(self.nodegroup)
+		--self.nodegraph:Activate(self.nodegroup)
 	elseif input:GetKeyPress(KEY_M) then
 		self.nodegraph:Deactivate()
 	end
