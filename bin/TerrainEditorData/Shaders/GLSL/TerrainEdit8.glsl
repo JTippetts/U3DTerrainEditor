@@ -199,9 +199,9 @@ void PS()
 	//vec4 diffColor=tex1;
 	
 	#ifdef USEMASKTEXTURE
-	diffColor=mix(vec4(1,0,0, diffColor.a), diffColor, mask.r);
-	diffColor=mix(vec4(0,1,0,diffColor.a), diffColor, mask.g);
-	diffColor=mix(vec4(0,0,1,diffColor.a), diffColor, mask.b);
+	diffColor.r=mix(1.0, diffColor.r, mask.r);
+	diffColor.g=mix(1.0, diffColor.g, mask.g);
+	diffColor.b=mix(1.0, diffColor.b, mask.b);
 	#endif
 
     // Get material specular albedo

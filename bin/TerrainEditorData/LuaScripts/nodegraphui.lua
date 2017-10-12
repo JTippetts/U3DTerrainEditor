@@ -1028,13 +1028,11 @@ function NodeGraphUI:HandleDragEnd(eventType, eventData)
 	local at=ui:GetElementAt(cursor.position)
 	if at then
 		if string.sub(at.name, 1, 5)=="Input" then
-			--print("Set link target")
 			local thislink=at:GetLink()
 			if thislink then
 				at:ClearLink()
 				local src=thislink:GetSource()
 				if src then src:RemoveLink(thislink) end
-				--thislink:Remove()
 				self.nodegroup.linkpane:RemoveLink(thislink)
 			end
 			self.link:SetTarget(at)
@@ -1046,11 +1044,8 @@ function NodeGraphUI:HandleDragEnd(eventType, eventData)
 	print("Destroy the link")
 	local source=self.link:GetSource()
 	if(source) then source:RemoveLink(self.link) end
-	--self.link:Remove()
 	self.nodegroup.linkpane:RemoveLink(self.link)
-	--self.link:ClearTarget()
 	self.link=nil
-	--print("End drag "..element.name)
 end
 
 function NodeGraphUI:HandleInputDragBegin(eventType, eventData)
@@ -1065,8 +1060,6 @@ function NodeGraphUI:HandleInputDragBegin(eventType, eventData)
 			self.link=nil
 		end
 	end
-	
-	--print("Begin drag "..element.name)
 end
 
 function NodeGraphUI:HandleGenerate(eventType, eventData)
@@ -1074,9 +1067,4 @@ function NodeGraphUI:HandleGenerate(eventType, eventData)
 	local kernel=PackNodeGraph(self.nodegroup.output)
 	RenderANLKernelToImage(self.nodegroup.previewimg,kernel,0,1)
 	self.nodegroup.previewtex:SetData(self.nodegroup.previewimg)
-	--self.nodegroup.previewimg:SavePNG("preview.png")
-end
-
-function NodeGraphUI:Update(dt)
-	
 end

@@ -18,6 +18,7 @@ function EditMaskUI:Start()
 	
 	--self:SubscribeToEvent("Pressed", "EditMaskUI:HandleButtonPress")
 	self:SubscribeToEvent("SliderChanged", "EditMaskUI:HandleSliderChanged")
+	self:SubscribeToEvent(self.panel:GetChild("ClearMask",true), "Pressed", "EditMaskUI:HandleClearMask")
 	
 	
 	self.power,self.max,self.radius,self.hardness,self.usemask=self:GetBrushSettings()
@@ -104,6 +105,10 @@ function EditMaskUI:Deactivate()
 	self.panel.visible=false
 	self.active=false
 	self.cursor:Hide()
+end
+
+function EditMaskUI:HandleClearMask(eventType, eventData)
+	TerrainState:ClearMask(self.which)
 end
 
 function EditMaskUI:HandleSliderChanged(eventType, eventData)

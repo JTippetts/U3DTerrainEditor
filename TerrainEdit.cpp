@@ -378,6 +378,33 @@ void TerrainEdit::SetHeightBuffer(CArray2Dd &buffer, MaskSettings &masksettings)
     terrain_->SetHeightMap(hmap_);
 }
 
+void TerrainEdit::SetMaskBuffer(CArray2Dd &buffer, int which)
+{
+	if(!mask_) return;
+	int w=mask_->GetWidth();
+	int h=mask_->GetHeight();
+	for(int x=0; x<w; ++x)
+	{
+		for(int y=0; y<h; ++y)
+		{
+			float nx=(float)x/(float)(w);
+            float ny=(float)y/(float)(h);
+
+            double v=buffer.getBilinear(nx,ny);
+            Color mask=mask_->GetPixel(x,y);
+			switch(which)
+			{
+				case 0: mask.r_ = 1.0f-v; break;
+				case 1: mask.g_ = 1.0f-v; break;
+				case 2: mask.b_ = 1.0f-v; break;
+				default: break;
+			}
+			mask_->SetPixel(x,y,mask);
+		}
+	}
+	masktex_->SetData(mask_,false);
+}
+
 void TerrainEdit::SetLayerBuffer(CArray2Dd &buffer, int layer, MaskSettings &masksettings)
 {
     if(!terrain_) return;
@@ -838,6 +865,23 @@ void TerrainEdit::InvertMask(int which)
 
 void TerrainEdit::ClearMask(int which)
 {
+	if(!mask_) return;
+	for(int x=0; x<mask_->GetWidth(); ++x)
+	{
+		for(int y=0; y<mask_->GetHeight(); ++y)
+		{
+			Color m=mask_->GetPixel(x,y);
+			switch(which)
+			{
+				case 0: m.r_=1.0; break;
+				case 1: m.g_=1.0; break;
+				case 2: m.b_=1.0; break;
+				default: break;
+			}
+			mask_->SetPixel(x,y,m);
+		}
+	}
+	masktex_->SetData(mask_, false);
 }
 
 void TerrainEdit::ClearAllMasks()
@@ -953,6 +997,80 @@ void TerrainEdit::GetSteepness(CArray2Dd &buffer, float threshold, float fade)
             buffer.set(x,(bh-1)-y, i);
         }
     }
+}
+
+Vector2 reflect(Vector2 iv, Vector2 normal)
+{
+	return iv - normal*iv.DotProduct(normal)*2.0f;
+}
+
+Vector2 rot(Vector2 iv, Vector2 normal)
+{
+	return Vector2(iv.x_*normal.x_-iv.y_*normal.y_, iv.x_*normal.y_ + iv.y_*normal.x_);
+}
+
+float TerrainEdit::DoAmbientOcclusion(Vector2 tcoord, Vector2 uv, Vector3 p, Vector3 cnorm, float scale, float bias, float intensity)
+{
+	//Vector3 diff=NormalizedToWorld(tcoord + uv) - p;
+	Vector2 np=tcoord+uv;
+	IntVector2 terr=NormalizedToTerrain(np);
+	Vector3 diff=Vector3(np.x_,np.y_,GetHeightValue(std::max(0,std::min(hmap_->GetWidth()-1,terr.x_)),std::max(0,std::min(hmap_->GetHeight()-1,terr.y_))))-p;
+	Vector3 v=diff;
+	v.Normalize();
+	float d=diff.Length()*scale;
+	return std::max(0.0f, cnorm.DotProduct(v)-bias)*(1.0f/(1.0f+d))*intensity;
+}
+
+void TerrainEdit::GetCavityMap(CArray2Dd &buffer, float sampleradius, float scale, float bias, float intensity, unsigned int iterations)
+{
+	unsigned int tw=hmap_->GetWidth();
+    unsigned int th=hmap_->GetHeight();
+	
+	CArray2Drgba rgb(tw,th);
+
+    buffer.resize(tw,th);
+	Vector2 vecs[4]={{0,1},{0,-1},{1,0},{-1,0}};
+	KISS rnd;
+	
+
+    for(int y=0; y<th; ++y)
+    {
+        for(int x=0; x<tw; ++x)
+        {
+			float nx=(float)x/(float)tw;
+			float ny=(float)y/(float)th;
+			Vector2 nrm(nx,ny);
+			// Calculate position and normal
+			//Vector3 pos=NormalizedToWorld(Vector2(nx,ny));
+			Vector3 pos=Vector3(nx,ny,GetHeightValue(x,y));
+			//Vector3 normal=terrain_->GetNormal(pos);
+			float p1=GetHeightValue(std::max(0,std::min(hmap_->GetWidth()-1, x-1)), y);
+			float p2=GetHeightValue(std::max(0,std::min(hmap_->GetWidth()-1, x+1)), y);
+			float p3=GetHeightValue(x, std::max(0,std::min(hmap_->GetHeight()-1,y-1)));
+			float p4=GetHeightValue(x, std::max(0,std::min(hmap_->GetHeight()-1,y+1)));
+			Vector3 normal((p1-p2)/0.01f,(p3-p4)/0.01f,1.0);
+			normal.Normalize();
+			// Calculate a random vector
+			float theta=(2.0f*3.141592)*rnd.get01();
+			Vector2 randvec(std::cos(theta), std::sin(theta));
+			float ao=0.0f;
+			//rgb.set(x,y,SRGBA(randvec.x_*0.5f+0.5f, randvec.y_*0.5f+0.5f,0.0f,1.0f));
+			rgb.set(x,y,SRGBA(normal.x_*0.5f+0.5f,normal.y_*0.5f+0.5f,0,1));
+			for(unsigned int j=0; j<iterations; ++j)
+			{
+				Vector2 coord1=rot(vecs[j],randvec)*sampleradius;
+				Vector2 coord2=Vector2(coord1.x_*0.707f-coord1.y_*0.707f, coord1.x_*0.707f+coord1.y_*0.707f);
+				
+				ao += DoAmbientOcclusion(nrm,coord1*0.25, pos, normal, scale, bias, intensity);
+				ao += DoAmbientOcclusion(nrm,coord2*0.5, pos, normal, scale, bias, intensity);
+				ao += DoAmbientOcclusion(nrm,coord1*0.75, pos, normal, scale, bias, intensity);
+				ao += DoAmbientOcclusion(nrm,coord2, pos, normal, scale, bias, intensity);
+			}
+			ao/=(float)iterations*4.0;
+			buffer.set(x,y,ao);
+		}
+	}
+	saveRGBAArray("rgb.png",&rgb);
 }
 
 

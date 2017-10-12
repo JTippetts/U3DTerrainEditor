@@ -108,12 +108,28 @@ function TerrainEditUI:BuildUI()
 	
 	self:ActivateHeightBrush()
 	
+	self.cavmap=ui:LoadLayout(cache:GetResource("XMLFile", "UI/CavityMapTest.xml"))
+	ui.root:AddChild(self.cavmap)
+	self.cavmap.visible=true
+	self:SubscribeToEvent(self.cavmap:GetChild("Go",true),"Pressed", "TerrainEditUI:HandleCavMap")
+	
 	
 	self.counter=0
 	-- Waypoints
 	waypoints={}
 	
 	self.nodegroupcounter=0
+end
+
+function TerrainEditUI:HandleCavMap(eventType, eventData)
+	local radius,scale,bias,intensity=tonumber(self.cavmap:GetChild("Radius",true).text) or 1.0, tonumber(self.cavmap:GetChild("Scale",true).text) or 1.0,tonumber(self.cavmap:GetChild("Bias",true).text) or 1.0,
+		tonumber(self.cavmap:GetChild("Intensity",true).text) or 1.0
+	local arr=CArray2Dd()
+	TerrainState:GetCavityMap(arr,radius,scale,bias,intensity,4)
+	arr:scaleToRange(0,1)
+	--TerrainState:SetMaskBuffer(arr,1)
+	TerrainState:SetLayerBuffer(arr,2,MaskSettings(false,false,false,false,false,false))
+	saveDoubleArray("cav.png",arr)
 end
 
 function TerrainEditUI:Start()
@@ -163,6 +179,8 @@ end
 
 function TerrainEditUI:HandleMakeItHappen(eventType, eventData)
 	if not self.currentnodegroup then return end
+	self.nodegroup=self.nodegroups[self.currentnodegroup+1]
+	
 	local target=self.nodemapping:GetChild("TargetList",true).selection
 	
 	local um1,im1=self.nodemapping:GetChild("UseMask1",true).checked,self.nodemapping:GetChild("InvertMask1",true).checked
@@ -182,9 +200,8 @@ function TerrainEditUI:HandleMakeItHappen(eventType, eventData)
 		arr:scaleToRange(low,high)
 		TerrainState:SetHeightBuffer(arr,ms)
 		self.nodemapping.visible=false
+		saveDoubleArray("map.png",arr)
 		return
-		--RenderANLKernelToImage(self.nodegroup.previewimg,kernel,0,1)
-		--self.nodegroup.previewtex:SetData(self.nodegroup.previewimg)
 	elseif target>=1 and target<=8 then
 		if not self.nodegroup then return end
 		local kernel=PackNodeGraph(self.nodegroup.output)
@@ -194,12 +211,15 @@ function TerrainEditUI:HandleMakeItHappen(eventType, eventData)
 		TerrainState:SetLayerBuffer(arr,target-1,ms)
 		self.nodemapping.visible=false
 		return
-	elseif target==9 then
-	
-	elseif target==10 then
-	
-	else
-	
+	elseif target>=9 and target<=11 then
+		if not self.nodegroup then return end
+		local kernel=PackNodeGraph(self.nodegroup.output)
+		local arr=CArray2Dd(TerrainState:GetTerrainWidth(), TerrainState:GetTerrainHeight())
+		map2DNoZ(SEAMLESS_NONE,arr,kernel,SMappingRanges(0,1,0,1,0,1), kernel:lastIndex())
+		arr:scaleToRange(low,high)
+		print("Setting to mask "..target-9)
+		TerrainState:SetMaskBuffer(arr,target-9)
+		self.nodemapping.visible=false
 	end
 end
 

@@ -91,6 +91,7 @@ public:
     void SetLayerBuffer(CArray2Dd &buffer, int layer, MaskSettings &masksettings);
     void SetLayerBufferMax(CArray2Dd &buffer, int layer, MaskSettings &masksettings);
     void BlendHeightBuffer(CArray2Dd &buffer, CArray2Dd &blend, MaskSettings &masksettings);
+	void SetMaskBuffer(CArray2Dd &buffer, int which);
 
     void ApplyHeightBrush(float x, float z, float dt, BrushSettings &brush, MaskSettings &masksettings);
     void ApplyBlendBrush(float x, float z, int layer, float dt, BrushSettings &brush, MaskSettings &masksettings);
@@ -131,6 +132,7 @@ public:
     void LoadMask(const String &filename);
 
     void GetSteepness(CArray2Dd &buffer, float threshold, float fade);
+	void GetCavityMap(CArray2Dd &buffer, float sampleradius, float scale, float bias, float intensity, unsigned int iterations);
 
 protected:
     Node *terrainNode_;
@@ -142,6 +144,8 @@ protected:
 
     bool use16bit_;
     bool triplanar_, smoothing_, normalmapping_;
+	
+	float DoAmbientOcclusion(Vector2 tcoord, Vector2 uv, Vector3 p, Vector3 cnorm, float scale, float bias, float intensity);
 };
 
 Vector2 WorldToNormalized(Image *height, Terrain *terrain, Vector3 world);
