@@ -307,6 +307,7 @@ function NodeGraphUI:Activate(nodegroup)
 	nodegroup.pane.focus=true
 	nodegroup.pane:AddChild(self.createnodemenu)
 	self.createnodemenu.visible=true
+	self.createnodemenu.position=IntVector2(-self.nodegroup.pane.position.x,-self.nodegroup.pane.position.y+graphics.height-self.createnodemenu.height)
 	--self.pane.visible=true
 	--self.pane.focus=true
 end
