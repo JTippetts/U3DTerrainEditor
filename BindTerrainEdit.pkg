@@ -49,6 +49,7 @@ public:
 	void SetHeightValue(int x, int y, float val);
 	float GetHeightValue(int x, int y);
 	float GetHeightValue(Vector3 worldpos);
+	float GetHeightValueFromNormalized(Vector2 nrm);
 	
 	int GetTerrainWidth();
 	int GetTerrainHeight();

@@ -125,10 +125,10 @@ function TerrainEditUI:HandleCavMap(eventType, eventData)
 	local radius,scale,bias,intensity=tonumber(self.cavmap:GetChild("Radius",true).text) or 1.0, tonumber(self.cavmap:GetChild("Scale",true).text) or 1.0,tonumber(self.cavmap:GetChild("Bias",true).text) or 1.0,
 		tonumber(self.cavmap:GetChild("Intensity",true).text) or 1.0
 	local arr=CArray2Dd()
-	TerrainState:GetCavityMap(arr,radius,scale,bias,intensity,4)
+	TerrainState:GetCavityMap(arr,radius,scale,bias,intensity,2)
 	arr:scaleToRange(0,1)
 	--TerrainState:SetMaskBuffer(arr,1)
-	TerrainState:SetLayerBuffer(arr,2,MaskSettings(false,false,false,false,false,false))
+	TerrainState:SetLayerBuffer(arr,1,MaskSettings(false,false,false,false,false,false))
 	saveDoubleArray("cav.png",arr)
 end
 

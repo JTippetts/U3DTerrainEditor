@@ -304,6 +304,7 @@ IntVector2 TerrainEdit::NormalizedToTerrain(Vector2 norm)
 
 void TerrainEdit::SetHeightValue(int x, int y, float val)
 {
+	if(!hmap_) return;
     if(hmap_->GetComponents()==1) hmap_->SetPixel(x,y,Color(val,0,0));
     else
     {
@@ -315,12 +316,24 @@ void TerrainEdit::SetHeightValue(int x, int y, float val)
 
 float TerrainEdit::GetHeightValue(int x, int y)
 {
+	if(!hmap_) return 0.0f;
     if(hmap_->GetComponents()==1) return hmap_->GetPixel(x,y).r_;
     else
     {
         Color c=hmap_->GetPixel(x,y);
         return c.r_+c.g_/255.0f;
     }
+}
+
+float TerrainEdit::GetHeightValueFromNormalized(Vector2 nrm)
+{
+	if(!hmap_) return 0.0f;
+	if(hmap_->GetComponents()==1) return hmap_->GetPixelBilinear(nrm.x_, nrm.y_).r_;
+	else
+	{
+		Color c=hmap_->GetPixelBilinear(nrm.x_,nrm.y_);
+		return c.r_+c.g_/255.0f;
+	}
 }
 
 float TerrainEdit::GetHeightValue(Vector3 worldpos)
@@ -1026,12 +1039,10 @@ void TerrainEdit::GetCavityMap(CArray2Dd &buffer, float sampleradius, float scal
 	unsigned int tw=hmap_->GetWidth();
     unsigned int th=hmap_->GetHeight();
 	
-	CArray2Drgba rgb(tw,th);
-
-    buffer.resize(tw,th);
+	buffer.resize(tw,th);
 	Vector2 vecs[4]={{0,1},{0,-1},{1,0},{-1,0}};
 	KISS rnd;
-	
+	float pixsize=1.0f/(float)tw;
 
     for(int y=0; y<th; ++y)
     {
@@ -1041,36 +1052,34 @@ void TerrainEdit::GetCavityMap(CArray2Dd &buffer, float sampleradius, float scal
 			float ny=(float)y/(float)th;
 			Vector2 nrm(nx,ny);
 			// Calculate position and normal
-			//Vector3 pos=NormalizedToWorld(Vector2(nx,ny));
 			Vector3 pos=Vector3(nx,ny,GetHeightValue(x,y));
-			//Vector3 normal=terrain_->GetNormal(pos);
 			float p1=GetHeightValue(std::max(0,std::min(hmap_->GetWidth()-1, x-1)), y);
 			float p2=GetHeightValue(std::max(0,std::min(hmap_->GetWidth()-1, x+1)), y);
 			float p3=GetHeightValue(x, std::max(0,std::min(hmap_->GetHeight()-1,y-1)));
 			float p4=GetHeightValue(x, std::max(0,std::min(hmap_->GetHeight()-1,y+1)));
-			Vector3 normal((p1-p2)/0.01f,(p3-p4)/0.01f,1.0);
+			Vector3 normal((p1-p2)/(pixsize*10.0f),(p3-p4)/(pixsize*10.0f),1.0);
 			normal.Normalize();
-			// Calculate a random vector
-			float theta=(2.0f*3.141592)*rnd.get01();
-			Vector2 randvec(std::cos(theta), std::sin(theta));
 			float ao=0.0f;
-			//rgb.set(x,y,SRGBA(randvec.x_*0.5f+0.5f, randvec.y_*0.5f+0.5f,0.0f,1.0f));
-			rgb.set(x,y,SRGBA(normal.x_*0.5f+0.5f,normal.y_*0.5f+0.5f,0,1));
-			for(unsigned int j=0; j<iterations; ++j)
+			
+			for(unsigned int in=0; in<iterations; ++in)
 			{
-				Vector2 coord1=rot(vecs[j],randvec)*sampleradius;
-				Vector2 coord2=Vector2(coord1.x_*0.707f-coord1.y_*0.707f, coord1.x_*0.707f+coord1.y_*0.707f);
+				float theta=(2.0f*3.141592)*rnd.get01();
+				Vector2 randvec(std::cos(theta), std::sin(theta));
+				for(unsigned int j=0; j<4; ++j)
+				{
+					Vector2 coord1=rot(vecs[j],randvec)*sampleradius;
+					Vector2 coord2=Vector2(coord1.x_*0.707f-coord1.y_*0.707f, coord1.x_*0.707f+coord1.y_*0.707f);
 				
-				ao += DoAmbientOcclusion(nrm,coord1*0.25, pos, normal, scale, bias, intensity);
-				ao += DoAmbientOcclusion(nrm,coord2*0.5, pos, normal, scale, bias, intensity);
-				ao += DoAmbientOcclusion(nrm,coord1*0.75, pos, normal, scale, bias, intensity);
-				ao += DoAmbientOcclusion(nrm,coord2, pos, normal, scale, bias, intensity);
+					ao += DoAmbientOcclusion(nrm,coord1*0.25, pos, normal, scale, bias, intensity);
+					ao += DoAmbientOcclusion(nrm,coord2*0.5, pos, normal, scale, bias, intensity);
+					ao += DoAmbientOcclusion(nrm,coord1*0.75, pos, normal, scale, bias, intensity);
+					ao += DoAmbientOcclusion(nrm,coord2, pos, normal, scale, bias, intensity);
+				}
 			}
-			ao/=(float)iterations*4.0;
+			ao/=(float)iterations*16.0;
 			buffer.set(x,y,ao);
 		}
 	}
-	saveRGBAArray("rgb.png",&rgb);
 }
 
 
