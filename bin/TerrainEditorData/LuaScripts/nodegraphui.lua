@@ -176,6 +176,9 @@ function PackNodeGraph(output)
 			--local val=tonumber(n:GetChild("Seed",true).text)
 			local s1,s2=GetSeed(n,0),GetValue(n,1)
 			return kernel:seeder(s1,s2)
+		elseif n.name=="Cellular" then
+			local s1,s2,s3,s4,s5,s6,s7,s8,s9,s10=GetSeed(n,0),GetValue(n,1),GetValue(n,2),GetValue(n,3),GetValue(n,4),GetValue(n,5),GetValue(n,6),GetValue(n,7),GetValue(n,8),GetValue(n,9)
+			return kernel:cellularBasis(s2,s3,s4,s5,s6,s7,s8,s9,s10,s1)
 		end
 	end
 	
@@ -203,6 +206,8 @@ function PackNodeGraph(output)
 			visitnode(n,6)
 		elseif n.name=="Randomize" or n.name=="SmoothStep" or n.name=="Mix" then
 			visitnode(n,3)
+		elseif n.name=="Cellular" then
+			visitnode(n,10)
 		end
 		table.insert(nodes,n)
 		table.insert(kernelindices, InstanceANLFunction(kernel, n))
@@ -240,7 +245,7 @@ function NodeGraphUI:Start()
 	self:SubscribeToEvent(self.createnodemenu:GetChild("Mix", true), "Pressed", "NodeGraphUI:HandleCreateNode")
 	self:SubscribeToEvent(self.createnodemenu:GetChild("Expression", true), "Pressed", "NodeGraphUI:HandleCreateNode")
 	self:SubscribeToEvent(self.createnodemenu:GetChild("Seeder", true), "Pressed", "NodeGraphUI:HandleCreateNode")
-	
+	self:SubscribeToEvent(self.createnodemenu:GetChild("Cellular", true), "Pressed", "NodeGraphUI:HandleCreateNode")
 	self.createnodemenu.visible=false
 	
 	local cnmclose=self.createnodemenu:GetChild("Close", true)
@@ -402,6 +407,7 @@ function NodeGraphUI:HandleCreateNode(eventType, eventData)
 	elseif e.name=="Mix" then n=self:MixNode(self.nodegroup)
 	elseif e.name=="Expression" then n=self:ExpressionNode(self.nodegroup)
 	elseif e.name=="Seeder" then n=self:SeederNode(self.nodegroup)
+	elseif e.name=="Cellular" then n=self:CellularNode(self.nodegroup)
 	end
 	
 	n.position=IntVector2(-self.nodegroup.pane.position.x + graphics.width/2, -self.nodegroup.pane.position.y + graphics.height/2)
@@ -705,6 +711,51 @@ function NodeGraphUI:FractalNode(nodegroup)
 	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
 	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
 	input=e:GetChild("Input5", true)
+	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
+	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	
+	nodegroup.pane:AddChild(e)
+	return e
+end
+
+function NodeGraphUI:CellularNode(nodegroup)
+	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/CellularNode.xml"))
+	
+	e.visible=true
+	local output=e:GetChild("Output0", true)
+	
+	self:SubscribeToEvent(output, "DragBegin", "NodeGraphUI:HandleOutputDragBegin")
+	self:SubscribeToEvent(output, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	output:SetRoot(e)
+	
+	local input=e:GetChild("Input0", true)
+	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
+	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	input=e:GetChild("Input1", true)
+	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
+	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	input=e:GetChild("Input2", true)
+	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
+	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	input=e:GetChild("Input3", true)
+	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
+	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	input=e:GetChild("Input4", true)
+	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
+	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	input=e:GetChild("Input5", true)
+	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
+	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	input=e:GetChild("Input6", true)
+	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
+	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	input=e:GetChild("Input7", true)
+	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
+	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	input=e:GetChild("Input8", true)
+	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
+	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	input=e:GetChild("Input9", true)
 	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
 	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
 	
