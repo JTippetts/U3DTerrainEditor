@@ -226,6 +226,9 @@ function NodeGraphUI:Start()
 	self.createnodemenu=ui:LoadLayout(cache:GetResource("XMLFile", "UI/CreateNodeMenu.xml"))
 	--self.pane:AddChild(self.createnodemenu)
 	
+	self.pane=ui.root:CreateChild("UIElement")
+	self.pane:SetSize(graphics.width, graphics.height)
+	
 	self:SubscribeToEvent(self.createnodemenu:GetChild("Arithmetic", true), "Pressed", "NodeGraphUI:HandleCreateNode")
 	self:SubscribeToEvent(self.createnodemenu:GetChild("ScalarMath", true), "Pressed", "NodeGraphUI:HandleCreateNode")
 	self:SubscribeToEvent(self.createnodemenu:GetChild("Constant", true), "Pressed", "NodeGraphUI:HandleCreateNode")
@@ -262,7 +265,7 @@ function NodeGraphUI:CreateNodeGroup()
 	{
 		nodes={}
 	}
-	nodegroup.pane=ui.root:CreateChild("Window")
+	nodegroup.pane=self.pane:CreateChild("Window")
 	nodegroup.pane.size=IntVector2(graphics.width*2, graphics.height*2)
 	nodegroup.pane.position=IntVector2(-graphics.width/2, -graphics.height/2)
 	nodegroup.pane:SetImageRect(IntRect(208,0,223,15))
@@ -308,6 +311,11 @@ function NodeGraphUI:Activate(nodegroup)
 	nodegroup.pane:AddChild(self.createnodemenu)
 	self.createnodemenu.visible=true
 	self.createnodemenu.position=IntVector2(-self.nodegroup.pane.position.x,-self.nodegroup.pane.position.y+graphics.height-self.createnodemenu.height)
+	
+	self.closetext=self.pane:CreateChild("Text")
+	self.closetext:SetStyle("Text", cache:GetResource("XMLFile","UI/DefaultStyle.xml"))
+	self.closetext:SetFontSize(20)
+	self.closetext.text="Press 'M' to close window."
 	--self.pane.visible=true
 	--self.pane.focus=true
 end
@@ -316,6 +324,7 @@ function NodeGraphUI:Deactivate()
 	if self.nodegroup then
 		self.nodegroup.pane.visible=false
 		self.nodegroup.pane.focus=false
+		if self.closetext then self.closetext:Remove() self.closetext=nil end
 	end
 	--self.pane.visible=false
 	--self.pane.focus=false
