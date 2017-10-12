@@ -108,12 +108,6 @@ function TerrainEditUI:BuildUI()
 	
 	self:ActivateHeightBrush()
 	
-	self.cavmap=ui:LoadLayout(cache:GetResource("XMLFile", "UI/CavityMapTest.xml"))
-	ui.root:AddChild(self.cavmap)
-	self.cavmap.visible=true
-	self:SubscribeToEvent(self.cavmap:GetChild("Go",true),"Pressed", "TerrainEditUI:HandleCavMap")
-	
-	
 	self.counter=0
 	-- Waypoints
 	waypoints={}
@@ -121,16 +115,6 @@ function TerrainEditUI:BuildUI()
 	self.nodegroupcounter=0
 end
 
-function TerrainEditUI:HandleCavMap(eventType, eventData)
-	local radius,scale,bias,intensity=tonumber(self.cavmap:GetChild("Radius",true).text) or 1.0, tonumber(self.cavmap:GetChild("Scale",true).text) or 1.0,tonumber(self.cavmap:GetChild("Bias",true).text) or 1.0,
-		tonumber(self.cavmap:GetChild("Intensity",true).text) or 1.0
-	local arr=CArray2Dd()
-	TerrainState:GetCavityMap(arr,radius,scale,bias,intensity,2)
-	arr:scaleToRange(0,1)
-	--TerrainState:SetMaskBuffer(arr,1)
-	TerrainState:SetLayerBuffer(arr,1,MaskSettings(false,false,false,false,false,false))
-	saveDoubleArray("cav.png",arr)
-end
 
 function TerrainEditUI:Start()
 	
@@ -414,6 +398,8 @@ function TerrainEditUI:HandleButtonPress(eventType, eventData)
 		--TerrainState.mask:Clear(Color(1,1,1))
 		--TerrainState.masktex:SetData(TerrainState.mask)
 		TerrainState:ClearAllMasks()
+	elseif name=="FilterButton" then
+		filterui:Activate()
 	end
 end
 

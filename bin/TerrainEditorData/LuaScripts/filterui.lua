@@ -15,8 +15,8 @@ end
 FilterUI=ScriptObject()
 
 function FilterUI:Start()
-	self:SubscribeToEvent("Pressed", "FilterUI:HandleButtonPress")
-	self:SubscribeToEvent("ItemSelected", "FilterUI:HandleItemSelected")
+	--self:SubscribeToEvent("Pressed", "FilterUI:HandleButtonPress")
+	--self:SubscribeToEvent("ItemSelected", "FilterUI:HandleItemSelected")
 	
 	
 	self.filterui=ui:LoadLayout(cache:GetResource("XMLFile", "UI/TerrainEditFilters.xml"))
@@ -30,7 +30,18 @@ function FilterUI:Start()
 	ui.root:AddChild(self.filterui)
 	self.filterui.visible=false
 	
+	self:SubscribeToEvent(self.filterui:GetChild("FilterButton",true), "Pressed", "FilterUI:HandleButtonPress")
+	self:SubscribeToEvent(self.filterui:GetChild("ExecuteButton",true), "Pressed", "FilterUI:HandleButtonPress")
+	self:SubscribeToEvent(self.filterui:GetChild("CloseButton",true), "Pressed", "FilterUI:HandleButtonPress")
+	self:SubscribeToEvent(self.filterui:GetChild("RescanFilters",true), "Pressed", "FilterUI:HandleButtonPress")
+	
+	self:SubscribeToEvent(self.filterui:GetChild("List",true), "ItemSelected", "FilterUI:HandleItemSelected")
+	
 	self:PopulateFilterList()
+end
+
+function FilterUI:Activate()
+	self.filterui.visible=true
 end
 
 function FilterUI:HandleButtonPress(eventType, eventData)
@@ -42,6 +53,8 @@ function FilterUI:HandleButtonPress(eventType, eventData)
 			self:PopulateFilterList()
 			self.filterui.visible=true
 		end
+	elseif name=="CloseButton" then
+		self.filterui.visible=false
 	elseif name=="ExecuteButton" then
 		if self.selectedfilter then
 			-- Grab options
@@ -107,33 +120,30 @@ function FilterUI:BuildFilterOptions(filter)
 		window:AddChild(title)
 		
 		if c.type=="flag" then
-			local check=CheckBox:new(context)
+			local check=window:CreateChild("CheckBox")--CheckBox:new(context)
 			check.name=c.name
 			check.defaultStyle=uiStyle
 			check.style=uiStyle
 			if c.value==true then check.checked=true
 			else check.checked=false
 			end
-			window:AddChild(check)
 			window.size=IntVector2(title.size.x+check.size.x, 15)
 		elseif c.type=="value" then
-			local edit=LineEdit:new(context)
+			local edit=window:CreateChild("LineEdit")--LineEdit:new(context)
 			edit.name=c.name
 			edit.defaultStyle=uiStyle
 			edit.style=uiStyle
 			edit.textElement.text=tostring(c.value)
-			window:AddChild(edit)
 			window.size=IntVector2(title.size.x+edit.size.x, 15)
 		elseif c.type=="string" then
-			local edit=LineEdit:new(context)
+			local edit=window:CreateChild("LineEdit")--LineEdit:new(context)
 			edit.name=c.name
 			edit.defaultStyle=uiStyle
 			edit.style=uiStyle
 			edit.textElement.text=c.value
-			window:AddChild(edit)
 			window.size=IntVector2(title.size.x+edit.size.x, 15)
 		elseif c.type=="list" then
-			local dlist=DropDownList:new(context)
+			local dlist=window:CreateChild("DropDownList")--DropDownList:new(context)
 			dlist.defaultStyle=uiStyle
 			dlist.style=AUTO_STYLE
 			dlist:SetAlignment(HA_LEFT, VA_CENTER)
@@ -149,7 +159,6 @@ function FilterUI:BuildFilterOptions(filter)
 			end
 			
 			dlist.selection=0
-			window:AddChild(dlist)
 			window.size=IntVector2(title.size.x+dlist.size.x, 25)
 		end
 		window.maxSize=IntVector2(10000,25)
