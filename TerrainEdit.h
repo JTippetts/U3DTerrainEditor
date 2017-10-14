@@ -87,6 +87,7 @@ public:
     }
 
     float GetHeightValue(Vector3 worldpos);
+	void GetHeightMap(CArray2Dd &buffer);
 
     void SetHeightBuffer(CArray2Dd &buffer, MaskSettings &masksettings);
     void SetLayerBuffer(CArray2Dd &buffer, int layer, MaskSettings &masksettings);

@@ -1473,6 +1473,39 @@ static int tolua_BindTerrainEdit_TerrainEdit_GetHeightValueFromNormalized00(lua_
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: GetHeightMap of class  TerrainEdit */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_TerrainEdit_GetHeightMap00
+static int tolua_BindTerrainEdit_TerrainEdit_GetHeightMap00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"TerrainEdit",0,&tolua_err) ||
+ (tolua_isvaluenil(tolua_S,2,&tolua_err) || !tolua_isusertype(tolua_S,2,"CArray2Dd",0,&tolua_err)) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  TerrainEdit* self = (TerrainEdit*)  tolua_tousertype(tolua_S,1,0);
+  CArray2Dd* buffer = ((CArray2Dd*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'GetHeightMap'", NULL);
+#endif
+ {
+  self->GetHeightMap(*buffer);
+ }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'GetHeightMap'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: GetTerrainWidth of class  TerrainEdit */
 #ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_TerrainEdit_GetTerrainWidth00
 static int tolua_BindTerrainEdit_TerrainEdit_GetTerrainWidth00(lua_State* tolua_S)
@@ -5705,6 +5738,7 @@ TOLUA_API int tolua_BindTerrainEdit_open (lua_State* tolua_S)
   tolua_function(tolua_S,"GetHeightValue",tolua_BindTerrainEdit_TerrainEdit_GetHeightValue00);
   tolua_function(tolua_S,"GetHeightValue",tolua_BindTerrainEdit_TerrainEdit_GetHeightValue01);
   tolua_function(tolua_S,"GetHeightValueFromNormalized",tolua_BindTerrainEdit_TerrainEdit_GetHeightValueFromNormalized00);
+  tolua_function(tolua_S,"GetHeightMap",tolua_BindTerrainEdit_TerrainEdit_GetHeightMap00);
   tolua_function(tolua_S,"GetTerrainWidth",tolua_BindTerrainEdit_TerrainEdit_GetTerrainWidth00);
   tolua_function(tolua_S,"GetTerrainHeight",tolua_BindTerrainEdit_TerrainEdit_GetTerrainHeight00);
   tolua_function(tolua_S,"GetBlendWidth",tolua_BindTerrainEdit_TerrainEdit_GetBlendWidth00);

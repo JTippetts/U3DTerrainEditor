@@ -345,6 +345,21 @@ float TerrainEdit::GetHeightValue(Vector3 worldpos)
     else return c.r_+c.g_/255.0f;
 }
 
+void TerrainEdit::GetHeightMap(CArray2Dd &buffer)
+{
+	if(!hmap_) return;
+	buffer.resize(hmap_->GetWidth(), hmap_->GetHeight());
+	for(int x=0; x<hmap_->GetWidth(); ++x)
+	{
+		for(int y=0; y<hmap_->GetHeight(); ++y)
+		{
+			Color c=hmap_->GetPixel(x,y);
+			if(hmap_->GetComponents()==1) buffer.set(x,y,c.r_);
+			else buffer.set(x,y,c.r_+c.g_/255.0f);
+		}
+	}
+}
+
 void TerrainEdit::SetHeightBuffer(CArray2Dd &buffer, MaskSettings &masksettings)
 {
     if(!terrain_) return;

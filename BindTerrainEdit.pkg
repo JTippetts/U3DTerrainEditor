@@ -50,6 +50,7 @@ public:
 	float GetHeightValue(int x, int y);
 	float GetHeightValue(Vector3 worldpos);
 	float GetHeightValueFromNormalized(Vector2 nrm);
+	void GetHeightMap(CArray2Dd &buffer);
 	
 	int GetTerrainWidth();
 	int GetTerrainHeight();
