@@ -8,6 +8,7 @@ return
 		{name="Sample radius", type="value", value=0.01},
 		{name="Min scale", type="value", value=0},
 		{name="Max scale", type="value", value=1},
+		{name="Replace value?", type="flag", value=false},
 		{name="Use Mask 0?", type="flag", value=false},
 		{name="Invert Mask 0?", type="flag", value=false},
 		{name="Use Mask 1?", type="flag", value=false},
@@ -38,6 +39,10 @@ return
 		elseif layername=="Layer 7" then which=6
 		elseif layername=="Layer 8" then which=7
 		end
-		TerrainState:SetLayerBuffer(arr,which,ms)
+		if(ops["Replace value?"]) then
+			TerrainState:SetLayerBuffer(arr,which,ms)
+		else
+			TerrainState:SetLayerBufferMax(arr,which,ms)
+		end
 	end
 }

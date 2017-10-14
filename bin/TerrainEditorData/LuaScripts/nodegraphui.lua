@@ -275,6 +275,7 @@ function NodeGraphUI:CreateNodeGroup()
 	nodegroup.pane.bringToFront=true
 	nodegroup.pane.movable=true
 	nodegroup.pane.clipChildren=false
+	nodegroup.pane:SetDefaultStyle(cache:GetResource("XMLFile", "UI/NodeStyle.xml"))
 	
 	nodegroup.linkpane=nodegroup.pane:CreateChild("NodeGraphLinkPane")
 	nodegroup.linkpane.size=IntVector2(graphics.width*2, graphics.height*2)
@@ -288,13 +289,42 @@ function NodeGraphUI:CreateNodeGroup()
 	nodegroup.previewtex:SetData(nodegroup.previewimg,false)
 	
 	nodegroup.output=self:OutputNode(nodegroup)
-	nodegroup.output.position=IntVector2(-nodegroup.pane.position.x + graphics.width/2, -nodegroup.pane.position.y + graphics.height/2)
+	nodegroup.output.position=IntVector2(-nodegroup.pane.position.x + graphics.width-nodegroup.output.width, -nodegroup.pane.position.y + graphics.height/4)
 	
 	nodegroup.output:GetChild("Preview",true).texture=nodegroup.previewtex
+	
+	list=nodegroup.output:GetChild("TargetList",true)
+	local smtypes=
+	{
+		"Terrain",
+		"Layer 1",
+		"Layer 2",
+		"Layer 3",
+		"Layer 4",
+		"Layer 5",
+		"Layer 6",
+		"Layer 7",
+		"Layer 8",
+		"Mask 1",
+		"Mask 2",
+		"Mask 3"
+	}
+	
+	local c
+	for _,c in ipairs(smtypes) do
+		local t=Text:new(context)
+		t:SetFont(cache:GetResource("Font", "Fonts/Anonymous Pro.ttf"), 9)
+		t.text=c
+		t.color=Color(1,1,1)
+		t.minSize=IntVector2(0,16)
+		list:AddItem(t)
+	end
+	list.selection=0
 	
 	nodegroup.pane:AddChild(self.createnodemenu)
 	
 	self:SubscribeToEvent(nodegroup.output:GetChild("Generate",true),"Pressed","NodeGraphUI:HandleGenerate")
+	self:SubscribeToEvent(nodegroup.output:GetChild("Execute",true),"Pressed","NodeGraphUI:HandleExecute")
 	nodegroup.pane.visible=false
 	return nodegroup
 end
@@ -420,7 +450,7 @@ function NodeGraphUI:ScalarMathNode(nodegroup)
 	local c
 	for _,c in ipairs(smtypes) do
 		local t=Text:new(context)
-		t:SetFont(cache:GetResource("Font", "Fonts/Anonymous Pro.ttf"), 11)
+		t:SetFont(cache:GetResource("Font", "Fonts/Anonymous Pro.ttf"), 9)
 		t.text=c
 		t.color=Color(1,1,1)
 		t.minSize=IntVector2(0,16)
@@ -487,7 +517,7 @@ function NodeGraphUI:ArithmeticNode(nodegroup)
 	local c
 	for _,c in ipairs(smtypes) do
 		local t=Text:new(context)
-		t:SetFont(cache:GetResource("Font", "Fonts/Anonymous Pro.ttf"), 11)
+		t:SetFont(cache:GetResource("Font", "Fonts/Anonymous Pro.ttf"), 9)
 		t.text=c
 		t.color=Color(1,1,1)
 		t.minSize=IntVector2(0,16)
@@ -586,7 +616,7 @@ function NodeGraphUI:SmoothStepNode(nodegroup)
 	local c
 	for _,c in ipairs(smtypes) do
 		local t=Text:new(context)
-		t:SetFont(cache:GetResource("Font", "Fonts/Anonymous Pro.ttf"), 11)
+		t:SetFont(cache:GetResource("Font", "Fonts/Anonymous Pro.ttf"), 9)
 		t.text=c
 		t.color=Color(1,1,1)
 		t.minSize=IntVector2(0,16)
@@ -738,7 +768,7 @@ function NodeGraphUI:TranslateDomainNode(nodegroup)
 	local c
 	for _,c in ipairs(smtypes) do
 		local t=Text:new(context)
-		t:SetFont(cache:GetResource("Font", "Fonts/Anonymous Pro.ttf"), 11)
+		t:SetFont(cache:GetResource("Font", "Fonts/Anonymous Pro.ttf"), 9)
 		t.text=c
 		t.color=Color(1,1,1)
 		t.minSize=IntVector2(0,16)
@@ -786,7 +816,7 @@ function NodeGraphUI:ScaleDomainNode(nodegroup)
 	local c
 	for _,c in ipairs(smtypes) do
 		local t=Text:new(context)
-		t:SetFont(cache:GetResource("Font", "Fonts/Anonymous Pro.ttf"), 11)
+		t:SetFont(cache:GetResource("Font", "Fonts/Anonymous Pro.ttf"), 9)
 		t.text=c
 		t.color=Color(1,1,1)
 		t.minSize=IntVector2(0,16)
@@ -833,7 +863,7 @@ function NodeGraphUI:DerivativeNode(nodegroup)
 	local c
 	for _,c in ipairs(smtypes) do
 		local t=Text:new(context)
-		t:SetFont(cache:GetResource("Font", "Fonts/Anonymous Pro.ttf"), 11)
+		t:SetFont(cache:GetResource("Font", "Fonts/Anonymous Pro.ttf"), 9)
 		t.text=c
 		t.color=Color(1,1,1)
 		t.minSize=IntVector2(0,16)
@@ -962,7 +992,7 @@ function NodeGraphUI:CoordinateSourceNode(nodegroup)
 	local c
 	for _,c in ipairs(smtypes) do
 		local t=Text:new(context)
-		t:SetFont(cache:GetResource("Font", "Fonts/Anonymous Pro.ttf"), 11)
+		t:SetFont(cache:GetResource("Font", "Fonts/Anonymous Pro.ttf"), 9)
 		t.text=c
 		t.color=Color(1,1,1)
 		t.minSize=IntVector2(0,16)
@@ -1076,4 +1106,49 @@ function NodeGraphUI:HandleGenerate(eventType, eventData)
 	local kernel=PackNodeGraph(self.nodegroup.output)
 	RenderANLKernelToImage(self.nodegroup.previewimg,kernel,0,1)
 	self.nodegroup.previewtex:SetData(self.nodegroup.previewimg)
+end
+
+function NodeGraphUI:HandleExecute(eventType, eventData)
+	if not self.nodegroup then return end
+	
+	local target=self.nodegroup.output:GetChild("TargetList",true).selection
+	
+	local um1,im1=self.nodegroup.output:GetChild("UseMask1",true).checked,self.nodegroup.output:GetChild("InvertMask1",true).checked
+	local um2,im2=self.nodegroup.output:GetChild("UseMask2",true).checked,self.nodegroup.output:GetChild("InvertMask2",true).checked
+	local um3,im3=self.nodegroup.output:GetChild("UseMask3",true).checked,self.nodegroup.output:GetChild("InvertMask3",true).checked
+	local ms=MaskSettings(um1,im1,um2,im2,um3,im3)
+	
+	local low=tonumber(self.nodegroup.output:GetChild("Low",true).text) or 0.0
+	local high=tonumber(self.nodegroup.output:GetChild("High",true).text) or 1.0
+	
+	if target==0 then
+		-- Map terrain
+		if not self.nodegroup then return end
+		local kernel=PackNodeGraph(self.nodegroup.output)
+		local arr=CArray2Dd(TerrainState:GetTerrainWidth(), TerrainState:GetTerrainHeight())
+		map2DNoZ(SEAMLESS_NONE,arr,kernel,SMappingRanges(0,1,0,1,0,1), kernel:lastIndex())
+		arr:scaleToRange(low,high)
+		TerrainState:SetHeightBuffer(arr,ms)
+		--self.nodemapping.visible=false
+		saveDoubleArray("map.png",arr)
+		return
+	elseif target>=1 and target<=8 then
+		if not self.nodegroup then return end
+		local kernel=PackNodeGraph(self.nodegroup.output)
+		local arr=CArray2Dd(TerrainState:GetBlendWidth(), TerrainState:GetBlendHeight())
+		map2DNoZ(SEAMLESS_NONE,arr,kernel,SMappingRanges(0,1,0,1,0,1), kernel:lastIndex())
+		arr:scaleToRange(low,high)
+		TerrainState:SetLayerBuffer(arr,target-1,ms)
+		--self.nodemapping.visible=false
+		return
+	elseif target>=9 and target<=11 then
+		if not self.nodegroup then return end
+		local kernel=PackNodeGraph(self.nodegroup.output)
+		local arr=CArray2Dd(TerrainState:GetTerrainWidth(), TerrainState:GetTerrainHeight())
+		map2DNoZ(SEAMLESS_NONE,arr,kernel,SMappingRanges(0,1,0,1,0,1), kernel:lastIndex())
+		arr:scaleToRange(low,high)
+		print("Setting to mask "..target-9)
+		TerrainState:SetMaskBuffer(arr,target-9)
+		--self.nodemapping.visible=false
+	end
 end

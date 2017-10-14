@@ -10,7 +10,7 @@ return
 		{name="Ending Bed Width", type="value", value=92},
 		{name="Bed Hardness", type="value", value=0.125},
 		{name="Paving Hardness", type="value", value=0.125},
-		{name="Paving Layer", type="value", value=2},
+		{name="Paving Layer", type="list", value="Layer 2", list={"Layer 1","Layer 2","Layer 3","Layer 4","Layer 5","Layer 6","Layer 7","Layer 8"}},
 		{name="Segment steps", type="value", value=10},
 		{name="Start Depth", type="value", value=0.1},
 		{name="End Depth", type="value", value=0.2},
@@ -28,7 +28,19 @@ return
 		local endbedwidth=self.options[2].value
 		local bedhardness=self.options[3].value
 		local pavinghardness=self.options[4].value
-		local pavinglayer=self.options[5].value
+		
+		local layername=ops["Paving Layer"]
+		local which=0
+		if layername=="Layer 1" then which=0
+		elseif layername=="Layer 2" then which=1
+		elseif layername=="Layer 3" then which=2
+		elseif layername=="Layer 4" then which=3
+		elseif layername=="Layer 5" then which=4
+		elseif layername=="Layer 6" then which=5
+		elseif layername=="Layer 7" then which=6
+		elseif layername=="Layer 8" then which=7
+		end
+		
 		local segments=self.options[6].value
 		local startdepth=self.options[7].value
 		local enddepth=self.options[8].value
@@ -94,7 +106,7 @@ return
 		end
 		RasterizeQuadStrip(blend, quad)
 		ApplyBedFunction(blend, pavinghardness, true)
-		TerrainState:SetLayerBufferMax(blend,pavinglayer,ms)
+		TerrainState:SetLayerBufferMax(blend,which,ms)
 		--BlendColorWithRasterizedBuffer(blend1, blend, color)
 		--BlendRasterizedBuffer8Max(TerrainState.blend1,TerrainState.blend2,blend,pavinglayer,mask,usemask,invertmask)
 		--TerrainState.blendtex1:SetData(TerrainState.blend1,false)

@@ -957,34 +957,54 @@ void TerrainEdit::SetMaterialSettings(bool triplanar, bool smoothing, bool norma
 
 void TerrainEdit::SaveHeightMap(const String &filename)
 {
+	if(!hmap_) return;
+	hmap_->SavePNG(filename);
 }
 
 void TerrainEdit::SaveBlend0(const String &filename)
 {
+	if(!blend0_) return;
+	blend0_->SavePNG(filename);
 }
 
 void TerrainEdit::SaveBlend1(const String &filename)
 {
+	if(!blend1_) return;
+	blend1_->SavePNG(filename);
 }
 
 void TerrainEdit::SaveMask(const String &filename)
 {
+	if(!mask_) return;
+	mask_->SavePNG(filename);
 }
 
 void TerrainEdit::LoadHeightMap(const String &filename)
 {
+	if(!terrain_) return;
+	LoadImage(terrain_->GetContext(), hmap_, filename.CString());
+	terrain_->SetHeightMap(hmap_);
 }
 
 void TerrainEdit::LoadBlend0(const String &filename)
 {
+	if(!terrain_) return;
+	LoadImage(terrain_->GetContext(), blend0_, filename.CString()); 
+	blendtex0_->SetData(blend0_,false);
 }
 
 void TerrainEdit::LoadBlend1(const String &filename)
 {
+	if(!terrain_) return;
+	LoadImage(terrain_->GetContext(), blend1_, filename.CString());
+	blendtex1_->SetData(blend1_, false);
 }
 
 void TerrainEdit::LoadMask(const String &filename)
 {
+	if(!terrain_) return;
+	LoadImage(terrain_->GetContext(), mask_, filename.CString()); 
+	masktex_->SetData(mask_,false);
 }
 
 void TerrainEdit::GetSteepness(CArray2Dd &buffer, float threshold, float fade)

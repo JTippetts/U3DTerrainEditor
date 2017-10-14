@@ -11,7 +11,7 @@ return
 		{name="Bed Hardness", type="value", value=0.5},
 		{name="Paving Width", type="value", value=6},
 		{name="Paving Hardness", type="value", value=0.5},
-		{name="Paving Layer", type="value", value=2},
+		{name="Paving Layer", type="list", value="Layer 2", list={"Layer 1","Layer 2","Layer 3","Layer 4","Layer 5","Layer 6","Layer 7","Layer 8"}},
 		{name="Segment steps", type="value", value=10},
 		{name="Distort?", type="flag", value=false},
 		{name="Distortion power", type="value", value=4},
@@ -31,7 +31,19 @@ return
 		local bedhardness=self.options[2].value
 		local pavingwidth=self.options[3].value
 		local pavinghardness=self.options[4].value
-		local pavinglayer=self.options[5].value
+		
+		local layername=ops["Paving Layer"]
+		local which=0
+		if layername=="Layer 1" then which=0
+		elseif layername=="Layer 2" then which=1
+		elseif layername=="Layer 3" then which=2
+		elseif layername=="Layer 4" then which=3
+		elseif layername=="Layer 5" then which=4
+		elseif layername=="Layer 6" then which=5
+		elseif layername=="Layer 7" then which=6
+		elseif layername=="Layer 8" then which=7
+		end
+		
 		local segments=self.options[6].value
 		local distort=self.options[7].value
 		local power=self.options[8].value
@@ -85,9 +97,9 @@ return
 		BuildQuadStrip(curve, quad, pavingwidth)
 		blend:fill(0)
 		local color
-		if pavinglayer==0 then color=Color(1,0,0,0)
-		elseif pavinglayer==1 then color=Color(0,1,0,0)
-		elseif pavinglayer==2 then color=Color(0,0,1,0)
+		if which==0 then color=Color(1,0,0,0)
+		elseif which==1 then color=Color(0,1,0,0)
+		elseif which==2 then color=Color(0,0,1,0)
 		else color=Color(0,0,0,1)
 		end
 		
@@ -102,7 +114,7 @@ return
 			DistortBuffer(blend, xdistort, ydistort, power)
 		end
 		
-		TerrainState:SetLayerBufferMax(blend,pavinglayer,ms)
+		TerrainState:SetLayerBufferMax(blend,which,ms)
 		--BlendRasterizedBuffer8Max(TerrainState.blend1,TerrainState.blend2,blend,pavinglayer,mask,usemask,invertmask)	
 		--TerrainState.blendtex1:SetData(TerrainState.blend1, false)
 		--TerrainState.blendtex2:SetData(TerrainState.blend2, false)

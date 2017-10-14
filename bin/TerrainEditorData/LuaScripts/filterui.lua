@@ -159,6 +159,7 @@ function FilterUI:BuildFilterOptions(filter)
 			end
 			
 			dlist.selection=0
+			c.value=c.list[1]
 			window.size=IntVector2(title.size.x+dlist.size.x, 25)
 		end
 		window.maxSize=IntVector2(10000,25)
