@@ -180,12 +180,12 @@ function FilterUI:PopulateFilterList()
 	if list==nil then return end
 	list:RemoveAllItems()
 	
-	local filters=fileSystem:ScanDir(fileSystem:GetProgramDir().."/TerrainEditFilters", "*.lua", SCAN_FILES, false)
+	local filters=fileSystem:ScanDir(fileSystem:GetProgramDir().."TerrainEditorData/LuaScripts/TerrainEditFilters", "*.lua", SCAN_FILES, false)
 	if filters==nil then print("Uh oh")
 	else
 		local c
 		for _,c in ipairs(filters) do
-			local filter=dofile("TerrainEditFilters/"..c)
+			local filter=dofile("TerrainEditorData/LuaScripts/TerrainEditFilters/"..c)
 			print(c)
 			self.filters[filter.name]=filter
 			local uielement=Text:new(context)

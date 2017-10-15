@@ -25,6 +25,8 @@ function TerrainSelectUI:Start()
 	self:SubscribeToEvent(self.panel:GetChild("TriplanarCheck", true), "Toggled", "TerrainSelectUI:HandleMaterialSettingToggled")
 	self:SubscribeToEvent(self.panel:GetChild("SmoothCheck", true), "Toggled", "TerrainSelectUI:HandleMaterialSettingToggled")
 	self:SubscribeToEvent(self.panel:GetChild("NormalMapCheck", true), "Toggled", "TerrainSelectUI:HandleMaterialSettingToggled")
+	self:SubscribeToEvent(self.panel:GetChild("ClearLayer",true), "Pressed", "TerrainSelectUI:HandleClearLayer")
+	self:SubscribeToEvent(self.panel:GetChild("ClearAllLayers",true), "Pressed", "TerrainSelectUI:HandleClearAllLayers")
 	
 	
 	self.brushpreview=Image(context)
@@ -131,6 +133,14 @@ function TerrainSelectUI:Start()
 	
 	self:SwitchLayer(1)
 	self:SetLayerScales()
+end
+
+function TerrainSelectUI:ClearLayer(eventType, eventData)
+
+end
+
+function TerrainSelectUI:ClearAllLayers(eventType, eventData)
+
 end
 
 function TerrainSelectUI:SetLayerScales()

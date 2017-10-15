@@ -1120,10 +1120,12 @@ void TerrainEdit::GetCavityMap(CArray2Dd &buffer, float sampleradius, float scal
 
 bool LoadImage(Context *c, Image *i, const char *fname)
 {
-    SharedPtr<File> file(new File(c,fname));
-    if(!file) return false;
+    //SharedPtr<File> file(new File(c,fname));
+    //if(!file) return false;
+	File file(c,fname);
 
-    auto success=i->Load(*(file.Get()));
+    //auto success=i->Load(*(file.Get()));
+	auto success=i->Load(file);
     return success;
 }
 
