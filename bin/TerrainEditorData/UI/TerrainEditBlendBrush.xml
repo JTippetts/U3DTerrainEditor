@@ -17,7 +17,7 @@
 		<attribute name="Text" value="Terrain Brush" />
 		<attribute name="Text Alignment" value="Center" />
 	</element>
-	<element type="Window">
+	<element type="UIElement">
 		<attribute name="Pivot" value="0 0" />
 		<attribute name="Layout Mode" value="Horizontal" />
 		<element type="Text">
@@ -50,7 +50,7 @@
 			<attribute name="Text Alignment" value="Center" />
 		</element>
 	</element>
-	<element type="Window">
+	<element type="UIElement">
 		<attribute name="Pivot" value="0 0" />
 		<attribute name="Layout Mode" value="Horizontal" />
 		<element type="Text">
@@ -83,7 +83,7 @@
 			<attribute name="Text Alignment" value="Center" />
 		</element>
 	</element>
-	<element type="Window">
+	<element type="UIElement">
 		<attribute name="Pivot" value="0 0" />
 		<attribute name="Layout Mode" value="Horizontal" />
 		<element type="Text">
@@ -115,7 +115,7 @@
 			<attribute name="Text Alignment" value="Center" />
 		</element>
 	</element>
-	<element type="Window">
+	<element type="UIElement">
 		<attribute name="Min Size" value="128 72" />
 		<attribute name="Pivot" value="0 0" />
 		<element type="BorderImage">
@@ -153,11 +153,11 @@
 			<attribute name="Text" value="Clear This Layer" />
 		</element>
 	</element>
-	<element type="Window">
+	<element type="UIElement">
 		<attribute name="Min Size" value="0 15" />
 		<attribute name="Pivot" value="0 0" />
 	</element>
-	<element type="Window">
+	<element type="UIElement">
 		<attribute name="Max Size" value="2147483647 16" />
 		<attribute name="Pivot" value="0 0" />
 		<attribute name="Layout Mode" value="Horizontal" />
@@ -177,7 +177,7 @@
 			</element>
 		</element>
 	</element>
-	<element type="Window">
+	<element type="UIElement">
 		<attribute name="Max Size" value="2147483647 16" />
 		<attribute name="Pivot" value="0 0" />
 		<attribute name="Layout Mode" value="Horizontal" />
@@ -197,7 +197,7 @@
 			</element>
 		</element>
 	</element>
-	<element type="Window">
+	<element type="UIElement">
 		<attribute name="Max Size" value="2147483647 16" />
 		<attribute name="Pivot" value="0 0" />
 		<attribute name="Layout Mode" value="Horizontal" />
@@ -217,7 +217,7 @@
 			</element>
 		</element>
 	</element>
-	<element type="Window">
+	<element type="UIElement">
 		<attribute name="Min Size" value="0 16" />
 		<attribute name="Pivot" value="0 0" />
 		<element type="Text">
@@ -233,7 +233,7 @@
 			<attribute name="Text Alignment" value="Center" />
 		</element>
 	</element>
-	<element type="Window">
+	<element type="UIElement">
 		<attribute name="Min Size" value="256 128" />
 		<attribute name="Pivot" value="0 0" />
 		<element type="Button">
@@ -372,11 +372,11 @@
 			</element>
 		</element>
 	</element>
-	<element type="Window">
+	<element type="UIElement">
 		<attribute name="Min Size" value="0 15" />
 		<attribute name="Pivot" value="0 0" />
 	</element>
-	<element type="Window">
+	<element type="UIElement">
 		<attribute name="Max Size" value="2147483647 16" />
 		<attribute name="Pivot" value="0 0" />
 		<attribute name="Layout Mode" value="Horizontal" />
@@ -396,7 +396,7 @@
 			<attribute name="Text Alignment" value="Center" />
 		</element>
 	</element>
-	<element type="Window">
+	<element type="UIElement">
 		<attribute name="Max Size" value="2147483647 16" />
 		<attribute name="Pivot" value="0 0" />
 		<attribute name="Layout Mode" value="Horizontal" />
@@ -415,7 +415,7 @@
 			<attribute name="Text Alignment" value="Center" />
 		</element>
 	</element>
-	<element type="Window">
+	<element type="UIElement">
 		<attribute name="Max Size" value="2147483647 16" />
 		<attribute name="Pivot" value="0 0" />
 		<attribute name="Layout Mode" value="Horizontal" />

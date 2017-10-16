@@ -35,22 +35,6 @@ struct SMappingRanges
         mapx1=mapy1=mapz1=loopx1=loopy1=loopz1=1;
     };
 
-    SMappingRanges(SMappingRanges &rhs)
-    {
-        mapx0=rhs.mapx0;
-        mapx1=rhs.mapx1;
-        mapy0=rhs.mapy0;
-        mapy1=rhs.mapy1;
-        mapz0=rhs.mapz0;
-        mapz1=rhs.mapz1;
-
-        loopx0=rhs.loopx0;
-        loopx1=rhs.loopx1;
-        loopy0=rhs.loopy0;
-        loopy1=rhs.loopy1;
-        loopz0=rhs.loopz0;
-        loopz1=rhs.loopz1;
-    }
 
     SMappingRanges(const anl::SMappingRanges &rhs)
     {

@@ -17,7 +17,7 @@
 		<attribute name="Text" value="Mask Brush" />
 		<attribute name="Text Alignment" value="Center" />
 	</element>
-	<element type="Window">
+	<element type="UIElement">
 		<attribute name="Pivot" value="0 0" />
 		<attribute name="Layout Mode" value="Horizontal" />
 		<element type="Text">
@@ -50,7 +50,7 @@
 			<attribute name="Text Alignment" value="Center" />
 		</element>
 	</element>
-	<element type="Window">
+	<element type="UIElement">
 		<attribute name="Pivot" value="0 0" />
 		<attribute name="Layout Mode" value="Horizontal" />
 		<element type="Text">
@@ -83,7 +83,7 @@
 			<attribute name="Text Alignment" value="Center" />
 		</element>
 	</element>
-	<element type="Window">
+	<element type="UIElement">
 		<attribute name="Pivot" value="0 0" />
 		<attribute name="Layout Mode" value="Horizontal" />
 		<element type="Text">
@@ -116,7 +116,7 @@
 			<attribute name="Text Alignment" value="Center" />
 		</element>
 	</element>
-	<element type="Window">
+	<element type="UIElement">
 		<attribute name="Pivot" value="0 0" />
 		<attribute name="Layout Mode" value="Horizontal" />
 		<element type="Text">
@@ -158,7 +158,7 @@
 		<attribute name="Pivot" value="0.5 0" />
 		<attribute name="Image Rect" value="0 0 64 64" />
 	</element>
-	<element type="Window">
+	<element type="UIElement">
 		<attribute name="Min Size" value="0 15" />
 		<attribute name="Pivot" value="0 0" />
 	</element>

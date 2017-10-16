@@ -108,7 +108,8 @@ function FilterUI:BuildFilterOptions(filter)
 	local c
 	local maxx,maxy=0,0
 	for _,c in ipairs(filter.options) do
-		local window=Window:new(context)
+		--local window=Window:new(context)
+		local window=UIElement:new(context)
 		window.defaultStyle=uiStyle
 		window.style=uiStyle
 		window.layoutMode=LM_HORIZONTAL

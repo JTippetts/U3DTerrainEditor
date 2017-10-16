@@ -529,6 +529,14 @@ function TerrainSelectUI:SwitchLayer(which)
 	self.layer=which
 end
 
+function TerrainSelectUI:HandleClearLayer(eventType, eventData)
+	TerrainState:ClearLayer(self.layer-1)
+end
+
+function TerrainSelectUI:HandleClearAllLayers(eventType, eventData)
+	TerrainState:ClearAllLayers()
+end
+
 function TerrainSelectUI:HandleButtonPress(eventType, eventData)
 	local which=eventData["Element"]:GetPtr("UIElement")
 	local name=which:GetName()

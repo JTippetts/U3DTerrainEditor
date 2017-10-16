@@ -889,6 +889,23 @@ void TerrainEdit::SetBrushCursorHeight(CustomGeometry *brush, float groundx, flo
 
 void TerrainEdit::InvertMask(int which)
 {
+	if(!mask_) return;
+	for(int x=0; x<mask_->GetWidth(); ++x)
+	{
+		for(int y=0; y<mask_->GetHeight(); ++y)
+		{
+			Color m=mask_->GetPixel(x,y);
+			switch(which)
+			{
+				case 0: m.r_=1.0f-m.r_; break;
+				case 1: m.g_=1.0f-m.g_; break;
+				case 2: m.b_=1.0f-m.b_; break;
+				default: break;
+			}
+			mask_->SetPixel(x,y,m);
+		}
+	}
+	masktex_->SetData(mask_, false);
 }
 
 void TerrainEdit::ClearMask(int which)
@@ -914,18 +931,80 @@ void TerrainEdit::ClearMask(int which)
 
 void TerrainEdit::ClearAllMasks()
 {
+	if(mask_) mask_->Clear(Color(1,1,1));
 }
 
 void TerrainEdit::InvertLayer(int which)
 {
+	if(!blend0_ || !blend1_) return;
+	int w=blend0_->GetHeight();
+	int h=blend1_->GetHeight();
+	for(int x=0; x<w; ++x)
+	{
+		for(int y=0; y<h; ++y)
+		{
+			Color c0=blend0_->GetPixel(x,y);
+			Color c1=blend1_->GetPixel(x,y);
+			switch(which)
+			{
+				case 0: c0.r_=1.0f-c0.r_; break;
+				case 1: c0.g_=1.0f-c0.g_; break;
+				case 2: c0.b_=1.0f-c0.b_; break;
+				case 3: c0.a_=1.0f-c0.a_; break;
+				case 4: c1.r_=1.0f-c1.r_; break;
+				case 5: c1.g_=1.0f-c1.g_; break;
+				case 6: c1.b_=1.0f-c1.b_; break;
+				case 7: c1.a_=1.0f-c1.a_; break;
+				default: break;
+			};
+			BalanceColors(c0, c1, which);
+            blend0_->SetPixel(x,y,c0);
+            blend1_->SetPixel(x,y,c1);
+		}
+	}
+	blendtex0_->SetData(blend0_,false);
+	blendtex1_->SetData(blend1_,false);
 }
 
 void TerrainEdit::ClearLayer(int which)
 {
+	if(!blend0_ || !blend1_) return;
+	int w=blend0_->GetHeight();
+	int h=blend1_->GetHeight();
+	for(int x=0; x<w; ++x)
+	{
+		for(int y=0; y<h; ++y)
+		{
+			Color c0=blend0_->GetPixel(x,y);
+			Color c1=blend1_->GetPixel(x,y);
+			switch(which)
+			{
+				case 0: c0.r_=0.0f; break;
+				case 1: c0.g_=0.0f; break;
+				case 2: c0.b_=0.0f; break;
+				case 3: c0.a_=0.0f; break;
+				case 4: c1.r_=0.0f; break;
+				case 5: c1.g_=0.0f; break;
+				case 6: c1.b_=0.0f; break;
+				case 7: c1.a_=0.0f; break;
+				default: break;
+			};
+			BalanceColors(c0, c1, which);
+            blend0_->SetPixel(x,y,c0);
+            blend1_->SetPixel(x,y,c1);
+		}
+	}
+	blendtex0_->SetData(blend0_,false);
+	blendtex1_->SetData(blend1_,false);
 }
 
 void TerrainEdit::ClearAllLayers()
 {
+	if(!blend0_ || !blend1_) return;
+	blend0_->Clear(Color(1,0,0,0));
+	blend1_->Clear(Color(0,0,0,0));
+	blendtex0_->SetData(blend0_,false);
+	blendtex1_->SetData(blend1_,false);
 }
 
 void TerrainEdit::InvertHeight()
