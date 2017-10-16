@@ -2,7 +2,8 @@ SaveLoadUI=ScriptObject()
 imageFilters={"*.png"}
 
 function SaveLoadUI:Start()
-	self.menu=ui:LoadLayout(cache:GetResource("XMLFile", "UI/TerrainEditSaveLoadMenu.xml"))
+	--self.menu=ui:LoadLayout(cache:GetResource("XMLFile", "UI/TerrainEditSaveLoadMenu.xml"))
+	self.menu=ui:LoadLayout(cache:GetResource("XMLFile", "UI/TerrainSettings.xml"))
 	self.menu.style=uiStyle
 	self.menu.visible=true
 	
@@ -15,12 +16,19 @@ function SaveLoadUI:Start()
 	self:SubscribeToEvent("LoadBlend1", "SaveLoadUI:LoadBlend1")
 	self:SubscribeToEvent("LoadBlend2", "SaveLoadUI:LoadBlend2")
 	
-	self:SubscribeToEvent(self.menu:GetChild("SaveHeightmap",true), "Pressed", "SaveLoadUI:SaveHeightmap")
-	self:SubscribeToEvent(self.menu:GetChild("SaveBlend1",true), "Pressed", "SaveLoadUI:SaveBlend1")
-	self:SubscribeToEvent(self.menu:GetChild("SaveBlend2",true), "Pressed", "SaveLoadUI:SaveBlend2")
-	self:SubscribeToEvent(self.menu:GetChild("LoadHeightmap",true), "Pressed", "SaveLoadUI:LoadHeightmap")
-	self:SubscribeToEvent(self.menu:GetChild("LoadBlend1",true), "Pressed", "SaveLoadUI:LoadBlend1")
-	self:SubscribeToEvent(self.menu:GetChild("LoadBlend2",true), "Pressed", "SaveLoadUI:LoadBlend2")
+	self:SubscribeToEvent(self.menu:GetChild("SaveTerrain",true), "Pressed", "SaveLoadUI:SaveHeightmap")
+	self:SubscribeToEvent(self.menu:GetChild("SaveBlend0",true), "Pressed", "SaveLoadUI:SaveBlend1")
+	self:SubscribeToEvent(self.menu:GetChild("SaveBlend1",true), "Pressed", "SaveLoadUI:SaveBlend2")
+	self:SubscribeToEvent(self.menu:GetChild("LoadTerrain",true), "Pressed", "SaveLoadUI:LoadHeightmap")
+	self:SubscribeToEvent(self.menu:GetChild("LoadBlend0",true), "Pressed", "SaveLoadUI:LoadBlend1")
+	self:SubscribeToEvent(self.menu:GetChild("LoadBlend1",true), "Pressed", "SaveLoadUI:LoadBlend2")
+	
+	self:SubscribeToEvent(self.menu:GetChild("ApplyTerrainSpacing",true), "Pressed", "SaveLoadUI:HandleApplyTerrainSpacing")
+	self:SubscribeToEvent(self.menu:GetChild("ApplyTerrainHeight",true), "Pressed", "SaveLoadUI:HandleApplyTerrainHeight")
+	
+	local sp=TerrainState:GetTerrainSpacing()
+	self.menu:GetChild("TerrainSpacing",true).text=tostring(sp.x)
+	self.menu:GetChild("TerrainHeight",true).text=tostring(sp.y)
 end
 
 function CenterDialog(element)
@@ -45,6 +53,20 @@ function ExtractFilename(eventData, forSave)
     return fileName
 end
 
+function SaveLoadUI:HandleApplyTerrainSpacing(eventType,eventData)
+	local v=tonumber(self.menu:GetChild("TerrainSpacing",true).text)
+	local sp=TerrainState:GetTerrainSpacing()
+	sp.x=v
+	sp.z=v
+	TerrainState:SetTerrainSpacing(sp)
+end
+
+function SaveLoadUI:HandleApplyTerrainHeight(eventType,eventData)
+	local v=tonumber(self.menu:GetChild("TerrainHeight",true).text)
+	local sp=TerrainState:GetTerrainSpacing()
+	sp.y=v
+	TerrainState:SetTerrainSpacing(sp)
+end
 
 function SaveLoadUI:CreateFileSelector(title, ok, cancel, initialPath, filters, initialFilter, autoLocalizeTitle)
 	if autoLocalizeTitle==nil then autoLocalizeTitle=true end

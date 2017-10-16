@@ -135,6 +135,8 @@ public:
 
     void GetSteepness(CArray2Dd &buffer, float threshold, float fade);
 	void GetCavityMap(CArray2Dd &buffer, float sampleradius, float scale, float bias, float intensity, unsigned int iterations);
+	
+	Vector3 GetTerrainSpacing();
 
 protected:
     Node *terrainNode_;

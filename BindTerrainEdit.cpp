@@ -2729,6 +2729,48 @@ static int tolua_BindTerrainEdit_TerrainEdit_GetCavityMap00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: GetTerrainSpacing of class  TerrainEdit */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_TerrainEdit_GetTerrainSpacing00
+static int tolua_BindTerrainEdit_TerrainEdit_GetTerrainSpacing00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"TerrainEdit",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  TerrainEdit* self = (TerrainEdit*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'GetTerrainSpacing'", NULL);
+#endif
+ {
+  Vector3 tolua_ret = (Vector3)  self->GetTerrainSpacing();
+ {
+#ifdef __cplusplus
+ void* tolua_obj = Mtolua_new((Vector3)(tolua_ret));
+  tolua_pushusertype(tolua_S,tolua_obj,"Vector3");
+ tolua_register_gc(tolua_S,lua_gettop(tolua_S));
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Vector3));
+  tolua_pushusertype(tolua_S,tolua_obj,"Vector3");
+ tolua_register_gc(tolua_S,lua_gettop(tolua_S));
+#endif
+ }
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'GetTerrainSpacing'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* function: WorldToNormalized */
 #ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_WorldToNormalized00
 static int tolua_BindTerrainEdit_WorldToNormalized00(lua_State* tolua_S)
@@ -5774,6 +5816,7 @@ TOLUA_API int tolua_BindTerrainEdit_open (lua_State* tolua_S)
   tolua_function(tolua_S,"LoadMask",tolua_BindTerrainEdit_TerrainEdit_LoadMask00);
   tolua_function(tolua_S,"GetSteepness",tolua_BindTerrainEdit_TerrainEdit_GetSteepness00);
   tolua_function(tolua_S,"GetCavityMap",tolua_BindTerrainEdit_TerrainEdit_GetCavityMap00);
+  tolua_function(tolua_S,"GetTerrainSpacing",tolua_BindTerrainEdit_TerrainEdit_GetTerrainSpacing00);
  tolua_endmodule(tolua_S);
  tolua_function(tolua_S,"WorldToNormalized",tolua_BindTerrainEdit_WorldToNormalized00);
  tolua_function(tolua_S,"NormalizedToWorld",tolua_BindTerrainEdit_NormalizedToWorld00);

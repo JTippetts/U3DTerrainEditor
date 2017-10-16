@@ -1196,6 +1196,11 @@ void TerrainEdit::GetCavityMap(CArray2Dd &buffer, float sampleradius, float scal
 	}
 }
 
+Vector3 TerrainEdit::GetTerrainSpacing()
+{
+	if(!terrain_) return Vector3();
+	return terrain_->GetSpacing();
+}
 
 bool LoadImage(Context *c, Image *i, const char *fname)
 {
