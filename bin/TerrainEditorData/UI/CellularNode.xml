@@ -2,7 +2,7 @@
 <element type="Window">
 	<attribute name="Name" value="Cellular" />
 	<attribute name="Position" value="418 213" />
-	<attribute name="Size" value="213 165" />
+	<attribute name="Size" value="213 153" />
 	<attribute name="Pivot" value="0 0" />
 	<attribute name="Layout Mode" value="Vertical" />
 	<attribute name="Layout Border" value="2 2 2 2" />
