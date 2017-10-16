@@ -294,21 +294,24 @@ function ThirdPersonCamera:HandleUpdate(eventType, eventData)
 				trans.x=trans.x+(oldx-newx)
 				trans.z=trans.z+(oldy-newy)
 		
-				if self.tracksurface then
-					--self.offset=TerrainState.terrain:GetHeight(Vector3(self.node.position.x+trans.x,self.offset,self.node.position.z+trans.z)) + 1
-					self.offset=TerrainState:GetTerrain():GetHeight(Vector3(self.node.position.x+trans.x,self.offset,self.node.position.z+trans.z)) + 1
-				else
-					self.offset=1
-				end
-		
-		
 				self.lastmx=mousepos.x
 				self.lastmz=mousepos.y
 			end
 		end
 	end
 	
-	self.node.position=Vector3(self.node.position.x+trans.x,self.offset,self.node.position.z+trans.z)
+	local np=Vector3(self.node.position.x+trans.x,0,self.node.position.z+trans.z)
+	local nrm=TerrainState:WorldToNormalized(np)
+	nrm.x = math.max(0, math.min(1, nrm.x))
+	nrm.y = math.max(0, math.min(1, nrm.y))
+	np=TerrainState:NormalizedToWorld(nrm)
+	if self.tracksurface then
+		np.y=TerrainState:GetTerrain():GetHeight(np) + 1
+	else
+		np.y=1
+	end
+	
+	self.node.position=np
 	
 		-- Apply the spring function to the zoom (follow) level.
 	-- This provides smooth camera movement toward the desired zoom level.
