@@ -420,7 +420,7 @@ end
 function NodeGraphUI:OutputNode(nodegroup)
 	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/OutputNode.xml"))
 	e.visible=true
-	self:SubscribeLinkPoints(e,0)
+	self:SubscribeLinkPoints(e,1)
 	
 	nodegroup.pane:AddChild(e)
 	return e
