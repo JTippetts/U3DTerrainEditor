@@ -348,7 +348,10 @@ function TerrainEditUI:HandleToggled(eventType,eventData)
 	elseif name=="EditHeight" then
 		if eventData["State"]:GetBool() then
 			self.heightbrush:Activate()
-		else self.heightbrush:Deactivate()
+			cam.tracksurface=false   -- Deactivate camera surface tracking while editing height
+		else
+			self.heightbrush:Deactivate()
+			cam.tracksurface=true
 		end
 	elseif name=="SmoothHeight" then
 		if eventData["State"]:GetBool() then
