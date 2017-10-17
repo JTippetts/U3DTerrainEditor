@@ -367,7 +367,7 @@ function TerrainEditUI:Update(dt)
 		mousepos=ui:GetCursorPosition()
 	end
 	
-	if input:GetKeyPress(KEY_W) then
+	if input:GetKeyPress(KEY_E) then
 		local mouseground=cam:PickGround(mousepos.x, mousepos.y)
 		self:AddWaypoint(mouseground.x, mouseground.z)
 		

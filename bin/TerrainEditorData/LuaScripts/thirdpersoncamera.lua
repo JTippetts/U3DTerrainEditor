@@ -298,6 +298,25 @@ function ThirdPersonCamera:HandleUpdate(eventType, eventData)
 				self.lastmz=mousepos.y
 			end
 		end
+	else
+		local quat=Quaternion(self.yaw,Vector3(0,1,0))
+		local speed=10.0
+		if input:GetKeyDown(KEY_W) then
+			trans.z=trans.z+1.0
+		end
+		
+		if input:GetKeyDown(KEY_S) then
+			trans.z=trans.z-1
+		end
+		
+		if input:GetKeyDown(KEY_A) then
+			trans.x=trans.x-1
+		end
+		
+		if input:GetKeyDown(KEY_D) then
+			trans.x=trans.x+1
+		end
+		trans=quat*trans*dt*speed
 	end
 	
 	local np=Vector3(self.node.position.x+trans.x,0,self.node.position.z+trans.z)
