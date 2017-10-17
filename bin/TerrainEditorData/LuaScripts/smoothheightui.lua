@@ -95,6 +95,7 @@ function SmoothHeightUI:Activate()
 	self.cursor:BuildCursorMesh(self.radius)
 	self.cursor:Show()
 	self.cursor:SetBrushPreview(self.brushtex)
+	self.panel:SetPosition(IntVector2(0,graphics.height-self.panel.height))
 end
 
 function SmoothHeightUI:Deactivate()

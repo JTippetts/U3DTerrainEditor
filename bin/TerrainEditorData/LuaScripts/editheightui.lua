@@ -102,6 +102,7 @@ function EditHeightUI:Activate()
 	self.cursor:BuildCursorMesh(self.radius)
 	self.cursor:Show()
 	self.cursor:SetBrushPreview(self.brushtex)
+	self.panel:SetPosition(0,graphics.height-self.panel.height)
 end
 
 function EditHeightUI:Deactivate()

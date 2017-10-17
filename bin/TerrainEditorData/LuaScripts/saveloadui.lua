@@ -126,6 +126,7 @@ end
 
 function SaveLoadUI:Activate()
 	self.menu.visible=true
+	self.menu:SetPosition(IntVector2(0,graphics.height-self.menu.height))
 end
 
 function SaveLoadUI:Deactivate()

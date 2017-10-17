@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <element type="Window">
-	<attribute name="Size" value="64 512" />
+	<attribute name="Size" value="512 64" />
 	<attribute name="Pivot" value="0 0" />
-	<attribute name="Layout Mode" value="Vertical" />
+	<attribute name="Layout Mode" value="Horizontal" />
 	<element type="CheckBox">
 		<attribute name="Name" value="TerrainSettings" />
 		<attribute name="Min Size" value="64 64" />
@@ -13,7 +13,7 @@
 		<attribute name="Hover Image Offset" value="0 0" />
 		<attribute name="Checked Image Offset" value="0 64" />
 		<element type="ToolTip" style="ToolTip">
-			<attribute name="Position" value="64 0" />
+			<attribute name="Position" value="0 64" />
 			<attribute name="Pivot" value="0 0" />
 			<attribute name="Priority" value="2147483647" />
 			<attribute name="Is Visible" value="false" />
@@ -37,7 +37,7 @@
 		<attribute name="Hover Image Offset" value="0 0" />
 		<attribute name="Checked Image Offset" value="0 64" />
 		<element type="ToolTip" style="ToolTip">
-			<attribute name="Position" value="64 0" />
+			<attribute name="Position" value="0 64" />
 			<attribute name="Pivot" value="0 0" />
 			<attribute name="Priority" value="2147483647" />
 			<attribute name="Is Visible" value="false" />
@@ -61,7 +61,7 @@
 		<attribute name="Hover Image Offset" value="0 0" />
 		<attribute name="Checked Image Offset" value="0 64" />
 		<element type="ToolTip" style="ToolTip">
-			<attribute name="Position" value="64 0" />
+			<attribute name="Position" value="0 64" />
 			<attribute name="Pivot" value="0 0" />
 			<attribute name="Priority" value="2147483647" />
 			<attribute name="Is Visible" value="false" />
@@ -85,7 +85,7 @@
 		<attribute name="Hover Image Offset" value="0 0" />
 		<attribute name="Checked Image Offset" value="0 64" />
 		<element type="ToolTip" style="ToolTip">
-			<attribute name="Position" value="64 0" />
+			<attribute name="Position" value="0 64" />
 			<attribute name="Pivot" value="0 0" />
 			<attribute name="Priority" value="2147483647" />
 			<attribute name="Is Visible" value="false" />
@@ -109,7 +109,7 @@
 		<attribute name="Hover Image Offset" value="0 0" />
 		<attribute name="Checked Image Offset" value="0 64" />
 		<element type="ToolTip" style="ToolTip">
-			<attribute name="Position" value="64 0" />
+			<attribute name="Position" value="0 64" />
 			<attribute name="Pivot" value="0 0" />
 			<attribute name="Priority" value="2147483647" />
 			<attribute name="Is Visible" value="false" />
@@ -133,7 +133,7 @@
 		<attribute name="Hover Image Offset" value="0 0" />
 		<attribute name="Checked Image Offset" value="0 64" />
 		<element type="ToolTip" style="ToolTip">
-			<attribute name="Position" value="64 0" />
+			<attribute name="Position" value="0 64" />
 			<attribute name="Pivot" value="0 0" />
 			<attribute name="Priority" value="2147483647" />
 			<attribute name="Is Visible" value="false" />
@@ -157,7 +157,7 @@
 		<attribute name="Hover Image Offset" value="0 0" />
 		<attribute name="Checked Image Offset" value="0 64" />
 		<element type="ToolTip" style="ToolTip">
-			<attribute name="Position" value="64 0" />
+			<attribute name="Position" value="0 64" />
 			<attribute name="Pivot" value="0 0" />
 			<attribute name="Priority" value="2147483647" />
 			<attribute name="Is Visible" value="false" />
@@ -181,7 +181,7 @@
 		<attribute name="Hover Image Offset" value="0 0" />
 		<attribute name="Checked Image Offset" value="0 64" />
 		<element type="ToolTip" style="ToolTip">
-			<attribute name="Position" value="64 0" />
+			<attribute name="Position" value="0 64" />
 			<attribute name="Pivot" value="0 0" />
 			<attribute name="Priority" value="2147483647" />
 			<attribute name="Is Visible" value="false" />

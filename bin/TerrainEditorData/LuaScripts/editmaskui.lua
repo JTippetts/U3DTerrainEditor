@@ -99,6 +99,7 @@ function EditMaskUI:Activate(which)
 	self.which=math.max(0, math.min(2,which))
 	local name=self.panel:GetChild("MaskName", true)
 	if name then name.text = "Edit Mask "..self.which end
+	self.panel:SetPosition(IntVector2(0,graphics.height-self.panel.height))
 end
 
 function EditMaskUI:Deactivate()
