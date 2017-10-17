@@ -169,57 +169,10 @@ function TerrainSelectUI:CreateFileSelector(title, ok, cancel, initialPath, filt
 	fs.path=initialPath
 	fs:SetButtonTexts(ok, cancel)
 	fs:SetFilters(filters, initialFilter)
-	
-	--local size=fs:GetSize()
-	--fs:SetPosition((ui.root.width - size.x)/2, (ui.root.height-size.y)/2)
-	
 	return fs
 end
 
 function TerrainSelectUI:ChangeMaterial(triplanar, smoothing, normalmapping)
-	--[[if triplanar then
-		if smoothing then
-			if normalmapping then
-				TerrainState.terrainMaterial=cache:GetResource("Material", "Materials/TerrainEdit8TriplanarSmoothBump.xml")
-			else
-				TerrainState.terrainMaterial=cache:GetResource("Material", "Materials/TerrainEdit8TriplanarSmooth.xml")
-			end
-		else
-			if normalmapping then
-				TerrainState.terrainMaterial=cache:GetResource("Material", "Materials/TerrainEdit8TriplanarBump.xml")
-			else
-				TerrainState.terrainMaterial=cache:GetResource("Material", "Materials/TerrainEdit8Triplanar.xml")
-			end
-		end
-	else
-		if smoothing then
-			if normalmapping then
-				TerrainState.terrainMaterial=cache:GetResource("Material", "Materials/TerrainEdit8SmoothBump.xml")
-			else
-				TerrainState.terrainMaterial=cache:GetResource("Material", "Materials/TerrainEdit8Smooth.xml")
-			end
-		else
-			if normalmapping then
-				TerrainState.terrainMaterial=cache:GetResource("Material", "Materials/TerrainEdit8Bump.xml")
-			else
-				TerrainState.terrainMaterial=cache:GetResource("Material", "Materials/TerrainEdit8.xml")
-			end
-		end
-	end
-	
-	TerrainState.terrainMaterial:SetTexture(0, TerrainState.blendtex1)
-	TerrainState.terrainMaterial:SetTexture(1, TerrainState.blendtex2)
-	TerrainState.terrainMaterial:SetTexture(4, TerrainState.masktex)
-	TerrainState.terrainMaterial:SetTexture(2, self.difftex)
-	
-	if normalmapping then
-		TerrainState.terrainMaterial:SetTexture(3, self.normaltex)
-	end
-	
-	if TerrainState.terrain then
-		TerrainState.terrain.material=TerrainState.terrainMaterial
-	end
-	]]
 	TerrainState:SetMaterialSettings(triplanar,smoothing,normalmapping)
 	TerrainState:GetMaterial():SetTexture(2,self.difftex)
 	if normalmapping then TerrainState:GetMaterial():SetTexture(3,self.normaltex) end

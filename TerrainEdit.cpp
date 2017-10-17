@@ -731,35 +731,35 @@ void TerrainEdit::ApplyBlendBrush(float x, float z, int layer, float dt, BrushSe
                 Color col1=blend1_->GetPixel(hx,hz);
                 if(layer==0)
                 {
-                    col0.r_=col0.r_+i*(1.0f-col0.r_);
+                    col0.r_=col0.r_+i*(brush.max-col0.r_);
                 }
                 else if(layer==1)
                 {
-                    col0.g_=col0.g_+i*(1.0f-col0.g_);
+                    col0.g_=col0.g_+i*(brush.max-col0.g_);
                 }
                 else if(layer==2)
                 {
-                    col0.b_=col0.b_+i*(1.0f-col0.b_);
+                    col0.b_=col0.b_+i*(brush.max-col0.b_);
                 }
                 else if(layer==3)
                 {
-                    col0.a_=col0.a_+i*(1.0f-col0.a_);
+                    col0.a_=col0.a_+i*(brush.max-col0.a_);
                 }
                 else if(layer==4)
                 {
-                    col1.r_=col1.r_+i*(1.0f-col1.r_);
+                    col1.r_=col1.r_+i*(brush.max-col1.r_);
                 }
                 else if(layer==5)
                 {
-                    col1.g_=col1.g_+i*(1.0f-col1.g_);
+                    col1.g_=col1.g_+i*(brush.max-col1.g_);
                 }
                 else if(layer==6)
                 {
-                    col1.b_=col1.b_+i*(1.0f-col1.b_);
+                    col1.b_=col1.b_+i*(brush.max-col1.b_);
                 }
                 else
                 {
-                    col1.a_=col1.a_+i*(1.0f-col1.a_);
+                    col1.a_=col1.a_+i*(brush.max-col1.a_);
                 }
                 BalanceColors(col0, col1, layer);
                 blend0_->SetPixel(hx,hz,col0);
