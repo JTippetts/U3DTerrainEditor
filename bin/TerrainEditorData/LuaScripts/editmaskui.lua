@@ -128,7 +128,8 @@ function EditMaskUI:Deactivate()
 end
 
 function EditMaskUI:HandleClearMask(eventType, eventData)
-	TerrainState:ClearMask(self.which)
+	local which=self.panel:GetChild("WhichMask",true).selection
+	TerrainState:ClearMask(which)
 end
 
 function EditMaskUI:HandleSliderChanged(eventType, eventData)
@@ -174,12 +175,12 @@ function EditMaskUI:Update(dt)
 		self.power, self.max, self.radius, self.hardness, self.usemask=self:GetBrushSettings()
 		local bs=BrushSettings(self.radius, self.max, self.power, self.hardness)
 		local ms=MaskSettings()
-		self.which=self.panel:GetChild("WhichMask",true).selection
+		local which=self.panel:GetChild("WhichMask",true).selection
 		
 		if input:GetMouseButtonDown(MOUSEB_LEFT) and ui:GetElementAt(mousepos.x, mousepos.y)==nil then
 			local gx,gz=ground.x,ground.z
 			--ApplyMaskBrush(TerrainState.terrain,TerrainState.hmap,TerrainState.mask,gx,gz,self.radius,self.max,self.power,self.hardness,dt,self.which) TerrainState.masktex:SetData(TerrainState.mask)
-			TerrainState:ApplyMaskBrush(gx,gz,self.which,dt,bs,ms)
+			TerrainState:ApplyMaskBrush(gx,gz,which,dt,bs,ms)
 		end
 	end
 	
