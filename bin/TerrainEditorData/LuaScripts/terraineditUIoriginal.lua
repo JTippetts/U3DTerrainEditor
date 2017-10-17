@@ -111,6 +111,7 @@ function TerrainEditUI:BuildUI()
 	self:SubscribeToEvent(self.toolbar:GetChild("EditNoiseGraphs",true), "Toggled", "TerrainEditUI:HandleToggled")
 	self:SubscribeToEvent(self.toolbar:GetChild("EditWaypoints",true), "Toggled", "TerrainEditUI:HandleToggled")
 	self:SubscribeToEvent(self.toolbar:GetChild("Filters",true), "Toggled", "TerrainEditUI:HandleToggled")
+	self:SubscribeToEvent(self.toolbar:GetChild("Help",true), "Toggled", "TerrainEditUI:HandleToggled")
 
 
 	self.waypointpreview=scene_:CreateComponent("CustomGeometry")
@@ -400,6 +401,7 @@ function TerrainEditUI:UncheckToolbar(except)
 	if except~="EditNoiseGraphs" then self.toolbar:GetChild("EditNoiseGraphs",true).checked=false self.nodegroupslist.visible=false end
 	if except~="EditWaypoints" then self.toolbar:GetChild("EditWaypoints",true).checked=false end
 	if except~="Filters" then self.toolbar:GetChild("Filters",true).checked=false filterui:Deactivate() end
+	if except~="Help" then self.toolbar:GetChild("Help",true).checked=false end
 end
 
 function TerrainEditUI:HandleToggled(eventType,eventData)
@@ -452,7 +454,8 @@ function TerrainEditUI:HandleToggled(eventType,eventData)
 		else
 			filterui:Deactivate()
 		end
-		
+	elseif name=="Help" then
+	
 	end
 end
 
