@@ -88,6 +88,8 @@ function TerrainEditUI:BuildUI()
 	self.smoothbrush:Deactivate()
 	self.heightbrush:Deactivate()
 	
+	self.nodegroupslist.visible=false
+	
 	self.newterrain.style=uiStyle
 	self.toolbar.style=uiStyle
 	
@@ -395,7 +397,7 @@ function TerrainEditUI:UncheckToolbar(except)
 	if except~="SmoothHeight" then self.toolbar:GetChild("SmoothHeight",true).checked=false self.smoothbrush:Deactivate() end
 	if except~="EditLayer" then self.toolbar:GetChild("EditLayer",true).checked=false self.blendbrush:Deactivate() end
 	if except~="EditMask" then self.toolbar:GetChild("EditMask",true).checked=false self.maskbrush:Deactivate() end
-	if except~="EditNoiseGraphs" then self.toolbar:GetChild("EditNoiseGraphs",true).checked=false end
+	if except~="EditNoiseGraphs" then self.toolbar:GetChild("EditNoiseGraphs",true).checked=false self.nodegroupslist.visible=false end
 	if except~="EditWaypoints" then self.toolbar:GetChild("EditWaypoints",true).checked=false end
 	if except~="Filters" then self.toolbar:GetChild("Filters",true).checked=false filterui:Deactivate() end
 end
@@ -437,7 +439,11 @@ function TerrainEditUI:HandleToggled(eventType,eventData)
 			self.maskbrush:Deactivate()
 		end
 	elseif name=="EditNoiseGraphs" then
-		-- TODO
+		if eventData["State"]:GetBool() then
+			self.nodegroupslist.visible=true
+		else
+			self.nodegroupslist.visible=false
+		end
 	elseif name=="EditWaypoints" then
 		-- TODO
 	elseif name=="Filters" then
