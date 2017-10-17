@@ -67,6 +67,7 @@ function PackNodeGraph(output)
 			elseif op==6 then return kernel:maximum(s1,s2)
 			elseif op==7 then return kernel:bias(s1,s2)
 			elseif op==8 then return kernel:gain(s1,s2)
+			elseif op==9 then return kernel:step(s2,s1)
 			end
 		elseif n.name=="TranslateDomain" then
 			local s1,s2=GetValue(n,0),GetValue(n,1)
@@ -179,6 +180,9 @@ function PackNodeGraph(output)
 		elseif n.name=="Cellular" then
 			local s1,s2,s3,s4,s5,s6,s7,s8,s9,s10=GetSeed(n,0),GetValue(n,1),GetValue(n,2),GetValue(n,3),GetValue(n,4),GetValue(n,5),GetValue(n,6),GetValue(n,7),GetValue(n,8),GetValue(n,9)
 			return kernel:cellularBasis(s2,s3,s4,s5,s6,s7,s8,s9,s10,s1)
+		elseif n.name=="Sigmoid" then
+			local s1,s2,s3=GetValue(n,0),GetValue(n,1),GetValue(n,2)
+			return kernel:sigmoid(s1,s2,s3)
 		end
 	end
 	
@@ -208,6 +212,8 @@ function PackNodeGraph(output)
 			visitnode(n,3)
 		elseif n.name=="Cellular" then
 			visitnode(n,10)
+		elseif n.name=="Sigmoid" then
+			visitnode(n,3)
 		end
 		table.insert(nodes,n)
 		table.insert(kernelindices, InstanceANLFunction(kernel, n))
@@ -248,7 +254,8 @@ function NodeGraphUI:Start()
 	self:SubscribeToEvent(self.createnodemenu:GetChild("Mix", true), "Pressed", "NodeGraphUI:HandleCreateNode")
 	self:SubscribeToEvent(self.createnodemenu:GetChild("Expression", true), "Pressed", "NodeGraphUI:HandleCreateNode")
 	self:SubscribeToEvent(self.createnodemenu:GetChild("Seeder", true), "Pressed", "NodeGraphUI:HandleCreateNode")
-	self:SubscribeToEvent(self.createnodemenu:GetChild("Cellular", true), "Pressed", "NodeGraphUI:HandleCreateNode")
+	self:SubscribeToEvent(self.createnodemenu:GetChild("Cellular", true), "Pressed", "NodeGraphUI:HandleCreateNode") 
+	self:SubscribeToEvent(self.createnodemenu:GetChild("Sigmoid", true), "Pressed", "NodeGraphUI:HandleCreateNode")
 	self.createnodemenu.visible=false
 	
 	local cnmclose=self.createnodemenu:GetChild("Close", true)
@@ -346,8 +353,6 @@ function NodeGraphUI:Activate(nodegroup)
 	self.closetext:SetStyle("Text", cache:GetResource("XMLFile","UI/DefaultStyle.xml"))
 	self.closetext:SetFontSize(20)
 	self.closetext.text="Press 'M' to close window."
-	--self.pane.visible=true
-	--self.pane.focus=true
 end
 
 function NodeGraphUI:Deactivate()
@@ -356,8 +361,6 @@ function NodeGraphUI:Deactivate()
 		self.nodegroup.pane.focus=false
 		if self.closetext then self.closetext:Remove() self.closetext=nil end
 	end
-	--self.pane.visible=false
-	--self.pane.focus=false
 end
 
 
@@ -390,6 +393,7 @@ function NodeGraphUI:HandleCreateNode(eventType, eventData)
 	elseif e.name=="Expression" then n=self:ExpressionNode(self.nodegroup)
 	elseif e.name=="Seeder" then n=self:SeederNode(self.nodegroup)
 	elseif e.name=="Cellular" then n=self:CellularNode(self.nodegroup)
+	elseif e.name=="Sigmoid" then n=self:SigmoidNode(self.nodegroup)
 	end
 	
 	n.position=IntVector2(-self.nodegroup.pane.position.x + graphics.width/2, -self.nodegroup.pane.position.y + graphics.height/2)
@@ -413,14 +417,28 @@ function NodeGraphUI:HandleKeyDown(eventType, eventData)
 	end
 end
 
+function NodeGraphUI:SubscribeLinkPoints(e,numinputs)
+	local output=e:GetChild("Output0", true)
+	if(output) then
+		self:SubscribeToEvent(output, "DragBegin", "NodeGraphUI:HandleOutputDragBegin")
+		self:SubscribeToEvent(output, "DragEnd", "NodeGraphUI:HandleDragEnd")
+		output:SetRoot(e)
+	end
+	
+	local c
+	for c=0,numinputs-1,1 do
+		local input=e:GetChild("Input"..c, true)
+		if(input) then
+			self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
+			self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
+		end
+	end
+end
+
 function NodeGraphUI:OutputNode(nodegroup)
 	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/OutputNode.xml"))
-	
 	e.visible=true
-	
-	local input=e:GetChild("Input0", true)
-	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
-	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	self:SubscribeLinkPoints(e,0)
 	
 	nodegroup.pane:AddChild(e)
 	return e
@@ -458,14 +476,7 @@ function NodeGraphUI:ScalarMathNode(nodegroup)
 	end
 	list.selection=0
 	
-	local output=e:GetChild("Output0", true)
-	self:SubscribeToEvent(output, "DragBegin", "NodeGraphUI:HandleOutputDragBegin")
-	self:SubscribeToEvent(output, "DragEnd", "NodeGraphUI:HandleDragEnd")
-	output:SetRoot(e)
-	
-	local input=e:GetChild("Input0", true)
-	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
-	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	self:SubscribeLinkPoints(e,1)
 	
 	nodegroup.pane:AddChild(e)
 	return e
@@ -474,17 +485,16 @@ end
 function NodeGraphUI:SeederNode(nodegroup)
 	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/SeederNode.xml"))
 	e.visible=true
-	local output=e:GetChild("Output0", true)
-	self:SubscribeToEvent(output, "DragBegin", "NodeGraphUI:HandleOutputDragBegin")
-	self:SubscribeToEvent(output, "DragEnd", "NodeGraphUI:HandleDragEnd")
-	output:SetRoot(e)
+	self:SubscribeLinkPoints(e,2)
 	
-	local input=e:GetChild("Input0", true)
-	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
-	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
-	input=e:GetChild("Input1", true)
-	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
-	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	nodegroup.pane:AddChild(e)
+	return e
+end
+
+function NodeGraphUI:SigmoidNode(nodegroup)
+	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/SigmoidNode.xml"))
+	e.visible=true
+	self:SubscribeLinkPoints(e,3)
 	
 	nodegroup.pane:AddChild(e)
 	return e
@@ -510,6 +520,7 @@ function NodeGraphUI:ArithmeticNode(nodegroup)
 		"Max",
 		"Bias",
 		"Gain",
+		"Step"
 	}
 	
 	list:SetAlignment(HA_LEFT, VA_CENTER)
@@ -525,18 +536,7 @@ function NodeGraphUI:ArithmeticNode(nodegroup)
 	end
 	list.selection=0
 	
-	local output=e:GetChild("Output0", true)
-	
-	self:SubscribeToEvent(output, "DragBegin", "NodeGraphUI:HandleOutputDragBegin")
-	self:SubscribeToEvent(output, "DragEnd", "NodeGraphUI:HandleDragEnd")
-	output:SetRoot(e)
-	
-	local input=e:GetChild("Input0", true)
-	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
-	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
-	input=e:GetChild("Input1", true)
-	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
-	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	self:SubscribeLinkPoints(e,2)
 	
 	nodegroup.pane:AddChild(e)
 	return e
@@ -546,28 +546,7 @@ function NodeGraphUI:RotateDomainNode(nodegroup)
 	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/RotateDomainNode.xml"))
 	
 	e.visible=true
-	
-	local output=e:GetChild("Output0", true)
-	
-	self:SubscribeToEvent(output, "DragBegin", "NodeGraphUI:HandleOutputDragBegin")
-	self:SubscribeToEvent(output, "DragEnd", "NodeGraphUI:HandleDragEnd")
-	output:SetRoot(e)
-	
-	local input=e:GetChild("Input0", true)
-	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
-	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
-	input=e:GetChild("Input1", true)
-	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
-	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
-	input=e:GetChild("Input2", true)
-	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
-	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
-	input=e:GetChild("Input3", true)
-	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
-	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
-	input=e:GetChild("Input4", true)
-	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
-	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	self:SubscribeLinkPoints(e,5)
 	
 	nodegroup.pane:AddChild(e)
 	return e
@@ -577,21 +556,7 @@ function NodeGraphUI:RandomizeNode(nodegroup)
 	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/RandomizeNode.xml"))
 	
 	e.visible=true
-	local output=e:GetChild("Output0", true)
-	
-	self:SubscribeToEvent(output, "DragBegin", "NodeGraphUI:HandleOutputDragBegin")
-	self:SubscribeToEvent(output, "DragEnd", "NodeGraphUI:HandleDragEnd")
-	output:SetRoot(e)
-	
-	local input=e:GetChild("Input0", true)
-	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
-	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
-	input=e:GetChild("Input1", true)
-	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
-	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
-	input=e:GetChild("Input2", true)
-	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
-	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	self:SubscribeLinkPoints(e,3)
 	
 	nodegroup.pane:AddChild(e)
 	return e
@@ -624,20 +589,7 @@ function NodeGraphUI:SmoothStepNode(nodegroup)
 	end
 	list.selection=0
 	
-	local output=e:GetChild("Output0", true)
-	self:SubscribeToEvent(output, "DragBegin", "NodeGraphUI:HandleOutputDragBegin")
-	self:SubscribeToEvent(output, "DragEnd", "NodeGraphUI:HandleDragEnd")
-	output:SetRoot(e)
-	
-	local input=e:GetChild("Input0", true)
-	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
-	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
-	input=e:GetChild("Input1", true)
-	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
-	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
-	input=e:GetChild("Input2", true)
-	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
-	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	self:SubscribeLinkPoints(e,3)
 	
 	nodegroup.pane:AddChild(e)
 	return e
@@ -647,21 +599,7 @@ function NodeGraphUI:MixNode(nodegroup)
 	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/MixNode.xml"))
 	
 	e.visible=true
-	local output=e:GetChild("Output0", true)
-	
-	self:SubscribeToEvent(output, "DragBegin", "NodeGraphUI:HandleOutputDragBegin")
-	self:SubscribeToEvent(output, "DragEnd", "NodeGraphUI:HandleDragEnd")
-	output:SetRoot(e)
-	
-	local input=e:GetChild("Input0", true)
-	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
-	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
-	input=e:GetChild("Input1", true)
-	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
-	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
-	input=e:GetChild("Input2", true)
-	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
-	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	self:SubscribeLinkPoints(e,3)
 	
 	nodegroup.pane:AddChild(e)
 	return e
@@ -671,30 +609,7 @@ function NodeGraphUI:FractalNode(nodegroup)
 	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/FractalNode.xml"))
 	
 	e.visible=true
-	local output=e:GetChild("Output0", true)
-	
-	self:SubscribeToEvent(output, "DragBegin", "NodeGraphUI:HandleOutputDragBegin")
-	self:SubscribeToEvent(output, "DragEnd", "NodeGraphUI:HandleDragEnd")
-	output:SetRoot(e)
-	
-	local input=e:GetChild("Input0", true)
-	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
-	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
-	input=e:GetChild("Input1", true)
-	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
-	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
-	input=e:GetChild("Input2", true)
-	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
-	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
-	input=e:GetChild("Input3", true)
-	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
-	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
-	input=e:GetChild("Input4", true)
-	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
-	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
-	input=e:GetChild("Input5", true)
-	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
-	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	self:SubscribeLinkPoints(e,6)
 	
 	nodegroup.pane:AddChild(e)
 	return e
@@ -704,42 +619,7 @@ function NodeGraphUI:CellularNode(nodegroup)
 	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/CellularNode.xml"))
 	
 	e.visible=true
-	local output=e:GetChild("Output0", true)
-	
-	self:SubscribeToEvent(output, "DragBegin", "NodeGraphUI:HandleOutputDragBegin")
-	self:SubscribeToEvent(output, "DragEnd", "NodeGraphUI:HandleDragEnd")
-	output:SetRoot(e)
-	
-	local input=e:GetChild("Input0", true)
-	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
-	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
-	input=e:GetChild("Input1", true)
-	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
-	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
-	input=e:GetChild("Input2", true)
-	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
-	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
-	input=e:GetChild("Input3", true)
-	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
-	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
-	input=e:GetChild("Input4", true)
-	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
-	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
-	input=e:GetChild("Input5", true)
-	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
-	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
-	input=e:GetChild("Input6", true)
-	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
-	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
-	input=e:GetChild("Input7", true)
-	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
-	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
-	input=e:GetChild("Input8", true)
-	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
-	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
-	input=e:GetChild("Input9", true)
-	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
-	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	self:SubscribeLinkPoints(e,10)
 	
 	nodegroup.pane:AddChild(e)
 	return e
@@ -776,18 +656,7 @@ function NodeGraphUI:TranslateDomainNode(nodegroup)
 	end
 	list.selection=0
 	
-	local output=e:GetChild("Output0", true)
-	
-	self:SubscribeToEvent(output, "DragBegin", "NodeGraphUI:HandleOutputDragBegin")
-	self:SubscribeToEvent(output, "DragEnd", "NodeGraphUI:HandleDragEnd")
-	output:SetRoot(e)
-	
-	local input=e:GetChild("Input0", true)
-	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
-	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
-	input=e:GetChild("Input1", true)
-	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
-	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	self:SubscribeLinkPoints(e,2)
 	
 	nodegroup.pane:AddChild(e)
 	return e
@@ -824,18 +693,7 @@ function NodeGraphUI:ScaleDomainNode(nodegroup)
 	end
 	list.selection=0
 	
-	local output=e:GetChild("Output0", true)
-	
-	self:SubscribeToEvent(output, "DragBegin", "NodeGraphUI:HandleOutputDragBegin")
-	self:SubscribeToEvent(output, "DragEnd", "NodeGraphUI:HandleDragEnd")
-	output:SetRoot(e)
-	
-	local input=e:GetChild("Input0", true)
-	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
-	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
-	input=e:GetChild("Input1", true)
-	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
-	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	self:SubscribeLinkPoints(e,2)
 	
 	nodegroup.pane:AddChild(e)
 	return e
@@ -871,18 +729,7 @@ function NodeGraphUI:DerivativeNode(nodegroup)
 	end
 	list.selection=0
 	
-	local output=e:GetChild("Output0", true)
-	
-	self:SubscribeToEvent(output, "DragBegin", "NodeGraphUI:HandleOutputDragBegin")
-	self:SubscribeToEvent(output, "DragEnd", "NodeGraphUI:HandleDragEnd")
-	output:SetRoot(e)
-	
-	local input=e:GetChild("Input0", true)
-	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
-	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
-	input=e:GetChild("Input1", true)
-	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
-	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	self:SubscribeLinkPoints(e,2)
 	
 	nodegroup.pane:AddChild(e)
 	return e
@@ -892,18 +739,7 @@ function NodeGraphUI:TiersNode(nodegroup)
 	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/TiersNode.xml"))
 	
 	e.visible=true
-	local output=e:GetChild("Output0", true)
-	
-	self:SubscribeToEvent(output, "DragBegin", "NodeGraphUI:HandleOutputDragBegin")
-	self:SubscribeToEvent(output, "DragEnd", "NodeGraphUI:HandleDragEnd")
-	output:SetRoot(e)
-	
-	local input=e:GetChild("Input0", true)
-	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
-	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
-	input=e:GetChild("Input1", true)
-	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
-	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	self:SubscribeLinkPoints(e,2)
 	
 	nodegroup.pane:AddChild(e)
 	return e
@@ -913,18 +749,7 @@ function NodeGraphUI:ValueBasisNode(nodegroup)
 	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/ValueBasisNode.xml"))
 	
 	e.visible=true
-	local output=e:GetChild("Output0", true)
-	
-	self:SubscribeToEvent(output, "DragBegin", "NodeGraphUI:HandleOutputDragBegin")
-	self:SubscribeToEvent(output, "DragEnd", "NodeGraphUI:HandleDragEnd")
-	output:SetRoot(e)
-	
-	local input=e:GetChild("Input0", true)
-	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
-	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
-	input=e:GetChild("Input1", true)
-	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
-	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	self:SubscribeLinkPoints(e,2)
 	
 	nodegroup.pane:AddChild(e)
 	return e
@@ -934,18 +759,7 @@ function NodeGraphUI:GradientBasisNode(nodegroup)
 	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/GradientBasisNode.xml"))
 	
 	e.visible=true
-	local output=e:GetChild("Output0", true)
-	
-	self:SubscribeToEvent(output, "DragBegin", "NodeGraphUI:HandleOutputDragBegin")
-	self:SubscribeToEvent(output, "DragEnd", "NodeGraphUI:HandleDragEnd")
-	output:SetRoot(e)
-	
-	local input=e:GetChild("Input0", true)
-	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
-	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
-	input=e:GetChild("Input1", true)
-	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
-	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	self:SubscribeLinkPoints(e,2)
 	
 	nodegroup.pane:AddChild(e)
 	return e
@@ -955,15 +769,7 @@ function NodeGraphUI:SimplexBasisNode(nodegroup)
 	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/SimplexBasisNode.xml"))
 	
 	e.visible=true
-	local output=e:GetChild("Output0", true)
-	
-	self:SubscribeToEvent(output, "DragBegin", "NodeGraphUI:HandleOutputDragBegin")
-	self:SubscribeToEvent(output, "DragEnd", "NodeGraphUI:HandleDragEnd")
-	output:SetRoot(e)
-	
-	local input=e:GetChild("Input0", true)
-	self:SubscribeToEvent(input, "DragBegin", "NodeGraphUI:HandleInputDragBegin")
-	self:SubscribeToEvent(input, "DragEnd", "NodeGraphUI:HandleDragEnd")
+	self:SubscribeLinkPoints(e,1)
 	
 	nodegroup.pane:AddChild(e)
 	return e
@@ -1000,11 +806,7 @@ function NodeGraphUI:CoordinateSourceNode(nodegroup)
 	end
 	list.selection=0
 	
-	local output=e:GetChild("Output0", true)
-	
-	self:SubscribeToEvent(output, "DragBegin", "NodeGraphUI:HandleOutputDragBegin")
-	self:SubscribeToEvent(output, "DragEnd", "NodeGraphUI:HandleDragEnd")
-	output:SetRoot(e)
+	self:SubscribeLinkPoints(e,0)
 	
 	nodegroup.pane:AddChild(e)
 	return e
@@ -1014,11 +816,7 @@ function NodeGraphUI:ConstantNode(nodegroup)
 	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/ConstantNode.xml"))
 	
 	e.visible=true
-	local output=e:GetChild("Output0", true)
-	
-	self:SubscribeToEvent(output, "DragBegin", "NodeGraphUI:HandleOutputDragBegin")
-	self:SubscribeToEvent(output, "DragEnd", "NodeGraphUI:HandleDragEnd")
-	output:SetRoot(e)
+	self:SubscribeLinkPoints(e,0)
 	
 	nodegroup.pane:AddChild(e)
 	return e
@@ -1028,11 +826,7 @@ function NodeGraphUI:ExpressionNode(nodegroup)
 	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/ExpressionNode.xml"))
 	
 	e.visible=true
-	local output=e:GetChild("Output0", true)
-	
-	self:SubscribeToEvent(output, "DragBegin", "NodeGraphUI:HandleOutputDragBegin")
-	self:SubscribeToEvent(output, "DragEnd", "NodeGraphUI:HandleDragEnd")
-	output:SetRoot(e)
+	self:SubscribeLinkPoints(e,0)
 	
 	nodegroup.pane:AddChild(e)
 	return e
@@ -1042,11 +836,7 @@ function NodeGraphUI:SeedNode(nodegroup)
 	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/SeedNode.xml"))
 	
 	e.visible=true
-	local output=e:GetChild("Output0", true)
-	
-	self:SubscribeToEvent(output, "DragBegin", "NodeGraphUI:HandleOutputDragBegin")
-	self:SubscribeToEvent(output, "DragEnd", "NodeGraphUI:HandleDragEnd")
-	output:SetRoot(e)
+	self:SubscribeLinkPoints(e,0)
 	
 	nodegroup.pane:AddChild(e)
 	return e
