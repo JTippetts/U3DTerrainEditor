@@ -32,28 +32,14 @@ function ColorToHeight(col)
 	return (col.r+col.g/256)
 end
 
---TerrainState=
---{
---}
 
 TerrainState=TerrainEdit()
 
 
 function Start()
-    -- Execute the common startup for samples
-	--local style = cache:GetResource("XMLFile", "UI/DefaultStyle.xml")
-	-- Set the loaded style as default style
-    --ui.root.defaultStyle = style
+    
     SampleStart()
-
-    -- Create the scene content
     CreateScene()
-
-    -- Create the UI content
-    --CreateInstructions()
-
-
-    -- Hook up to the frame update event
     SubscribeToEvents()
 	
 end
@@ -97,15 +83,6 @@ function CreateScene()
     light.color = Color(1.2,1.2,1.2);
 	--light.shadowBias = BiasParameters(0,0,0.015)
 	
-	--[[lightNode = scene_:CreateChild("DirectionalLight")
-    lightNode.direction = Vector3(-1.2, -1.0, -1.6)
-    local light = lightNode:CreateComponent("Light")
-    light.lightType = LIGHT_DIRECTIONAL
-    light.castShadows = true
-    light.shadowBias = BiasParameters(0.00025, 0.5)
-    light.shadowCascade = CascadeParameters(10.0, 50.0, 200.0, 0.0, 0.8)
-    light.specularIntensity = 0.01;
-    light.color = Color(0.13,0.14,0.15);]]
 
     local skyNode = scene_:CreateChild("Sky")
     skyNode:SetScale(500.0) -- The scale actually does not matter
@@ -122,11 +99,7 @@ function CreateScene()
 	filterui=scene_:CreateScriptObject("FilterUI")
 	saveloadui=scene_:CreateScriptObject("SaveLoadUI")
 	saveloadui:Deactivate()
-	--terrainselectui=scene_:CreateScriptObject("TerrainSelectUI")
 	
-   
-    -- Create the camera. Set far clip to match the fog. Note: now we actually create the camera node outside
-    -- the scene, because we want it to be unaffected by scene load / save
     cameraNode=scene_:CreateChild("Camera")
 	cam=cameraNode:CreateScriptObject("ThirdPersonCamera")
 	cam.clipcamera=false
@@ -137,11 +110,9 @@ function CreateScene()
 	cam.follow=100
 	cam.clipdist=875
 	cam:Finalize()
-	
-	--local lt=cameraNode:CreateComponent("Light")
 
 	projecttozero=true
-	graphics.flushGPU=true
+	--graphics.flushGPU=true
 	
 	function distortKernel(detail, frequency, seed)
 		local k=CKernel()

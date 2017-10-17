@@ -260,7 +260,6 @@ function NodeGraphUI:Start()
 	
 	local cnmclose=self.createnodemenu:GetChild("Close", true)
 	self:SubscribeToEvent(cnmclose, "Pressed", "NodeGraphUI:HandleCloseCreateNodeMenu")
-	self:SubscribeToEvent("KeyDown", "NodeGraphUI:HandleKeyDown")
 	
 	self.nodegroup=nil
 	self.cursortarget=cursor:CreateChild("NodeGraphLinkDest")
@@ -398,23 +397,6 @@ function NodeGraphUI:HandleCreateNode(eventType, eventData)
 	
 	n.position=IntVector2(-self.nodegroup.pane.position.x + graphics.width/2, -self.nodegroup.pane.position.y + graphics.height/2)
 	table.insert(self.nodegroup.nodes, n)
-end
-
-function NodeGraphUI:HandleKeyDown(eventType, eventData)
-	if not self.nodegroup then print("no node group") return end
-	local key = eventData["Key"]:GetInt()
-	
-
-	if key==KEY_SPACE then
-		self.nodegroup.pane:AddChild(self.createnodemenu)
-		if self.createnodemenu.visible==false then
-			self.createnodemenu.visible=true
-			self.createnodemenu.position=IntVector2(-self.nodegroup.pane.position.x,-self.nodegroup.pane.position.y+graphics.height/2)
-			print("cnm")
-		else
-			self.createnodemenu.visible=false
-		end
-	end
 end
 
 function NodeGraphUI:SubscribeLinkPoints(e,numinputs)
