@@ -20,6 +20,25 @@ function EditMaskUI:Start()
 	self:SubscribeToEvent("SliderChanged", "EditMaskUI:HandleSliderChanged")
 	self:SubscribeToEvent(self.panel:GetChild("ClearMask",true), "Pressed", "EditMaskUI:HandleClearMask")
 	
+	local sm=
+	{
+		"Red",
+		"Green",
+		"Blue",
+	}
+	
+	local list=self.panel:GetChild("WhichMask",true)
+	local c
+	for _,c in ipairs(sm) do
+		local t=Text:new(context)
+		t:SetFont(cache:GetResource("Font", "Fonts/Anonymous Pro.ttf"), 11)
+		t.text=c
+		t.color=Color(1,1,1)
+		t.minSize=IntVector2(0,16)
+		list:AddItem(t)
+	end
+	list.selection=0
+	list.resizePopup=true
 	
 	self.power,self.max,self.radius,self.hardness,self.usemask=self:GetBrushSettings()
 	
@@ -89,14 +108,14 @@ function EditMaskUI:GetBrushPreview()
 	return self.brushtex
 end
 
-function EditMaskUI:Activate(which)
+function EditMaskUI:Activate()
 	self.panel.visible=true
 	self.active=true
 	self:GenerateBrushPreview(self.hardness)
 	self.cursor:BuildCursorMesh(self.radius)
 	self.cursor:Show()
 	self.cursor:SetBrushPreview(self.brushtex)
-	self.which=math.max(0, math.min(2,which))
+	self.which=math.max(0, math.min(2,self.panel:GetChild("WhichMask",true).selection))
 	local name=self.panel:GetChild("MaskName", true)
 	if name then name.text = "Edit Mask "..self.which end
 	self.panel:SetPosition(IntVector2(0,graphics.height-self.panel.height))
@@ -155,6 +174,7 @@ function EditMaskUI:Update(dt)
 		self.power, self.max, self.radius, self.hardness, self.usemask=self:GetBrushSettings()
 		local bs=BrushSettings(self.radius, self.max, self.power, self.hardness)
 		local ms=MaskSettings()
+		self.which=self.panel:GetChild("WhichMask",true).selection
 		
 		if input:GetMouseButtonDown(MOUSEB_LEFT) and ui:GetElementAt(mousepos.x, mousepos.y)==nil then
 			local gx,gz=ground.x,ground.z
