@@ -121,6 +121,7 @@ function CreateScene()
 	terrainui:BuildUI()
 	filterui=scene_:CreateScriptObject("FilterUI")
 	saveloadui=scene_:CreateScriptObject("SaveLoadUI")
+	saveloadui:Deactivate()
 	--terrainselectui=scene_:CreateScriptObject("TerrainSelectUI")
 	
    

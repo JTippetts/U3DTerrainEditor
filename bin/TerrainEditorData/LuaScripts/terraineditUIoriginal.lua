@@ -27,7 +27,7 @@ function TerrainEditUI:BuildUI()
 	self.smoothbrush=scene_:CreateScriptObject("SmoothHeightUI")
 	self.maskbrush=scene_:CreateScriptObject("EditMaskUI")
 	self.newterrain=ui:LoadLayout(cache:GetResource("XMLFile", "UI/TerrainEditNewTerrain.xml"))
-	self.toolbar=ui:LoadLayout(cache:GetResource("XMLFile", "UI/TerrainEditToolbar.xml"))
+	self.toolbar=ui:LoadLayout(cache:GetResource("XMLFile", "UI/TerrainMainToolbar.xml"))
 	self.blendbrush=scene_:CreateScriptObject("TerrainSelectUI")
 	
 	self.nodegraph=scene_:CreateScriptObject("NodeGraphUI")
@@ -86,6 +86,7 @@ function TerrainEditUI:BuildUI()
 	self.blendbrush:Deactivate()
 	self.maskbrush:Deactivate()
 	self.smoothbrush:Deactivate()
+	self.heightbrush:Deactivate()
 	
 	self.newterrain.style=uiStyle
 	self.toolbar.style=uiStyle
@@ -99,6 +100,15 @@ function TerrainEditUI:BuildUI()
 	
 	
 	self:SubscribeToEvent("Pressed", "TerrainEditUI:HandleButtonPress")
+	
+	self:SubscribeToEvent(self.toolbar:GetChild("TerrainSettings",true), "Toggled", "TerrainEditUI:HandleToggled")
+	self:SubscribeToEvent(self.toolbar:GetChild("EditHeight",true), "Toggled", "TerrainEditUI:HandleToggled")
+	self:SubscribeToEvent(self.toolbar:GetChild("SmoothHeight",true), "Toggled", "TerrainEditUI:HandleToggled")
+	self:SubscribeToEvent(self.toolbar:GetChild("EditLayer",true), "Toggled", "TerrainEditUI:HandleToggled")
+	self:SubscribeToEvent(self.toolbar:GetChild("EditMask",true), "Toggled", "TerrainEditUI:HandleToggled")
+	self:SubscribeToEvent(self.toolbar:GetChild("EditNoiseGraphs",true), "Toggled", "TerrainEditUI:HandleToggled")
+	self:SubscribeToEvent(self.toolbar:GetChild("EditWaypoints",true), "Toggled", "TerrainEditUI:HandleToggled")
+	self:SubscribeToEvent(self.toolbar:GetChild("Filters",true), "Toggled", "TerrainEditUI:HandleToggled")
 
 
 	self.waypointpreview=scene_:CreateComponent("CustomGeometry")
@@ -106,7 +116,7 @@ function TerrainEditUI:BuildUI()
 	self.waypointpreviewmaterial=cache:GetResource("Material", "Materials/WaypointPreview.xml")
 	self.waypointpreview:SetMaterial(self.waypointpreviewmaterial)
 	
-	self:ActivateHeightBrush()
+	--self:ActivateHeightBrush()
 	
 	self.counter=0
 	-- Waypoints
@@ -377,6 +387,67 @@ function TerrainEditUI:Update(dt)
 		c.position=Vector3(c.position.x,ht,c.position.z)
 	end
 	self:UpdateWaypointVis()
+end
+
+function TerrainEditUI:UncheckToolbar(except)
+	if except~="TerrainSettings" then self.toolbar:GetChild("TerrainSettings",true).checked=false saveloadui:Deactivate() end
+	if except~="EditHeight" then self.toolbar:GetChild("EditHeight",true).checked=false self.heightbrush:Deactivate() end
+	if except~="SmoothHeight" then self.toolbar:GetChild("SmoothHeight",true).checked=false self.smoothbrush:Deactivate() end
+	if except~="EditLayer" then self.toolbar:GetChild("EditLayer",true).checked=false self.blendbrush:Deactivate() end
+	if except~="EditMask" then self.toolbar:GetChild("EditMask",true).checked=false self.maskbrush:Deactivate() end
+	if except~="EditNoiseGraphs" then self.toolbar:GetChild("EditNoiseGraphs",true).checked=false end
+	if except~="EditWaypoints" then self.toolbar:GetChild("EditWaypoints",true).checked=false end
+	if except~="Filters" then self.toolbar:GetChild("Filters",true).checked=false filterui:Deactivate() end
+end
+
+function TerrainEditUI:HandleToggled(eventType,eventData)
+	local e=eventData["Element"]:GetPtr("UIElement")
+	local name=e:GetName()
+	if eventData["State"]:GetBool() then
+		self:UncheckToolbar(name)
+	end
+	
+	if name=="TerrainSettings" then
+		if eventData["State"]:GetBool() then
+			saveloadui:Activate()
+		else
+			saveloadui:Deactivate()
+		end
+	elseif name=="EditHeight" then
+		if eventData["State"]:GetBool() then
+			self.heightbrush:Activate()
+		else self.heightbrush:Deactivate()
+		end
+	elseif name=="SmoothHeight" then
+		if eventData["State"]:GetBool() then
+			self.smoothbrush:Activate()
+		else
+			self.smoothbrush:Deactivate()
+		end
+	elseif name=="EditLayer" then
+		if eventData["State"]:GetBool() then
+			self.blendbrush:Activate()
+		else
+			self.blendbrush:Deactivate()
+		end
+	elseif name=="EditMask" then
+		if eventData["State"]:GetBool() then
+			self.maskbrush:Activate(0)
+		else
+			self.maskbrush:Deactivate()
+		end
+	elseif name=="EditNoiseGraphs" then
+		-- TODO
+	elseif name=="EditWaypoints" then
+		-- TODO
+	elseif name=="Filters" then
+		if eventData["State"]:GetBool() then
+			filterui:Activate()
+		else
+			filterui:Deactivate()
+		end
+		
+	end
 end
 
 function TerrainEditUI:HandleButtonPress(eventType, eventData)

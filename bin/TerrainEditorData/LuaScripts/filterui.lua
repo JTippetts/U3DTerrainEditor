@@ -42,6 +42,11 @@ end
 
 function FilterUI:Activate()
 	self.filterui.visible=true
+	self:PopulateFilterList()
+end
+
+function FilterUI:Deactivate()
+	self.filterui.visible=false
 end
 
 function FilterUI:HandleButtonPress(eventType, eventData)

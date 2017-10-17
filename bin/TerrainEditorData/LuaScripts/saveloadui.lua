@@ -124,6 +124,14 @@ function SaveLoadUI:LoadBlend2(eventType, eventData)
 	self:SubscribeToEvent(self.fileSelector, "FileSelected", "SaveLoadUI:HandleLoadBlend2")
 end
 
+function SaveLoadUI:Activate()
+	self.menu.visible=true
+end
+
+function SaveLoadUI:Deactivate()
+	self.menu.visible=false
+end
+
 function SaveLoadUI:HandleSaveHeightmap(eventType, eventData)
 	local fname=ExtractFilename(eventData, true)
 	if fname~="" then

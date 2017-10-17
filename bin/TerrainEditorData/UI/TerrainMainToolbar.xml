@@ -1,0 +1,198 @@
+<?xml version="1.0"?>
+<element type="Window">
+	<attribute name="Size" value="64 512" />
+	<attribute name="Pivot" value="0 0" />
+	<attribute name="Layout Mode" value="Vertical" />
+	<element type="CheckBox">
+		<attribute name="Name" value="TerrainSettings" />
+		<attribute name="Min Size" value="64 64" />
+		<attribute name="Max Size" value="64 64" />
+		<attribute name="Pivot" value="0 0" />
+		<attribute name="Texture" value="Texture2D;Textures/toolbar.png" />
+		<attribute name="Image Rect" value="192 0 256 64" />
+		<attribute name="Hover Image Offset" value="0 0" />
+		<attribute name="Checked Image Offset" value="0 64" />
+		<element type="ToolTip" style="ToolTip">
+			<attribute name="Position" value="64 0" />
+			<attribute name="Pivot" value="0 0" />
+			<attribute name="Priority" value="2147483647" />
+			<attribute name="Is Visible" value="false" />
+			<element type="Text">
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Text" value="Terrain Settings" />
+			</element>
+		</element>
+	</element>
+	<element type="CheckBox">
+		<attribute name="Name" value="EditHeight" />
+		<attribute name="Min Size" value="64 64" />
+		<attribute name="Max Size" value="64 64" />
+		<attribute name="Pivot" value="0 0" />
+		<attribute name="Texture" value="Texture2D;Textures/toolbar.png" />
+		<attribute name="Image Rect" value="0 0 64 64" />
+		<attribute name="Hover Image Offset" value="0 0" />
+		<attribute name="Checked Image Offset" value="0 64" />
+		<element type="ToolTip" style="ToolTip">
+			<attribute name="Position" value="64 0" />
+			<attribute name="Pivot" value="0 0" />
+			<attribute name="Priority" value="2147483647" />
+			<attribute name="Is Visible" value="false" />
+			<element type="Text">
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Text" value="Edit Height" />
+			</element>
+		</element>
+	</element>
+	<element type="CheckBox">
+		<attribute name="Name" value="SmoothHeight" />
+		<attribute name="Min Size" value="64 64" />
+		<attribute name="Max Size" value="64 64" />
+		<attribute name="Pivot" value="0 0" />
+		<attribute name="Texture" value="Texture2D;Textures/toolbar.png" />
+		<attribute name="Image Rect" value="64 0 128 64" />
+		<attribute name="Hover Image Offset" value="0 0" />
+		<attribute name="Checked Image Offset" value="0 64" />
+		<element type="ToolTip" style="ToolTip">
+			<attribute name="Position" value="64 0" />
+			<attribute name="Pivot" value="0 0" />
+			<attribute name="Priority" value="2147483647" />
+			<attribute name="Is Visible" value="false" />
+			<element type="Text">
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Text" value="Smooth Height" />
+			</element>
+		</element>
+	</element>
+	<element type="CheckBox">
+		<attribute name="Name" value="EditLayer" />
+		<attribute name="Min Size" value="64 64" />
+		<attribute name="Max Size" value="64 64" />
+		<attribute name="Pivot" value="0 0" />
+		<attribute name="Texture" value="Texture2D;Textures/toolbar.png" />
+		<attribute name="Image Rect" value="128 0 192 64" />
+		<attribute name="Hover Image Offset" value="0 0" />
+		<attribute name="Checked Image Offset" value="0 64" />
+		<element type="ToolTip" style="ToolTip">
+			<attribute name="Position" value="64 0" />
+			<attribute name="Pivot" value="0 0" />
+			<attribute name="Priority" value="2147483647" />
+			<attribute name="Is Visible" value="false" />
+			<element type="Text">
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Text" value="Edit Terrain Layers" />
+			</element>
+		</element>
+	</element>
+	<element type="CheckBox">
+		<attribute name="Name" value="EditMask" />
+		<attribute name="Min Size" value="64 64" />
+		<attribute name="Max Size" value="64 64" />
+		<attribute name="Pivot" value="0 0" />
+		<attribute name="Texture" value="Texture2D;Textures/toolbar.png" />
+		<attribute name="Image Rect" value="128 128 192 192" />
+		<attribute name="Hover Image Offset" value="0 0" />
+		<attribute name="Checked Image Offset" value="0 64" />
+		<element type="ToolTip" style="ToolTip">
+			<attribute name="Position" value="64 0" />
+			<attribute name="Pivot" value="0 0" />
+			<attribute name="Priority" value="2147483647" />
+			<attribute name="Is Visible" value="false" />
+			<element type="Text">
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Text" value="Edit Masks" />
+			</element>
+		</element>
+	</element>
+	<element type="CheckBox">
+		<attribute name="Name" value="EditNoiseGraphs" />
+		<attribute name="Min Size" value="64 64" />
+		<attribute name="Max Size" value="64 64" />
+		<attribute name="Pivot" value="0 0" />
+		<attribute name="Texture" value="Texture2D;Textures/toolbar.png" />
+		<attribute name="Image Rect" value="64 128 128 192" />
+		<attribute name="Hover Image Offset" value="0 0" />
+		<attribute name="Checked Image Offset" value="0 64" />
+		<element type="ToolTip" style="ToolTip">
+			<attribute name="Position" value="64 0" />
+			<attribute name="Pivot" value="0 0" />
+			<attribute name="Priority" value="2147483647" />
+			<attribute name="Is Visible" value="false" />
+			<element type="Text">
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Text" value="Edit Noise Graphs" />
+			</element>
+		</element>
+	</element>
+	<element type="CheckBox">
+		<attribute name="Name" value="EditWaypoints" />
+		<attribute name="Min Size" value="64 64" />
+		<attribute name="Max Size" value="64 64" />
+		<attribute name="Pivot" value="0 0" />
+		<attribute name="Texture" value="Texture2D;Textures/toolbar.png" />
+		<attribute name="Image Rect" value="192 128 256 192" />
+		<attribute name="Hover Image Offset" value="0 0" />
+		<attribute name="Checked Image Offset" value="0 64" />
+		<element type="ToolTip" style="ToolTip">
+			<attribute name="Position" value="64 0" />
+			<attribute name="Pivot" value="0 0" />
+			<attribute name="Priority" value="2147483647" />
+			<attribute name="Is Visible" value="false" />
+			<element type="Text">
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Text" value="Edit Waypoint Splines" />
+			</element>
+		</element>
+	</element>
+	<element type="CheckBox">
+		<attribute name="Name" value="Filters" />
+		<attribute name="Min Size" value="64 64" />
+		<attribute name="Max Size" value="64 64" />
+		<attribute name="Pivot" value="0 0" />
+		<attribute name="Texture" value="Texture2D;Textures/toolbar.png" />
+		<attribute name="Image Rect" value="0 128 64 192" />
+		<attribute name="Hover Image Offset" value="0 0" />
+		<attribute name="Checked Image Offset" value="0 64" />
+		<element type="ToolTip" style="ToolTip">
+			<attribute name="Position" value="64 0" />
+			<attribute name="Pivot" value="0 0" />
+			<attribute name="Priority" value="2147483647" />
+			<attribute name="Is Visible" value="false" />
+			<element type="Text">
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Text" value="Filters" />
+			</element>
+		</element>
+	</element>
+</element>

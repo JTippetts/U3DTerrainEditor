@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <element type="Window">
+	<attribute name="Position" value="64 0" />
 	<attribute name="Size" value="278 176" />
 	<attribute name="Pivot" value="0 0" />
 	<attribute name="Layout Mode" value="Vertical" />

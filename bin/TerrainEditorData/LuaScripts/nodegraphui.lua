@@ -1056,7 +1056,7 @@ function NodeGraphUI:HandleOutputDragBegin(eventType, eventData)
 	if not self.nodegroup then return end
 	local element=eventData["Element"]:GetPtr("NodeGraphLinkSource")
 	self.link=self.nodegroup.linkpane:CreateLink(element,self.cursortarget)
-	self.link:SetImageRect(IntRect(19,19,29,29))
+	self.link:SetImageRect(IntRect(193,81,207,95))
 	
 end
 
