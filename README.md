@@ -150,6 +150,10 @@ The river builder is similar to the road builder, in that it uses a spline. Howe
 
 ![River builder](https://i.imgur.com/bmW5nDi.jpg)
 
+# Screenshots #
+![Screen1](https://i.imgur.com/8GI0Qdp.jpg)
+![Screen2](https://i.imgur.com/bt7tHeB.jpg)
+![Screen3](https://i.imgur.com/nRWuTbN.jpg)
 
 ## The Future ##
 
