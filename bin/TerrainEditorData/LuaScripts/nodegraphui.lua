@@ -384,7 +384,7 @@ nodetypes=
 		},
 		instance={{op="Parameter", param=1}, {op="Parameter", param=2}, {op="Parameter", param=3}, {op="Parameter", param=4}, {op="Parameter", param=5},
 				{op="Parameter", param=6}, {op="Parameter", param=7}, {op="Parameter", param=8}, {op="Parameter", param=9}, {op="Parameter", param=10},
-				{op="Function", func="fractal", indices={1,2,3,4,5,6,7,8,9,10}}}
+				{op="Function", func="cellularBasis", indices={1,2,3,4,5,6,7,8,9,10}}}
 	},
 	ValueBasis=
 	{
@@ -435,7 +435,6 @@ function InstanceFunction(k, desc, params)
 			local indices=c.indices
 			
 			print("Function name: "..c.func)
-			
 			if c.func=="add" then
 				table.insert(n, k:add(n[indices[1]], n[indices[2]]))
 			elseif c.func=="subtract" then
@@ -517,7 +516,6 @@ function InstanceFunction(k, desc, params)
 			elseif c.func=="cellularBasis" then
 				table.insert(n, k:cellularBasis(n[indices[1]], n[indices[2]], n[indices[3]], n[indices[4]], n[indices[5]], n[indices[6]], n[indices[7]], n[indices[8]], n[indices[9]], n[indices[10]]))
 			elseif c.func=="valueBasis" then
-				print("hihihih")
 				table.insert(n, k:valueBasis(n[indices[1]], n[indices[2]]))
 			elseif c.func=="gradientBasis" then
 				table.insert(n, k:gradientBasis(n[indices[1]], n[indices[2]]))
@@ -531,128 +529,6 @@ function InstanceFunction(k, desc, params)
 	print(k:lastIndex())
 	return k:lastIndex()
 end
-
-nodecategories=
-{
-	{
-		categoryname="Constants",
-		nodetypes=
-		{
-			{
-				name="Constant",
-				valuename="Constant",
-				inputs={}
-			},
-			{
-				name="Seed",
-				valuename="Seed",
-				inputs={}
-			}
-		}
-	},
-	
-	{
-		categoryname="Arithmetic",
-		nodetypes=
-		{
-			{
-				name="Add",
-				inputs=
-				{
-					{"value", "Value", 0.0},
-					{"value", "Value", 0.0},
-				}
-			},
-			{
-				name="Subtract",
-				inputs=
-				{
-					{"value", "Value", 0.0},
-					{"value", "Value", 0.0},
-				}
-			},
-			{
-				name="Multiply",
-				inputs=
-				{
-					{"value", "Value", 0.0},
-					{"value", "Value", 1.0},
-				}
-			},
-			{
-				name="Divide",
-				inputs=
-				{
-					{"value", "Value", 0.0},
-					{"value", "Value", 1.0},
-				}
-			},
-			{
-				name="Pow",
-				inputs=
-				{
-					{"value", "Value", 0.0},
-					{"value", "Value", 1.0},
-				}
-			},
-			{
-				name="Minimum",
-				inputs=
-				{
-					{"value", "Value", 0.0},
-					{"value", "Value", 0.0},
-				}
-			},
-			{
-				name="Maximum",
-				inputs=
-				{
-					{"value", "Value", 0.0},
-					{"value", "Value", 0.0},
-				}
-			},
-			{
-				name="Bias",
-				inputs=
-				{
-					{"value", "Value", 0.0},
-					{"value", "Value", 0.5},
-				}
-			},
-			{
-				name="Gain",
-				inputs=
-				{
-					{"value", "Value", 0.0},
-					{"value", "Value", 0.5},
-				}
-			},
-			{
-				name="Step",
-				inputs=
-				{
-					{"value", "Value", 0.0},
-					{"value", "Value", 0.0},
-				}
-			},
-		}
-	},
-
-	{
-		categoryname="Basis Functions",
-		nodetypes=
-		{
-			{
-				name="Gradient Basis",
-				inputs=
-				{
-					{"value", "Interp Function", 3},
-					{"seed", "Seed", 12345}
-				}
-			},
-		}
-	},
-}
 
 function CreateMenuItem(title)
 	local menu=Menu:new(title)
@@ -796,7 +672,11 @@ function PackNodeGraph(output)
 		local c
 		local params={}
 		for c=1,numinputs,1 do
-			table.insert(params, GetValue(n,c-1))
+			if desc.inputs[c][1]=="value" then
+				table.insert(params, GetValue(n,c-1))
+			else 
+				table.insert(params, GetSeed(n,c-1))
+			end
 		end
 
 		
@@ -804,140 +684,17 @@ function PackNodeGraph(output)
 			local s1
 			local s1=GetValue(n,0)
 			return s1
+		elseif n.name=="Constant" then
+			local v=tonumber(n:GetChild("Value", true).text)
+			return kernel:constant(v)
+		elseif n.name=="Seed" then
+			local v=tonumber(n:GetChild("Value", true).text)
+			return kernel:seed(v)
 		else
 			print("Instance function "..n.name)
 			return InstanceFunction(kernel, desc, params)
 		end
-		--[[
-		elseif n.name=="Arithmetic" then
-			local s1,s2=GetValue(n,0),GetValue(n,1)
-			local op=n:GetChild("TypeList",true).selection
-			if op==0 then return kernel:multiply(s1,s2)
-			elseif op==1 then return kernel:add(s1,s2)
-			elseif op==2 then return kernel:subtract(s1,s2)
-			elseif op==3 then return kernel:divide(s1,s2)
-			elseif op==4 then return kernel:pow(s1,s2)
-			elseif op==5 then return kernel:minimum(s1,s2)
-			elseif op==6 then return kernel:maximum(s1,s2)
-			elseif op==7 then return kernel:bias(s1,s2)
-			elseif op==8 then return kernel:gain(s1,s2)
-			elseif op==9 then return kernel:step(s2,s1)
-			end
-		elseif n.name=="TranslateDomain" then
-			local s1,s2=GetValue(n,0),GetValue(n,1)
-			local op=n:GetChild("TypeList",true).selection
-			if op==0 then return kernel:translateDomain(s1,s2)
-			elseif op==1 then return kernel:translateX(s1,s2)
-			elseif op==2 then return kernel:translateY(s1,s2)
-			elseif op==3 then return kernel:translateZ(s1,s2)
-			elseif op==4 then return kernel:translateW(s1,s2)
-			elseif op==5 then return kernel:translateU(s1,s2)
-			elseif op==6 then return kernel:translateV(s1,s2)
-			end
-		elseif n.name=="ScaleDomain" then
-			local s1,s2=GetValue(n,0),GetValue(n,1)
-			local op=n:GetChild("TypeList",true).selection
-			if op==0 then return kernel:scaleDomain(s1,s2)
-			elseif op==1 then return kernel:scaleX(s1,s2)
-			elseif op==2 then return kernel:scaleY(s1,s2)
-			elseif op==3 then return kernel:scaleZ(s1,s2)
-			elseif op==4 then return kernel:scaleW(s1,s2)
-			elseif op==5 then return kernel:scaleU(s1,s2)
-			elseif op==6 then return kernel:scaleV(s1,s2)
-			end
-		elseif n.name=="Tiers" then
-			local s1,s2=GetValue(n,0),GetValue(n,1)
-			local smooth=n:GetChild("SmoothCheck",true).checked
-			if smooth then
-				return kernel:smoothTiers(s1,s2)
-			else
-				return kernel:tiers(s1,s2)
-			end
-		elseif n.name=="ValueBasis" then
-			local s1,s2=GetValue(n,0),GetSeed(n,1)
-			
-			return kernel:valueBasis(s1,s2)
-		elseif n.name=="SimplexBasis" then
-			local s1=GetSeed(n,0)
-			
-			return kernel:simplexBasis(s1)
-		elseif n.name=="GradientBasis" then
-			local s1,s2=GetValue(n,0),GetSeed(n,1)
-			
-			return kernel:gradientBasis(s1,s2)
-		elseif n.name=="ScalarMath" then
-			local s1=GetValue(n,0)
-			local op=n:GetChild("TypeList",true).selection
-			if op==0 then return kernel:abs(s1)
-			elseif op==1 then return kernel:cos(s1)
-			elseif op==2 then return kernel:sin(s1)
-			elseif op==3 then return kernel:tan(s1)
-			elseif op==4 then return kernel:acos(s1)
-			elseif op==5 then return kernel:asin(s1)
-			elseif op==6 then return kernel:atan(s1)
-			end
-		elseif n.name=="CoordinateSource" then
-			local op=n:GetChild("TypeList",true).selection
-			if op==0 then return kernel:x()
-			elseif op==1 then return kernel:y()
-			elseif op==2 then return kernel:z()
-			elseif op==3 then return kernel:w()
-			elseif op==4 then return kernel:u()
-			elseif op==5 then return kernel:v()
-			elseif op==6 then return kernel:radial()
-			end
-		elseif n.name=="Constant" then
-			local val=tonumber(n:GetChild("Value",true).text)
-			return kernel:constant(val)
-		elseif n.name=="Seed" then
-			local val=tonumber(n:GetChild("Value",true).text)
-			return kernel:seed(val)
-		elseif n.name=="Derivative" then
-			local s1,s2=GetValue(n,0),GetValue(n,1)
-			local op=n:GetChild("TypeList",true).selection
-			if op==0 then return kernel:dx(s1,s2)
-			elseif op==1 then return kernel:dy(s1,s2)
-			elseif op==2 then return kernel:dz(s1,s2)
-			elseif op==3 then return kernel:dw(s1,s2)
-			elseif op==4 then return kernel:du(s1,s2)
-			elseif op==5 then return kernel:dv(s1,s2)
-			end
-		elseif n.name=="Fractal" then
-			local s1,s2,s3,s4,s5,s6=GetSeed(n,0),GetValue(n,1),GetValue(n,2),GetValue(n,3),GetValue(n,4),GetValue(n,5)
-			
-			return kernel:fractal(s1,s2,s3,s4,s5,s6)
-		elseif n.name=="RotateDomain" then
-			local s1,s2,s3,s4,s5=GetValue(n,0),GetValue(n,1),GetValue(n,2),GetValue(n,3),GetValue(n,4)
-			return kernel:rotateDomain(s1,s2,s3,s4,s5)
-		elseif n.name=="Randomize" then
-			local s1,s2,s3=GetSeed(n,0),GetValue(n,1),GetValue(n,2)
-			return kernel:randomize(s1,s2,s3)
-		elseif n.name=="SmoothStep" then
-			local s1,s2,s3=GetValue(n,0),GetValue(n,1),GetValue(n,2)
-			local op=n:GetChild("TypeList",true).selection
-			if op==0 then return kernel:linearStep(s2,s3,s1)
-			elseif op==1 then return kernel:smoothStep(s2,s3,s1)
-			elseif op==2 then return kernel:smootherStep(s2,s3,s1)
-			end
-		elseif n.name=="Mix" then
-			local s1,s2,s3=GetValue(n,0),GetValue(n,1),GetValue(n,2)
-			return kernel:mix(s2,s3,s1)
-		elseif n.name=="Expression" then
-			local eb=CExpressionBuilder(kernel)
-			local exp=n:GetChild("Value",true).text
-			eb:eval(exp)
-			return kernel:lastIndex()
-		elseif n.name=="Seeder" then
-			--local val=tonumber(n:GetChild("Seed",true).text)
-			local s1,s2=GetSeed(n,0),GetValue(n,1)
-			return kernel:seeder(s1,s2)
-		elseif n.name=="Cellular" then
-			local s1,s2,s3,s4,s5,s6,s7,s8,s9,s10=GetSeed(n,0),GetValue(n,1),GetValue(n,2),GetValue(n,3),GetValue(n,4),GetValue(n,5),GetValue(n,6),GetValue(n,7),GetValue(n,8),GetValue(n,9)
-			return kernel:cellularBasis(s2,s3,s4,s5,s6,s7,s8,s9,s10,s1)
-		elseif n.name=="Sigmoid" then
-			local s1,s2,s3=GetValue(n,0),GetValue(n,1),GetValue(n,2)
-			return kernel:sigmoid(s1,s2,s3)
-		end]]
+		
 	end
 	
 	local kernel=CKernel()
@@ -965,27 +722,8 @@ function PackNodeGraph(output)
 			visitnode(n,1)
 		end
 		
-		--[[
-		if n.name=="Arithmetic" or n.name=="Derivative" or n.name=="Tiers" or n.name=="ValueBasis" or n.name=="GradientBasis" or n.name=="TranslateDomain" or n.name=="ScaleDomain" or
-			n.name=="Seeder" then
-			visitnode(n,2)
-		elseif n.name=="ScalarMath" or n.name=="Output" or n.name=="SimplexBasis" then
-			visitnode(n,1)
-		elseif n.name=="RotateDomain" then
-			visitnode(n,5)
-		elseif n.name=="Fractal" then
-			visitnode(n,6)
-		elseif n.name=="Randomize" or n.name=="SmoothStep" or n.name=="Mix" then
-			visitnode(n,3)
-		elseif n.name=="Cellular" then
-			visitnode(n,10)
-		elseif n.name=="Sigmoid" then
-			visitnode(n,3)
-		end
-		]]
 		table.insert(nodes,n)
 		local ind=InstanceANLFunction(kernel, n)
-		print("ind: "..type(ind))
 		table.insert(kernelindices, ind)
 	end
 	print("Packing node graph.")
@@ -1004,28 +742,6 @@ function NodeGraphUI:Start()
 	
 	self.pane=ui.root:CreateChild("UIElement")
 	self.pane:SetSize(graphics.width, graphics.height)
-	
-	--[[self:SubscribeToEvent(self.createnodemenu:GetChild("Arithmetic", true), "Pressed", "NodeGraphUI:HandleCreateNode")
-	self:SubscribeToEvent(self.createnodemenu:GetChild("ScalarMath", true), "Pressed", "NodeGraphUI:HandleCreateNode")
-	self:SubscribeToEvent(self.createnodemenu:GetChild("Constant", true), "Pressed", "NodeGraphUI:HandleCreateNode")
-	self:SubscribeToEvent(self.createnodemenu:GetChild("Seed", true), "Pressed", "NodeGraphUI:HandleCreateNode")
-	self:SubscribeToEvent(self.createnodemenu:GetChild("CoordSource", true), "Pressed", "NodeGraphUI:HandleCreateNode")
-	self:SubscribeToEvent(self.createnodemenu:GetChild("Derivative", true), "Pressed", "NodeGraphUI:HandleCreateNode")
-	self:SubscribeToEvent(self.createnodemenu:GetChild("Tiers", true), "Pressed", "NodeGraphUI:HandleCreateNode")
-	self:SubscribeToEvent(self.createnodemenu:GetChild("ValueBasis", true), "Pressed", "NodeGraphUI:HandleCreateNode")
-	self:SubscribeToEvent(self.createnodemenu:GetChild("GradientBasis", true), "Pressed", "NodeGraphUI:HandleCreateNode")
-	self:SubscribeToEvent(self.createnodemenu:GetChild("SimplexBasis", true), "Pressed", "NodeGraphUI:HandleCreateNode")
-	self:SubscribeToEvent(self.createnodemenu:GetChild("TranslateDomain", true), "Pressed", "NodeGraphUI:HandleCreateNode")
-	self:SubscribeToEvent(self.createnodemenu:GetChild("ScaleDomain", true), "Pressed", "NodeGraphUI:HandleCreateNode")
-	self:SubscribeToEvent(self.createnodemenu:GetChild("Fractal", true), "Pressed", "NodeGraphUI:HandleCreateNode")
-	self:SubscribeToEvent(self.createnodemenu:GetChild("RotateDomain", true), "Pressed", "NodeGraphUI:HandleCreateNode")
-	self:SubscribeToEvent(self.createnodemenu:GetChild("Randomize", true), "Pressed", "NodeGraphUI:HandleCreateNode")
-	self:SubscribeToEvent(self.createnodemenu:GetChild("SmoothStep", true), "Pressed", "NodeGraphUI:HandleCreateNode")
-	self:SubscribeToEvent(self.createnodemenu:GetChild("Mix", true), "Pressed", "NodeGraphUI:HandleCreateNode")
-	self:SubscribeToEvent(self.createnodemenu:GetChild("Expression", true), "Pressed", "NodeGraphUI:HandleCreateNode")
-	self:SubscribeToEvent(self.createnodemenu:GetChild("Seeder", true), "Pressed", "NodeGraphUI:HandleCreateNode")
-	self:SubscribeToEvent(self.createnodemenu:GetChild("Cellular", true), "Pressed", "NodeGraphUI:HandleCreateNode") 
-	self:SubscribeToEvent(self.createnodemenu:GetChild("Sigmoid", true), "Pressed", "NodeGraphUI:HandleCreateNode")]]
 	
 	local tp
 	for tp,_ in pairs(nodetypes) do
@@ -1148,28 +864,7 @@ function NodeGraphUI:HandleCreateNode(eventType, eventData)
 	local e=eventData["Element"]:GetPtr("UIElement")
 	if not e then return end
 	local n
-	--[[if e.name=="Arithmetic" then n=self:ArithmeticNode(self.nodegroup)
-	elseif e.name=="ScalarMath" then n=self:ScalarMathNode(self.nodegroup)
-	elseif e.name=="Constant" then n=self:ConstantNode(self.nodegroup)
-	elseif e.name=="Seed" then n=self:SeedNode(self.nodegroup)
-	elseif e.name=="CoordSource" then n=self:CoordinateSourceNode(self.nodegroup)
-	elseif e.name=="Derivative" then n=self:DerivativeNode(self.nodegroup)
-	elseif e.name=="Tiers" then n=self:TiersNode(self.nodegroup)
-	elseif e.name=="ValueBasis" then n=self:ValueBasisNode(self.nodegroup)
-	elseif e.name=="GradientBasis" then n=self:GradientBasisNode(self.nodegroup)
-	elseif e.name=="SimplexBasis" then n=self:SimplexBasisNode(self.nodegroup)
-	elseif e.name=="TranslateDomain" then n=self:TranslateDomainNode(self.nodegroup)
-	elseif e.name=="ScaleDomain" then n=self:ScaleDomainNode(self.nodegroup)
-	elseif e.name=="Fractal" then n=self:FractalNode(self.nodegroup)
-	elseif e.name=="RotateDomain" then n=self:RotateDomainNode(self.nodegroup)
-	elseif e.name=="Randomize" then n=self:RandomizeNode(self.nodegroup)
-	elseif e.name=="SmoothStep" then n=self:SmoothStepNode(self.nodegroup)
-	elseif e.name=="Mix" then n=self:MixNode(self.nodegroup)
-	elseif e.name=="Expression" then n=self:ExpressionNode(self.nodegroup)
-	elseif e.name=="Seeder" then n=self:SeederNode(self.nodegroup)
-	elseif e.name=="Cellular" then n=self:CellularNode(self.nodegroup)
-	elseif e.name=="Sigmoid" then n=self:SigmoidNode(self.nodegroup)
-	end]]
+
 	n=self:BuildNode(self.nodegroup, e.name)
 	if not n then return end
 	
@@ -1216,403 +911,7 @@ function NodeGraphUI:BuildNode(nodegroup, type)
 	return e
 end
 
-function NodeGraphUI:ScalarMathNode(nodegroup)
-	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/ScalarMathNode.xml"))
-	
-	e.visible=true
-	
-	local list=e:GetChild("TypeList", true)
-	list.resizePopup=true
-	
-	local smtypes=
-	{
-		"Abs",
-		"Cos",
-		"Sin",
-		"Tan",
-		"ACos",
-		"ASin",
-		"ATan"
-	}
-	
-	list:SetAlignment(HA_LEFT, VA_CENTER)
-	list.minSize=IntVector2(0,16)
-	local c
-	for _,c in ipairs(smtypes) do
-		local t=Text:new(context)
-		t:SetFont(cache:GetResource("Font", "Fonts/Anonymous Pro.ttf"), 9)
-		t.text=c
-		t.color=Color(1,1,1)
-		t.minSize=IntVector2(0,16)
-		list:AddItem(t)
-	end
-	list.selection=0
-	
-	self:SubscribeLinkPoints(e,1)
-	
-	nodegroup.pane:AddChild(e)
-	return e
-end
 
-function NodeGraphUI:SeederNode(nodegroup)
-	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/SeederNode.xml"))
-	e.visible=true
-	self:SubscribeLinkPoints(e,2)
-	
-	nodegroup.pane:AddChild(e)
-	return e
-end
-
-function NodeGraphUI:SigmoidNode(nodegroup)
-	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/SigmoidNode.xml"))
-	e.visible=true
-	self:SubscribeLinkPoints(e,3)
-	
-	nodegroup.pane:AddChild(e)
-	return e
-end
-
-function NodeGraphUI:ArithmeticNode(nodegroup)
-	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/ArithmeticNode.xml"))
-	
-	e.visible=true
-	
-	
-	local list=e:GetChild("TypeList", true)
-	list.resizePopup=true
-	
-	local smtypes=
-	{
-		"Multiply",
-		"Add",
-		"Subtract",
-		"Divide",
-		"Pow",
-		"Min",
-		"Max",
-		"Bias",
-		"Gain",
-		"Step"
-	}
-	
-	list:SetAlignment(HA_LEFT, VA_CENTER)
-	list.minSize=IntVector2(0,16)
-	local c
-	for _,c in ipairs(smtypes) do
-		local t=Text:new(context)
-		t:SetFont(cache:GetResource("Font", "Fonts/Anonymous Pro.ttf"), 9)
-		t.text=c
-		t.color=Color(1,1,1)
-		t.minSize=IntVector2(0,16)
-		list:AddItem(t)
-	end
-	list.selection=0
-	
-	self:SubscribeLinkPoints(e,2)
-	
-	nodegroup.pane:AddChild(e)
-	return e
-end
-
-function NodeGraphUI:RotateDomainNode(nodegroup)
-	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/RotateDomainNode.xml"))
-	
-	e.visible=true
-	self:SubscribeLinkPoints(e,5)
-	
-	nodegroup.pane:AddChild(e)
-	return e
-end
-
-function NodeGraphUI:RandomizeNode(nodegroup)
-	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/RandomizeNode.xml"))
-	
-	e.visible=true
-	self:SubscribeLinkPoints(e,3)
-	
-	nodegroup.pane:AddChild(e)
-	return e
-end
-
-function NodeGraphUI:SmoothStepNode(nodegroup)
-	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/SmoothStepNode.xml"))
-	
-	e.visible=true
-	local list=e:GetChild("TypeList", true)
-	list.resizePopup=true
-	
-	local smtypes=
-	{
-		"Linear",
-		"Smooth",
-		"Smoother"
-	}
-	
-	list:SetAlignment(HA_LEFT, VA_CENTER)
-	list.minSize=IntVector2(0,16)
-	local c
-	for _,c in ipairs(smtypes) do
-		local t=Text:new(context)
-		t:SetFont(cache:GetResource("Font", "Fonts/Anonymous Pro.ttf"), 9)
-		t.text=c
-		t.color=Color(1,1,1)
-		t.minSize=IntVector2(0,16)
-		list:AddItem(t)
-	end
-	list.selection=0
-	
-	self:SubscribeLinkPoints(e,3)
-	
-	nodegroup.pane:AddChild(e)
-	return e
-end
-
-function NodeGraphUI:MixNode(nodegroup)
-	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/MixNode.xml"))
-	
-	e.visible=true
-	self:SubscribeLinkPoints(e,3)
-	
-	nodegroup.pane:AddChild(e)
-	return e
-end
-
-function NodeGraphUI:FractalNode(nodegroup)
-	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/FractalNode.xml"))
-	
-	e.visible=true
-	self:SubscribeLinkPoints(e,6)
-	
-	nodegroup.pane:AddChild(e)
-	return e
-end
-
-function NodeGraphUI:CellularNode(nodegroup)
-	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/CellularNode.xml"))
-	
-	e.visible=true
-	self:SubscribeLinkPoints(e,10)
-	
-	nodegroup.pane:AddChild(e)
-	return e
-end
-
-function NodeGraphUI:TranslateDomainNode(nodegroup)
-	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/TranslateDomainNode.xml"))
-	
-	e.visible=true
-	local list=e:GetChild("TypeList", true)
-	list.resizePopup=true
-	
-	local smtypes=
-	{
-		"All",
-		"X",
-		"Y",
-		"Z",
-		"W",
-		"U",
-		"V",
-	}
-	
-	list:SetAlignment(HA_LEFT, VA_CENTER)
-	list.minSize=IntVector2(0,16)
-	local c
-	for _,c in ipairs(smtypes) do
-		local t=Text:new(context)
-		t:SetFont(cache:GetResource("Font", "Fonts/Anonymous Pro.ttf"), 9)
-		t.text=c
-		t.color=Color(1,1,1)
-		t.minSize=IntVector2(0,16)
-		list:AddItem(t)
-	end
-	list.selection=0
-	
-	self:SubscribeLinkPoints(e,2)
-	
-	nodegroup.pane:AddChild(e)
-	return e
-end
-
-function NodeGraphUI:ScaleDomainNode(nodegroup)
-	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/ScaleDomainNode.xml"))
-	
-	e.visible=true
-	local list=e:GetChild("TypeList", true)
-	list.resizePopup=true
-	
-	local smtypes=
-	{
-		"All",
-		"X",
-		"Y",
-		"Z",
-		"W",
-		"U",
-		"V"
-	}
-	
-	list:SetAlignment(HA_LEFT, VA_CENTER)
-	list.minSize=IntVector2(0,16)
-	local c
-	for _,c in ipairs(smtypes) do
-		local t=Text:new(context)
-		t:SetFont(cache:GetResource("Font", "Fonts/Anonymous Pro.ttf"), 9)
-		t.text=c
-		t.color=Color(1,1,1)
-		t.minSize=IntVector2(0,16)
-		list:AddItem(t)
-	end
-	list.selection=0
-	
-	self:SubscribeLinkPoints(e,2)
-	
-	nodegroup.pane:AddChild(e)
-	return e
-end
-
-function NodeGraphUI:DerivativeNode(nodegroup)
-	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/DerivativeNode.xml"))
-	
-	e.visible=true
-	local list=e:GetChild("TypeList", true)
-	list.resizePopup=true
-	
-	local smtypes=
-	{
-		"dX",
-		"dY",
-		"dZ",
-		"dW",
-		"dU",
-		"dV"
-	}
-	
-	list:SetAlignment(HA_LEFT, VA_CENTER)
-	list.minSize=IntVector2(0,16)
-	local c
-	for _,c in ipairs(smtypes) do
-		local t=Text:new(context)
-		t:SetFont(cache:GetResource("Font", "Fonts/Anonymous Pro.ttf"), 9)
-		t.text=c
-		t.color=Color(1,1,1)
-		t.minSize=IntVector2(0,16)
-		list:AddItem(t)
-	end
-	list.selection=0
-	
-	self:SubscribeLinkPoints(e,2)
-	
-	nodegroup.pane:AddChild(e)
-	return e
-end
-
-function NodeGraphUI:TiersNode(nodegroup)
-	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/TiersNode.xml"))
-	
-	e.visible=true
-	self:SubscribeLinkPoints(e,2)
-	
-	nodegroup.pane:AddChild(e)
-	return e
-end
-
-function NodeGraphUI:ValueBasisNode(nodegroup)
-	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/ValueBasisNode.xml"))
-	
-	e.visible=true
-	self:SubscribeLinkPoints(e,2)
-	
-	nodegroup.pane:AddChild(e)
-	return e
-end
-
-function NodeGraphUI:GradientBasisNode(nodegroup)
-	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/GradientBasisNode.xml"))
-	
-	e.visible=true
-	self:SubscribeLinkPoints(e,2)
-	
-	nodegroup.pane:AddChild(e)
-	return e
-end
-
-function NodeGraphUI:SimplexBasisNode(nodegroup)
-	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/SimplexBasisNode.xml"))
-	
-	e.visible=true
-	self:SubscribeLinkPoints(e,1)
-	
-	nodegroup.pane:AddChild(e)
-	return e
-end
-
-function NodeGraphUI:CoordinateSourceNode(nodegroup)
-	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/CoordinateSourceNode.xml"))
-	
-	e.visible=true
-	local list=e:GetChild("TypeList", true)
-	list.resizePopup=true
-	
-	local smtypes=
-	{
-		"X",
-		"Y",
-		"Z",
-		"W",
-		"U",
-		"V",
-		"Radial",
-	}
-	
-	list:SetAlignment(HA_LEFT, VA_CENTER)
-	list.minSize=IntVector2(0,16)
-	local c
-	for _,c in ipairs(smtypes) do
-		local t=Text:new(context)
-		t:SetFont(cache:GetResource("Font", "Fonts/Anonymous Pro.ttf"), 9)
-		t.text=c
-		t.color=Color(1,1,1)
-		t.minSize=IntVector2(0,16)
-		list:AddItem(t)
-	end
-	list.selection=0
-	
-	self:SubscribeLinkPoints(e,0)
-	
-	nodegroup.pane:AddChild(e)
-	return e
-end
-
-function NodeGraphUI:ConstantNode(nodegroup)
-	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/ConstantNode.xml"))
-	
-	e.visible=true
-	self:SubscribeLinkPoints(e,0)
-	
-	nodegroup.pane:AddChild(e)
-	return e
-end
-
-function NodeGraphUI:ExpressionNode(nodegroup)
-	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/ExpressionNode.xml"))
-	
-	e.visible=true
-	self:SubscribeLinkPoints(e,0)
-	
-	nodegroup.pane:AddChild(e)
-	return e
-end
-
-function NodeGraphUI:SeedNode(nodegroup)
-	local e=ui:LoadLayout(cache:GetResource("XMLFile", "UI/SeedNode.xml"))
-	
-	e.visible=true
-	self:SubscribeLinkPoints(e,0)
-	
-	nodegroup.pane:AddChild(e)
-	return e
-end
 
 function NodeGraphUI:HandleOutputDragBegin(eventType, eventData)
 	if not self.nodegroup then return end
