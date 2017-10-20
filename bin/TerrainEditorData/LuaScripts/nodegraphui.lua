@@ -28,6 +28,16 @@ nodetypes=
 			{"value", "Value", 0.0},
 			{"value", "Value", 0.0},
 		},
+		constants=
+		{
+			nil,
+			nil
+		},
+		seeds=
+		{
+			nil,
+			nil
+		},
 		instance={{op="Parameter", param=1}, {op="Parameter", param=2}, {op="Function", func="add", indices={1,2}}}
 	},
 	Subtract=
@@ -371,7 +381,6 @@ nodetypes=
 	{
 		inputs=
 		{
-			{"seed", "Seed", 91234},
 			{"value", "F1", -1.0},
 			{"value", "F2", 1.0},
 			{"value", "F3", 0.0},
@@ -381,6 +390,7 @@ nodetypes=
 			{"value", "D3", 0.0},
 			{"value", "D4", 0.0},
 			{"value", "Distance Func", 0},
+			{"seed", "Seed", 91234},
 		},
 		instance={{op="Parameter", param=1}, {op="Parameter", param=2}, {op="Parameter", param=3}, {op="Parameter", param=4}, {op="Parameter", param=5},
 				{op="Parameter", param=6}, {op="Parameter", param=7}, {op="Parameter", param=8}, {op="Parameter", param=9}, {op="Parameter", param=10},
@@ -390,8 +400,8 @@ nodetypes=
 	{
 		inputs=
 		{
+			{"value", "Interpolation", 3},
 			{"seed", "Seed", 147234},
-			{"value", "Interpolation", 3}
 		},
 		instance={{op="Parameter", param=1}, {op="Parameter", param=2}, {op="Function", func="valueBasis", indices={1,2}}}
 	},
@@ -399,8 +409,8 @@ nodetypes=
 	{
 		inputs=
 		{
-			{"seed", "Seed", 148234},
-			{"value", "Interpolation", 3}
+			{"value", "Interpolation", 3},
+			{"seed", "Seed", 147234},
 		},
 		instance={{op="Parameter", param=1}, {op="Parameter", param=2}, {op="Function", func="gradientBasis", indices={1,2}}}
 	},
@@ -433,48 +443,59 @@ function InstanceFunction(k, desc, params)
 			table.insert(n, params[c.param])
 		elseif c.op=="Function" then
 			local indices=c.indices
+			local constants=c.constants
+			local seeds=c.seeds
+			
+			local inputs={}
+			local d
+			for d=1,#desc.inputs,1 do
+				if indices[d] ~= nil then table.insert(inputs,n[indices[d]])
+				elseif constants and constants[d] ~= nil then table.insert(inputs, k:constant(constants[d]))
+				elseif seeds and seeds[d] ~= nil then table.insert(inputs, k:seed(seeds[d]))
+				end
+			end
 			
 			print("Function name: "..c.func)
 			if c.func=="add" then
-				table.insert(n, k:add(n[indices[1]], n[indices[2]]))
+				table.insert(n, k:add(inputs[1],inputs[2]))
 			elseif c.func=="subtract" then
-				table.insert(n, k:subtract(n[indices[1]], n[indices[2]]))
+				table.insert(n, k:subtract(inputs[1], inputs[2]))
 			elseif c.func=="multiply" then
-				table.insert(n, k:multiply(n[indices[1]], n[indices[2]]))
+				table.insert(n, k:multiply(inputs[1], inputs[2]))
 			elseif c.func=="divide" then
-				table.insert(n, k:divide(n[indices[1]], n[indices[2]]))
+				table.insert(n, k:divide(inputs[1], inputs[2]))
 			elseif c.func=="subtract" then
-				table.insert(n, k:subtract(n[indices[1]], n[indices[2]]))
+				table.insert(n, k:subtract(inputs[1], inputs[2]))
 			elseif c.func=="minimum" then
-				table.insert(n, k:minimum(n[indices[1]], n[indices[2]]))
+				table.insert(n, k:minimum(inputs[1], inputs[2]))
 			elseif c.func=="maximum" then
-				table.insert(n, k:maximum(n[indices[1]], n[indices[2]]))
+				table.insert(n, k:maximum(inputs[1], inputs[2]))
 			elseif c.func=="bias" then
-				table.insert(n, k:bias(n[indices[1]], n[indices[2]]))
+				table.insert(n, k:bias(inputs[1], inputs[2]))
 			elseif c.func=="gain" then
-				table.insert(n, k:gain(n[indices[1]], n[indices[2]]))
+				table.insert(n, k:gain(inputs[1], inputs[2]))
 			elseif c.func=="step" then
-				table.insert(n, k:step(n[indices[1]], n[indices[2]]))
+				table.insert(n, k:step(inputs[1], inputs[2]))
 			elseif c.func=="linearStep" then
-				table.insert(n, k:linearStep(n[indices[1]], n[indices[2]], n[indices[3]]))
+				table.insert(n, k:linearStep(inputs[1], inputs[2], inputs[3]))
 			elseif c.func=="smoothStep" then
-				table.insert(n, k:smoothStep(n[indices[1]], n[indices[2]], n[indices[3]]))
+				table.insert(n, k:smoothStep(inputs[1], inputs[2], inputs[3]))
 			elseif c.func=="smootherStep" then
-				table.insert(n, k:smootherStep(n[indices[1]], n[indices[2]], n[indices[3]]))
+				table.insert(n, k:smootherStep(inputs[1], inputs[2], inputs[3]))
 			elseif c.func=="abs" then
-				table.insert(n, k:abs(n[indices[1]]))
+				table.insert(n, k:abs(inputs[1]))
 			elseif c.func=="sin" then
-				table.insert(n, k:sin(n[indices[1]]))
+				table.insert(n, k:sin(inputs[1]))
 			elseif c.func=="cos" then
-				table.insert(n, k:cos(n[indices[1]]))
+				table.insert(n, k:cos(inputs[1]))
 			elseif c.func=="tan" then
-				table.insert(n, k:tan(n[indices[1]]))
+				table.insert(n, k:tan(inputs[1]))
 			elseif c.func=="asin" then
-				table.insert(n, k:asin(n[indices[1]]))
+				table.insert(n, k:asin(inputs[1]))
 			elseif c.func=="acos" then
-				table.insert(n, k:acos(n[indices[1]]))
+				table.insert(n, k:acos(inputs[1]))
 			elseif c.func=="atan" then
-				table.insert(n, k:atan(n[indices[1]]))
+				table.insert(n, k:atan(inputs[1]))
 			elseif c.func=="x" then
 				table.insert(n, k:x())
 			elseif c.func=="y" then
@@ -482,45 +503,45 @@ function InstanceFunction(k, desc, params)
 			elseif c.func=="radial" then
 				table.insert(n, k:radial())
 			elseif c.func=="dX" then
-				table.insert(n, k:dx(n[indices[1]], n[indices[2]]))
+				table.insert(n, k:dx(inputs[1], inputs[2]))
 			elseif c.func=="dY" then
-				table.insert(n, k:dy(n[indices[1]], n[indices[2]]))
+				table.insert(n, k:dy(inputs[1], inputs[2]))
 			elseif c.func=="smoothTiers" then
-				table.insert(n, k:smoothTiers(n[indices[1]], n[indices[2]]))
+				table.insert(n, k:smoothTiers(inputs[1], inputs[2]))
 			elseif c.func=="tiers" then
-				table.insert(n, k:tiers(n[indices[1]], n[indices[2]]))
+				table.insert(n, k:tiers(inputs[1], inputs[2]))
 			elseif c.func=="translateDomain" then
-				table.insert(n, k:translateDomain(n[indices[1]], n[indices[2]]))
+				table.insert(n, k:translateDomain(inputs[1], inputs[2]))
 			elseif c.func=="translateX" then
-				table.insert(n, k:translateX(n[indices[1]], n[indices[2]]))
+				table.insert(n, k:translateX(inputs[1], inputs[2]))
 			elseif c.func=="translateY" then
-				table.insert(n, k:translateY(n[indices[1]], n[indices[2]]))
+				table.insert(n, k:translateY(inputs[1], inputs[2]))
 			elseif c.func=="scaleDomain" then
-				table.insert(n, k:scaleDomain(n[indices[1]], n[indices[2]]))
+				table.insert(n, k:scaleDomain(inputs[1], inputs[2]))
 			elseif c.func=="scaleX" then
-				table.insert(n, k:scaleX(n[indices[1]], n[indices[2]]))
+				table.insert(n, k:scaleX(inputs[1], inputs[2]))
 			elseif c.func=="scaleY" then
-				table.insert(n, k:scaleY(n[indices[1]], n[indices[2]]))
+				table.insert(n, k:scaleY(inputs[1], inputs[2]))
 			elseif c.func=="rotateDomain" then
-				table.insert(n, k:rotateDomain(n[indices[1]], n[indices[2]], n[indices[3]], n[indices[4]], n[indices[5]]))
+				table.insert(n, k:rotateDomain(inputs[1], inputs[2], inputs[3], inputs[4], inputs[5]))
 			elseif c.func=="mix" then
-				table.insert(n, k:mix(n[indices[1]], n[indices[2]], n[indices[3]]))
+				table.insert(n, k:mix(inputs[1], inputs[2], inputs[3]))
 			elseif c.func=="seeder" then
-				table.insert(n, k:seeder(n[indices[1]], n[indices[2]]))
+				table.insert(n, k:seeder(inputs[1], inputs[2]))
 			elseif c.func=="sigmoid" then
-				table.insert(n, k:sigmoid(n[indices[1]], n[indices[2]], n[indices[3]]))
+				table.insert(n, k:sigmoid(inputs[1], inputs[2], inputs[3]))
 			elseif c.func=="randomize" then
-				table.insert(n, k:randomize(n[indices[1]], n[indices[2]], n[indices[3]]))
+				table.insert(n, k:randomize(inputs[1], inputs[2], inputs[3]))
 			elseif c.func=="fractal" then
-				table.insert(n, k:fractal(n[indices[1]], n[indices[2]], n[indices[3]], n[indices[4]], n[indices[5]], n[indices[6]]))
+				table.insert(n, k:fractal(inputs[1], inputs[2], inputs[3], inputs[4], inputs[5], inputs[6]))
 			elseif c.func=="cellularBasis" then
-				table.insert(n, k:cellularBasis(n[indices[1]], n[indices[2]], n[indices[3]], n[indices[4]], n[indices[5]], n[indices[6]], n[indices[7]], n[indices[8]], n[indices[9]], n[indices[10]]))
+				table.insert(n, k:cellularBasis(inputs[1], inputs[2], inputs[3], inputs[4], inputs[5], inputs[6], inputs[7], inputs[8], inputs[9], inputs[10]))
 			elseif c.func=="valueBasis" then
-				table.insert(n, k:valueBasis(n[indices[1]], n[indices[2]]))
+				table.insert(n, k:valueBasis(inputs[1], inputs[2]))
 			elseif c.func=="gradientBasis" then
-				table.insert(n, k:gradientBasis(n[indices[1]], n[indices[2]]))
+				table.insert(n, k:gradientBasis(inputs[1], inputs[2]))
 			elseif c.func=="simplexBasis" then
-				table.insert(n, k:simplexBasis(n[indices[1]]))
+				table.insert(n, k:simplexBasis(inputs[1]))
 			else
 				print("wut")
 			end
@@ -528,6 +549,113 @@ function InstanceFunction(k, desc, params)
 	end
 	print(k:lastIndex())
 	return k:lastIndex()
+end
+
+function CreateLibraryDesc(n)
+	local visited={}
+	local recursing={}
+	local parameters={}
+	
+	local isvisited=function(n)
+		local c
+		for _,c in ipairs(visited) do
+			if c==n then return true end
+		end
+		return false
+	end
+	
+	local nodeindex=function(n)
+		local i,c
+		for i,c in ipairs(visited) do
+			if c==n then return i end
+		end
+		return nil
+	end
+	
+	local parameterindex=function(n)
+		local i,c
+		for i,c in ipairs(parameters) do
+			if c==n then return i end
+		end
+		return nil
+	end
+	
+	local isrecursing=function(n)
+		local c
+		for _,c in ipairs(recursing) do
+			if c==n then return true end
+		end
+		return false
+	end
+	
+	local st=""
+	
+	function writenode(n)
+		if n.name=="Seed" or n.name=="Constant" then
+			local pi=parameterindex(n)
+			if pi then st=st.." P"..pi
+			else print("Parameter does not exist.")
+			end
+			return
+		else
+			st=st.." "..n.name
+		end
+		
+		local c
+		local inputs=n:GetChild("Inputs",true)
+		local numparams=inputs:GetNumChildren()
+		for c=1,numparams,1 do
+			local src=GetSourceFromNode(n, "Input"..tostring(c-1))
+			if src then st=st.." I"..nodeindex(src)
+			else st=st.." C"..n:GetChild("Value"..tostring(c-1),true).text
+			end
+		end
+	end
+	
+	local worker
+	
+	local visitnode=function(n)
+		if n.name=="Constant" or n.name=="Seed" then return true end
+		
+		local inputs=n:GetChild("Inputs",true)
+		local numparams=inputs:GetNumChildren()
+		local c
+		for c=1,numparams,1 do
+			local s=GetSourceFromNode(n, "Input"..tostring(c-1))
+			if s and isrecursing(s) then
+				print("Cycle detected.")
+				return false
+			end
+			
+			if s and not isvisited(s) then
+				if s.name=="Constant" or s.name=="Seed" then
+					table.insert(parameters,s)
+				end
+				local ss=worker(s)
+				if not ss then return false end
+			end
+			
+		end
+		return true
+	end
+	
+	worker=function(n)
+		table.insert(recursing,n)
+		if not visitnode(n) then
+			print("Bailing")
+			table.remove(recursing)
+			return false
+		else
+			table.remove(recursing)
+			table.insert(visited,n)
+			writenode(n)
+			return true
+		end
+	end
+	
+	if not worker(n) then st=st.."Cycle detected" end
+	print("Num params: "..#parameters)
+	return st
 end
 
 function CreateMenuItem(title)
@@ -967,6 +1095,7 @@ function NodeGraphUI:HandleGenerate(eventType, eventData)
 	local kernel=PackNodeGraph(self.nodegroup.output)
 	RenderANLKernelToImage(self.nodegroup.previewimg,kernel,0,1)
 	self.nodegroup.previewtex:SetData(self.nodegroup.previewimg)
+	print(CreateLibraryDesc(self.nodegroup.output))
 end
 
 function NodeGraphUI:HandleExecute(eventType, eventData)
