@@ -3,44 +3,35 @@
 -- Consists of opcodes. 
 -- If opcode=="Parameter" then get the specified input parameter.
 -- If opcode=="Function" then instantiate the given ANL function, with the specified array indices
+require 'LuaScripts/tableshow'
 
 -- Testing
 nodetypes=
 {
-	Constant=
+	constant=
 	{
 		inputs=
 		{
 		},
 		instance={{op="Function", func="constant"}}
 	},
-	Seed=
+	seed=
 	{
 		inputs=
 		{
 		},
 		instance={{op="Function", func="seed"}}
 	},
-	Add=
+	add=
 	{
 		inputs=
 		{
 			{"value", "Value", 0.0},
 			{"value", "Value", 0.0},
 		},
-		constants=
-		{
-			nil,
-			nil
-		},
-		seeds=
-		{
-			nil,
-			nil
-		},
 		instance={{op="Parameter", param=1}, {op="Parameter", param=2}, {op="Function", func="add", indices={1,2}}}
 	},
-	Subtract=
+	subtract=
 	{
 		inputs=
 		{
@@ -49,7 +40,7 @@ nodetypes=
 		},
 		instance={{op="Parameter", param=1}, {op="Parameter", param=2}, {op="Function", func="subtract", indices={1,2}}}
 	},
-	Multiply=
+	multiply=
 	{
 		inputs=
 		{
@@ -58,7 +49,7 @@ nodetypes=
 		},
 		instance={{op="Parameter", param=1}, {op="Parameter", param=2}, {op="Function", func="multiply", indices={1,2}}}
 	},
-	Divide=
+	divide=
 	{
 		inputs=
 		{
@@ -67,7 +58,7 @@ nodetypes=
 		},
 		instance={{op="Parameter", param=1}, {op="Parameter", param=2}, {op="Function", func="divide", indices={1,2}}}
 	},
-	Pow=
+	pow=
 	{
 		inputs=
 		{
@@ -76,7 +67,7 @@ nodetypes=
 		},
 		instance={{op="Parameter", param=1}, {op="Parameter", param=2}, {op="Function", func="pow", indices={1,2}}}
 	},
-	Minimum=
+	minimum=
 	{
 		inputs=
 		{
@@ -85,7 +76,7 @@ nodetypes=
 		},
 		instance={{op="Parameter", param=1}, {op="Parameter", param=2}, {op="Function", func="minimum", indices={1,2}}}
 	},
-	Maximum=
+	maximum=
 	{
 		inputs=
 		{
@@ -94,7 +85,7 @@ nodetypes=
 		},
 		instance={{op="Parameter", param=1}, {op="Parameter", param=2}, {op="Function", func="maximum", indices={1,2}}}
 	},
-	Bias=
+	bias=
 	{
 		inputs=
 		{
@@ -103,7 +94,7 @@ nodetypes=
 		},
 		instance={{op="Parameter", param=1}, {op="Parameter", param=2}, {op="Function", func="bias", indices={1,2}}}
 	},
-	Gain=
+	gain=
 	{
 		inputs=
 		{
@@ -112,7 +103,7 @@ nodetypes=
 		},
 		instance={{op="Parameter", param=1}, {op="Parameter", param=2}, {op="Function", func="gain", indices={1,2}}}
 	},
-	Step=
+	step=
 	{
 		inputs=
 		{
@@ -121,7 +112,7 @@ nodetypes=
 		},
 		instance={{op="Parameter", param=1}, {op="Parameter", param=2}, {op="Function", func="step", indices={1,2}}}
 	},
-	LinearStep=
+	linearStep=
 	{
 		inputs=
 		{
@@ -131,7 +122,7 @@ nodetypes=
 		},
 		instance={{op="Parameter", param=1}, {op="Parameter", param=2}, {op="Parameter", param=3}, {op="Function", func="linearStep", indices={1,2,3}}}
 	},
-	SmoothStep=
+	smoothStep=
 	{
 		inputs=
 		{
@@ -141,7 +132,7 @@ nodetypes=
 		},
 		instance={{op="Parameter", param=1}, {op="Parameter", param=2}, {op="Parameter", param=3}, {op="Function", func="smoothStep", indices={1,2,3}}}
 	},
-	SmootherStep=
+	smootherStep=
 	{
 		inputs=
 		{
@@ -151,7 +142,7 @@ nodetypes=
 		},
 		instance={{op="Parameter", param=1}, {op="Parameter", param=2}, {op="Parameter", param=3}, {op="Function", func="smootherStep", indices={1,2,3}}}
 	},
-	Abs=
+	abs=
 	{
 		inputs=
 		{
@@ -159,7 +150,7 @@ nodetypes=
 		},
 		instance={{op="Parameter", param=1}, {op="Function", func="abs", indices={1}}}
 	},
-	Sin=
+	sin=
 	{
 		inputs=
 		{
@@ -167,7 +158,7 @@ nodetypes=
 		},
 		instance={{op="Parameter", param=1}, {op="Function", func="sin", indices={1}}}
 	},
-	Cos=
+	cos=
 	{
 		inputs=
 		{
@@ -175,7 +166,7 @@ nodetypes=
 		},
 		instance={{op="Parameter", param=1}, {op="Function", func="cos", indices={1}}}
 	},
-	Tan=
+	tan=
 	{
 		inputs=
 		{
@@ -183,7 +174,7 @@ nodetypes=
 		},
 		instance={{op="Parameter", param=1}, {op="Function", func="tan", indices={1}}}
 	},
-	ASin=
+	asin=
 	{
 		inputs=
 		{
@@ -191,7 +182,7 @@ nodetypes=
 		},
 		instance={{op="Parameter", param=1}, {op="Function", func="asin", indices={1}}}
 	},
-	ACos=
+	acos=
 	{
 		inputs=
 		{
@@ -199,7 +190,7 @@ nodetypes=
 		},
 		instance={{op="Parameter", param=1}, {op="Function", func="acos", indices={1}}}
 	},
-	ATan=
+	atan=
 	{
 		inputs=
 		{
@@ -207,21 +198,21 @@ nodetypes=
 		},
 		instance={{op="Parameter", param=1}, {op="Function", func="atan", indices={1}}}
 	},
-	X=
+	x=
 	{
 		inputs=
 		{
 		},
 		instance={{op="Function", func="x", indices={}}}
 	},
-	Y=
+	y=
 	{
 		inputs=
 		{
 		},
 		instance={{op="Function", func="y", indices={}}}
 	},
-	dX=
+	dx=
 	{
 		inputs=
 		{
@@ -230,7 +221,7 @@ nodetypes=
 		},
 		instance={{op="Parameter", param=1}, {op="Parameter", param=2}, {op="Function", func="dX", indices={1,2}}}
 	},
-	dY=
+	dy=
 	{
 		inputs=
 		{
@@ -239,7 +230,7 @@ nodetypes=
 		},
 		instance={{op="Parameter", param=1}, {op="Parameter", param=2}, {op="Function", func="dY", indices={1,2}}}
 	},
-	Tiers=
+	tiers=
 	{
 		inputs=
 		{
@@ -248,7 +239,7 @@ nodetypes=
 		},
 		instance={{op="Parameter", param=1}, {op="Parameter", param=2}, {op="Function", func="tiers", indices={1,2}}}
 	},
-	SmoothTiers=
+	smoothTiers=
 	{
 		inputs=
 		{
@@ -257,7 +248,7 @@ nodetypes=
 		},
 		instance={{op="Parameter", param=1}, {op="Parameter", param=2}, {op="Function", func="smoothTiers", indices={1,2}}}
 	},
-	TranslateDomain=
+	translateDomain=
 	{
 		inputs=
 		{
@@ -266,7 +257,7 @@ nodetypes=
 		},
 		instance={{op="Parameter", param=1}, {op="Parameter", param=2}, {op="Function", func="translateDomain", indices={1,2}}}
 	},
-	TranslateX=
+	translateX=
 	{
 		inputs=
 		{
@@ -275,7 +266,7 @@ nodetypes=
 		},
 		instance={{op="Parameter", param=1}, {op="Parameter", param=2}, {op="Function", func="translateX", indices={1,2}}}
 	},
-	TranslateY=
+	translateY=
 	{
 		inputs=
 		{
@@ -284,7 +275,7 @@ nodetypes=
 		},
 		instance={{op="Parameter", param=1}, {op="Parameter", param=2}, {op="Function", func="translateY", indices={1,2}}}
 	},
-	ScaleDomain=
+	scaleDomain=
 	{
 		inputs=
 		{
@@ -293,7 +284,7 @@ nodetypes=
 		},
 		instance={{op="Parameter", param=1}, {op="Parameter", param=2}, {op="Function", func="scaleDomain", indices={1,2}}}
 	},
-	ScaleX=
+	scaleX=
 	{
 		inputs=
 		{
@@ -302,7 +293,7 @@ nodetypes=
 		},
 		instance={{op="Parameter", param=1}, {op="Parameter", param=2}, {op="Function", func="scaleX", indices={1,2}}}
 	},
-	ScaleY=
+	scaleY=
 	{
 		inputs=
 		{
@@ -311,7 +302,7 @@ nodetypes=
 		},
 		instance={{op="Parameter", param=1}, {op="Parameter", param=2}, {op="Function", func="scaleY", indices={1,2}}}
 	},
-	RotateDomain=
+	rotateDomain=
 	{
 		inputs=
 		{
@@ -324,7 +315,7 @@ nodetypes=
 		instance={{op="Parameter", param=1}, {op="Parameter", param=2}, {op="Parameter", param=3}, {op="Parameter", param=4}, {op="Parameter", param=5},
 				{op="Function", func="rotateDomain", indices={1,2,3,4,5}}}
 	},
-	Mix=
+	mix=
 	{
 		inputs=
 		{
@@ -334,7 +325,7 @@ nodetypes=
 		},
 		instance={{op="Parameter", param=1}, {op="Parameter", param=2}, {op="Parameter", param=3}, {op="Function", func="mix", indices={1,2,3}}}
 	},
-	Seeder=
+	seeder=
 	{
 		inputs=
 		{
@@ -343,7 +334,7 @@ nodetypes=
 		},
 		instance={{op="Parameter", param=1}, {op="Parameter", param=2}, {op="Function", func="seeder", indices={1,2}}}
 	},
-	Sigmoid=
+	sigmoid=
 	{
 		inputs=
 		{
@@ -353,7 +344,7 @@ nodetypes=
 		},
 		instance={{op="Parameter", param=1}, {op="Parameter", param=2}, {op="Parameter", param=3}, {op="Function", func="sigmoid", indices={1,2,3}}}
 	},
-	Randomize=
+	randomize=
 	{
 		inputs=
 		{
@@ -363,7 +354,7 @@ nodetypes=
 		},
 		instance={{op="Parameter", param=1}, {op="Parameter", param=2}, {op="Parameter", param=3}, {op="Function", func="randomize", indices={1,2,3}}}
 	},
-	Fractal=
+	fractal=
 	{
 		inputs=
 		{
@@ -377,7 +368,7 @@ nodetypes=
 		instance={{op="Parameter", param=1}, {op="Parameter", param=2}, {op="Parameter", param=3}, {op="Parameter", param=4}, {op="Parameter", param=5},
 				{op="Parameter", param=6}, {op="Function", func="fractal", indices={1,2,3,4,5,6}}}
 	},
-	CellularBasis=
+	cellularBasis=
 	{
 		inputs=
 		{
@@ -396,7 +387,7 @@ nodetypes=
 				{op="Parameter", param=6}, {op="Parameter", param=7}, {op="Parameter", param=8}, {op="Parameter", param=9}, {op="Parameter", param=10},
 				{op="Function", func="cellularBasis", indices={1,2,3,4,5,6,7,8,9,10}}}
 	},
-	ValueBasis=
+	valueBasis=
 	{
 		inputs=
 		{
@@ -405,7 +396,7 @@ nodetypes=
 		},
 		instance={{op="Parameter", param=1}, {op="Parameter", param=2}, {op="Function", func="valueBasis", indices={1,2}}}
 	},
-	GradientBasis=
+	gradientBasis=
 	{
 		inputs=
 		{
@@ -414,7 +405,7 @@ nodetypes=
 		},
 		instance={{op="Parameter", param=1}, {op="Parameter", param=2}, {op="Function", func="gradientBasis", indices={1,2}}}
 	},
-	SimplexBasis=
+	simplexBasis=
 	{
 		inputs=
 		{
@@ -422,13 +413,138 @@ nodetypes=
 		},
 		instance={{op="Parameter", param=1}, {op="Function", func="simplexBasis", indices={1}}}
 	},
-	Radial=
+	radial=
 	{
 		inputs=
 		{
 		},
 		instance={{op="Function", func="radial", indices={}}}
-	}
+	},
+	Test={
+   ["instance"] = {
+      [1] = {
+         ["op"] = "Parameter";
+         ["param"] = 1;
+      };
+      [2] = {
+         ["op"] = "Function";
+         ["seeds"] = {
+            [1] = "nil";
+            [2] = 147234;
+         };
+         ["func"] = "gradientBasis";
+         ["indices"] = {
+            [1] = "nil";
+            [2] = "nil";
+         };
+         ["constants"] = {
+            [1] = 3;
+            [2] = "nil";
+         };
+      };
+      [3] = {
+         ["op"] = "Function";
+         ["seeds"] = {
+            [1] = "nil";
+         };
+         ["func"] = "abs";
+         ["indices"] = {
+            [1] = 2;
+         };
+         ["constants"] = {
+            [1] = "nil";
+         };
+      };
+      [4] = {
+         ["op"] = "Function";
+         ["seeds"] = {
+            [1] = 17892;
+            [2] = "nil";
+            [3] = "nil";
+         };
+         ["func"] = "randomize";
+         ["indices"] = {
+            [1] = "nil";
+            [2] = "nil";
+            [3] = "nil";
+         };
+         ["constants"] = {
+            [1] = "nil";
+            [2] = 0;
+            [3] = 3.14;
+         };
+      };
+      [5] = {
+         ["op"] = "Function";
+         ["seeds"] = {
+            [1] = "nil";
+            [2] = "nil";
+            [3] = "nil";
+            [4] = "nil";
+            [5] = "nil";
+         };
+         ["func"] = "rotateDomain";
+         ["indices"] = {
+            [1] = 3;
+            [2] = 4;
+            [3] = "nil";
+            [4] = "nil";
+            [5] = "nil";
+         };
+         ["constants"] = {
+            [1] = "nil";
+            [2] = "nil";
+            [3] = 0;
+            [4] = 0;
+            [5] = 1;
+         };
+      };
+      [6] = {
+         ["op"] = "Parameter";
+         ["param"] = 2;
+      };
+      [7] = {
+         ["op"] = "Function";
+         ["seeds"] = {
+            [1] = "nil";
+            [2] = "nil";
+            [3] = "nil";
+            [4] = "nil";
+            [5] = "nil";
+            [6] = "nil";
+         };
+         ["func"] = "fractal";
+         ["indices"] = {
+            [1] = 1;
+            [2] = 5;
+            [3] = "nil";
+            [4] = "nil";
+            [5] = "nil";
+            [6] = 6;
+         };
+         ["constants"] = {
+            [1] = "nil";
+            [2] = "nil";
+            [3] = 0.5;
+            [4] = 2;
+            [5] = 8;
+            [6] = "nil";
+         };
+      };
+   };
+   ["inputs"] = {
+      [1] = {
+         [1] = "seed";
+         [2] = "Seed";
+         [3] = 12345;
+      };
+      [2] = {
+         [1] = "value";
+         [2] = "Frequency";
+         [3] = 1;
+      };
+   };
+};
 	
 }
 
@@ -448,10 +564,13 @@ function InstanceFunction(k, desc, params)
 			
 			local inputs={}
 			local d
-			for d=1,#desc.inputs,1 do
-				if indices[d] ~= nil then table.insert(inputs,n[indices[d]])
-				elseif constants and constants[d] ~= nil then table.insert(inputs, k:constant(constants[d]))
-				elseif seeds and seeds[d] ~= nil then table.insert(inputs, k:seed(seeds[d]))
+			
+			local fdesc=nodetypes[c.func]
+			print("numinputs for "..c.func..": "..#fdesc.inputs)
+			for d=1,#fdesc.inputs,1 do
+				if indices[d] ~= "nil" then print("index: "..indices[d]) table.insert(inputs,n[indices[d]])
+				elseif constants and constants[d] ~= "nil" then print("constant: "..constants[d]) table.insert(inputs, k:constant(constants[d]))
+				elseif seeds and seeds[d] ~= "nil" then print("seed: "..seeds[d]) table.insert(inputs, k:seed(seeds[d]))
 				end
 			end
 			
@@ -555,6 +674,8 @@ function CreateLibraryDesc(n)
 	local visited={}
 	local recursing={}
 	local parameters={}
+	local paramnames={}
+	local paramtypes={}
 	
 	local isvisited=function(n)
 		local c
@@ -590,26 +711,60 @@ function CreateLibraryDesc(n)
 	
 	local st=""
 	
+	local inst={}
+	
 	function writenode(n)
 		if n.name=="Seed" or n.name=="Constant" then
 			local pi=parameterindex(n)
-			if pi then st=st.." P"..pi
+			if pi then 
+				table.insert(inst, {op="Parameter", param=pi})
+				st=st.." P"..pi
 			else print("Parameter does not exist.")
 			end
 			return
+		elseif n.name=="Output" then
+			return
 		else
+			local thing=
+			{
+				op="Function",
+				func=n.name,
+				indices={},
+				constants={},
+				seeds={},
+			}
+			
 			st=st.." "..n.name
+			
+			local c
+			local inputs=n:GetChild("Inputs",true)
+			local numparams=inputs:GetNumChildren()
+			for c=1,numparams,1 do
+				local src=GetSourceFromNode(n, "Input"..tostring(c-1))
+				if src then
+					table.insert(thing.indices, nodeindex(src))
+					table.insert(thing.constants, "nil")
+					table.insert(thing.seeds, "nil")
+					st=st.." I"..nodeindex(src)
+				else
+					local tp=nodetypes[n.name].inputs[c][1]
+					if tp=="value" then
+						table.insert(thing.indices, "nil")
+						table.insert(thing.constants, tonumber(n:GetChild("Value"..tostring(c-1),true).text))
+						table.insert(thing.seeds, "nil")
+						st=st.." C"..n:GetChild("Value"..tostring(c-1),true).text
+					else
+						table.insert(thing.indices, "nil")
+						table.insert(thing.seeds, tonumber(n:GetChild("Value"..tostring(c-1),true).text))
+						table.insert(thing.constants, "nil")
+						st=st.." S"..n:GetChild("Value"..tostring(c-1),true).text
+					end
+				end
+			end
+			table.insert(inst, thing)
 		end
 		
-		local c
-		local inputs=n:GetChild("Inputs",true)
-		local numparams=inputs:GetNumChildren()
-		for c=1,numparams,1 do
-			local src=GetSourceFromNode(n, "Input"..tostring(c-1))
-			if src then st=st.." I"..nodeindex(src)
-			else st=st.." C"..n:GetChild("Value"..tostring(c-1),true).text
-			end
-		end
+		
 	end
 	
 	local worker
@@ -629,7 +784,13 @@ function CreateLibraryDesc(n)
 			
 			if s and not isvisited(s) then
 				if s.name=="Constant" or s.name=="Seed" then
+					if s.name=="Constant" then
+						table.insert(paramtypes, "value")
+					else
+						table.insert(paramtypes, "seed")
+					end
 					table.insert(parameters,s)
+					table.insert(paramnames, s:GetChild("Title",true).text)
 				end
 				local ss=worker(s)
 				if not ss then return false end
@@ -655,7 +816,16 @@ function CreateLibraryDesc(n)
 	
 	if not worker(n) then st=st.."Cycle detected" end
 	print("Num params: "..#parameters)
-	return st
+	local nodefunc=
+	{
+		inputs={},
+		instance=inst
+	}
+	local ct,pm
+	for ct,pm in ipairs(parameters) do
+		table.insert(nodefunc.inputs, {paramtypes[ct], paramnames[ct], tonumber(pm:GetChild("Value",true).text)})
+	end
+	return st, nodefunc
 end
 
 function CreateMenuItem(title)
@@ -1095,7 +1265,10 @@ function NodeGraphUI:HandleGenerate(eventType, eventData)
 	local kernel=PackNodeGraph(self.nodegroup.output)
 	RenderANLKernelToImage(self.nodegroup.previewimg,kernel,0,1)
 	self.nodegroup.previewtex:SetData(self.nodegroup.previewimg)
-	print(CreateLibraryDesc(self.nodegroup.output))
+	
+	local st,nodefunc=CreateLibraryDesc(self.nodegroup.output)
+	print(st)
+	print(table.show(nodefunc))
 end
 
 function NodeGraphUI:HandleExecute(eventType, eventData)
