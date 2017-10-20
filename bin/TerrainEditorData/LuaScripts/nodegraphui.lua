@@ -329,8 +329,8 @@ nodetypes=
 	{
 		inputs=
 		{
-			{"value", "Input", 0.0},
 			{"seed", "Seed", 45678},
+			{"value", "Input", 0.0},
 		},
 		instance={{op="Parameter", param=1}, {op="Parameter", param=2}, {op="Function", func="seeder", indices={1,2}}}
 	},
@@ -430,6 +430,66 @@ nodetypes=
          ["op"] = "Function";
          ["seeds"] = {
             [1] = "nil";
+            [2] = "nil";
+            [3] = "nil";
+            [4] = "nil";
+            [5] = "nil";
+            [6] = "nil";
+            [7] = "nil";
+            [8] = "nil";
+            [9] = "nil";
+            [10] = "nil";
+         };
+         ["func"] = "cellularBasis";
+         ["indices"] = {
+            [1] = "nil";
+            [2] = "nil";
+            [3] = "nil";
+            [4] = "nil";
+            [5] = "nil";
+            [6] = "nil";
+            [7] = "nil";
+            [8] = "nil";
+            [9] = "nil";
+            [10] = 1;
+         };
+         ["constants"] = {
+            [1] = -1;
+            [2] = 1;
+            [3] = 0;
+            [4] = 0;
+            [5] = 0;
+            [6] = 0;
+            [7] = 0;
+            [8] = 0;
+            [9] = 0;
+            [10] = "nil";
+         };
+      };
+      [3] = {
+         ["op"] = "Function";
+         ["seeds"] = {
+            [1] = "nil";
+            [2] = "nil";
+         };
+         ["func"] = "scaleDomain";
+         ["indices"] = {
+            [1] = 2;
+            [2] = "nil";
+         };
+         ["constants"] = {
+            [1] = "nil";
+            [2] = 8;
+         };
+      };
+      [4] = {
+         ["op"] = "Parameter";
+         ["param"] = 2;
+      };
+      [5] = {
+         ["op"] = "Function";
+         ["seeds"] = {
+            [1] = "nil";
             [2] = 147234;
          };
          ["func"] = "gradientBasis";
@@ -442,20 +502,20 @@ nodetypes=
             [2] = "nil";
          };
       };
-      [3] = {
+      [6] = {
          ["op"] = "Function";
          ["seeds"] = {
             [1] = "nil";
          };
          ["func"] = "abs";
          ["indices"] = {
-            [1] = 2;
+            [1] = 5;
          };
          ["constants"] = {
             [1] = "nil";
          };
       };
-      [4] = {
+      [7] = {
          ["op"] = "Function";
          ["seeds"] = {
             [1] = 17892;
@@ -474,7 +534,7 @@ nodetypes=
             [3] = 3.14;
          };
       };
-      [5] = {
+      [8] = {
          ["op"] = "Function";
          ["seeds"] = {
             [1] = "nil";
@@ -485,8 +545,8 @@ nodetypes=
          };
          ["func"] = "rotateDomain";
          ["indices"] = {
-            [1] = 3;
-            [2] = 4;
+            [1] = 6;
+            [2] = 7;
             [3] = "nil";
             [4] = "nil";
             [5] = "nil";
@@ -499,14 +559,10 @@ nodetypes=
             [5] = 1;
          };
       };
-      [6] = {
-         ["op"] = "Parameter";
-         ["param"] = 2;
-      };
-      [7] = {
+      [9] = {
          ["op"] = "Function";
          ["seeds"] = {
-            [1] = "nil";
+            [1] = 17892;
             [2] = "nil";
             [3] = "nil";
             [4] = "nil";
@@ -515,12 +571,12 @@ nodetypes=
          };
          ["func"] = "fractal";
          ["indices"] = {
-            [1] = 1;
-            [2] = 5;
+            [1] = "nil";
+            [2] = 8;
             [3] = "nil";
             [4] = "nil";
             [5] = "nil";
-            [6] = 6;
+            [6] = "nil";
          };
          ["constants"] = {
             [1] = "nil";
@@ -528,20 +584,118 @@ nodetypes=
             [3] = 0.5;
             [4] = 2;
             [5] = 8;
-            [6] = "nil";
+            [6] = 6;
+         };
+      };
+      [10] = {
+         ["op"] = "Parameter";
+         ["param"] = 3;
+      };
+      [11] = {
+         ["op"] = "Function";
+         ["seeds"] = {
+            [1] = "nil";
+            [2] = "nil";
+         };
+         ["func"] = "multiply";
+         ["indices"] = {
+            [1] = 9;
+            [2] = 10;
+         };
+         ["constants"] = {
+            [1] = "nil";
+            [2] = "nil";
+         };
+      };
+      [12] = {
+         ["op"] = "Function";
+         ["seeds"] = {
+            [1] = "nil";
+            [2] = "nil";
+         };
+         ["func"] = "seeder";
+         ["indices"] = {
+            [1] = 4;
+            [2] = 11;
+         };
+         ["constants"] = {
+            [1] = "nil";
+            [2] = "nil";
+         };
+      };
+      [13] = {
+         ["op"] = "Function";
+         ["seeds"] = {
+            [1] = "nil";
+            [2] = "nil";
+         };
+         ["func"] = "translateX";
+         ["indices"] = {
+            [1] = 3;
+            [2] = 12;
+         };
+         ["constants"] = {
+            [1] = "nil";
+            [2] = "nil";
+         };
+      };
+      [14] = {
+         ["op"] = "Parameter";
+         ["param"] = 4;
+      };
+      [15] = {
+         ["op"] = "Function";
+         ["seeds"] = {
+            [1] = "nil";
+            [2] = "nil";
+         };
+         ["func"] = "seeder";
+         ["indices"] = {
+            [1] = 14;
+            [2] = 11;
+         };
+         ["constants"] = {
+            [1] = "nil";
+            [2] = "nil";
+         };
+      };
+      [16] = {
+         ["op"] = "Function";
+         ["seeds"] = {
+            [1] = "nil";
+            [2] = "nil";
+         };
+         ["func"] = "translateY";
+         ["indices"] = {
+            [1] = 13;
+            [2] = 15;
+         };
+         ["constants"] = {
+            [1] = "nil";
+            [2] = "nil";
          };
       };
    };
    ["inputs"] = {
       [1] = {
          [1] = "seed";
-         [2] = "Seed";
-         [3] = 12345;
+         [2] = "CellSeed";
+         [3] = 543;
       };
       [2] = {
-         [1] = "value";
-         [2] = "Frequency";
-         [3] = 1;
+         [1] = "seed";
+         [2] = "TurbXSeed";
+         [3] = 4356;
+      };
+      [3] = {
+         [1] = "seed";
+         [2] = "TurbPower";
+         [3] = 0.2;
+      };
+      [4] = {
+         [1] = "seed";
+         [2] = "TurbYSeed";
+         [3] = 12345;
       };
    };
 };
@@ -565,7 +719,7 @@ function InstanceFunction(k, desc, params)
 			local inputs={}
 			local d
 			
-			local fdesc=nodetypes[c.func]
+			local fdesc=GetNodeTypeDesc(c.func) --nodetypes[c.func]
 			print("numinputs for "..c.func..": "..#fdesc.inputs)
 			for d=1,#fdesc.inputs,1 do
 				if indices[d] ~= "nil" then print("index: "..indices[d]) table.insert(inputs,n[indices[d]])
@@ -714,7 +868,7 @@ function CreateLibraryDesc(n)
 	local inst={}
 	
 	function writenode(n)
-		if n.name=="Seed" or n.name=="Constant" then
+		if n.name=="seed" or n.name=="constant" then
 			local pi=parameterindex(n)
 			if pi then 
 				table.insert(inst, {op="Parameter", param=pi})
@@ -747,7 +901,7 @@ function CreateLibraryDesc(n)
 					table.insert(thing.seeds, "nil")
 					st=st.." I"..nodeindex(src)
 				else
-					local tp=nodetypes[n.name].inputs[c][1]
+					local tp=GetNodeTypeDesc(n.name).inputs[c][1] --nodetypes[n.name].inputs[c][1]
 					if tp=="value" then
 						table.insert(thing.indices, "nil")
 						table.insert(thing.constants, tonumber(n:GetChild("Value"..tostring(c-1),true).text))
@@ -770,7 +924,7 @@ function CreateLibraryDesc(n)
 	local worker
 	
 	local visitnode=function(n)
-		if n.name=="Constant" or n.name=="Seed" then return true end
+		if n.name=="constant" or n.name=="seed" then return true end
 		
 		local inputs=n:GetChild("Inputs",true)
 		local numparams=inputs:GetNumChildren()
@@ -783,7 +937,7 @@ function CreateLibraryDesc(n)
 			end
 			
 			if s and not isvisited(s) then
-				if s.name=="Constant" or s.name=="Seed" then
+				if s.name=="constant" or s.name=="seed" then
 					if s.name=="Constant" then
 						table.insert(paramtypes, "value")
 					else
@@ -845,7 +999,7 @@ function CreatePopup(baseMenu)
 	popup:SetStyleAuto(cache:GetResource("XMLFile", "UI/DefaultStyle.xml"))
 	popup:SetLayout(LM_VERTICAL, 1, IntRect(2,6,2,6))
 	baseMenu.popup=popup
-	baseMenu.popupOffset = IntBector2(0,baseMenu.height)
+	baseMenu.popupOffset = IntVector2(0,baseMenu.height)
 	return popup
 end
 
@@ -857,6 +1011,9 @@ function CreateMenu(title)
 	return menu
 end
 
+function GetNodeTypeDesc(type)
+	return nodetypes[type]
+end
 
 function CreateNodeCreateMenu(parent)
 	local menu=ui:LoadLayout(cache:GetResource("XMLFile", "UI/CreateNodeMenu.xml"))
@@ -864,17 +1021,17 @@ function CreateNodeCreateMenu(parent)
 end
 
 function CreateNodeType(parent, type)
-	if type=="Seed" then
+	if type=="seed" then
 		local node=ui:LoadLayout(cache:GetResource("XMLFile", "UI/SeedNode.xml"))
 		parent:AddChild(node)
 		return node
-	elseif type=="Constant" then
+	elseif type=="constant" then
 		local node=ui:LoadLayout(cache:GetResource("XMLFIle", "UI/ConstantNode.xml"))
 		parent:AddChild(node)
 		return node
 	end
 	
-	local d=nodetypes[type]
+	local d=GetNodeTypeDesc(type)--nodetypes[type]
 	if not d then return end
 	
 	local node=ui:LoadLayout(cache:GetResource("XMLFile", "UI/NodeTemplate.xml"))
@@ -964,7 +1121,7 @@ function PackNodeGraph(output)
 			return s1
 		end
 		
-		local desc=nodetypes[n.name]
+		local desc=GetNodeTypeDesc(n.name)--nodetypes[n.name]
 		if not desc then return end
 		local numinputs=#desc.inputs
 		local c
@@ -982,10 +1139,10 @@ function PackNodeGraph(output)
 			local s1
 			local s1=GetValue(n,0)
 			return s1
-		elseif n.name=="Constant" then
+		elseif n.name=="constant" then
 			local v=tonumber(n:GetChild("Value", true).text)
 			return kernel:constant(v)
-		elseif n.name=="Seed" then
+		elseif n.name=="seed" then
 			local v=tonumber(n:GetChild("Value", true).text)
 			return kernel:seed(v)
 		else
@@ -1009,7 +1166,7 @@ function PackNodeGraph(output)
 		end
 		
 		if n.name~="Output" then
-			local desc=nodetypes[n.name]
+			local desc=GetNodeTypeDesc(n.name)--nodetypes[n.name]
 			if not desc then print(n.name.." Doesn't exist") return false end
 		
 			local numinputs=#desc.inputs
@@ -1121,6 +1278,7 @@ function NodeGraphUI:CreateNodeGroup()
 	
 	self:SubscribeToEvent(nodegroup.output:GetChild("Generate",true),"Pressed","NodeGraphUI:HandleGenerate")
 	self:SubscribeToEvent(nodegroup.output:GetChild("Execute",true),"Pressed","NodeGraphUI:HandleExecute")
+	self:SubscribeToEvent(nodegroup.output:GetChild("Store",true),"Pressed","NodeGraphUI:HandleStore")
 	nodegroup.pane.visible=false
 	return nodegroup
 end
@@ -1199,7 +1357,7 @@ end
 
 function NodeGraphUI:BuildNode(nodegroup, type)
 	local e=CreateNodeType(nodegroup.pane, type)
-	local d=nodetypes[type]
+	local d=GetNodeTypeDesc(type) --nodetypes[type]
 	if not d then return end
 	
 	if e then
@@ -1265,10 +1423,15 @@ function NodeGraphUI:HandleGenerate(eventType, eventData)
 	local kernel=PackNodeGraph(self.nodegroup.output)
 	RenderANLKernelToImage(self.nodegroup.previewimg,kernel,0,1)
 	self.nodegroup.previewtex:SetData(self.nodegroup.previewimg)
-	
+end
+
+function NodeGraphUI:HandleStore(eventType, eventData)
 	local st,nodefunc=CreateLibraryDesc(self.nodegroup.output)
 	print(st)
-	print(table.show(nodefunc))
+	local dothing=table.show(nodefunc, "nodetypes.Test")
+	print(dothing)
+	local chunk=loadstring(dothing)
+	chunk()
 end
 
 function NodeGraphUI:HandleExecute(eventType, eventData)

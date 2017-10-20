@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <element type="Window">
-	<attribute name="Name" value="Seed" />
+	<attribute name="Name" value="seed" />
 	<attribute name="Position" value="418 213" />
 	<attribute name="Size" value="143 36" />
 	<attribute name="Pivot" value="0 0" />
