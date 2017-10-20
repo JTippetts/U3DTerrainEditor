@@ -1,72 +1,16 @@
 <?xml version="1.0"?>
 <element type="Window">
-	<attribute name="Position" value="450 108" />
-	<attribute name="Size" value="146 412" />
+	<attribute name="Position" value="480 0" />
+	<attribute name="Size" value="128 587" />
 	<attribute name="Pivot" value="0 0" />
-	<attribute name="Use Derived Opacity" value="false" />
 	<attribute name="Layout Mode" value="Vertical" />
-	<attribute name="Layout Spacing" value="2" />
-	<attribute name="Layout Border" value="4 4 4 4" />
+	<attribute name="Layout Spacing" value="1" />
 	<attribute name="Is Movable" value="true" />
-	<element>
-		<attribute name="Min Size" value="0 16" />
-		<attribute name="Max Size" value="2147483647 16" />
-		<attribute name="Pivot" value="0 0" />
-		<attribute name="Layout Mode" value="Horizontal" />
-		<element type="Text">
-			<attribute name="Pivot" value="0 0" />
-			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
-			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
-			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
-			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
-			<attribute name="Text" value="Create Node" />
-		</element>
-		<element type="Button" style="CloseButton">
-			<attribute name="Name" value="Close" />
-			<attribute name="Pivot" value="0 0" />
-		</element>
-	</element>
-	<element>
-		<attribute name="Min Size" value="0 8" />
-		<attribute name="Max Size" value="2147483647 8" />
-		<attribute name="Pivot" value="0 0" />
-	</element>
-	<element type="Button">
-		<attribute name="Name" value="Arithmetic" />
-		<attribute name="Min Size" value="0 16" />
-		<attribute name="Max Size" value="2147483647 16" />
-		<attribute name="Pivot" value="0 0" />
-		<element type="Text">
-			<attribute name="Min Anchor" value="0.5 0.5" />
-			<attribute name="Max Anchor" value="0.5 0.5" />
-			<attribute name="Pivot" value="0.5 0.5" />
-			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
-			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
-			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
-			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
-			<attribute name="Text" value="Arithmetic" />
-		</element>
-	</element>
-	<element type="Button">
-		<attribute name="Name" value="ScalarMath" />
-		<attribute name="Min Size" value="0 16" />
-		<attribute name="Max Size" value="2147483647 16" />
-		<attribute name="Pivot" value="0 0" />
-		<element type="Text">
-			<attribute name="Min Anchor" value="0.5 0.5" />
-			<attribute name="Max Anchor" value="0.5 0.5" />
-			<attribute name="Pivot" value="0.5 0.5" />
-			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
-			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
-			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
-			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
-			<attribute name="Text" value="Scalar Math" />
-		</element>
-	</element>
+	<attribute name="Is Resizable" value="true" />
 	<element type="Button">
 		<attribute name="Name" value="Constant" />
-		<attribute name="Min Size" value="0 16" />
-		<attribute name="Max Size" value="2147483647 16" />
+		<attribute name="Min Size" value="128 13" />
+		<attribute name="Max Size" value="128 13" />
 		<attribute name="Pivot" value="0 0" />
 		<element type="Text">
 			<attribute name="Min Anchor" value="0.5 0.5" />
@@ -76,13 +20,14 @@
 			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Font Size" value="9" />
 			<attribute name="Text" value="Constant" />
 		</element>
 	</element>
 	<element type="Button">
 		<attribute name="Name" value="Seed" />
-		<attribute name="Min Size" value="0 16" />
-		<attribute name="Max Size" value="2147483647 16" />
+		<attribute name="Min Size" value="128 13" />
+		<attribute name="Max Size" value="128 13" />
 		<attribute name="Pivot" value="0 0" />
 		<element type="Text">
 			<attribute name="Min Anchor" value="0.5 0.5" />
@@ -92,13 +37,14 @@
 			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Font Size" value="9" />
 			<attribute name="Text" value="Seed" />
 		</element>
 	</element>
 	<element type="Button">
-		<attribute name="Name" value="CoordSource" />
-		<attribute name="Min Size" value="0 16" />
-		<attribute name="Max Size" value="2147483647 16" />
+		<attribute name="Name" value="Add" />
+		<attribute name="Min Size" value="128 13" />
+		<attribute name="Max Size" value="128 13" />
 		<attribute name="Pivot" value="0 0" />
 		<element type="Text">
 			<attribute name="Min Anchor" value="0.5 0.5" />
@@ -108,13 +54,14 @@
 			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
-			<attribute name="Text" value="Coordinate" />
+			<attribute name="Font Size" value="9" />
+			<attribute name="Text" value="Add" />
 		</element>
 	</element>
 	<element type="Button">
-		<attribute name="Name" value="Derivative" />
-		<attribute name="Min Size" value="0 16" />
-		<attribute name="Max Size" value="2147483647 16" />
+		<attribute name="Name" value="Subtract" />
+		<attribute name="Min Size" value="128 13" />
+		<attribute name="Max Size" value="128 13" />
 		<attribute name="Pivot" value="0 0" />
 		<element type="Text">
 			<attribute name="Min Anchor" value="0.5 0.5" />
@@ -124,13 +71,14 @@
 			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
-			<attribute name="Text" value="Derivative" />
+			<attribute name="Font Size" value="9" />
+			<attribute name="Text" value="Subtract" />
 		</element>
 	</element>
 	<element type="Button">
-		<attribute name="Name" value="Tiers" />
-		<attribute name="Min Size" value="0 16" />
-		<attribute name="Max Size" value="2147483647 16" />
+		<attribute name="Name" value="Multiply" />
+		<attribute name="Min Size" value="128 13" />
+		<attribute name="Max Size" value="128 13" />
 		<attribute name="Pivot" value="0 0" />
 		<element type="Text">
 			<attribute name="Min Anchor" value="0.5 0.5" />
@@ -140,13 +88,14 @@
 			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
-			<attribute name="Text" value="Tiers" />
+			<attribute name="Font Size" value="9" />
+			<attribute name="Text" value="Multiply" />
 		</element>
 	</element>
 	<element type="Button">
-		<attribute name="Name" value="ValueBasis" />
-		<attribute name="Min Size" value="0 16" />
-		<attribute name="Max Size" value="2147483647 16" />
+		<attribute name="Name" value="Divide" />
+		<attribute name="Min Size" value="128 13" />
+		<attribute name="Max Size" value="128 13" />
 		<attribute name="Pivot" value="0 0" />
 		<element type="Text">
 			<attribute name="Min Anchor" value="0.5 0.5" />
@@ -156,13 +105,14 @@
 			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
-			<attribute name="Text" value="Value Basis" />
+			<attribute name="Font Size" value="9" />
+			<attribute name="Text" value="Divide" />
 		</element>
 	</element>
 	<element type="Button">
-		<attribute name="Name" value="GradientBasis" />
-		<attribute name="Min Size" value="0 16" />
-		<attribute name="Max Size" value="2147483647 16" />
+		<attribute name="Name" value="Pow" />
+		<attribute name="Min Size" value="128 13" />
+		<attribute name="Max Size" value="128 13" />
 		<attribute name="Pivot" value="0 0" />
 		<element type="Text">
 			<attribute name="Min Anchor" value="0.5 0.5" />
@@ -172,13 +122,14 @@
 			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
-			<attribute name="Text" value="Gradient Basis" />
+			<attribute name="Font Size" value="9" />
+			<attribute name="Text" value="Pow" />
 		</element>
 	</element>
 	<element type="Button">
-		<attribute name="Name" value="SimplexBasis" />
-		<attribute name="Min Size" value="0 16" />
-		<attribute name="Max Size" value="2147483647 16" />
+		<attribute name="Name" value="Minimum" />
+		<attribute name="Min Size" value="128 13" />
+		<attribute name="Max Size" value="128 13" />
 		<attribute name="Pivot" value="0 0" />
 		<element type="Text">
 			<attribute name="Min Anchor" value="0.5 0.5" />
@@ -188,13 +139,14 @@
 			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
-			<attribute name="Text" value="Simplex Basis" />
+			<attribute name="Font Size" value="9" />
+			<attribute name="Text" value="Minimum" />
 		</element>
 	</element>
 	<element type="Button">
-		<attribute name="Name" value="TranslateDomain" />
-		<attribute name="Min Size" value="0 16" />
-		<attribute name="Max Size" value="2147483647 16" />
+		<attribute name="Name" value="Maximum" />
+		<attribute name="Min Size" value="128 13" />
+		<attribute name="Max Size" value="128 13" />
 		<attribute name="Pivot" value="0 0" />
 		<element type="Text">
 			<attribute name="Min Anchor" value="0.5 0.5" />
@@ -204,13 +156,14 @@
 			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
-			<attribute name="Text" value="Translate Domain" />
+			<attribute name="Font Size" value="9" />
+			<attribute name="Text" value="Maximum" />
 		</element>
 	</element>
 	<element type="Button">
-		<attribute name="Name" value="Fractal" />
-		<attribute name="Min Size" value="0 16" />
-		<attribute name="Max Size" value="2147483647 16" />
+		<attribute name="Name" value="Bias" />
+		<attribute name="Min Size" value="128 13" />
+		<attribute name="Max Size" value="128 13" />
 		<attribute name="Pivot" value="0 0" />
 		<element type="Text">
 			<attribute name="Min Anchor" value="0.5 0.5" />
@@ -220,13 +173,14 @@
 			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
-			<attribute name="Text" value="Fractal" />
+			<attribute name="Font Size" value="9" />
+			<attribute name="Text" value="Bias" />
 		</element>
 	</element>
 	<element type="Button">
-		<attribute name="Name" value="ScaleDomain" />
-		<attribute name="Min Size" value="0 16" />
-		<attribute name="Max Size" value="2147483647 16" />
+		<attribute name="Name" value="Gain" />
+		<attribute name="Min Size" value="128 13" />
+		<attribute name="Max Size" value="128 13" />
 		<attribute name="Pivot" value="0 0" />
 		<element type="Text">
 			<attribute name="Min Anchor" value="0.5 0.5" />
@@ -236,13 +190,14 @@
 			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
-			<attribute name="Text" value="Scale Domain" />
+			<attribute name="Font Size" value="9" />
+			<attribute name="Text" value="Gain" />
 		</element>
 	</element>
 	<element type="Button">
-		<attribute name="Name" value="RotateDomain" />
-		<attribute name="Min Size" value="0 16" />
-		<attribute name="Max Size" value="2147483647 16" />
+		<attribute name="Name" value="Step" />
+		<attribute name="Min Size" value="128 13" />
+		<attribute name="Max Size" value="128 13" />
 		<attribute name="Pivot" value="0 0" />
 		<element type="Text">
 			<attribute name="Min Anchor" value="0.5 0.5" />
@@ -252,13 +207,14 @@
 			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
-			<attribute name="Text" value="Rotate Domain" />
+			<attribute name="Font Size" value="9" />
+			<attribute name="Text" value="Step" />
 		</element>
 	</element>
 	<element type="Button">
-		<attribute name="Name" value="Randomize" />
-		<attribute name="Min Size" value="0 16" />
-		<attribute name="Max Size" value="2147483647 16" />
+		<attribute name="Name" value="LinearStep" />
+		<attribute name="Min Size" value="128 13" />
+		<attribute name="Max Size" value="128 13" />
 		<attribute name="Pivot" value="0 0" />
 		<element type="Text">
 			<attribute name="Min Anchor" value="0.5 0.5" />
@@ -268,13 +224,14 @@
 			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
-			<attribute name="Text" value="Randomize" />
+			<attribute name="Font Size" value="9" />
+			<attribute name="Text" value="LinearStep" />
 		</element>
 	</element>
 	<element type="Button">
 		<attribute name="Name" value="SmoothStep" />
-		<attribute name="Min Size" value="0 16" />
-		<attribute name="Max Size" value="2147483647 16" />
+		<attribute name="Min Size" value="128 13" />
+		<attribute name="Max Size" value="128 13" />
 		<attribute name="Pivot" value="0 0" />
 		<element type="Text">
 			<attribute name="Min Anchor" value="0.5 0.5" />
@@ -284,13 +241,14 @@
 			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Font Size" value="9" />
 			<attribute name="Text" value="SmoothStep" />
 		</element>
 	</element>
 	<element type="Button">
-		<attribute name="Name" value="Mix" />
-		<attribute name="Min Size" value="0 16" />
-		<attribute name="Max Size" value="2147483647 16" />
+		<attribute name="Name" value="SmootherStep" />
+		<attribute name="Min Size" value="128 13" />
+		<attribute name="Max Size" value="128 13" />
 		<attribute name="Pivot" value="0 0" />
 		<element type="Text">
 			<attribute name="Min Anchor" value="0.5 0.5" />
@@ -300,29 +258,371 @@
 			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Font Size" value="9" />
+			<attribute name="Text" value="SmootherStep" />
+		</element>
+	</element>
+	<element type="Button">
+		<attribute name="Name" value="Abs" />
+		<attribute name="Min Size" value="128 13" />
+		<attribute name="Max Size" value="128 13" />
+		<attribute name="Pivot" value="0 0" />
+		<element type="Text">
+			<attribute name="Min Anchor" value="0.5 0.5" />
+			<attribute name="Max Anchor" value="0.5 0.5" />
+			<attribute name="Pivot" value="0.5 0.5" />
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Font Size" value="9" />
+			<attribute name="Text" value="Abs" />
+		</element>
+	</element>
+	<element type="Button">
+		<attribute name="Name" value="Sin" />
+		<attribute name="Min Size" value="128 13" />
+		<attribute name="Max Size" value="128 13" />
+		<attribute name="Pivot" value="0 0" />
+		<element type="Text">
+			<attribute name="Min Anchor" value="0.5 0.5" />
+			<attribute name="Max Anchor" value="0.5 0.5" />
+			<attribute name="Pivot" value="0.5 0.5" />
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Font Size" value="9" />
+			<attribute name="Text" value="Sin" />
+		</element>
+	</element>
+	<element type="Button">
+		<attribute name="Name" value="Cos" />
+		<attribute name="Min Size" value="128 13" />
+		<attribute name="Max Size" value="128 13" />
+		<attribute name="Pivot" value="0 0" />
+		<element type="Text">
+			<attribute name="Min Anchor" value="0.5 0.5" />
+			<attribute name="Max Anchor" value="0.5 0.5" />
+			<attribute name="Pivot" value="0.5 0.5" />
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Font Size" value="9" />
+			<attribute name="Text" value="Cos" />
+		</element>
+	</element>
+	<element type="Button">
+		<attribute name="Name" value="Tan" />
+		<attribute name="Min Size" value="128 13" />
+		<attribute name="Max Size" value="128 13" />
+		<attribute name="Pivot" value="0 0" />
+		<element type="Text">
+			<attribute name="Min Anchor" value="0.5 0.5" />
+			<attribute name="Max Anchor" value="0.5 0.5" />
+			<attribute name="Pivot" value="0.5 0.5" />
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Font Size" value="9" />
+			<attribute name="Text" value="Tan" />
+		</element>
+	</element>
+	<element type="Button">
+		<attribute name="Name" value="ASin" />
+		<attribute name="Min Size" value="128 13" />
+		<attribute name="Max Size" value="128 13" />
+		<attribute name="Pivot" value="0 0" />
+		<element type="Text">
+			<attribute name="Min Anchor" value="0.5 0.5" />
+			<attribute name="Max Anchor" value="0.5 0.5" />
+			<attribute name="Pivot" value="0.5 0.5" />
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Font Size" value="9" />
+			<attribute name="Text" value="ASin" />
+		</element>
+	</element>
+	<element type="Button">
+		<attribute name="Name" value="ACos" />
+		<attribute name="Min Size" value="128 13" />
+		<attribute name="Max Size" value="128 13" />
+		<attribute name="Pivot" value="0 0" />
+		<element type="Text">
+			<attribute name="Min Anchor" value="0.5 0.5" />
+			<attribute name="Max Anchor" value="0.5 0.5" />
+			<attribute name="Pivot" value="0.5 0.5" />
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Font Size" value="9" />
+			<attribute name="Text" value="ACos" />
+		</element>
+	</element>
+	<element type="Button">
+		<attribute name="Name" value="ATan" />
+		<attribute name="Min Size" value="128 13" />
+		<attribute name="Max Size" value="128 13" />
+		<attribute name="Pivot" value="0 0" />
+		<element type="Text">
+			<attribute name="Min Anchor" value="0.5 0.5" />
+			<attribute name="Max Anchor" value="0.5 0.5" />
+			<attribute name="Pivot" value="0.5 0.5" />
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Font Size" value="9" />
+			<attribute name="Text" value="ATan" />
+		</element>
+	</element>
+	<element type="Button">
+		<attribute name="Name" value="X" />
+		<attribute name="Min Size" value="128 13" />
+		<attribute name="Max Size" value="128 13" />
+		<attribute name="Pivot" value="0 0" />
+		<element type="Text">
+			<attribute name="Min Anchor" value="0.5 0.5" />
+			<attribute name="Max Anchor" value="0.5 0.5" />
+			<attribute name="Pivot" value="0.5 0.5" />
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Font Size" value="9" />
+			<attribute name="Text" value="X" />
+		</element>
+	</element>
+	<element type="Button">
+		<attribute name="Name" value="Y" />
+		<attribute name="Min Size" value="128 13" />
+		<attribute name="Max Size" value="128 13" />
+		<attribute name="Pivot" value="0 0" />
+		<element type="Text">
+			<attribute name="Min Anchor" value="0.5 0.5" />
+			<attribute name="Max Anchor" value="0.5 0.5" />
+			<attribute name="Pivot" value="0.5 0.5" />
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Font Size" value="9" />
+			<attribute name="Text" value="Y" />
+		</element>
+	</element>
+	<element type="Button">
+		<attribute name="Name" value="dX" />
+		<attribute name="Min Size" value="128 13" />
+		<attribute name="Max Size" value="128 13" />
+		<attribute name="Pivot" value="0 0" />
+		<element type="Text">
+			<attribute name="Min Anchor" value="0.5 0.5" />
+			<attribute name="Max Anchor" value="0.5 0.5" />
+			<attribute name="Pivot" value="0.5 0.5" />
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Font Size" value="9" />
+			<attribute name="Text" value="dX" />
+		</element>
+	</element>
+	<element type="Button">
+		<attribute name="Name" value="dY" />
+		<attribute name="Min Size" value="128 13" />
+		<attribute name="Max Size" value="128 13" />
+		<attribute name="Pivot" value="0 0" />
+		<element type="Text">
+			<attribute name="Min Anchor" value="0.5 0.5" />
+			<attribute name="Max Anchor" value="0.5 0.5" />
+			<attribute name="Pivot" value="0.5 0.5" />
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Font Size" value="9" />
+			<attribute name="Text" value="dY" />
+		</element>
+	</element>
+	<element type="Button">
+		<attribute name="Name" value="Tiers" />
+		<attribute name="Min Size" value="128 13" />
+		<attribute name="Max Size" value="128 13" />
+		<attribute name="Pivot" value="0 0" />
+		<element type="Text">
+			<attribute name="Min Anchor" value="0.5 0.5" />
+			<attribute name="Max Anchor" value="0.5 0.5" />
+			<attribute name="Pivot" value="0.5 0.5" />
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Font Size" value="9" />
+			<attribute name="Text" value="Tiers" />
+		</element>
+	</element>
+	<element type="Button">
+		<attribute name="Name" value="SmoothTiers" />
+		<attribute name="Min Size" value="128 13" />
+		<attribute name="Max Size" value="128 13" />
+		<attribute name="Pivot" value="0 0" />
+		<element type="Text">
+			<attribute name="Min Anchor" value="0.5 0.5" />
+			<attribute name="Max Anchor" value="0.5 0.5" />
+			<attribute name="Pivot" value="0.5 0.5" />
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Font Size" value="9" />
+			<attribute name="Text" value="SmoothTiers" />
+		</element>
+	</element>
+	<element type="Button">
+		<attribute name="Name" value="TranslateDomain" />
+		<attribute name="Min Size" value="128 13" />
+		<attribute name="Max Size" value="128 13" />
+		<attribute name="Pivot" value="0 0" />
+		<element type="Text">
+			<attribute name="Min Anchor" value="0.5 0.5" />
+			<attribute name="Max Anchor" value="0.5 0.5" />
+			<attribute name="Pivot" value="0.5 0.5" />
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Font Size" value="9" />
+			<attribute name="Text" value="TranslateDomain" />
+		</element>
+	</element>
+	<element type="Button">
+		<attribute name="Name" value="TranslateX" />
+		<attribute name="Min Size" value="128 13" />
+		<attribute name="Max Size" value="128 13" />
+		<attribute name="Pivot" value="0 0" />
+		<element type="Text">
+			<attribute name="Min Anchor" value="0.5 0.5" />
+			<attribute name="Max Anchor" value="0.5 0.5" />
+			<attribute name="Pivot" value="0.5 0.5" />
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Font Size" value="9" />
+			<attribute name="Text" value="TranslateX" />
+		</element>
+	</element>
+	<element type="Button">
+		<attribute name="Name" value="TranslateY" />
+		<attribute name="Min Size" value="128 13" />
+		<attribute name="Max Size" value="128 13" />
+		<attribute name="Pivot" value="0 0" />
+		<element type="Text">
+			<attribute name="Min Anchor" value="0.5 0.5" />
+			<attribute name="Max Anchor" value="0.5 0.5" />
+			<attribute name="Pivot" value="0.5 0.5" />
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Font Size" value="9" />
+			<attribute name="Text" value="TranslateY" />
+		</element>
+	</element>
+	<element type="Button">
+		<attribute name="Name" value="ScaleDomain" />
+		<attribute name="Min Size" value="128 13" />
+		<attribute name="Max Size" value="128 13" />
+		<attribute name="Pivot" value="0 0" />
+		<element type="Text">
+			<attribute name="Min Anchor" value="0.5 0.5" />
+			<attribute name="Max Anchor" value="0.5 0.5" />
+			<attribute name="Pivot" value="0.5 0.5" />
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Font Size" value="9" />
+			<attribute name="Text" value="ScaleDomain" />
+		</element>
+	</element>
+	<element type="Button">
+		<attribute name="Name" value="ScaleX" />
+		<attribute name="Min Size" value="128 13" />
+		<attribute name="Max Size" value="128 13" />
+		<attribute name="Pivot" value="0 0" />
+		<element type="Text">
+			<attribute name="Min Anchor" value="0.5 0.5" />
+			<attribute name="Max Anchor" value="0.5 0.5" />
+			<attribute name="Pivot" value="0.5 0.5" />
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Font Size" value="9" />
+			<attribute name="Text" value="ScaleX" />
+		</element>
+	</element>
+	<element type="Button">
+		<attribute name="Name" value="ScaleY" />
+		<attribute name="Min Size" value="128 13" />
+		<attribute name="Max Size" value="128 13" />
+		<attribute name="Pivot" value="0 0" />
+		<element type="Text">
+			<attribute name="Min Anchor" value="0.5 0.5" />
+			<attribute name="Max Anchor" value="0.5 0.5" />
+			<attribute name="Pivot" value="0.5 0.5" />
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Font Size" value="9" />
+			<attribute name="Text" value="ScaleY" />
+		</element>
+	</element>
+	<element type="Button">
+		<attribute name="Name" value="RotateDomain" />
+		<attribute name="Min Size" value="128 13" />
+		<attribute name="Max Size" value="128 13" />
+		<attribute name="Pivot" value="0 0" />
+		<element type="Text">
+			<attribute name="Min Anchor" value="0.5 0.5" />
+			<attribute name="Max Anchor" value="0.5 0.5" />
+			<attribute name="Pivot" value="0.5 0.5" />
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Font Size" value="9" />
+			<attribute name="Text" value="RotateDomain" />
+		</element>
+	</element>
+	<element type="Button">
+		<attribute name="Name" value="Mix" />
+		<attribute name="Min Size" value="128 13" />
+		<attribute name="Max Size" value="128 13" />
+		<attribute name="Pivot" value="0 0" />
+		<element type="Text">
+			<attribute name="Min Anchor" value="0.5 0.5" />
+			<attribute name="Max Anchor" value="0.5 0.5" />
+			<attribute name="Pivot" value="0.5 0.5" />
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Font Size" value="9" />
 			<attribute name="Text" value="Mix" />
 		</element>
 	</element>
 	<element type="Button">
-		<attribute name="Name" value="Expression" />
-		<attribute name="Min Size" value="0 16" />
-		<attribute name="Max Size" value="2147483647 16" />
-		<attribute name="Pivot" value="0 0" />
-		<element type="Text">
-			<attribute name="Min Anchor" value="0.5 0.5" />
-			<attribute name="Max Anchor" value="0.5 0.5" />
-			<attribute name="Pivot" value="0.5 0.5" />
-			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
-			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
-			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
-			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
-			<attribute name="Text" value="Expression" />
-		</element>
-	</element>
-	<element type="Button">
 		<attribute name="Name" value="Seeder" />
-		<attribute name="Min Size" value="0 16" />
-		<attribute name="Max Size" value="2147483647 16" />
+		<attribute name="Min Size" value="128 13" />
+		<attribute name="Max Size" value="128 13" />
 		<attribute name="Pivot" value="0 0" />
 		<element type="Text">
 			<attribute name="Min Anchor" value="0.5 0.5" />
@@ -332,13 +632,14 @@
 			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Font Size" value="9" />
 			<attribute name="Text" value="Seeder" />
 		</element>
 	</element>
 	<element type="Button">
-		<attribute name="Name" value="Cellular" />
-		<attribute name="Min Size" value="0 16" />
-		<attribute name="Max Size" value="2147483647 16" />
+		<attribute name="Name" value="Sigmoid" />
+		<attribute name="Min Size" value="128 13" />
+		<attribute name="Max Size" value="128 13" />
 		<attribute name="Pivot" value="0 0" />
 		<element type="Text">
 			<attribute name="Min Anchor" value="0.5 0.5" />
@@ -348,13 +649,14 @@
 			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
-			<attribute name="Text" value="Cellular" />
+			<attribute name="Font Size" value="9" />
+			<attribute name="Text" value="Sigmoid" />
 		</element>
 	</element>
 	<element type="Button">
-		<attribute name="Name" value="Sigmoid" />
-		<attribute name="Min Size" value="0 16" />
-		<attribute name="Max Size" value="2147483647 16" />
+		<attribute name="Name" value="Randomize" />
+		<attribute name="Min Size" value="128 13" />
+		<attribute name="Max Size" value="128 13" />
 		<attribute name="Pivot" value="0 0" />
 		<element type="Text">
 			<attribute name="Min Anchor" value="0.5 0.5" />
@@ -364,7 +666,93 @@
 			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
-			<attribute name="Text" value="Sigmoid" />
+			<attribute name="Font Size" value="9" />
+			<attribute name="Text" value="Randomize" />
+		</element>
+	</element>
+	<element type="Button">
+		<attribute name="Name" value="Fractal" />
+		<attribute name="Min Size" value="128 13" />
+		<attribute name="Max Size" value="128 13" />
+		<attribute name="Pivot" value="0 0" />
+		<element type="Text">
+			<attribute name="Min Anchor" value="0.5 0.5" />
+			<attribute name="Max Anchor" value="0.5 0.5" />
+			<attribute name="Pivot" value="0.5 0.5" />
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Font Size" value="9" />
+			<attribute name="Text" value="Fractal" />
+		</element>
+	</element>
+	<element type="Button">
+		<attribute name="Name" value="CellularBasis" />
+		<attribute name="Min Size" value="128 13" />
+		<attribute name="Max Size" value="128 13" />
+		<attribute name="Pivot" value="0 0" />
+		<element type="Text">
+			<attribute name="Min Anchor" value="0.5 0.5" />
+			<attribute name="Max Anchor" value="0.5 0.5" />
+			<attribute name="Pivot" value="0.5 0.5" />
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Font Size" value="9" />
+			<attribute name="Text" value="CellularBasis" />
+		</element>
+	</element>
+	<element type="Button">
+		<attribute name="Name" value="ValueBasis" />
+		<attribute name="Min Size" value="128 13" />
+		<attribute name="Max Size" value="128 13" />
+		<attribute name="Pivot" value="0 0" />
+		<element type="Text">
+			<attribute name="Min Anchor" value="0.5 0.5" />
+			<attribute name="Max Anchor" value="0.5 0.5" />
+			<attribute name="Pivot" value="0.5 0.5" />
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Font Size" value="9" />
+			<attribute name="Text" value="ValueBasis" />
+		</element>
+	</element>
+	<element type="Button">
+		<attribute name="Name" value="GradientBasis" />
+		<attribute name="Min Size" value="128 13" />
+		<attribute name="Max Size" value="128 13" />
+		<attribute name="Pivot" value="0 0" />
+		<element type="Text">
+			<attribute name="Min Anchor" value="0.5 0.5" />
+			<attribute name="Max Anchor" value="0.5 0.5" />
+			<attribute name="Pivot" value="0.5 0.5" />
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Font Size" value="9" />
+			<attribute name="Text" value="GradientBasis" />
+		</element>
+	</element>
+	<element type="Button">
+		<attribute name="Name" value="SimplexBasis" />
+		<attribute name="Min Size" value="128 13" />
+		<attribute name="Max Size" value="128 13" />
+		<attribute name="Pivot" value="0 0" />
+		<element type="Text">
+			<attribute name="Min Anchor" value="0.5 0.5" />
+			<attribute name="Max Anchor" value="0.5 0.5" />
+			<attribute name="Pivot" value="0.5 0.5" />
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Font Size" value="9" />
+			<attribute name="Text" value="SimplexBasis" />
 		</element>
 	</element>
 </element>

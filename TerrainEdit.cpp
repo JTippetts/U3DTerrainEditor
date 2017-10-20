@@ -1,5 +1,6 @@
 
 #define ANL_IMPLEMENTATION
+#define ANL_LONG_PERIOD_HASHING
 #include "TerrainEdit.h"
 
 #include <Urho3D/Resource/ResourceCache.h>
