@@ -430,6 +430,70 @@ nodetypes=
          ["op"] = "Function";
          ["seeds"] = {
             [1] = "nil";
+            [2] = "nil";
+            [3] = "nil";
+            [4] = "nil";
+            [5] = "nil";
+            [6] = "nil";
+            [7] = "nil";
+            [8] = "nil";
+            [9] = "nil";
+            [10] = "nil";
+         };
+         ["func"] = "cellularBasis";
+         ["indices"] = {
+            [1] = "nil";
+            [2] = "nil";
+            [3] = "nil";
+            [4] = "nil";
+            [5] = "nil";
+            [6] = "nil";
+            [7] = "nil";
+            [8] = "nil";
+            [9] = "nil";
+            [10] = 1;
+         };
+         ["constants"] = {
+            [1] = -1;
+            [2] = 1;
+            [3] = 0;
+            [4] = 0;
+            [5] = 0;
+            [6] = 0;
+            [7] = 0;
+            [8] = 0;
+            [9] = 0;
+            [10] = "nil";
+         };
+      };
+      [3] = {
+         ["op"] = "Parameter";
+         ["param"] = 2;
+      };
+      [4] = {
+         ["op"] = "Function";
+         ["seeds"] = {
+            [1] = "nil";
+            [2] = "nil";
+         };
+         ["func"] = "scaleDomain";
+         ["indices"] = {
+            [1] = 2;
+            [2] = 3;
+         };
+         ["constants"] = {
+            [1] = "nil";
+            [2] = "nil";
+         };
+      };
+      [5] = {
+         ["op"] = "Parameter";
+         ["param"] = 3;
+      };
+      [6] = {
+         ["op"] = "Function";
+         ["seeds"] = {
+            [1] = "nil";
             [2] = 147234;
          };
          ["func"] = "gradientBasis";
@@ -442,20 +506,20 @@ nodetypes=
             [2] = "nil";
          };
       };
-      [3] = {
+      [7] = {
          ["op"] = "Function";
          ["seeds"] = {
             [1] = "nil";
          };
          ["func"] = "abs";
          ["indices"] = {
-            [1] = 2;
+            [1] = 6;
          };
          ["constants"] = {
             [1] = "nil";
          };
       };
-      [4] = {
+      [8] = {
          ["op"] = "Function";
          ["seeds"] = {
             [1] = 17892;
@@ -474,7 +538,7 @@ nodetypes=
             [3] = 3.14;
          };
       };
-      [5] = {
+      [9] = {
          ["op"] = "Function";
          ["seeds"] = {
             [1] = "nil";
@@ -485,8 +549,8 @@ nodetypes=
          };
          ["func"] = "rotateDomain";
          ["indices"] = {
-            [1] = 3;
-            [2] = 4;
+            [1] = 7;
+            [2] = 8;
             [3] = "nil";
             [4] = "nil";
             [5] = "nil";
@@ -499,11 +563,11 @@ nodetypes=
             [5] = 1;
          };
       };
-      [6] = {
+      [10] = {
          ["op"] = "Parameter";
-         ["param"] = 2;
+         ["param"] = 4;
       };
-      [7] = {
+      [11] = {
          ["op"] = "Function";
          ["seeds"] = {
             [1] = 17892;
@@ -516,11 +580,11 @@ nodetypes=
          ["func"] = "fractal";
          ["indices"] = {
             [1] = "nil";
-            [2] = 5;
+            [2] = 9;
             [3] = "nil";
             [4] = "nil";
             [5] = "nil";
-            [6] = 6;
+            [6] = 10;
          };
          ["constants"] = {
             [1] = "nil";
@@ -531,11 +595,11 @@ nodetypes=
             [6] = "nil";
          };
       };
-      [8] = {
+      [12] = {
          ["op"] = "Parameter";
-         ["param"] = 3;
+         ["param"] = 5;
       };
-      [9] = {
+      [13] = {
          ["op"] = "Function";
          ["seeds"] = {
             [1] = "nil";
@@ -543,15 +607,15 @@ nodetypes=
          };
          ["func"] = "multiply";
          ["indices"] = {
-            [1] = 7;
-            [2] = 8;
+            [1] = 11;
+            [2] = 12;
          };
          ["constants"] = {
             [1] = "nil";
             [2] = "nil";
          };
       };
-      [10] = {
+      [14] = {
          ["op"] = "Function";
          ["seeds"] = {
             [1] = "nil";
@@ -559,8 +623,72 @@ nodetypes=
          };
          ["func"] = "seeder";
          ["indices"] = {
-            [1] = 1;
-            [2] = 9;
+            [1] = 5;
+            [2] = 13;
+         };
+         ["constants"] = {
+            [1] = "nil";
+            [2] = "nil";
+         };
+      };
+      [15] = {
+         ["op"] = "Function";
+         ["seeds"] = {
+            [1] = "nil";
+            [2] = "nil";
+         };
+         ["func"] = "translateX";
+         ["indices"] = {
+            [1] = 4;
+            [2] = 14;
+         };
+         ["constants"] = {
+            [1] = "nil";
+            [2] = "nil";
+         };
+      };
+      [16] = {
+         ["op"] = "Function";
+         ["seeds"] = {
+            [1] = "nil";
+            [2] = "nil";
+         };
+         ["func"] = "add";
+         ["indices"] = {
+            [1] = 5;
+            [2] = "nil";
+         };
+         ["constants"] = {
+            [1] = "nil";
+            [2] = 10;
+         };
+      };
+      [17] = {
+         ["op"] = "Function";
+         ["seeds"] = {
+            [1] = "nil";
+            [2] = "nil";
+         };
+         ["func"] = "seeder";
+         ["indices"] = {
+            [1] = 16;
+            [2] = 13;
+         };
+         ["constants"] = {
+            [1] = "nil";
+            [2] = "nil";
+         };
+      };
+      [18] = {
+         ["op"] = "Function";
+         ["seeds"] = {
+            [1] = "nil";
+            [2] = "nil";
+         };
+         ["func"] = "translateY";
+         ["indices"] = {
+            [1] = 15;
+            [2] = 17;
          };
          ["constants"] = {
             [1] = "nil";
@@ -571,17 +699,27 @@ nodetypes=
    ["inputs"] = {
       [1] = {
          [1] = "seed";
-         [2] = "TurbXSeed";
-         [3] = 69254;
+         [2] = "CllSd";
+         [3] = 12345;
       };
       [2] = {
-         [1] = "seed";
-         [2] = "TurbFreq";
-         [3] = 4;
+         [1] = "value";
+         [2] = "CllFrq";
+         [3] = 8;
       };
       [3] = {
          [1] = "seed";
-         [2] = "TurbPower";
+         [2] = "TrbSd";
+         [3] = 12345;
+      };
+      [4] = {
+         [1] = "value";
+         [2] = "TrbFrq";
+         [3] = 4;
+      };
+      [5] = {
+         [1] = "value";
+         [2] = "TrbPwr";
          [3] = 0.2;
       };
    };
