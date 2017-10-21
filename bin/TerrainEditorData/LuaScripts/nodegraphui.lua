@@ -430,66 +430,6 @@ nodetypes=
          ["op"] = "Function";
          ["seeds"] = {
             [1] = "nil";
-            [2] = "nil";
-            [3] = "nil";
-            [4] = "nil";
-            [5] = "nil";
-            [6] = "nil";
-            [7] = "nil";
-            [8] = "nil";
-            [9] = "nil";
-            [10] = "nil";
-         };
-         ["func"] = "cellularBasis";
-         ["indices"] = {
-            [1] = "nil";
-            [2] = "nil";
-            [3] = "nil";
-            [4] = "nil";
-            [5] = "nil";
-            [6] = "nil";
-            [7] = "nil";
-            [8] = "nil";
-            [9] = "nil";
-            [10] = 1;
-         };
-         ["constants"] = {
-            [1] = -1;
-            [2] = 1;
-            [3] = 0;
-            [4] = 0;
-            [5] = 0;
-            [6] = 0;
-            [7] = 0;
-            [8] = 0;
-            [9] = 0;
-            [10] = "nil";
-         };
-      };
-      [3] = {
-         ["op"] = "Function";
-         ["seeds"] = {
-            [1] = "nil";
-            [2] = "nil";
-         };
-         ["func"] = "scaleDomain";
-         ["indices"] = {
-            [1] = 2;
-            [2] = "nil";
-         };
-         ["constants"] = {
-            [1] = "nil";
-            [2] = 8;
-         };
-      };
-      [4] = {
-         ["op"] = "Parameter";
-         ["param"] = 2;
-      };
-      [5] = {
-         ["op"] = "Function";
-         ["seeds"] = {
-            [1] = "nil";
             [2] = 147234;
          };
          ["func"] = "gradientBasis";
@@ -502,20 +442,20 @@ nodetypes=
             [2] = "nil";
          };
       };
-      [6] = {
+      [3] = {
          ["op"] = "Function";
          ["seeds"] = {
             [1] = "nil";
          };
          ["func"] = "abs";
          ["indices"] = {
-            [1] = 5;
+            [1] = 2;
          };
          ["constants"] = {
             [1] = "nil";
          };
       };
-      [7] = {
+      [4] = {
          ["op"] = "Function";
          ["seeds"] = {
             [1] = 17892;
@@ -534,7 +474,7 @@ nodetypes=
             [3] = 3.14;
          };
       };
-      [8] = {
+      [5] = {
          ["op"] = "Function";
          ["seeds"] = {
             [1] = "nil";
@@ -545,8 +485,8 @@ nodetypes=
          };
          ["func"] = "rotateDomain";
          ["indices"] = {
-            [1] = 6;
-            [2] = 7;
+            [1] = 3;
+            [2] = 4;
             [3] = "nil";
             [4] = "nil";
             [5] = "nil";
@@ -559,7 +499,11 @@ nodetypes=
             [5] = 1;
          };
       };
-      [9] = {
+      [6] = {
+         ["op"] = "Parameter";
+         ["param"] = 2;
+      };
+      [7] = {
          ["op"] = "Function";
          ["seeds"] = {
             [1] = 17892;
@@ -572,11 +516,11 @@ nodetypes=
          ["func"] = "fractal";
          ["indices"] = {
             [1] = "nil";
-            [2] = 8;
+            [2] = 5;
             [3] = "nil";
             [4] = "nil";
             [5] = "nil";
-            [6] = "nil";
+            [6] = 6;
          };
          ["constants"] = {
             [1] = "nil";
@@ -584,14 +528,14 @@ nodetypes=
             [3] = 0.5;
             [4] = 2;
             [5] = 8;
-            [6] = 6;
+            [6] = "nil";
          };
       };
-      [10] = {
+      [8] = {
          ["op"] = "Parameter";
          ["param"] = 3;
       };
-      [11] = {
+      [9] = {
          ["op"] = "Function";
          ["seeds"] = {
             [1] = "nil";
@@ -599,15 +543,15 @@ nodetypes=
          };
          ["func"] = "multiply";
          ["indices"] = {
-            [1] = 9;
-            [2] = 10;
+            [1] = 7;
+            [2] = 8;
          };
          ["constants"] = {
             [1] = "nil";
             [2] = "nil";
          };
       };
-      [12] = {
+      [10] = {
          ["op"] = "Function";
          ["seeds"] = {
             [1] = "nil";
@@ -615,60 +559,8 @@ nodetypes=
          };
          ["func"] = "seeder";
          ["indices"] = {
-            [1] = 4;
-            [2] = 11;
-         };
-         ["constants"] = {
-            [1] = "nil";
-            [2] = "nil";
-         };
-      };
-      [13] = {
-         ["op"] = "Function";
-         ["seeds"] = {
-            [1] = "nil";
-            [2] = "nil";
-         };
-         ["func"] = "translateX";
-         ["indices"] = {
-            [1] = 3;
-            [2] = 12;
-         };
-         ["constants"] = {
-            [1] = "nil";
-            [2] = "nil";
-         };
-      };
-      [14] = {
-         ["op"] = "Parameter";
-         ["param"] = 4;
-      };
-      [15] = {
-         ["op"] = "Function";
-         ["seeds"] = {
-            [1] = "nil";
-            [2] = "nil";
-         };
-         ["func"] = "seeder";
-         ["indices"] = {
-            [1] = 14;
-            [2] = 11;
-         };
-         ["constants"] = {
-            [1] = "nil";
-            [2] = "nil";
-         };
-      };
-      [16] = {
-         ["op"] = "Function";
-         ["seeds"] = {
-            [1] = "nil";
-            [2] = "nil";
-         };
-         ["func"] = "translateY";
-         ["indices"] = {
-            [1] = 13;
-            [2] = 15;
+            [1] = 1;
+            [2] = 9;
          };
          ["constants"] = {
             [1] = "nil";
@@ -679,23 +571,18 @@ nodetypes=
    ["inputs"] = {
       [1] = {
          [1] = "seed";
-         [2] = "CellSeed";
-         [3] = 543;
+         [2] = "TurbXSeed";
+         [3] = 69254;
       };
       [2] = {
          [1] = "seed";
-         [2] = "TurbXSeed";
-         [3] = 4356;
+         [2] = "TurbFreq";
+         [3] = 4;
       };
       [3] = {
          [1] = "seed";
          [2] = "TurbPower";
          [3] = 0.2;
-      };
-      [4] = {
-         [1] = "seed";
-         [2] = "TurbYSeed";
-         [3] = 12345;
       };
    };
 };
@@ -938,7 +825,7 @@ function CreateLibraryDesc(n)
 			
 			if s and not isvisited(s) then
 				if s.name=="constant" or s.name=="seed" then
-					if s.name=="Constant" then
+					if s.name=="constant" then
 						table.insert(paramtypes, "value")
 					else
 						table.insert(paramtypes, "seed")
