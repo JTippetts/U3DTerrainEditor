@@ -727,6 +727,75 @@ nodetypes=
 	
 }
 
+nodecategories=
+{
+	combine=
+	{
+		"add",
+		"subtract",
+		"multiply",
+		"divide",
+		"pow",
+		"minimum",
+		"maximum",
+		"bias",
+		"gain",
+		"mix",
+		"dx",
+		"dy",
+		"fractal",
+	},
+	scalarmath=
+	{
+		"abs",
+		"sin",
+		"cos",
+		"tan",
+		"asin",
+		"acos",
+		"atan",
+		"sigmoid",
+		"randomize",
+	},
+	step=
+	{
+		"step",
+		"linearStep",
+		"smoothStep",
+		"smootherStep",
+		"tiers",
+		"smoothTiers",
+	},
+	basis=
+	{
+		"constant",
+		"seed",
+		"valueBasis",
+		"gradientBasis",
+		"simplexBasis",
+		"cellularBasis",
+		"x",
+		"y",
+		"radial",
+		"seeder",
+	},
+	transform=
+	{
+		"scaleDomain",
+		"scaleX",
+		"scaleY",
+		"translateDomain",
+		"translateX",
+		"translateY",
+		"rotateDomain",
+	},
+	library=
+	{
+		"Test",
+	}
+	
+}
+
 function InstanceFunction(k, desc, params)
 	local ins=desc.instance
 	if not ins then return end
@@ -1007,14 +1076,49 @@ function CreateLibraryDesc(n)
 	return st, nodefunc
 end
 
-function CreateMenuItem(title)
+function CreateAccelKeyText(accelKey, accelQual)
+	local accelKeyText = Text:new()
+	accelKeyText:SetStyle("EditorMenuText", cache:GetResource("XMLFile", "UI/DefaultStyle.xml"))
+	accelKeyText.textAlignment = HA_RIGHT
+	
+	local text
+	if accelKey == KEY_DELETE then text = "Del"
+	elseif accelKey == KEY_SPACE then text = "Space"
+	elseif accelKey == KEY_F1 then text = "F1"
+	elseif accelKey == KEY_F2 then text = "F2"
+	elseif accelKey == KEY_F3 then text = "F3"
+	elseif accelKey == KEY_F4 then text = "F4"
+	elseif accelKey == KEY_F5 then text = "F5"
+	elseif accelKey == KEY_F6 then text = "F6"
+	elseif accelKey == KEY_F7 then text = "F7"
+	elseif accelKey == KEY_F8 then text = "F8"
+	elseif accelKey == KEY_F9 then text = "F9"
+	elseif accelKey == KEY_F10 then text = "F10"
+	elseif accelKey == KEY_F11 then text = "F11"
+	elseif accelKey == KEY_F12 then text = "F12"
+	elseif accelKey == -1 then text = ">"
+	else text:AppendUTF8(accelKey)
+	end
+	accelKeyText.text=text
+	return accelKeyText
+end
+
+function CreateMenuItem(title, accelKey)
 	local menu=Menu:new(title)
-	menu:SetAutoStyle(cache:GetResource("XMLFile", "UI/DefaultStyle.xml"))
+	menu:SetStyleAuto(cache:GetResource("XMLFile", "UI/DefaultStyle.xml"))
 	menu:SetLayout(LM_HORIZONTAL, 0, IntRect(8,2,8,2))
 	
-	local text=menu:CreateChild("Text")
+	local text=menu:CreateChild("Text", "Text")
 	text:SetStyle("EditorMenuText", cache:GetResource("XMLFile", "UI/DefaultStyle.xml"))
 	text.text=title
+	
+	if accelKey ~= 0 then
+		local spacer=UIElement:new()
+		spacer.minWidth = text.indentSpacing
+		spacer.height = text.height
+		menu:AddChild(spacer)
+		menu:AddChild(CreateAccelKeyText(accelKey, nil))
+	end
 	
 	return menu
 end
@@ -1024,25 +1128,19 @@ function CreatePopup(baseMenu)
 	popup:SetStyleAuto(cache:GetResource("XMLFile", "UI/DefaultStyle.xml"))
 	popup:SetLayout(LM_VERTICAL, 1, IntRect(2,6,2,6))
 	baseMenu.popup=popup
-	baseMenu.popupOffset = IntVector2(0,baseMenu.height)
+	baseMenu.popupOffset = IntVector2(baseMenu.width,0)
 	return popup
 end
 
 function CreateMenu(title)
 	local menu=CreateMenuItem(title)
-	local text=menu.children[1]
-	menu.maxWidth=text.width+20
+	
 	CreatePopup(menu)
 	return menu
 end
 
 function GetNodeTypeDesc(type)
 	return nodetypes[type]
-end
-
-function CreateNodeCreateMenu(parent)
-	local menu=ui:LoadLayout(cache:GetResource("XMLFile", "UI/CreateNodeMenu.xml"))
-	
 end
 
 function CreateNodeType(parent, type)
@@ -1217,25 +1315,55 @@ end
 NodeGraphUI=ScriptObject()
 
 function NodeGraphUI:Start()
-	self.createnodemenu=ui:LoadLayout(cache:GetResource("XMLFile", "UI/CreateNodeMenu.xml"))
+	--self.createnodemenu=ui:LoadLayout(cache:GetResource("XMLFile", "UI/CreateNodeMenu.xml"))
 	--self.pane:AddChild(self.createnodemenu)
 	
 	self.pane=ui.root:CreateChild("UIElement")
 	self.pane:SetSize(graphics.width, graphics.height)
 	
-	local tp
+	self.testmenu=self:CreateNodeCreateMenu(self.pane)
+	self.testmenu:SetPosition(100,100)
+	self.testmenu.visible=false
+	
+	--[[local tp
 	for tp,_ in pairs(nodetypes) do
 		self:SubscribeToEvent(self.createnodemenu:GetChild(tp,true),"Pressed", "NodeGraphUI:HandleCreateNode")
-	end
+	end]]
 	
-	self.createnodemenu.visible=false
+	--self.createnodemenu.visible=false
 	
-	local cnmclose=self.createnodemenu:GetChild("Close", true)
-	self:SubscribeToEvent(cnmclose, "Pressed", "NodeGraphUI:HandleCloseCreateNodeMenu")
+	--local cnmclose=self.createnodemenu:GetChild("Close", true)
+	--self:SubscribeToEvent(cnmclose, "Pressed", "NodeGraphUI:HandleCloseCreateNodeMenu")
 	
 	self.nodegroup=nil
 	self.cursortarget=cursor:CreateChild("NodeGraphLinkDest")
 	
+end
+
+function NodeGraphUI:CreateNodeCreateMenu(parent)
+	local menu=ui:LoadLayout(cache:GetResource("XMLFile", "UI/CreateNodeButton.xml"))
+	local mn=menu:GetChild("Menu",true)
+	
+	local pop=CreatePopup(mn)
+	local i,c
+	for i,c in pairs(nodecategories) do
+		local mi=CreateMenuItem(i,-1)
+		pop:AddChild(mi)
+		
+		local childpop=CreatePopup(mi)
+		local e,f
+		for e,f in ipairs(c) do
+			local ni=CreateMenuItem(f,0)
+			childpop:AddChild(ni)
+			--self:SubscribeToEvent(ni, "MenuSelected", "NodeGraphUI:HandleMenuSelected")
+		end
+	end
+	
+	self:SubscribeToEvent("MenuSelected", "NodeGraphUI:HandleMenuSelected")
+	
+	parent:AddChild(menu)
+	return menu
+		
 end
 
 function NodeGraphUI:CreateNodeGroup()
@@ -1299,7 +1427,7 @@ function NodeGraphUI:CreateNodeGroup()
 	end
 	list.selection=0
 	
-	nodegroup.pane:AddChild(self.createnodemenu)
+	--nodegroup.pane:AddChild(self.createnodemenu)
 	
 	self:SubscribeToEvent(nodegroup.output:GetChild("Generate",true),"Pressed","NodeGraphUI:HandleGenerate")
 	self:SubscribeToEvent(nodegroup.output:GetChild("Execute",true),"Pressed","NodeGraphUI:HandleExecute")
@@ -1317,9 +1445,13 @@ function NodeGraphUI:Activate(nodegroup)
 	self.nodegroup=nodegroup
 	nodegroup.pane.visible=true
 	nodegroup.pane.focus=true
-	nodegroup.pane:AddChild(self.createnodemenu)
-	self.createnodemenu.visible=true
-	self.createnodemenu.position=IntVector2(-self.nodegroup.pane.position.x,-self.nodegroup.pane.position.y+graphics.height-self.createnodemenu.height)
+	--nodegroup.pane:AddChild(self.createnodemenu)
+	--self.createnodemenu.visible=true
+	--self.createnodemenu.position=IntVector2(-self.nodegroup.pane.position.x,-self.nodegroup.pane.position.y+graphics.height-self.createnodemenu.height)
+	
+	self.testmenu.visible=true
+	nodegroup.pane:AddChild(self.testmenu)
+	self.testmenu.position=IntVector2(-self.nodegroup.pane.position.x+100, -self.nodegroup.pane.position.y+100)
 	
 	self.closetext=self.pane:CreateChild("Text")
 	self.closetext:SetStyle("Text", cache:GetResource("XMLFile","UI/DefaultStyle.xml"))
@@ -1337,7 +1469,7 @@ end
 
 
 function NodeGraphUI:HandleCloseCreateNodeMenu(eventType, eventData)
-	self.createnodemenu.visible=false
+	--self.createnodemenu.visible=false
 end
 
 function NodeGraphUI:HandleCreateNode(eventType, eventData)
@@ -1502,4 +1634,31 @@ function NodeGraphUI:HandleExecute(eventType, eventData)
 		TerrainState:SetMaskBuffer(arr,target-9)
 		--self.nodemapping.visible=false
 	end
+end
+
+
+function NodeGraphUI:HandleMenuSelected(eventType, eventData)
+	local menu = eventData["Element"]:GetPtr("Menu")
+	if not menu then print("no menu") return end
+	
+	local t=menu:GetChild("Text",true)
+	if t then
+		print(t.text)
+		self.testmenu:GetChild("Menu",true).showPopup=false
+		
+		if not self.nodegroup then return end
+		local n
+
+		n=self:BuildNode(self.nodegroup, t.text)
+		if not n then return end
+	
+		n.position=IntVector2(-self.nodegroup.pane.position.x + graphics.width/2, -self.nodegroup.pane.position.y + graphics.height/2)
+		table.insert(self.nodegroup.nodes, n)
+	else
+		print("no text")
+	end
+	
+	
+	--self:HandlePopup(menu)
+    
 end
