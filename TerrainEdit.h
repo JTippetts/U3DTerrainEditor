@@ -137,6 +137,7 @@ public:
 	void GetCavityMap(CArray2Dd &buffer, float sampleradius, float scale, float bias, float intensity, unsigned int iterations);
 	
 	Vector3 GetTerrainSpacing();
+	void SaveTerrainNormalMap(const String &filename);
 
 protected:
     Node *terrainNode_;

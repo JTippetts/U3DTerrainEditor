@@ -2771,6 +2771,40 @@ static int tolua_BindTerrainEdit_TerrainEdit_GetTerrainSpacing00(lua_State* tolu
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: SaveTerrainNormalMap of class  TerrainEdit */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_TerrainEdit_SaveTerrainNormalMap00
+static int tolua_BindTerrainEdit_TerrainEdit_SaveTerrainNormalMap00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"TerrainEdit",0,&tolua_err) ||
+ !tolua_isurho3dstring(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  TerrainEdit* self = (TerrainEdit*)  tolua_tousertype(tolua_S,1,0);
+  const String filename = ((const String)  tolua_tourho3dstring(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'SaveTerrainNormalMap'", NULL);
+#endif
+ {
+  self->SaveTerrainNormalMap(filename);
+ tolua_pushurho3dstring(tolua_S,(const char*)filename);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'SaveTerrainNormalMap'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* function: WorldToNormalized */
 #ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_WorldToNormalized00
 static int tolua_BindTerrainEdit_WorldToNormalized00(lua_State* tolua_S)
@@ -5817,6 +5851,7 @@ TOLUA_API int tolua_BindTerrainEdit_open (lua_State* tolua_S)
   tolua_function(tolua_S,"GetSteepness",tolua_BindTerrainEdit_TerrainEdit_GetSteepness00);
   tolua_function(tolua_S,"GetCavityMap",tolua_BindTerrainEdit_TerrainEdit_GetCavityMap00);
   tolua_function(tolua_S,"GetTerrainSpacing",tolua_BindTerrainEdit_TerrainEdit_GetTerrainSpacing00);
+  tolua_function(tolua_S,"SaveTerrainNormalMap",tolua_BindTerrainEdit_TerrainEdit_SaveTerrainNormalMap00);
  tolua_endmodule(tolua_S);
  tolua_function(tolua_S,"WorldToNormalized",tolua_BindTerrainEdit_WorldToNormalized00);
  tolua_function(tolua_S,"NormalizedToWorld",tolua_BindTerrainEdit_NormalizedToWorld00);

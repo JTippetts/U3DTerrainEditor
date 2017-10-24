@@ -26,6 +26,8 @@ function SaveLoadUI:Start()
 	self:SubscribeToEvent(self.menu:GetChild("ApplyTerrainSpacing",true), "Pressed", "SaveLoadUI:HandleApplyTerrainSpacing")
 	self:SubscribeToEvent(self.menu:GetChild("ApplyTerrainHeight",true), "Pressed", "SaveLoadUI:HandleApplyTerrainHeight")
 	
+	self:SubscribeToEvent(self.menu:GetChild("ExportNormals",true), "Pressed", "SaveLoadUI:SaveNormalmap")
+	
 	local sp=TerrainState:GetTerrainSpacing()
 	self.menu:GetChild("TerrainSpacing",true).text=tostring(sp.x)
 	self.menu:GetChild("TerrainHeight",true).text=tostring(sp.y)
@@ -94,6 +96,11 @@ function SaveLoadUI:CloseFileSelector()
 	self.fileSelector=nil
 end
 
+function SaveLoadUI:SaveNormalmap(eventType, eventData)
+	self:CreateFileSelector("Save Normalmap", "Save", "Cancel", fileSystem:GetProgramDir().."TerrainEditorData/Save", imageFilters, 0, false)
+	self:SubscribeToEvent(self.fileSelector, "FileSelected", "SaveLoadUI:HandleSaveNormalmap")
+end
+
 function SaveLoadUI:SaveHeightmap(eventType, eventData)
 	self:CreateFileSelector("Save Heightmap", "Save", "Cancel", fileSystem:GetProgramDir().."TerrainEditorData/Save", imageFilters, 0, false)
 	self:SubscribeToEvent(self.fileSelector, "FileSelected", "SaveLoadUI:HandleSaveHeightmap")
@@ -131,6 +138,16 @@ end
 
 function SaveLoadUI:Deactivate()
 	self.menu.visible=false
+end
+
+function SaveLoadUI:HandleSaveNormalmap(eventType, eventData)
+	local fname=ExtractFilename(eventData, true)
+	if fname~="" then
+		print("Save at "..fname)
+		
+		TerrainState:SaveTerrainNormalMap(fname)
+	end
+	self:CloseFileSelector()
 end
 
 function SaveLoadUI:HandleSaveHeightmap(eventType, eventData)

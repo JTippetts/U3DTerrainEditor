@@ -1056,6 +1056,27 @@ void TerrainEdit::SaveHeightMap(const String &filename)
 	hmap_->SavePNG(filename);
 }
 
+void TerrainEdit::SaveTerrainNormalMap(const String &filename)
+{
+	if(!hmap_ || !terrain_) return;
+	Image img(terrain_->GetContext());
+	img.SetSize(hmap_->GetWidth(), hmap_->GetHeight(),3);
+	
+	for(int x=0; x<hmap_->GetWidth(); ++x)
+	{
+		for(int y=0; y<hmap_->GetHeight(); ++y)
+		{
+			float nx=(float)x/(float)(hmap_->GetWidth());
+			float ny=(float)y/(float)(hmap_->GetHeight());
+			
+			Vector3 world=NormalizedToWorld(Vector2(nx,ny));
+			Vector3 norm=terrain_->GetNormal(world);
+			img.SetPixel(x,y,Color(norm.x_*0.5f + 0.5f, norm.z_*0.5f+0.5f, 1.0));
+		}
+	}
+	img.SavePNG(filename);
+}
+
 void TerrainEdit::SaveBlend0(const String &filename)
 {
 	if(!blend0_) return;

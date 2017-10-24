@@ -723,6 +723,124 @@ nodetypes=
          [3] = 0.2;
       };
    };
+},
+fuzzydisk= {
+   ["instance"] = {
+      [1] = {
+         ["op"] = "Parameter";
+         ["param"] = 1;
+      };
+      [2] = {
+         ["op"] = "Function";
+         ["seeds"] = {};
+         ["func"] = "radial";
+         ["indices"] = {};
+         ["constants"] = {};
+      };
+      [3] = {
+         ["op"] = "Function";
+         ["seeds"] = {
+            [1] = "nil";
+            [2] = "nil";
+         };
+         ["func"] = "translateX";
+         ["indices"] = {
+            [1] = 2;
+            [2] = "nil";
+         };
+         ["constants"] = {
+            [1] = "nil";
+            [2] = -0.5;
+         };
+      };
+      [4] = {
+         ["op"] = "Function";
+         ["seeds"] = {
+            [1] = "nil";
+            [2] = "nil";
+         };
+         ["func"] = "translateY";
+         ["indices"] = {
+            [1] = 3;
+            [2] = "nil";
+         };
+         ["constants"] = {
+            [1] = "nil";
+            [2] = -0.5;
+         };
+      };
+      [5] = {
+         ["op"] = "Function";
+         ["seeds"] = {
+            [1] = "nil";
+            [2] = "nil";
+         };
+         ["func"] = "subtract";
+         ["indices"] = {
+            [1] = 1;
+            [2] = 4;
+         };
+         ["constants"] = {
+            [1] = "nil";
+            [2] = "nil";
+         };
+      };
+      [6] = {
+         ["op"] = "Function";
+         ["seeds"] = {
+            [1] = "nil";
+            [2] = "nil";
+         };
+         ["func"] = "divide";
+         ["indices"] = {
+            [1] = 5;
+            [2] = 1;
+         };
+         ["constants"] = {
+            [1] = "nil";
+            [2] = "nil";
+         };
+      };
+      [7] = {
+         ["op"] = "Function";
+         ["seeds"] = {
+            [1] = "nil";
+            [2] = "nil";
+         };
+         ["func"] = "minimum";
+         ["indices"] = {
+            [1] = 6;
+            [2] = "nil";
+         };
+         ["constants"] = {
+            [1] = "nil";
+            [2] = 1;
+         };
+      };
+      [8] = {
+         ["op"] = "Function";
+         ["seeds"] = {
+            [1] = "nil";
+            [2] = "nil";
+         };
+         ["func"] = "maximum";
+         ["indices"] = {
+            [1] = 7;
+            [2] = "nil";
+         };
+         ["constants"] = {
+            [1] = "nil";
+            [2] = 0;
+         };
+      };
+   };
+   ["inputs"] = {
+      [1] = {
+         [1] = "value";
+         [2] = "Radius";
+         [3] = 0.5;
+      };
+   };
 };
 	
 }
@@ -792,6 +910,7 @@ nodecategories=
 	library=
 	{
 		"Test",
+		"fuzzydisk",
 	}
 	
 }
