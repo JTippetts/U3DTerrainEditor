@@ -420,6 +420,8 @@ nodetypes=
 		},
 		instance={{op="Function", func="radial", indices={}}}
 	},
+	library=
+	{
 	Test={
    ["instance"] = {
       [1] = {
@@ -842,6 +844,7 @@ fuzzydisk= {
       };
    };
 };
+}
 	
 }
 
@@ -1029,7 +1032,11 @@ function InstanceFunction(k, desc, params)
 			elseif c.func=="simplexBasis" then
 				table.insert(n, k:simplexBasis(inputs[1]))
 			else
-				print("wut")
+				if nodetypes.library[c.func] then
+					table.insert(n, InstanceFunction(k, nodetypes.library[c.func], inputs))
+				else
+					print("wut")
+				end
 			end
 		end
 	end
@@ -1259,7 +1266,10 @@ function CreateMenu(title)
 end
 
 function GetNodeTypeDesc(type)
-	return nodetypes[type]
+	if nodetypes[type] then return nodetypes[type]
+	elseif nodetypes.library[type] then return nodetypes.library[type]
+	end
+	return nil
 end
 
 function CreateNodeType(parent, type)
