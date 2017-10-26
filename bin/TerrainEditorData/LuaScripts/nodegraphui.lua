@@ -843,6 +843,208 @@ fuzzydisk= {
          [3] = 0.5;
       };
    };
+},
+distort={
+   ["instance"] = {
+      [1] = {
+         ["op"] = "Parameter";
+         ["param"] = 1;
+      };
+      [2] = {
+         ["op"] = "Parameter";
+         ["param"] = 2;
+      };
+      [3] = {
+         ["op"] = "Function";
+         ["seeds"] = {
+            [1] = "nil";
+            [2] = "nil";
+         };
+         ["func"] = "scaleDomain";
+         ["indices"] = {
+            [1] = 1;
+            [2] = 2;
+         };
+         ["constants"] = {
+            [1] = "nil";
+            [2] = "nil";
+         };
+      };
+      [4] = {
+         ["op"] = "Parameter";
+         ["param"] = 3;
+      };
+      [5] = {
+         ["op"] = "Parameter";
+         ["param"] = 4;
+      };
+      [6] = {
+         ["op"] = "Parameter";
+         ["param"] = 5;
+      };
+      [7] = {
+         ["op"] = "Parameter";
+         ["param"] = 6;
+      };
+      [8] = {
+         ["op"] = "Function";
+         ["seeds"] = {
+            [1] = 17892;
+            [2] = "nil";
+            [3] = "nil";
+            [4] = "nil";
+            [5] = "nil";
+            [6] = "nil";
+         };
+         ["func"] = "fractal";
+         ["indices"] = {
+            [1] = "nil";
+            [2] = 5;
+            [3] = "nil";
+            [4] = "nil";
+            [5] = 6;
+            [6] = 7;
+         };
+         ["constants"] = {
+            [1] = "nil";
+            [2] = "nil";
+            [3] = 0.5;
+            [4] = 2;
+            [5] = "nil";
+            [6] = "nil";
+         };
+      };
+      [9] = {
+         ["op"] = "Parameter";
+         ["param"] = 7;
+      };
+      [10] = {
+         ["op"] = "Function";
+         ["seeds"] = {
+            [1] = "nil";
+            [2] = "nil";
+         };
+         ["func"] = "multiply";
+         ["indices"] = {
+            [1] = 8;
+            [2] = 9;
+         };
+         ["constants"] = {
+            [1] = "nil";
+            [2] = "nil";
+         };
+      };
+      [11] = {
+         ["op"] = "Function";
+         ["seeds"] = {
+            [1] = "nil";
+            [2] = "nil";
+         };
+         ["func"] = "seeder";
+         ["indices"] = {
+            [1] = 4;
+            [2] = 10;
+         };
+         ["constants"] = {
+            [1] = "nil";
+            [2] = "nil";
+         };
+      };
+      [12] = {
+         ["op"] = "Function";
+         ["seeds"] = {
+            [1] = "nil";
+            [2] = "nil";
+         };
+         ["func"] = "translateX";
+         ["indices"] = {
+            [1] = 3;
+            [2] = 11;
+         };
+         ["constants"] = {
+            [1] = "nil";
+            [2] = "nil";
+         };
+      };
+      [13] = {
+         ["op"] = "Parameter";
+         ["param"] = 8;
+      };
+      [14] = {
+         ["op"] = "Function";
+         ["seeds"] = {
+            [1] = "nil";
+            [2] = "nil";
+         };
+         ["func"] = "seeder";
+         ["indices"] = {
+            [1] = 13;
+            [2] = 10;
+         };
+         ["constants"] = {
+            [1] = "nil";
+            [2] = "nil";
+         };
+      };
+      [15] = {
+         ["op"] = "Function";
+         ["seeds"] = {
+            [1] = "nil";
+            [2] = "nil";
+         };
+         ["func"] = "translateY";
+         ["indices"] = {
+            [1] = 12;
+            [2] = 14;
+         };
+         ["constants"] = {
+            [1] = "nil";
+            [2] = "nil";
+         };
+      };
+   };
+   ["inputs"] = {
+      [1] = {
+         [1] = "value";
+         [2] = "Source";
+         [3] = 1;
+      };
+      [2] = {
+         [1] = "value";
+         [2] = "Source Size";
+         [3] = 1;
+      };
+      [3] = {
+         [1] = "seed";
+         [2] = "XSeed";
+         [3] = 56789;
+      };
+      [4] = {
+         [1] = "value";
+         [2] = "Distort Func";
+         [3] = 1;
+      };
+      [5] = {
+         [1] = "value";
+         [2] = "Detail";
+         [3] = 8;
+      };
+      [6] = {
+         [1] = "value";
+         [2] = "Distort Size";
+         [3] = 1;
+      };
+      [7] = {
+         [1] = "value";
+         [2] = "Power";
+         [3] = 0.1;
+      };
+      [8] = {
+         [1] = "seed";
+         [2] = "YSeed";
+         [3] = 12345;
+      };
+   };
 };
 }
 	
@@ -914,6 +1116,7 @@ nodecategories=
 	{
 		"Test",
 		"fuzzydisk",
+		"distort"
 	}
 	
 }
