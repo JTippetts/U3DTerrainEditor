@@ -420,6 +420,9 @@ nodetypes=
 		},
 		instance={{op="Function", func="radial", indices={}}}
 	},
+	user=
+	{
+	},
 	library=
 	{
 	Test={
@@ -1114,12 +1117,24 @@ nodecategories=
 	},
 	library=
 	{
-		"Test",
-		"fuzzydisk",
-		"distort"
+		--"Test",
+		--"fuzzydisk",
+		--"distort"
+	},
+	user=
+	{
 	}
 	
 }
+
+local nm,nt
+for nm,nt in pairs(nodetypes.library) do
+	table.insert(nodecategories.library, nm)
+end
+
+for nm,nt in pairs(nodetypes.user) do
+	table.insert(nodecategories.user, nm)
+end
 
 function InstanceFunction(k, desc, params)
 	local ins=desc.instance
@@ -1237,6 +1252,8 @@ function InstanceFunction(k, desc, params)
 			else
 				if nodetypes.library[c.func] then
 					table.insert(n, InstanceFunction(k, nodetypes.library[c.func], inputs))
+				elseif nodetypes.user[c.func] then
+					table.insert(n, InstanceFunction(k, nodetypes.user[c.func], inputs))
 				else
 					print("wut")
 				end
@@ -1471,6 +1488,7 @@ end
 function GetNodeTypeDesc(type)
 	if nodetypes[type] then return nodetypes[type]
 	elseif nodetypes.library[type] then return nodetypes.library[type]
+	elseif nodetypes.user[type] then return nodetypes.user[type]
 	end
 	return nil
 end
@@ -1656,16 +1674,7 @@ function NodeGraphUI:Start()
 	self.testmenu=self:CreateNodeCreateMenu(self.pane)
 	self.testmenu:SetPosition(100,100)
 	self.testmenu.visible=false
-	
-	--[[local tp
-	for tp,_ in pairs(nodetypes) do
-		self:SubscribeToEvent(self.createnodemenu:GetChild(tp,true),"Pressed", "NodeGraphUI:HandleCreateNode")
-	end]]
-	
-	--self.createnodemenu.visible=false
-	
-	--local cnmclose=self.createnodemenu:GetChild("Close", true)
-	--self:SubscribeToEvent(cnmclose, "Pressed", "NodeGraphUI:HandleCloseCreateNodeMenu")
+
 	
 	self.nodegroup=nil
 	self.cursortarget=cursor:CreateChild("NodeGraphLinkDest")
@@ -1916,11 +1925,24 @@ end
 
 function NodeGraphUI:HandleStore(eventType, eventData)
 	local st,nodefunc=CreateLibraryDesc(self.nodegroup.output)
+	local name=self.nodegroup.output:GetChild("StoreName",true).text
 	print(st)
-	local dothing=table.show(nodefunc, "nodetypes.Test")
+	local dothing=table.show(nodefunc, "nodetypes.user."..name)
 	print(dothing)
 	local chunk=loadstring(dothing)
 	chunk()
+	local ct
+	local found=false
+	for _,ct in pairs(nodecategories.user) do
+		if ct==name then found=true end
+	end
+	if not found then
+		table.insert(nodecategories.user, name)
+	end
+	self.testmenu:Remove()
+	self.testmenu=nil
+	self.testmenu=self:CreateNodeCreateMenu(self.pane)
+	self.testmenu:SetPosition(100,100)
 end
 
 function NodeGraphUI:HandleExecute(eventType, eventData)

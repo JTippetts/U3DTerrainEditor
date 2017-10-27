@@ -79,7 +79,7 @@ function CreateScene()
     light.castShadows = true
     --light.shadowBias = BiasParameters(0.00025, 0.5)
     --light.shadowCascade = CascadeParameters(10.0, 50.0, 200.0, 0.0, 0.8)
-    light.specularIntensity = 0.01;
+    light.specularIntensity = 0.5;
     light.color = Color(1.2,1.2,1.2);
 	--light.shadowBias = BiasParameters(0,0,0.015)
 	

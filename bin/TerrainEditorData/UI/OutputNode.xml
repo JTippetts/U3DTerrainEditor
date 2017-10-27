@@ -138,6 +138,29 @@
 				<attribute name="Text" value="Store" />
 			</element>
 		</element>
+		<element type="LineEdit">
+			<attribute name="Name" value="StoreName" />
+			<attribute name="Min Size" value="0 13" />
+			<attribute name="Max Size" value="2147483647 13" />
+			<attribute name="Pivot" value="0 0" />
+			<element type="Text" internal="true" style="none">
+				<attribute name="Min Anchor" value="0 0.5" />
+				<attribute name="Max Anchor" value="0 0.5" />
+				<attribute name="Pivot" value="0 0.5" />
+				<attribute name="Top Left Color" value="0.9 1 0.9 1" />
+				<attribute name="Top Right Color" value="0.9 1 0.9 1" />
+				<attribute name="Bottom Left Color" value="0.9 1 0.9 1" />
+				<attribute name="Bottom Right Color" value="0.9 1 0.9 1" />
+				<attribute name="Font Size" value="9" />
+				<attribute name="Text" value="Name" />
+			</element>
+			<element type="BorderImage" internal="true" style="none">
+				<attribute name="Size" value="4 12" />
+				<attribute name="Min Anchor" value="0 0.5" />
+				<attribute name="Max Anchor" value="0 0.5" />
+				<attribute name="Pivot" value="0 0.5" />
+			</element>
+		</element>
 	</element>
 	<element>
 		<attribute name="Name" value="Spacer" />
