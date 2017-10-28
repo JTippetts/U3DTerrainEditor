@@ -57,22 +57,42 @@ uniform vec3 cDetailTiling;
 //uniform vec4 cLayerScaling2;
 uniform float cLayerScaling[numlayers];
 
-#ifdef COMPILEPS
-vec4 SampleDiffuse(vec3 detailtexcoord, int layer, vec3 blend)
-{
-	return texture(sDetailMap2, vec3(detailtexcoord.zy*cLayerScaling[layer], layer))*blend.x +
-		texture(sDetailMap2, vec3(detailtexcoord.xy*cLayerScaling[layer], layer))*blend.z +
-		texture(sDetailMap2, vec3(detailtexcoord.xz*cLayerScaling[layer], layer))*blend.y;
-}
+#ifndef REDUCETILING
+	#ifdef COMPILEPS
+		vec4 SampleDiffuse(vec3 detailtexcoord, int layer, vec3 blend)
+		{
+			return texture(sDetailMap2, vec3(detailtexcoord.zy*cLayerScaling[layer], layer))*blend.x +
+				texture(sDetailMap2, vec3(detailtexcoord.xy*cLayerScaling[layer], layer))*blend.z +
+				texture(sDetailMap2, vec3(detailtexcoord.xz*cLayerScaling[layer], layer))*blend.y;
+		}
 
-#ifdef BUMPMAP
-vec3 SampleBump(vec3 detailtexcoord, int layer, vec3 blend)
-{
-	return DecodeNormal(texture(sNormal3, vec3(detailtexcoord.zy*cLayerScaling[layer], layer)))*blend.x+
-		DecodeNormal(texture(sNormal3, vec3(detailtexcoord.xy*cLayerScaling[layer], layer)))*blend.z+
-		DecodeNormal(texture(sNormal3, vec3(detailtexcoord.xz*cLayerScaling[layer],layer)))*blend.y;
-}
-#endif
+		#ifdef BUMPMAP
+			vec3 SampleBump(vec3 detailtexcoord, int layer, vec3 blend)
+			{
+			return DecodeNormal(texture(sNormal3, vec3(detailtexcoord.zy*cLayerScaling[layer], layer)))*blend.x+
+				DecodeNormal(texture(sNormal3, vec3(detailtexcoord.xy*cLayerScaling[layer], layer)))*blend.z+
+				DecodeNormal(texture(sNormal3, vec3(detailtexcoord.xz*cLayerScaling[layer],layer)))*blend.y;
+		}
+		#endif
+	#endif
+#else
+	#ifdef COMPILEPS
+		vec4 SampleDiffuse(vec3 detailtexcoord, int layer, vec3 blend)
+		{
+			return (texture(sDetailMap2, vec3(detailtexcoord.zy*cLayerScaling[layer], layer))+texture(sDetailMap2, vec3(detailtexcoord.zy*cLayerScaling[layer]*0.27, layer)))*blend.x*0.5 +
+				(texture(sDetailMap2, vec3(detailtexcoord.xy*cLayerScaling[layer], layer))+texture(sDetailMap2, vec3(detailtexcoord.xy*cLayerScaling[layer]*0.27, layer)))*blend.z*0.5 +
+				(texture(sDetailMap2, vec3(detailtexcoord.xz*cLayerScaling[layer], layer))+texture(sDetailMap2, vec3(detailtexcoord.xz*cLayerScaling[layer]*0.27, layer)))*blend.y*0.5;
+		}
+
+		#ifdef BUMPMAP
+		vec3 SampleBump(vec3 detailtexcoord, int layer, vec3 blend)
+		{
+			return (DecodeNormal(texture(sNormal3, vec3(detailtexcoord.zy*cLayerScaling[layer], layer)))+DecodeNormal(texture(sNormal3, vec3(detailtexcoord.zy*cLayerScaling[layer]*0.27, layer))))*blend.x*0.5+
+				(DecodeNormal(texture(sNormal3, vec3(detailtexcoord.xy*cLayerScaling[layer], layer)))+DecodeNormal(texture(sNormal3, vec3(detailtexcoord.xy*cLayerScaling[layer]*0.27, layer))))*blend.z*0.5+
+				(DecodeNormal(texture(sNormal3, vec3(detailtexcoord.xz*cLayerScaling[layer],layer)))+DecodeNormal(texture(sNormal3, vec3(detailtexcoord.xz*cLayerScaling[layer]*0.27,layer))))*blend.y*0.5;
+		}
+		#endif
+	#endif
 #endif
 
 void VS()

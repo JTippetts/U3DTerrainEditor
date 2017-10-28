@@ -25,6 +25,7 @@ function TerrainSelectUI:Start()
 	self:SubscribeToEvent(self.panel:GetChild("TriplanarCheck", true), "Toggled", "TerrainSelectUI:HandleMaterialSettingToggled")
 	self:SubscribeToEvent(self.panel:GetChild("SmoothCheck", true), "Toggled", "TerrainSelectUI:HandleMaterialSettingToggled")
 	self:SubscribeToEvent(self.panel:GetChild("NormalMapCheck", true), "Toggled", "TerrainSelectUI:HandleMaterialSettingToggled")
+	self:SubscribeToEvent(self.panel:GetChild("ReduceCheck", true), "Toggled", "TerrainSelectUI:HandleMaterialSettingToggled")
 	self:SubscribeToEvent(self.panel:GetChild("ClearLayer",true), "Pressed", "TerrainSelectUI:HandleClearLayer")
 	self:SubscribeToEvent(self.panel:GetChild("ClearAllLayers",true), "Pressed", "TerrainSelectUI:HandleClearAllLayers")
 	
@@ -172,8 +173,8 @@ function TerrainSelectUI:CreateFileSelector(title, ok, cancel, initialPath, filt
 	return fs
 end
 
-function TerrainSelectUI:ChangeMaterial(triplanar, smoothing, normalmapping)
-	TerrainState:SetMaterialSettings(triplanar,smoothing,normalmapping)
+function TerrainSelectUI:ChangeMaterial(triplanar, smoothing, normalmapping, reduce)
+	TerrainState:SetMaterialSettings(triplanar,smoothing,normalmapping,reduce)
 	TerrainState:GetMaterial():SetTexture(2,self.difftex)
 	if normalmapping then TerrainState:GetMaterial():SetTexture(3,self.normaltex) end
 	self:SetLayerScales()
@@ -183,8 +184,9 @@ function TerrainSelectUI:HandleMaterialSettingToggled(eventType, eventData)
 	local triplanar=self.panel:GetChild("TriplanarCheck", true):IsChecked()
 	local smooth=self.panel:GetChild("SmoothCheck", true):IsChecked()
 	local normalmapping=self.panel:GetChild("NormalMapCheck", true):IsChecked()
+	local reduce=self.panel:GetChild("ReduceCheck", true):IsChecked()
 	
-	self:ChangeMaterial(triplanar, smooth, normalmapping)
+	self:ChangeMaterial(triplanar, smooth, normalmapping,reduce)
 end
 
 function TerrainSelectUI:InitializeTextures()

@@ -121,7 +121,7 @@ public:
     {
         return terrain_;
     }
-    void SetMaterialSettings(bool triplanar, bool smoothing, bool normalmapping);
+    void SetMaterialSettings(bool triplanar, bool smoothing, bool normalmapping, bool reduce);
 
     void SaveHeightMap(const String &filename);
     void SaveBlend0(const String &filename);

@@ -2351,7 +2351,8 @@ static int tolua_BindTerrainEdit_TerrainEdit_SetMaterialSettings00(lua_State* to
  !tolua_isboolean(tolua_S,2,0,&tolua_err) ||
  !tolua_isboolean(tolua_S,3,0,&tolua_err) ||
  !tolua_isboolean(tolua_S,4,0,&tolua_err) ||
- !tolua_isnoobj(tolua_S,5,&tolua_err)
+ !tolua_isboolean(tolua_S,5,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,6,&tolua_err)
  )
  goto tolua_lerror;
  else
@@ -2361,11 +2362,12 @@ static int tolua_BindTerrainEdit_TerrainEdit_SetMaterialSettings00(lua_State* to
   bool triplanar = ((bool)  tolua_toboolean(tolua_S,2,0));
   bool smoothing = ((bool)  tolua_toboolean(tolua_S,3,0));
   bool normalmapping = ((bool)  tolua_toboolean(tolua_S,4,0));
+  bool reduce = ((bool)  tolua_toboolean(tolua_S,5,0));
 #ifndef TOLUA_RELEASE
  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'SetMaterialSettings'", NULL);
 #endif
  {
-  self->SetMaterialSettings(triplanar,smoothing,normalmapping);
+  self->SetMaterialSettings(triplanar,smoothing,normalmapping,reduce);
  }
  }
  return 0;

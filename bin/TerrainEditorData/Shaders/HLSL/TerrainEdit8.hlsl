@@ -66,20 +66,38 @@ static const int numlayers=8;
 	#endif
 	
 	// PS functions
-	float4 SampleDiffuse(float3 detailtexcoord, int layer, float3 blend)
-	{
-		return tDetailMap2.Sample(sDetailMap2, float3(detailtexcoord.zy*cLayerScaling[layer], layer))*blend.x +
-			tDetailMap2.Sample(sDetailMap2, float3(detailtexcoord.xy*cLayerScaling[layer], layer))*blend.z +
-			tDetailMap2.Sample(sDetailMap2, float3(detailtexcoord.xz*cLayerScaling[layer], layer))*blend.y;
-	}
+	#ifndef REDUCETILING
+		float4 SampleDiffuse(float3 detailtexcoord, int layer, float3 blend)
+		{
+			return tDetailMap2.Sample(sDetailMap2, float3(detailtexcoord.zy*cLayerScaling[layer], layer))*blend.x +
+				tDetailMap2.Sample(sDetailMap2, float3(detailtexcoord.xy*cLayerScaling[layer], layer))*blend.z +
+				tDetailMap2.Sample(sDetailMap2, float3(detailtexcoord.xz*cLayerScaling[layer], layer))*blend.y;
+		}
 	
-	#ifdef BUMPMAP
-	float3 SampleBump(float3 detailtexcoord, int layer, float3 blend)
-	{
-		return DecodeNormal(tNormal3.Sample(sNormal3, float3(detailtexcoord.zy*cLayerScaling[layer], layer)))*blend.x+
-			DecodeNormal(tNormal3.Sample(sNormal3, float3(detailtexcoord.xy*cLayerScaling[layer], layer)))*blend.z+
-			DecodeNormal(tNormal3.Sample(sNormal3, float3(detailtexcoord.xz*cLayerScaling[layer], layer)))*blend.y;
-	}
+		#ifdef BUMPMAP
+			float3 SampleBump(float3 detailtexcoord, int layer, float3 blend)
+			{
+				return DecodeNormal(tNormal3.Sample(sNormal3, float3(detailtexcoord.zy*cLayerScaling[layer], layer)))*blend.x+
+					DecodeNormal(tNormal3.Sample(sNormal3, float3(detailtexcoord.xy*cLayerScaling[layer], layer)))*blend.z+
+					DecodeNormal(tNormal3.Sample(sNormal3, float3(detailtexcoord.xz*cLayerScaling[layer], layer)))*blend.y;
+			}
+		#endif
+	#else
+		float4 SampleDiffuse(float3 detailtexcoord, int layer, float3 blend)
+		{
+			return (tDetailMap2.Sample(sDetailMap2, float3(detailtexcoord.zy*cLayerScaling[layer], layer))+tDetailMap2.Sample(sDetailMap2, float3(detailtexcoord.zy*cLayerScaling[layer]*0.27, layer)))*blend.x*0.5 +
+				(tDetailMap2.Sample(sDetailMap2, float3(detailtexcoord.xy*cLayerScaling[layer], layer))+tDetailMap2.Sample(sDetailMap2, float3(detailtexcoord.xy*cLayerScaling[layer]*0.27, layer)))*blend.z*0.5 +
+				(tDetailMap2.Sample(sDetailMap2, float3(detailtexcoord.xz*cLayerScaling[layer], layer))+tDetailMap2.Sample(sDetailMap2, float3(detailtexcoord.xz*cLayerScaling[layer]*0.27, layer)))*blend.y*0.5;
+		}
+	
+		#ifdef BUMPMAP
+			float3 SampleBump(float3 detailtexcoord, int layer, float3 blend)
+			{
+				return (DecodeNormal(tNormal3.Sample(sNormal3, float3(detailtexcoord.zy*cLayerScaling[layer], layer)))+DecodeNormal(tNormal3.Sample(sNormal3, float3(detailtexcoord.zy*cLayerScaling[layer]*0.27, layer))))*blend.x*0.5+
+					(DecodeNormal(tNormal3.Sample(sNormal3, float3(detailtexcoord.xy*cLayerScaling[layer], layer)))+DecodeNormal(tNormal3.Sample(sNormal3, float3(detailtexcoord.xy*cLayerScaling[layer]*0.27, layer))))*blend.z*0.5+
+					(DecodeNormal(tNormal3.Sample(sNormal3, float3(detailtexcoord.xz*cLayerScaling[layer], layer)))+DecodeNormal(tNormal3.Sample(sNormal3, float3(detailtexcoord.xz*cLayerScaling[layer]*0.27, layer))))*blend.y*0.5;
+			}
+		#endif
 	#endif
 
 #endif

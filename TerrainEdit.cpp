@@ -185,7 +185,7 @@ bool TerrainEdit::Initialize(Scene *scene, int tw, int th, int bw, int bh, Vecto
     material_->SetTexture(TU_ENVIRONMENT, masktex_);
     terrain_->SetMaterial(material_);
     SetBlendMaskSize(bw,bh);
-    SetMaterialSettings(true, false, true);
+    SetMaterialSettings(true, false, true, false);
 
     return true;
 }
@@ -1016,34 +1016,54 @@ void TerrainEdit::ClearHeight()
 {
 }
 
-void TerrainEdit::SetMaterialSettings(bool triplanar, bool smoothing, bool normalmapping)
+void TerrainEdit::SetMaterialSettings(bool triplanar, bool smoothing, bool normalmapping, bool reduce)
 {
     if(!terrain_) return;
 
     ResourceCache *cache=terrainNode_->GetSubsystem<ResourceCache>();
-    if (triplanar)
-        if (smoothing)
-            if (normalmapping)
-                material_=cache->GetResource<Material>("Materials/TerrainEdit8TriplanarSmoothBump.xml");
-            else
-                material_=cache->GetResource<Material>("Materials/TerrainEdit8TriplanarSmooth.xml");
+	if (reduce)
+		if (triplanar)
+			if (smoothing)
+				if (normalmapping)
+					material_=cache->GetResource<Material>("Materials/TerrainEdit8TriplanarSmoothBumpReduce.xml");
+				else
+					material_=cache->GetResource<Material>("Materials/TerrainEdit8TriplanarSmoothReduce.xml");
 
-        else if (normalmapping)
-            material_=cache->GetResource<Material>("Materials/TerrainEdit8TriplanarBump.xml");
-        else
-            material_=cache->GetResource<Material>("Materials/TerrainEdit8Triplanar.xml");
+			else if (normalmapping)
+				material_=cache->GetResource<Material>("Materials/TerrainEdit8TriplanarBumpReduce.xml");
+			else
+				material_=cache->GetResource<Material>("Materials/TerrainEdit8TriplanarReduce.xml");
+		else if (smoothing)
+			if (normalmapping)
+				material_=cache->GetResource<Material>("Materials/TerrainEdit8SmoothBumpReduce.xml");
+			else
+				material_=cache->GetResource<Material>("Materials/TerrainEdit8SmoothReduce.xml");
+		else if (normalmapping)
+			material_=cache->GetResource<Material>("Materials/TerrainEdit8BumpReduce.xml");
+		else
+			material_=cache->GetResource<Material>("Materials/TerrainEdit8Reduce.xml");
+	else
+		if (triplanar)
+			if (smoothing)
+				if (normalmapping)
+					material_=cache->GetResource<Material>("Materials/TerrainEdit8TriplanarSmoothBump.xml");
+				else
+					material_=cache->GetResource<Material>("Materials/TerrainEdit8TriplanarSmooth.xml");
 
-
-    else if (smoothing)
-        if (normalmapping)
-            material_=cache->GetResource<Material>("Materials/TerrainEdit8SmoothBump.xml");
-        else
-            material_=cache->GetResource<Material>("Materials/TerrainEdit8Smooth.xml");
-
-    else if (normalmapping)
-        material_=cache->GetResource<Material>("Materials/TerrainEdit8Bump.xml");
-    else
-        material_=cache->GetResource<Material>("Materials/TerrainEdit8.xml");
+			else if (normalmapping)
+				material_=cache->GetResource<Material>("Materials/TerrainEdit8TriplanarBump.xml");
+			else
+				material_=cache->GetResource<Material>("Materials/TerrainEdit8Triplanar.xml");
+		else if (smoothing)
+			if (normalmapping)
+				material_=cache->GetResource<Material>("Materials/TerrainEdit8SmoothBump.xml");
+			else
+				material_=cache->GetResource<Material>("Materials/TerrainEdit8Smooth.xml");
+		else if (normalmapping)
+			material_=cache->GetResource<Material>("Materials/TerrainEdit8Bump.xml");
+		else
+			material_=cache->GetResource<Material>("Materials/TerrainEdit8.xml");
+			
     terrain_->SetMaterial(material_);
     material_->SetTexture(TU_DIFFUSE, blendtex0_);
     material_->SetTexture(TU_NORMAL, blendtex1_);
