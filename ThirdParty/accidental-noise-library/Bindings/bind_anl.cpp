@@ -8489,6 +8489,72 @@ static int tolua_bind_anl_CArray2Dd_scaleToRange00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: bias of class  CArray2Dd */
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Dd_bias00
+static int tolua_bind_anl_CArray2Dd_bias00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"CArray2Dd",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  CArray2Dd* self = (CArray2Dd*)  tolua_tousertype(tolua_S,1,0);
+  float b = ((float)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'bias'", NULL);
+#endif
+ {
+  self->bias(b);
+ }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'bias'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: gain of class  CArray2Dd */
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Dd_gain00
+static int tolua_bind_anl_CArray2Dd_gain00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"CArray2Dd",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  CArray2Dd* self = (CArray2Dd*)  tolua_tousertype(tolua_S,1,0);
+  float g = ((float)  tolua_tonumber(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'gain'", NULL);
+#endif
+ {
+  self->gain(g);
+ }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'gain'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: wrapCoords of class  CArray2Dd */
 #ifndef TOLUA_DISABLE_tolua_bind_anl_CArray2Dd_wrapCoords00
 static int tolua_bind_anl_CArray2Dd_wrapCoords00(lua_State* tolua_S)
@@ -10833,6 +10899,38 @@ static int tolua_bind_anl_simpleErode00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* function: waterFlow */
+#ifndef TOLUA_DISABLE_tolua_bind_anl_waterFlow00
+static int tolua_bind_anl_waterFlow00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ (tolua_isvaluenil(tolua_S,1,&tolua_err) || !tolua_isusertype(tolua_S,1,"CArray2Dd",0,&tolua_err)) ||
+ (tolua_isvaluenil(tolua_S,2,&tolua_err) || !tolua_isusertype(tolua_S,2,"CArray2Dd",0,&tolua_err)) ||
+ !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  CArray2Dd* map = ((CArray2Dd*)  tolua_tousertype(tolua_S,1,0));
+  CArray2Dd* flow = ((CArray2Dd*)  tolua_tousertype(tolua_S,2,0));
+  unsigned int numdrops = ((unsigned int)  tolua_tonumber(tolua_S,3,0));
+ {
+  waterFlow(*map,*flow,numdrops);
+ }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'waterFlow'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* function: calcNormalMap */
 #ifndef TOLUA_DISABLE_tolua_bind_anl_calcNormalMap00
 static int tolua_bind_anl_calcNormalMap00(lua_State* tolua_S)
@@ -11296,6 +11394,8 @@ TOLUA_API int tolua_bind_anl_open (lua_State* tolua_S)
   tolua_function(tolua_S,"getMax",tolua_bind_anl_CArray2Dd_getMax00);
   tolua_function(tolua_S,"getMin",tolua_bind_anl_CArray2Dd_getMin00);
   tolua_function(tolua_S,"scaleToRange",tolua_bind_anl_CArray2Dd_scaleToRange00);
+  tolua_function(tolua_S,"bias",tolua_bind_anl_CArray2Dd_bias00);
+  tolua_function(tolua_S,"gain",tolua_bind_anl_CArray2Dd_gain00);
   tolua_function(tolua_S,"wrapCoords",tolua_bind_anl_CArray2Dd_wrapCoords00);
   tolua_function(tolua_S,"offset",tolua_bind_anl_CArray2Dd_offset00);
   tolua_function(tolua_S,"flipVertical",tolua_bind_anl_CArray2Dd_flipVertical00);
@@ -11394,6 +11494,7 @@ TOLUA_API int tolua_bind_anl_open (lua_State* tolua_S)
  tolua_function(tolua_S,"loadDoubleArray",tolua_bind_anl_loadDoubleArray00);
  tolua_function(tolua_S,"loadRGBAArray",tolua_bind_anl_loadRGBAArray00);
  tolua_function(tolua_S,"simpleErode",tolua_bind_anl_simpleErode00);
+ tolua_function(tolua_S,"waterFlow",tolua_bind_anl_waterFlow00);
  tolua_function(tolua_S,"calcNormalMap",tolua_bind_anl_calcNormalMap00);
  tolua_function(tolua_S,"calcBumpMap",tolua_bind_anl_calcBumpMap00);
  tolua_endmodule(tolua_S);

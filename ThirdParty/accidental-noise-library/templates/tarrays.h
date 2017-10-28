@@ -426,6 +426,43 @@ public:
             }
         }
     }
+	
+	void bias(T b)
+	{
+		if(!m_data) return;
+      
+        for(int x=0; x<m_width; ++x)
+        {
+            for(int y=0; y<m_height; ++y)
+            {
+				T temp = get(x,y);
+				set(x,y,pow(temp, log(b)/log(0.5)));
+			}
+		}
+	}
+	
+	void gain(T b)
+	{
+		if(!m_data) return;
+      
+        for(int x=0; x<m_width; ++x)
+        {
+            for(int y=0; y<m_height; ++y)
+            {
+				T temp = get(x,y);
+				if(temp<0.5)
+				{
+					set(x,y,pow(2.0*temp, log(1.0-b)/log(0.5))/2.0);
+					
+				}
+				else
+				{
+					set(x,y,1.0-pow(2.0-2.0*temp, log(1.0-b)/log(0.5))/2.0);
+					
+				}
+			}
+		}
+	}
 
     void wrapCoords(int &x, int &y)
     {

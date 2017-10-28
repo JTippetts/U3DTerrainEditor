@@ -340,6 +340,8 @@ class CArray2Dd
   double getMax();
   double getMin();
   void scaleToRange(float low, float high);
+  void bias(float b);
+  void gain(float g);
   void wrapCoords(int &x, int &y);
   void offset(int ox, int oy);
   void flipVertical();
@@ -429,5 +431,6 @@ void loadRGBAArray(const char *filename, CArray2Drgba *array);
 	
 	
 void simpleErode(CArray2Dd &map, unsigned int numdrops, float power);
+void waterFlow(CArray2Dd &map, CArray2Dd &flow, unsigned int numdrops);
 void calcNormalMap(CArray2Dd *map, CArray2Drgba *bump, float spacing, bool normalize, bool wrap);
 void calcBumpMap(CArray2Dd *map, CArray2Dd *bump, float light[3], float spacing, bool wrap);
