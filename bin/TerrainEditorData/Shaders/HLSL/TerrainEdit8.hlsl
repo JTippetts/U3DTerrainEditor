@@ -281,14 +281,25 @@ void PS(
 		float4 tex8=SampleDiffuse(iDetailTexCoord, 7, blending);
 	
 	#else
-		float4 tex1=tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xz*cLayerScaling[0], 0));
-		float4 tex2=tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xz*cLayerScaling[1], 1));
-		float4 tex3=tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xz*cLayerScaling[2], 2));
-		float4 tex4=tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xz*cLayerScaling[3], 3));
-		float4 tex5=tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xz*cLayerScaling[4], 4));
-		float4 tex6=tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xz*cLayerScaling[5], 5));
-		float4 tex7=tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xz*cLayerScaling[6], 6));
-		float4 tex8=tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xz*cLayerScaling[7], 7));
+		#ifdef REDUCETILING
+			float4 tex1=(tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xz*cLayerScaling[0], 0))+tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xz*cLayerScaling[0]*0.27, 0)))*0.5;
+			float4 tex2=(tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xz*cLayerScaling[1], 1))+tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xz*cLayerScaling[1]*0.27, 1)))*0.5;
+			float4 tex3=(tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xz*cLayerScaling[2], 2))+tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xz*cLayerScaling[2]*0.27, 2)))*0.5;
+			float4 tex4=(tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xz*cLayerScaling[3], 3))+tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xz*cLayerScaling[3]*0.27, 3)))*0.5;
+			float4 tex5=(tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xz*cLayerScaling[4], 4))+tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xz*cLayerScaling[4]*0.27, 4)))*0.5;
+			float4 tex6=(tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xz*cLayerScaling[5], 5))+tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xz*cLayerScaling[5]*0.27, 5)))*0.5;
+			float4 tex7=(tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xz*cLayerScaling[6], 6))+tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xz*cLayerScaling[6]*0.27, 6)))*0.5;
+			float4 tex8=(tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xz*cLayerScaling[7], 7))+tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xz*cLayerScaling[7]*0.27, 7)))*0.5;
+		#else
+			float4 tex1=tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xz*cLayerScaling[0], 0));
+			float4 tex2=tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xz*cLayerScaling[1], 1));
+			float4 tex3=tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xz*cLayerScaling[2], 2));
+			float4 tex4=tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xz*cLayerScaling[3], 3));
+			float4 tex5=tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xz*cLayerScaling[4], 4));
+			float4 tex6=tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xz*cLayerScaling[5], 5));
+			float4 tex7=tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xz*cLayerScaling[6], 6));
+			float4 tex8=tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xz*cLayerScaling[7], 7));
+		#endif
 	#endif
 	
 	#ifndef SMOOTHBLEND
@@ -337,14 +348,25 @@ void PS(
 		float3 bump8=SampleBump(iDetailTexCoord, 7, blending);
 		
 		#else
-			float3 bump1=DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xz*cLayerScaling[0],0)));
-			float3 bump2=DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xz*cLayerScaling[1],1)));
-			float3 bump3=DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xz*cLayerScaling[2],2)));
-			float3 bump4=DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xz*cLayerScaling[3],3)));
-			float3 bump5=DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xz*cLayerScaling[4],4)));
-			float3 bump6=DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xz*cLayerScaling[5],5)));
-			float3 bump7=DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xz*cLayerScaling[6],6)));
-			float3 bump8=DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xz*cLayerScaling[7],7)));
+			#ifndef REDUCETILING
+				float3 bump1=DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xz*cLayerScaling[0],0)));
+				float3 bump2=DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xz*cLayerScaling[1],1)));
+				float3 bump3=DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xz*cLayerScaling[2],2)));
+				float3 bump4=DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xz*cLayerScaling[3],3)));
+				float3 bump5=DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xz*cLayerScaling[4],4)));
+				float3 bump6=DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xz*cLayerScaling[5],5)));
+				float3 bump7=DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xz*cLayerScaling[6],6)));
+				float3 bump8=DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xz*cLayerScaling[7],7)));
+			#else
+				float3 bump1=(DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xz*cLayerScaling[0],0)))+DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xz*cLayerScaling[0]*0.27,0))))*0.5;
+				float3 bump2=(DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xz*cLayerScaling[1],1)))+DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xz*cLayerScaling[1]*0.27,1))))*0.5;
+				float3 bump3=(DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xz*cLayerScaling[2],2)))+DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xz*cLayerScaling[2]*0.27,2))))*0.5;
+				float3 bump4=(DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xz*cLayerScaling[3],3)))+DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xz*cLayerScaling[3]*0.27,3))))*0.5;
+				float3 bump5=(DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xz*cLayerScaling[4],4)))+DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xz*cLayerScaling[4]*0.27,4))))*0.5;
+				float3 bump6=(DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xz*cLayerScaling[5],5)))+DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xz*cLayerScaling[5]*0.27,5))))*0.5;
+				float3 bump7=(DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xz*cLayerScaling[6],6)))+DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xz*cLayerScaling[6]*0.27,6))))*0.5;
+				float3 bump8=(DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xz*cLayerScaling[7],7)))+DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xz*cLayerScaling[7]*0.27,7))))*0.5;
+			#endif
 		#endif
 		
 		

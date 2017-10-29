@@ -184,14 +184,25 @@ void PS()
 	vec4 tex8=SampleDiffuse(vDetailTexCoord, 7, blending);
 	
 	#else
-		vec4 tex1=texture(sDetailMap2, vec3(vDetailTexCoord.xz*cLayerScaling[0], 0));
-		vec4 tex2=texture(sDetailMap2, vec3(vDetailTexCoord.xz*cLayerScaling[1], 1));
-		vec4 tex3=texture(sDetailMap2, vec3(vDetailTexCoord.xz*cLayerScaling[2], 2));
-		vec4 tex4=texture(sDetailMap2, vec3(vDetailTexCoord.xz*cLayerScaling[3], 3));
-		vec4 tex5=texture(sDetailMap2, vec3(vDetailTexCoord.xz*cLayerScaling[4], 4));
-		vec4 tex6=texture(sDetailMap2, vec3(vDetailTexCoord.xz*cLayerScaling[5], 5));
-		vec4 tex7=texture(sDetailMap2, vec3(vDetailTexCoord.xz*cLayerScaling[6], 6));
-		vec4 tex8=texture(sDetailMap2, vec3(vDetailTexCoord.xz*cLayerScaling[7], 7));
+		#ifdef REDUCETILING
+			vec4 tex1=(texture(sDetailMap2, vec3(vDetailTexCoord.xz*cLayerScaling[0], 0))+texture(sDetailMap2, vec3(vDetailTexCoord.xz*cLayerScaling[0]*0.27, 0)))*0.5;
+			vec4 tex2=(texture(sDetailMap2, vec3(vDetailTexCoord.xz*cLayerScaling[1], 1))+texture(sDetailMap2, vec3(vDetailTexCoord.xz*cLayerScaling[1]*0.27, 1)))*0.5;
+			vec4 tex3=(texture(sDetailMap2, vec3(vDetailTexCoord.xz*cLayerScaling[2], 2))+texture(sDetailMap2, vec3(vDetailTexCoord.xz*cLayerScaling[2]*0.27, 2)))*0.5;
+			vec4 tex4=(texture(sDetailMap2, vec3(vDetailTexCoord.xz*cLayerScaling[3], 3))+texture(sDetailMap2, vec3(vDetailTexCoord.xz*cLayerScaling[3]*0.27, 3)))*0.5;
+			vec4 tex5=(texture(sDetailMap2, vec3(vDetailTexCoord.xz*cLayerScaling[4], 4))+texture(sDetailMap2, vec3(vDetailTexCoord.xz*cLayerScaling[4]*0.27, 4)))*0.5;
+			vec4 tex6=(texture(sDetailMap2, vec3(vDetailTexCoord.xz*cLayerScaling[5], 5))+texture(sDetailMap2, vec3(vDetailTexCoord.xz*cLayerScaling[5]*0.27, 5)))*0.5;
+			vec4 tex7=(texture(sDetailMap2, vec3(vDetailTexCoord.xz*cLayerScaling[6], 6))+texture(sDetailMap2, vec3(vDetailTexCoord.xz*cLayerScaling[6]*0.27, 6)))*0.5;
+			vec4 tex8=(texture(sDetailMap2, vec3(vDetailTexCoord.xz*cLayerScaling[7], 7))+texture(sDetailMap2, vec3(vDetailTexCoord.xz*cLayerScaling[7]*0.27, 7)))*0.5;
+		#else
+			vec4 tex1=texture(sDetailMap2, vec3(vDetailTexCoord.xz*cLayerScaling[0], 0));
+			vec4 tex2=texture(sDetailMap2, vec3(vDetailTexCoord.xz*cLayerScaling[1], 1));
+			vec4 tex3=texture(sDetailMap2, vec3(vDetailTexCoord.xz*cLayerScaling[2], 2));
+			vec4 tex4=texture(sDetailMap2, vec3(vDetailTexCoord.xz*cLayerScaling[3], 3));
+			vec4 tex5=texture(sDetailMap2, vec3(vDetailTexCoord.xz*cLayerScaling[4], 4));
+			vec4 tex6=texture(sDetailMap2, vec3(vDetailTexCoord.xz*cLayerScaling[5], 5));
+			vec4 tex7=texture(sDetailMap2, vec3(vDetailTexCoord.xz*cLayerScaling[6], 6));
+			vec4 tex8=texture(sDetailMap2, vec3(vDetailTexCoord.xz*cLayerScaling[7], 7));
+		#endif
 	#endif
 	
 	#ifndef SMOOTHBLEND
@@ -241,14 +252,25 @@ void PS()
 		vec3 bump7=SampleBump(vDetailTexCoord, 6, blending);
 		vec3 bump8=SampleBump(vDetailTexCoord, 7, blending);
 		#else
-			vec3 bump1=DecodeNormal(texture(sNormal3, vec3(vDetailTexCoord.xz*cLayerScaling[0],0)));
-			vec3 bump2=DecodeNormal(texture(sNormal3, vec3(vDetailTexCoord.xz*cLayerScaling[1],1)));
-			vec3 bump3=DecodeNormal(texture(sNormal3, vec3(vDetailTexCoord.xz*cLayerScaling[2],2)));
-			vec3 bump4=DecodeNormal(texture(sNormal3, vec3(vDetailTexCoord.xz*cLayerScaling[3],3)));
-			vec3 bump5=DecodeNormal(texture(sNormal3, vec3(vDetailTexCoord.xz*cLayerScaling[4],4)));
-			vec3 bump6=DecodeNormal(texture(sNormal3, vec3(vDetailTexCoord.xz*cLayerScaling[5],5)));
-			vec3 bump7=DecodeNormal(texture(sNormal3, vec3(vDetailTexCoord.xz*cLayerScaling[6],6)));
-			vec3 bump8=DecodeNormal(texture(sNormal3, vec3(vDetailTexCoord.xz*cLayerScaling[7],7)));
+			#ifdef REDUCETILING
+				vec3 bump1=(DecodeNormal(texture(sNormal3, vec3(vDetailTexCoord.xz*cLayerScaling[0],0)))+DecodeNormal(texture(sNormal3, vec3(vDetailTexCoord.xz*cLayerScaling[0]*0.27,0))))*0.5;
+				vec3 bump2=(DecodeNormal(texture(sNormal3, vec3(vDetailTexCoord.xz*cLayerScaling[1],1)))+DecodeNormal(texture(sNormal3, vec3(vDetailTexCoord.xz*cLayerScaling[1]*0.27,1))))*0.5;
+				vec3 bump3=(DecodeNormal(texture(sNormal3, vec3(vDetailTexCoord.xz*cLayerScaling[2],2)))+DecodeNormal(texture(sNormal3, vec3(vDetailTexCoord.xz*cLayerScaling[2]*0.27,2))))*0.5;
+				vec3 bump4=(DecodeNormal(texture(sNormal3, vec3(vDetailTexCoord.xz*cLayerScaling[3],3)))+DecodeNormal(texture(sNormal3, vec3(vDetailTexCoord.xz*cLayerScaling[3]*0.27,3))))*0.5;
+				vec3 bump5=(DecodeNormal(texture(sNormal3, vec3(vDetailTexCoord.xz*cLayerScaling[4],4)))+DecodeNormal(texture(sNormal3, vec3(vDetailTexCoord.xz*cLayerScaling[4]*0.27,4))))*0.5;
+				vec3 bump6=(DecodeNormal(texture(sNormal3, vec3(vDetailTexCoord.xz*cLayerScaling[5],5)))+DecodeNormal(texture(sNormal3, vec3(vDetailTexCoord.xz*cLayerScaling[5]*0.27,5))))*0.5;
+				vec3 bump7=(DecodeNormal(texture(sNormal3, vec3(vDetailTexCoord.xz*cLayerScaling[6],6)))+DecodeNormal(texture(sNormal3, vec3(vDetailTexCoord.xz*cLayerScaling[6]*0.27,6))))*0.5;
+				vec3 bump8=(DecodeNormal(texture(sNormal3, vec3(vDetailTexCoord.xz*cLayerScaling[7],7)))+DecodeNormal(texture(sNormal3, vec3(vDetailTexCoord.xz*cLayerScaling[7]*0.27,7))))*0.5;
+			#else
+				vec3 bump1=DecodeNormal(texture(sNormal3, vec3(vDetailTexCoord.xz*cLayerScaling[0],0)));
+				vec3 bump2=DecodeNormal(texture(sNormal3, vec3(vDetailTexCoord.xz*cLayerScaling[1],1)));
+				vec3 bump3=DecodeNormal(texture(sNormal3, vec3(vDetailTexCoord.xz*cLayerScaling[2],2)));
+				vec3 bump4=DecodeNormal(texture(sNormal3, vec3(vDetailTexCoord.xz*cLayerScaling[3],3)));
+				vec3 bump5=DecodeNormal(texture(sNormal3, vec3(vDetailTexCoord.xz*cLayerScaling[4],4)));
+				vec3 bump6=DecodeNormal(texture(sNormal3, vec3(vDetailTexCoord.xz*cLayerScaling[5],5)));
+				vec3 bump7=DecodeNormal(texture(sNormal3, vec3(vDetailTexCoord.xz*cLayerScaling[6],6)));
+				vec3 bump8=DecodeNormal(texture(sNormal3, vec3(vDetailTexCoord.xz*cLayerScaling[7],7)));
+			#endif
 		#endif
 		
 		vec3 normal=tbn*normalize(((bump1*b1+bump2*b2+bump3*b3+bump4*b4+bump5*b5+bump6*b6+bump7*b7+bump8*b8)/bsum));
