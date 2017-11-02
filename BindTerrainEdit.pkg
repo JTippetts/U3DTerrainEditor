@@ -170,6 +170,8 @@ Vector2 WorldToNormalized(Image *height, Terrain *terrain, Vector3 world);
 	void RenderANLKernelToImage(Image *buffer, CKernel *kernel, float lowrange, float highrange);
 	void SetHeightFromRasterBuffer(Image *height, CArray2Dd *buffer, Image *mask=0, bool useMask=false, bool invertMask=false);
 	
+	void BuildQuadStripRoad(RasterVertexList *curve, int steps, float width, float lengthscale, CustomGeometry *geom);
+	
 	void CopyImageInto(Image *dest, Image *src, int x, int y);
 	bool IsPowerOfTwo(int n);
 	Image* GetNextImageLevel(Image *i);

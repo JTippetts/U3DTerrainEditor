@@ -243,6 +243,8 @@ void RenderANLKernelToBuffer(CArray2Dd *buffer, CKernel *kernel, float lowrange=
 void RenderANLKernelToImage(Image *buffer, CKernel *kernel, float lowrange=0, float highrange=1);
 void SetHeightFromRasterBuffer(Image *height, CArray2Dd *buffer, Image *mask=0, bool useMask=false, bool invertMask=false);
 
+void BuildQuadStripRoad(RasterVertexList *curve, int steps, float width, float lengthscale, CustomGeometry *geom);
+
 void DistortBuffer(CArray2Dd *buffer, CArray2Dd *xd, CArray2Dd *yd, double power);
 
 void CopyImageInto(Image *dest, Image *src, int x, int y);

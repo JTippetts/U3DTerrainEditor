@@ -2197,6 +2197,68 @@ void BuildQuadStrip(RasterVertexList *in, RasterVertexList *out, float width)
 
 }
 
+void BuildQuadStripRoad(RasterVertexList *curve, int steps, float width, float lengthscale, CustomGeometry *geom)
+{
+	CRSpline<Vector3> ll;
+    for(int c=0; c<curve->size(); ++c)
+    {
+        ll.Push(Vector3((*curve)[c].x_, (*curve)[c].y_, (*curve)[c].val_));
+    }
+
+    Vector<Vector3> points, tangents;
+	Vector<float> distances;
+	
+    ll.Solve(points, tangents, distances, steps*(ll.NumPoints()-1), 0.1);
+	
+	Vector<Vector3> quadpoints;
+	Vector<float> quaddistances;
+	
+	BuildQuadStripB(points,tangents,distances,quadpoints,quaddistances,width, Vector3(0,1,0));
+	geom->Clear();
+	geom->SetNumGeometries(1);
+	
+	geom->BeginGeometry(0,TRIANGLE_LIST);
+	for(int c=0; c<quadpoints.Size()-4; c+=2)
+	{
+		// Calculate index into original list
+		int lineindex=std::max(0, (c/2-1));
+		Vector3 tang1=tangents[lineindex];
+		tang1.Normalize();
+		Vector3 right1=tang1.CrossProduct(Vector3(0,1,0));
+		right1.Normalize();
+		Vector3 norm1=right1.CrossProduct(tang1);
+		
+		Vector3 tang2=tangents[lineindex+1];
+		tang2.Normalize();
+		Vector3 right2=tang2.CrossProduct(Vector3(0,1,0));
+		right2.Normalize();
+		Vector3 norm2=right2.CrossProduct(tang2);
+		
+		geom->DefineVertex(quadpoints[c]);
+		geom->DefineNormal(norm1);
+		geom->DefineTexCoord(Vector2(0,quaddistances[c]*lengthscale));
+		geom->DefineVertex(quadpoints[c+1]);
+		geom->DefineNormal(norm1);
+		geom->DefineTexCoord(Vector2(1,quaddistances[c+1]*lengthscale));
+		geom->DefineVertex(quadpoints[c+2]);
+		geom->DefineNormal(norm2);
+		geom->DefineTexCoord(Vector2(0,quaddistances[c+2]*lengthscale));
+		
+		geom->DefineVertex(quadpoints[c+1]);
+		geom->DefineNormal(norm1);
+		geom->DefineTexCoord(Vector2(1,quaddistances[c+1]*lengthscale));
+		geom->DefineVertex(quadpoints[c+2]);
+		geom->DefineNormal(norm2);
+		geom->DefineTexCoord(Vector2(0,quaddistances[c+2]*lengthscale));
+		geom->DefineVertex(quadpoints[c+3]);
+		geom->DefineNormal(norm2);
+		geom->DefineTexCoord(Vector2(1,quaddistances[c+3]*lengthscale));
+	}
+	
+	geom->Commit();
+	
+}
+
 void BuildQuadStripVarying(RasterVertexList *in, RasterVertexList *out, float startwidth, float endwidth)
 {
     Vector<Vector3> points;

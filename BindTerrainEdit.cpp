@@ -4756,6 +4756,42 @@ static int tolua_BindTerrainEdit_SetHeightFromRasterBuffer00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* function: BuildQuadStripRoad */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_BuildQuadStripRoad00
+static int tolua_BindTerrainEdit_BuildQuadStripRoad00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"RasterVertexList",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,5,"CustomGeometry",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,6,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  RasterVertexList* curve = ((RasterVertexList*)  tolua_tousertype(tolua_S,1,0));
+  int steps = ((int)  tolua_tonumber(tolua_S,2,0));
+  float width = ((float)  tolua_tonumber(tolua_S,3,0));
+  float lengthscale = ((float)  tolua_tonumber(tolua_S,4,0));
+  CustomGeometry* geom = ((CustomGeometry*)  tolua_tousertype(tolua_S,5,0));
+ {
+  BuildQuadStripRoad(curve,steps,width,lengthscale,geom);
+ }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'BuildQuadStripRoad'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* function: CopyImageInto */
 #ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_CopyImageInto00
 static int tolua_BindTerrainEdit_CopyImageInto00(lua_State* tolua_S)
@@ -5933,6 +5969,7 @@ TOLUA_API int tolua_BindTerrainEdit_open (lua_State* tolua_S)
  tolua_function(tolua_S,"RenderANLKernelToBuffer",tolua_BindTerrainEdit_RenderANLKernelToBuffer00);
  tolua_function(tolua_S,"RenderANLKernelToImage",tolua_BindTerrainEdit_RenderANLKernelToImage00);
  tolua_function(tolua_S,"SetHeightFromRasterBuffer",tolua_BindTerrainEdit_SetHeightFromRasterBuffer00);
+ tolua_function(tolua_S,"BuildQuadStripRoad",tolua_BindTerrainEdit_BuildQuadStripRoad00);
  tolua_function(tolua_S,"CopyImageInto",tolua_BindTerrainEdit_CopyImageInto00);
  tolua_function(tolua_S,"IsPowerOfTwo",tolua_BindTerrainEdit_IsPowerOfTwo00);
  tolua_function(tolua_S,"GetNextImageLevel",tolua_BindTerrainEdit_GetNextImageLevel00);
