@@ -26,7 +26,7 @@ return
 		local n=scene_:CreateChild()
 		local cg=n:CreateComponent("CustomGeometry")
 		BuildQuadStripRoad(plist, segments, pavingwidth, scale, cg)
-		
+		n:SetPosition(Vector3(0,0.1,0))
 		cg:SetMaterial(cache:GetResource("Material", "Materials/road.xml"))
 	end,
 }

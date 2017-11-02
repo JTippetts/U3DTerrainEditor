@@ -2,5 +2,5 @@
     <technique name="Techniques/Diff.xml" />
 	<texture unit="diffuse" name="Textures/road.png" />
 	<cull value="none" />
-	<depthbias constant="-0.01" />
+	
 </material>
