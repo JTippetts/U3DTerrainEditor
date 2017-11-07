@@ -240,7 +240,7 @@ void ApplyBedFunction(CArray2Dd *buffer, float hardness, bool quintic);
 void BuildQuadStrip(RasterVertexList *in, RasterVertexList *out, float width);
 void BuildQuadStripVarying(RasterVertexList *in, RasterVertexList *out, float startwidth, float endwidth);
 void RenderANLKernelToBuffer(CArray2Dd *buffer, CKernel *kernel, float lowrange=0, float highrange=1);
-void RenderANLKernelToImage(Image *buffer, CKernel *kernel, float lowrange=0, float highrange=1);
+Vector2 RenderANLKernelToImage(Image *buffer, CKernel *kernel, float lowrange=0, float highrange=1);
 void SetHeightFromRasterBuffer(Image *height, CArray2Dd *buffer, Image *mask=0, bool useMask=false, bool invertMask=false);
 
 void BuildQuadStripRoad(RasterVertexList *curve, int steps, float width, float lengthscale, CustomGeometry *geom);

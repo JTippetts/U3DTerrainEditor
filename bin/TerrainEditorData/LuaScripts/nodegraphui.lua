@@ -1919,8 +1919,10 @@ end
 function NodeGraphUI:HandleGenerate(eventType, eventData)
 	if not self.nodegroup then return end
 	local kernel=PackNodeGraph(self.nodegroup.output)
-	RenderANLKernelToImage(self.nodegroup.previewimg,kernel,0,1)
+	local minmax=RenderANLKernelToImage(self.nodegroup.previewimg,kernel,0,1)
 	self.nodegroup.previewtex:SetData(self.nodegroup.previewimg)
+	self.nodegroup.output:GetChild("LowValue",true).text=string.format("%.4f",minmax.x)
+	self.nodegroup.output:GetChild("HighValue",true).text=string.format("%.4f",minmax.y)
 end
 
 function NodeGraphUI:HandleStore(eventType, eventData)

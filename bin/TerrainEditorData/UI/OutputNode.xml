@@ -2,7 +2,7 @@
 <element type="Window">
 	<attribute name="Name" value="Output" />
 	<attribute name="Position" value="397 105" />
-	<attribute name="Size" value="264 424" />
+	<attribute name="Size" value="264 443" />
 	<attribute name="Pivot" value="0 0" />
 	<attribute name="Clip Children" value="false" />
 	<attribute name="Focus Mode" value="Focusable" />
@@ -178,6 +178,52 @@
 			<attribute name="Max Anchor" value="0.5 0.5" />
 			<attribute name="Pivot" value="0.5 0.5" />
 			<attribute name="Image Rect" value="0 0 256 256" />
+		</element>
+	</element>
+	<element>
+		<attribute name="Min Size" value="0 4" />
+		<attribute name="Pivot" value="0 0" />
+	</element>
+	<element>
+		<attribute name="Pivot" value="0 0" />
+		<attribute name="Layout Mode" value="Horizontal" />
+		<element type="Text">
+			<attribute name="Pivot" value="0 0" />
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Font Size" value="9" />
+			<attribute name="Text" value="Low:" />
+		</element>
+		<element type="Text">
+			<attribute name="Name" value="LowValue" />
+			<attribute name="Pivot" value="0 0" />
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Font Size" value="9" />
+			<attribute name="Text" value="0.0" />
+		</element>
+		<element type="Text">
+			<attribute name="Pivot" value="0 0" />
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Font Size" value="9" />
+			<attribute name="Text" value="High:" />
+		</element>
+		<element type="Text">
+			<attribute name="Name" value="HighValue" />
+			<attribute name="Pivot" value="0 0" />
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Font Size" value="9" />
+			<attribute name="Text" value="1.0" />
 		</element>
 	</element>
 	<element>

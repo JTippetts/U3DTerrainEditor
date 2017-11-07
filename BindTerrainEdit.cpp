@@ -4708,10 +4708,21 @@ static int tolua_BindTerrainEdit_RenderANLKernelToImage00(lua_State* tolua_S)
   float lowrange = ((float)  tolua_tonumber(tolua_S,3,0));
   float highrange = ((float)  tolua_tonumber(tolua_S,4,0));
  {
-  RenderANLKernelToImage(buffer,kernel,lowrange,highrange);
+  Vector2 tolua_ret = (Vector2)  RenderANLKernelToImage(buffer,kernel,lowrange,highrange);
+ {
+#ifdef __cplusplus
+ void* tolua_obj = Mtolua_new((Vector2)(tolua_ret));
+  tolua_pushusertype(tolua_S,tolua_obj,"Vector2");
+ tolua_register_gc(tolua_S,lua_gettop(tolua_S));
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(Vector2));
+  tolua_pushusertype(tolua_S,tolua_obj,"Vector2");
+ tolua_register_gc(tolua_S,lua_gettop(tolua_S));
+#endif
  }
  }
- return 0;
+ }
+ return 1;
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'RenderANLKernelToImage'.",&tolua_err);

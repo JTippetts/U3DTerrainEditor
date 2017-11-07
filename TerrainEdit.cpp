@@ -1727,9 +1727,9 @@ void RenderANLKernelToBuffer(CArray2Dd *buffer, CKernel *kernel, float lowrange,
     buffer->scaleToRange(lowrange, highrange);
 }
 
-void RenderANLKernelToImage(Image *buffer, CKernel *kernel, float lowrange, float highrange)
+Vector2 RenderANLKernelToImage(Image *buffer, CKernel *kernel, float lowrange, float highrange)
 {
-    if(!buffer) return;
+    if(!buffer) return Vector2();
     CArray2Dd img;
 
     int w=buffer->GetWidth();
@@ -1737,6 +1737,8 @@ void RenderANLKernelToImage(Image *buffer, CKernel *kernel, float lowrange, floa
     img.resize(w,h);
 
     map2DNoZ(SEAMLESS_NONE, img, *kernel, SMappingRanges(0,1,0,1,0,1), kernel->lastIndex());
+	float low=img.getMin(),high=img.getMax();
+	
     img.scaleToRange(lowrange, highrange);
     for(int x=0; x<w; ++x)
     {
@@ -1746,6 +1748,8 @@ void RenderANLKernelToImage(Image *buffer, CKernel *kernel, float lowrange, floa
             buffer->SetPixel(x,y,Color(v,v,v,1));
         }
     }
+	
+	return Vector2(low,high);
 }
 
 void SetHeightFromRasterBuffer(Image *height, CArray2Dd *buffer, Image *mask, bool useMask, bool invertMask)
