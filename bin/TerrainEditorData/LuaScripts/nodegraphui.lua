@@ -1735,10 +1735,17 @@ function NodeGraphUI:CreateNodeGroup()
 	nodegroup.previewimg:Clear(Color(0,0,0))
 	nodegroup.previewtex:SetData(nodegroup.previewimg,false)
 	
+	nodegroup.histotex=Texture2D:new()
+	nodegroup.histoimg=Image()
+	nodegroup.histoimg:SetSize(256,64,3)
+	nodegroup.histoimg:Clear(Color(0,0,0))
+	nodegroup.histotex:SetData(nodegroup.histoimg,false)
+	
 	nodegroup.output=self:OutputNode(nodegroup)
 	nodegroup.output.position=IntVector2(-nodegroup.pane.position.x + graphics.width-nodegroup.output.width, -nodegroup.pane.position.y + graphics.height/4)
 	
 	nodegroup.output:GetChild("Preview",true).texture=nodegroup.previewtex
+	nodegroup.output:GetChild("Histogram",true).texture=nodegroup.histotex
 	
 	list=nodegroup.output:GetChild("TargetList",true)
 	local smtypes=
@@ -1919,10 +1926,11 @@ end
 function NodeGraphUI:HandleGenerate(eventType, eventData)
 	if not self.nodegroup then return end
 	local kernel=PackNodeGraph(self.nodegroup.output)
-	local minmax=RenderANLKernelToImage(self.nodegroup.previewimg,kernel,0,1)
+	local minmax=RenderANLKernelToImage(self.nodegroup.previewimg,kernel,0,1,self.nodegroup.histoimg)
 	self.nodegroup.previewtex:SetData(self.nodegroup.previewimg)
 	self.nodegroup.output:GetChild("LowValue",true).text=string.format("%.4f",minmax.x)
 	self.nodegroup.output:GetChild("HighValue",true).text=string.format("%.4f",minmax.y)
+	self.nodegroup.histotex:SetData(self.nodegroup.histoimg,false)
 end
 
 function NodeGraphUI:HandleStore(eventType, eventData)

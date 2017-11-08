@@ -1727,7 +1727,7 @@ void RenderANLKernelToBuffer(CArray2Dd *buffer, CKernel *kernel, float lowrange,
     buffer->scaleToRange(lowrange, highrange);
 }
 
-Vector2 RenderANLKernelToImage(Image *buffer, CKernel *kernel, float lowrange, float highrange)
+Vector2 RenderANLKernelToImage(Image *buffer, CKernel *kernel, float lowrange, float highrange, Image *histogram)
 {
     if(!buffer) return Vector2();
     CArray2Dd img;
@@ -1738,6 +1738,42 @@ Vector2 RenderANLKernelToImage(Image *buffer, CKernel *kernel, float lowrange, f
 
     map2DNoZ(SEAMLESS_NONE, img, *kernel, SMappingRanges(0,1,0,1,0,1), kernel->lastIndex());
 	float low=img.getMin(),high=img.getMax();
+	
+	if(histogram)
+	{
+		int numdivs=histogram->GetWidth();
+		int counts[numdivs];
+		for(int c=0; c<numdivs; ++c) counts[c]=0;
+		for(int x=0; x<w; ++x)
+		{
+			for(int y=0; y<h; ++y)
+			{
+				float v=(float)img.get(x,y);
+				v=(v-low) / (high - low);
+				int c = (int)(v * (float)(numdivs-1));
+				counts[c]++;
+			}
+		}
+		
+		int mincount=w*h+10;
+		int maxcount = 0;
+		for(int c=0; c<numdivs; ++c)
+		{
+			if(counts[c]>maxcount) maxcount=c;
+			if(counts[c]<mincount) mincount=c;
+		}
+		
+		histogram->Clear(Color(0,0,0));
+		for(int x=0; x<histogram->GetWidth(); ++x)
+		{
+			float cv=(float)(counts[x]);
+			cv=(cv - (float)mincount) / ((float)(maxcount) - (float)(mincount));
+			for(int y=0; y<(int)(cv * (histogram->GetHeight())); ++y)
+			{
+				histogram->SetPixel(x,histogram->GetHeight()-y,Color(1,1,1));
+			}
+		}
+	}
 	
     img.scaleToRange(lowrange, highrange);
     for(int x=0; x<w; ++x)

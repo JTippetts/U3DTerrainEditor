@@ -4697,7 +4697,8 @@ static int tolua_BindTerrainEdit_RenderANLKernelToImage00(lua_State* tolua_S)
  !tolua_isusertype(tolua_S,2,"CKernel",0,&tolua_err) ||
  !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
  !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
- !tolua_isnoobj(tolua_S,5,&tolua_err)
+ !tolua_isusertype(tolua_S,5,"Image",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,6,&tolua_err)
  )
  goto tolua_lerror;
  else
@@ -4707,8 +4708,9 @@ static int tolua_BindTerrainEdit_RenderANLKernelToImage00(lua_State* tolua_S)
   CKernel* kernel = ((CKernel*)  tolua_tousertype(tolua_S,2,0));
   float lowrange = ((float)  tolua_tonumber(tolua_S,3,0));
   float highrange = ((float)  tolua_tonumber(tolua_S,4,0));
+  Image* histogram = ((Image*)  tolua_tousertype(tolua_S,5,0));
  {
-  Vector2 tolua_ret = (Vector2)  RenderANLKernelToImage(buffer,kernel,lowrange,highrange);
+  Vector2 tolua_ret = (Vector2)  RenderANLKernelToImage(buffer,kernel,lowrange,highrange,histogram);
  {
 #ifdef __cplusplus
  void* tolua_obj = Mtolua_new((Vector2)(tolua_ret));

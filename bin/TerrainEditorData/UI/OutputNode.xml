@@ -2,7 +2,7 @@
 <element type="Window">
 	<attribute name="Name" value="Output" />
 	<attribute name="Position" value="397 105" />
-	<attribute name="Size" value="264 443" />
+	<attribute name="Size" value="264 499" />
 	<attribute name="Pivot" value="0 0" />
 	<attribute name="Clip Children" value="false" />
 	<attribute name="Focus Mode" value="Focusable" />
@@ -231,6 +231,13 @@
 		<attribute name="Max Size" value="2147483647 5" />
 		<attribute name="Pivot" value="0 0" />
 		<attribute name="Layout Mode" value="Horizontal" />
+		<element type="BorderImage">
+			<attribute name="Name" value="Histogram" />
+			<attribute name="Min Size" value="256 64" />
+			<attribute name="Max Size" value="256 64" />
+			<attribute name="Pivot" value="0 0" />
+			<attribute name="Image Rect" value="0 0 256 64" />
+		</element>
 	</element>
 	<element>
 		<attribute name="Pivot" value="0 0" />

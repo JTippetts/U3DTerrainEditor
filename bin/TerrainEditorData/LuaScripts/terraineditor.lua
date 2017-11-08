@@ -68,8 +68,8 @@ function CreateScene()
     zone.boundingBox = BoundingBox(-1000.0, 1000.0)
     zone.ambientColor = Color(0.5, 0.5, 0.7)
     zone.fogColor = Color(0.7,0.8,0.9)
-    zone.fogStart = 800.0
-    zone.fogEnd = 875.0
+    zone.fogStart = 2000.0
+    zone.fogEnd = 2075.0
 
     -- Create a directional light to the world. Enable cascaded shadows on it
     local lightNode = scene_:CreateChild("DirectionalLight")
@@ -106,9 +106,9 @@ function CreateScene()
 	cam.allowspin=true
 	cam.allowzoom=true
 	cam.allowpitch=true
-	cam.maxfollow=300
+	cam.maxfollow=900
 	cam.follow=100
-	cam.clipdist=875
+	cam.clipdist=2000
 	cam:Finalize()
 
 	projecttozero=true
