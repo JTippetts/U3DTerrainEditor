@@ -4698,7 +4698,13 @@ static int tolua_BindTerrainEdit_RenderANLKernelToImage00(lua_State* tolua_S)
  !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
  !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
  !tolua_isusertype(tolua_S,5,"Image",0,&tolua_err) ||
- !tolua_isnoobj(tolua_S,6,&tolua_err)
+ !tolua_isnumber(tolua_S,6,0,&tolua_err) ||
+ !tolua_isboolean(tolua_S,7,0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,8,0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,9,0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,10,0,&tolua_err) ||
+ !tolua_isboolean(tolua_S,11,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,12,&tolua_err)
  )
  goto tolua_lerror;
  else
@@ -4709,8 +4715,14 @@ static int tolua_BindTerrainEdit_RenderANLKernelToImage00(lua_State* tolua_S)
   float lowrange = ((float)  tolua_tonumber(tolua_S,3,0));
   float highrange = ((float)  tolua_tonumber(tolua_S,4,0));
   Image* histogram = ((Image*)  tolua_tousertype(tolua_S,5,0));
+  int seamlessmode = ((int)  tolua_tonumber(tolua_S,6,0));
+  bool usez = ((bool)  tolua_toboolean(tolua_S,7,0));
+  float z = ((float)  tolua_tonumber(tolua_S,8,0));
+  float scalex = ((float)  tolua_tonumber(tolua_S,9,0));
+  float scaley = ((float)  tolua_tonumber(tolua_S,10,0));
+  bool rescale = ((bool)  tolua_toboolean(tolua_S,11,0));
  {
-  Vector2 tolua_ret = (Vector2)  RenderANLKernelToImage(buffer,kernel,lowrange,highrange,histogram);
+  Vector2 tolua_ret = (Vector2)  RenderANLKernelToImage(buffer,kernel,lowrange,highrange,histogram,seamlessmode,usez,z,scalex,scaley,rescale);
  {
 #ifdef __cplusplus
  void* tolua_obj = Mtolua_new((Vector2)(tolua_ret));
@@ -4728,6 +4740,46 @@ static int tolua_BindTerrainEdit_RenderANLKernelToImage00(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'RenderANLKernelToImage'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* function: RenderANLKernelToImageRGBA */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_RenderANLKernelToImageRGBA00
+static int tolua_BindTerrainEdit_RenderANLKernelToImageRGBA00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"Image",0,&tolua_err) ||
+ !tolua_isusertype(tolua_S,2,"CKernel",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+ !tolua_isboolean(tolua_S,4,0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,5,0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,6,0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,7,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,8,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  Image* buffer = ((Image*)  tolua_tousertype(tolua_S,1,0));
+  CKernel* kernel = ((CKernel*)  tolua_tousertype(tolua_S,2,0));
+  int seamlessmode = ((int)  tolua_tonumber(tolua_S,3,0));
+  bool usez = ((bool)  tolua_toboolean(tolua_S,4,0));
+  float z = ((float)  tolua_tonumber(tolua_S,5,0));
+  float scalex = ((float)  tolua_tonumber(tolua_S,6,0));
+  float scaley = ((float)  tolua_tonumber(tolua_S,7,0));
+ {
+  RenderANLKernelToImageRGBA(buffer,kernel,seamlessmode,usez,z,scalex,scaley);
+ }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'RenderANLKernelToImageRGBA'.",&tolua_err);
  return 0;
 #endif
 }
@@ -5981,6 +6033,7 @@ TOLUA_API int tolua_BindTerrainEdit_open (lua_State* tolua_S)
  tolua_function(tolua_S,"BuildQuadStripVarying",tolua_BindTerrainEdit_BuildQuadStripVarying00);
  tolua_function(tolua_S,"RenderANLKernelToBuffer",tolua_BindTerrainEdit_RenderANLKernelToBuffer00);
  tolua_function(tolua_S,"RenderANLKernelToImage",tolua_BindTerrainEdit_RenderANLKernelToImage00);
+ tolua_function(tolua_S,"RenderANLKernelToImageRGBA",tolua_BindTerrainEdit_RenderANLKernelToImageRGBA00);
  tolua_function(tolua_S,"SetHeightFromRasterBuffer",tolua_BindTerrainEdit_SetHeightFromRasterBuffer00);
  tolua_function(tolua_S,"BuildQuadStripRoad",tolua_BindTerrainEdit_BuildQuadStripRoad00);
  tolua_function(tolua_S,"CopyImageInto",tolua_BindTerrainEdit_CopyImageInto00);

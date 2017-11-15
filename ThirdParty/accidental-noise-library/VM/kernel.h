@@ -129,6 +129,8 @@ public:
 	CInstructionIndex linearStep(CInstructionIndex low, CInstructionIndex high, CInstructionIndex control);
 	CInstructionIndex smoothStep(CInstructionIndex low, CInstructionIndex high, CInstructionIndex control);
 	CInstructionIndex smootherStep(CInstructionIndex low, CInstructionIndex high, CInstructionIndex control);
+	
+	CInstructionIndex curveSection(CInstructionIndex lowv, CInstructionIndex t0, CInstructionIndex t1, CInstructionIndex v0, CInstructionIndex v1, CInstructionIndex control);
 
     // Patterns
     CInstructionIndex hexTile(CInstructionIndex seed);
@@ -138,6 +140,7 @@ public:
     CInstructionIndex color(float r, float g, float b, float a);
 
     CInstructionIndex combineRGBA(CInstructionIndex r, CInstructionIndex g, CInstructionIndex b, CInstructionIndex a);
+	CInstructionIndex combineHSVA(CInstructionIndex h, CInstructionIndex s, CInstructionIndex v, CInstructionIndex a);
 
     CInstructionIndex scaleOffset(CInstructionIndex src, double scale, double offset);
 

@@ -4750,6 +4750,60 @@ static int tolua_bind_anl_CKernel_smootherStep00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: curveSection of class  CKernel */
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_curveSection00
+static int tolua_bind_anl_CKernel_curveSection00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"CKernel",0,&tolua_err) ||
+ (tolua_isvaluenil(tolua_S,2,&tolua_err) || !tolua_isusertype(tolua_S,2,"CInstructionIndex",0,&tolua_err)) ||
+ (tolua_isvaluenil(tolua_S,3,&tolua_err) || !tolua_isusertype(tolua_S,3,"CInstructionIndex",0,&tolua_err)) ||
+ (tolua_isvaluenil(tolua_S,4,&tolua_err) || !tolua_isusertype(tolua_S,4,"CInstructionIndex",0,&tolua_err)) ||
+ (tolua_isvaluenil(tolua_S,5,&tolua_err) || !tolua_isusertype(tolua_S,5,"CInstructionIndex",0,&tolua_err)) ||
+ (tolua_isvaluenil(tolua_S,6,&tolua_err) || !tolua_isusertype(tolua_S,6,"CInstructionIndex",0,&tolua_err)) ||
+ (tolua_isvaluenil(tolua_S,7,&tolua_err) || !tolua_isusertype(tolua_S,7,"CInstructionIndex",0,&tolua_err)) ||
+ !tolua_isnoobj(tolua_S,8,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  CKernel* self = (CKernel*)  tolua_tousertype(tolua_S,1,0);
+  CInstructionIndex lowv = *((CInstructionIndex*)  tolua_tousertype(tolua_S,2,0));
+  CInstructionIndex t0 = *((CInstructionIndex*)  tolua_tousertype(tolua_S,3,0));
+  CInstructionIndex t1 = *((CInstructionIndex*)  tolua_tousertype(tolua_S,4,0));
+  CInstructionIndex v0 = *((CInstructionIndex*)  tolua_tousertype(tolua_S,5,0));
+  CInstructionIndex v1 = *((CInstructionIndex*)  tolua_tousertype(tolua_S,6,0));
+  CInstructionIndex control = *((CInstructionIndex*)  tolua_tousertype(tolua_S,7,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'curveSection'", NULL);
+#endif
+ {
+  CInstructionIndex tolua_ret = (CInstructionIndex)  self->curveSection(lowv,t0,t1,v0,v1,control);
+ {
+#ifdef __cplusplus
+ void* tolua_obj = Mtolua_new((CInstructionIndex)(tolua_ret));
+  tolua_pushusertype(tolua_S,tolua_obj,"CInstructionIndex");
+ tolua_register_gc(tolua_S,lua_gettop(tolua_S));
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(CInstructionIndex));
+  tolua_pushusertype(tolua_S,tolua_obj,"CInstructionIndex");
+ tolua_register_gc(tolua_S,lua_gettop(tolua_S));
+#endif
+ }
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'curveSection'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: radial of class  CKernel */
 #ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_radial00
 static int tolua_bind_anl_CKernel_radial00(lua_State* tolua_S)
@@ -5012,6 +5066,56 @@ static int tolua_bind_anl_CKernel_combineRGBA00(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'combineRGBA'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: combineHSVA of class  CKernel */
+#ifndef TOLUA_DISABLE_tolua_bind_anl_CKernel_combineHSVA00
+static int tolua_bind_anl_CKernel_combineHSVA00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"CKernel",0,&tolua_err) ||
+ (tolua_isvaluenil(tolua_S,2,&tolua_err) || !tolua_isusertype(tolua_S,2,"CInstructionIndex",0,&tolua_err)) ||
+ (tolua_isvaluenil(tolua_S,3,&tolua_err) || !tolua_isusertype(tolua_S,3,"CInstructionIndex",0,&tolua_err)) ||
+ (tolua_isvaluenil(tolua_S,4,&tolua_err) || !tolua_isusertype(tolua_S,4,"CInstructionIndex",0,&tolua_err)) ||
+ (tolua_isvaluenil(tolua_S,5,&tolua_err) || !tolua_isusertype(tolua_S,5,"CInstructionIndex",0,&tolua_err)) ||
+ !tolua_isnoobj(tolua_S,6,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  CKernel* self = (CKernel*)  tolua_tousertype(tolua_S,1,0);
+  CInstructionIndex h = *((CInstructionIndex*)  tolua_tousertype(tolua_S,2,0));
+  CInstructionIndex s = *((CInstructionIndex*)  tolua_tousertype(tolua_S,3,0));
+  CInstructionIndex v = *((CInstructionIndex*)  tolua_tousertype(tolua_S,4,0));
+  CInstructionIndex a = *((CInstructionIndex*)  tolua_tousertype(tolua_S,5,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'combineHSVA'", NULL);
+#endif
+ {
+  CInstructionIndex tolua_ret = (CInstructionIndex)  self->combineHSVA(h,s,v,a);
+ {
+#ifdef __cplusplus
+ void* tolua_obj = Mtolua_new((CInstructionIndex)(tolua_ret));
+  tolua_pushusertype(tolua_S,tolua_obj,"CInstructionIndex");
+ tolua_register_gc(tolua_S,lua_gettop(tolua_S));
+#else
+ void* tolua_obj = tolua_copy(tolua_S,(void*)&tolua_ret,sizeof(CInstructionIndex));
+  tolua_pushusertype(tolua_S,tolua_obj,"CInstructionIndex");
+ tolua_register_gc(tolua_S,lua_gettop(tolua_S));
+#endif
+ }
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'combineHSVA'.",&tolua_err);
  return 0;
 #endif
 }
@@ -11225,12 +11329,14 @@ TOLUA_API int tolua_bind_anl_open (lua_State* tolua_S)
   tolua_function(tolua_S,"linearStep",tolua_bind_anl_CKernel_linearStep00);
   tolua_function(tolua_S,"smoothStep",tolua_bind_anl_CKernel_smoothStep00);
   tolua_function(tolua_S,"smootherStep",tolua_bind_anl_CKernel_smootherStep00);
+  tolua_function(tolua_S,"curveSection",tolua_bind_anl_CKernel_curveSection00);
   tolua_function(tolua_S,"radial",tolua_bind_anl_CKernel_radial00);
   tolua_function(tolua_S,"hexTile",tolua_bind_anl_CKernel_hexTile00);
   tolua_function(tolua_S,"hexBump",tolua_bind_anl_CKernel_hexBump00);
   tolua_function(tolua_S,"color",tolua_bind_anl_CKernel_color00);
   tolua_function(tolua_S,"color",tolua_bind_anl_CKernel_color01);
   tolua_function(tolua_S,"combineRGBA",tolua_bind_anl_CKernel_combineRGBA00);
+  tolua_function(tolua_S,"combineHSVA",tolua_bind_anl_CKernel_combineHSVA00);
   tolua_function(tolua_S,"scaleOffset",tolua_bind_anl_CKernel_scaleOffset00);
   tolua_function(tolua_S,"simpleFractalLayer",tolua_bind_anl_CKernel_simpleFractalLayer00);
   tolua_function(tolua_S,"simpleRidgedLayer",tolua_bind_anl_CKernel_simpleRidgedLayer00);

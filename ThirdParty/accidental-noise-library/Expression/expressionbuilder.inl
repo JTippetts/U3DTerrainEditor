@@ -84,6 +84,7 @@ CExpressionBuilder::CExpressionBuilder(CKernel &kernel) : kernel_(kernel)
 	f_["linearStep"]=3;
 	f_["smoothStep"]=3;
 	f_["smootherStep"]=3;
+	f_["curveSection"]=5;
     f_["index"]=1;
     f_["rindex"]=1;
 
@@ -649,6 +650,16 @@ void CExpressionBuilder::buildFunction(const std::string &token, std::stack<CIns
 		CInstructionIndex high=stk.top(); stk.pop();
 		CInstructionIndex low=stk.top(); stk.pop();
 		stk.push(kernel_.smootherStep(low,high,control));
+	}
+	else if(token=="curveSection")
+	{
+		CInstructionIndex control=stk.top(); stk.pop();
+		CInstructionIndex v1=stk.top(); stk.pop();
+		CInstructionIndex v0=stk.top(); stk.pop();
+		CInstructionIndex t1=stk.top(); stk.pop();
+		CInstructionIndex t0=stk.top(); stk.pop();
+		CInstructionIndex lowv=stk.top(); stk.pop();
+		stk.push(kernel_.curveSection(lowv,t0,t1,v0,v1,control));
 	}
 	else if(token=="fractal")
 	{

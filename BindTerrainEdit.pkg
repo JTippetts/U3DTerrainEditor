@@ -167,7 +167,10 @@ Vector2 WorldToNormalized(Image *height, Terrain *terrain, Vector3 world);
 	void BuildQuadStrip(RasterVertexList *in, RasterVertexList *out, float width);
 	void BuildQuadStripVarying(RasterVertexList *in, RasterVertexList *out, float startwidth, float endwidth);
 	void RenderANLKernelToBuffer(CArray2Dd *buffer, CKernel *kernel, float lowrange=0, float highrange=1);
-	Vector2 RenderANLKernelToImage(Image *buffer, CKernel *kernel, float lowrange, float highrange, Image *histogram);
+	
+	Vector2 RenderANLKernelToImage(Image *buffer, CKernel *kernel, float lowrange, float highrange, Image *histogram,int seamlessmode, bool usez, float z, float scalex, float scaley, bool rescale);
+	void RenderANLKernelToImageRGBA(Image *buffer, CKernel *kernel,int seamlessmode, bool usez, float z, float scalex, float scaley);
+	
 	void SetHeightFromRasterBuffer(Image *height, CArray2Dd *buffer, Image *mask=0, bool useMask=false, bool invertMask=false);
 	
 	void BuildQuadStripRoad(RasterVertexList *curve, int steps, float width, float lengthscale, CustomGeometry *geom);

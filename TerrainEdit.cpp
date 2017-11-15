@@ -1727,23 +1727,34 @@ void RenderANLKernelToBuffer(CArray2Dd *buffer, CKernel *kernel, float lowrange,
     buffer->scaleToRange(lowrange, highrange);
 }
 
-Vector2 RenderANLKernelToImage(Image *buffer, CKernel *kernel, float lowrange, float highrange, Image *histogram)
+Vector2 RenderANLKernelToImage(Image *buffer, CKernel *kernel, float lowrange, float highrange, Image *histogram,int seamlessmode, bool usez, float z, float scalex, float scaley, bool rescale)
 {
+	#define th(x) Log::Write(LOG_INFO, String((x)));
     if(!buffer) return Vector2();
     CArray2Dd img;
 
     int w=buffer->GetWidth();
     int h=buffer->GetHeight();
     img.resize(w,h);
+	th(1);
 
-    map2DNoZ(SEAMLESS_NONE, img, *kernel, SMappingRanges(0,1,0,1,0,1), kernel->lastIndex());
+	if (!usez)
+		map2DNoZ(seamlessmode, img, *kernel, SMappingRanges(0,scalex,0,scaley,0,1), kernel->lastIndex());
+	else
+		map2D(seamlessmode, img, *kernel, SMappingRanges(0,scalex,0,scaley,0,1), z, kernel->lastIndex());
 	float low=img.getMin(),high=img.getMax();
-	
+	th(2);
 	if(histogram)
 	{
 		int numdivs=histogram->GetWidth();
 		int counts[numdivs];
 		for(int c=0; c<numdivs; ++c) counts[c]=0;
+		th(1.5);
+		th(w);
+		th(h);
+		th(numdivs);
+		th(low);
+		th(high);
 		for(int x=0; x<w; ++x)
 		{
 			for(int y=0; y<h; ++y)
@@ -1751,10 +1762,11 @@ Vector2 RenderANLKernelToImage(Image *buffer, CKernel *kernel, float lowrange, f
 				float v=(float)img.get(x,y);
 				v=(v-low) / (high - low);
 				int c = (int)(v * (float)(numdivs-1));
+				c=std::min(numdivs-1, std::max(0, c));
 				counts[c]++;
 			}
 		}
-		
+		th(1.6);
 		int mincount=w*h+10;
 		int maxcount = 0;
 		for(int c=0; c<numdivs; ++c)
@@ -1763,6 +1775,7 @@ Vector2 RenderANLKernelToImage(Image *buffer, CKernel *kernel, float lowrange, f
 			if(counts[c]<mincount) mincount=c;
 		}
 		
+		th(1.7)
 		histogram->Clear(Color(0,0,0));
 		for(int x=0; x<histogram->GetWidth(); ++x)
 		{
@@ -1774,8 +1787,8 @@ Vector2 RenderANLKernelToImage(Image *buffer, CKernel *kernel, float lowrange, f
 			}
 		}
 	}
-	
-    img.scaleToRange(lowrange, highrange);
+	th(3);
+    if(rescale) img.scaleToRange(lowrange, highrange);
     for(int x=0; x<w; ++x)
     {
         for(int y=0; y<h; ++y)
@@ -1784,8 +1797,31 @@ Vector2 RenderANLKernelToImage(Image *buffer, CKernel *kernel, float lowrange, f
             buffer->SetPixel(x,y,Color(v,v,v,1));
         }
     }
-	
+	th(4);
 	return Vector2(low,high);
+}
+
+void RenderANLKernelToImageRGBA(Image *buffer, CKernel *kernel,int seamlessmode, bool usez, float z, float scalex, float scaley)
+{
+	if(!buffer) return;
+    CArray2Drgba img;
+
+    int w=buffer->GetWidth();
+    int h=buffer->GetHeight();
+    img.resize(w,h);
+	
+	if(!usez)
+		mapRGBA2DNoZ(seamlessmode, img, *kernel, SMappingRanges(0,scalex,0,scaley,0,1), kernel->lastIndex());
+	else
+		mapRGBA2D(seamlessmode, img, *kernel, SMappingRanges(0,scalex,0,scaley,0,1), z, kernel->lastIndex());
+    for(int x=0; x<w; ++x)
+    {
+        for(int y=0; y<h; ++y)
+        {
+            SRGBA v=img.get(x,y);
+            buffer->SetPixel(x,y,Color(v.r,v.g,v.b,v.a));
+        }
+    }
 }
 
 void SetHeightFromRasterBuffer(Image *height, CArray2Dd *buffer, Image *mask, bool useMask, bool invertMask)

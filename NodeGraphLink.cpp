@@ -36,8 +36,8 @@ void NodeGraphLinkSource::RemoveLink(NodeGraphLinkDest *target)
         NodeGraphLink *link=*i;
         if(link->GetTarget()==target)
         {
-            link->ClearSource();
-            link->ClearTarget();
+            //link->ClearSource();
+            //link->ClearTarget();
             links_.Erase(i);
             return;
         }
@@ -49,8 +49,8 @@ void NodeGraphLinkSource::RemoveLink(NodeGraphLink *link)
     auto i=links_.Find(SharedPtr<NodeGraphLink>(link));
     if(i!=links_.End())
     {
-        link->ClearSource();
-        link->ClearTarget();
+        //link->ClearSource();
+        //link->ClearTarget();
         links_.Erase(i);
     }
 }
@@ -127,8 +127,9 @@ NodeGraphLink::NodeGraphLink(Context *context) : Object(context), source_(0), ta
 
 void NodeGraphLink::SetTarget(NodeGraphLinkDest *t)
 {
+	if(target_) target_->ClearLink();
     target_=t;
-    t->SetLink(this);
+    if(t) t->SetLink(this);
 
     //IntVector2 targetpos=t->GetPosition();
     //SetSize(targetpos.x_ - position_.x_, targetpos.y_ - position_.y_);
@@ -136,16 +137,19 @@ void NodeGraphLink::SetTarget(NodeGraphLinkDest *t)
 
 void NodeGraphLink::ClearTarget()
 {
+	if(target_) target_->ClearLink();
     target_=0;
 }
 
 void NodeGraphLink::SetSource(NodeGraphLinkSource *s)
 {
     source_=s;
+	s->AddLink(this);
 }
 
 void NodeGraphLink::ClearSource()
 {
+	if(source_) source_->RemoveLink(this);
     source_=0;
 }
 
