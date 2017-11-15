@@ -142,7 +142,7 @@ void Urho3DPlayer::Start()
         Script *script = new Script(context_);
         context_->RegisterSubsystem(script);
         // Load any custom script bindings
-        LoadScriptBindings(script->GetScriptEngine());
+       // LoadScriptBindings(script->GetScriptEngine());
 
 
         // Hold a shared pointer to the script file to make sure it is not unloaded during runtime

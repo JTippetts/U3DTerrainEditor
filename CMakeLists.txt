@@ -22,13 +22,10 @@ set(INCLUDE_DIRS_ONLY ${INCLUDE_DIRS_ONLY} ThirdParty/accidental-noise-library/V
 include_directories (${INCLUDE_DIRS_ONLY})
 include_directories(${URHO3D_HOME}/include/Urho3D/ThirdParty/Lua${JIT})
 include_directories(${URHO3D_HOME}/include/Urho3D/ThirdParty/toluapp)
-include_directories(${URHO3D_HOME}/include/Urho3D/ThirdParty/AngelScript)
+
 # Define target name
 set (TARGET_NAME TEdit)
 # Define source files
-define_source_files (EXTRA_CPP_FILES ThirdParty/accidental-noise-library/Bindings/bind_anl.cpp ThirdParty/accidental-noise-library/Bindings/bind_anl_angelscript.cpp 
-	ThirdParty/angelscript/sdk/add_on/scriptstdstring/scriptstdstring.cpp ThirdParty/accidental-noise-library/Bindings/bind_anl_angelscript.cpp 
-	ThirdParty/angelscript/sdk/add_on/scriptstdstring/scriptstdstring_utils.cpp ThirdParty/accidental-noise-library/Bindings/bind_anl_angelscript.cpp 
-	ThirdParty/angelscript/sdk/add_on/scriptarray/scriptarray.cpp)
+define_source_files (EXTRA_CPP_FILES ThirdParty/accidental-noise-library/Bindings/bind_anl.cpp)
 # Setup target with resource copying
 setup_main_executable ()

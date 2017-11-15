@@ -1,15 +1,7 @@
 #include "LoadBindings.h"
 
 #ifdef URHO3D_ANGELSCRIPT
-namespace anl
-{
-void RegisterANL(asIScriptEngine *as);
-};
 
-void LoadScriptBindings(asIScriptEngine* engine)
-{
-    anl::RegisterANL(engine);
-}
 
 #endif
 
