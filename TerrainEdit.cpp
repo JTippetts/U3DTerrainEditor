@@ -236,7 +236,7 @@ Vector2 TerrainEdit::WorldToNormalized(Vector3 world)
 
 Vector3 TerrainEdit::NormalizedToWorld(Vector2 normalized)
 {
-    if(!terrain_) return Vector2(0,0);
+    if(!terrain_) return Vector3(0,0,0);
     Vector3 spacing=terrain_->GetSpacing();
     int patchSize=terrain_->GetPatchSize();
     IntVector2 numPatches=IntVector2((hmap_->GetWidth()-1) / patchSize, (hmap_->GetHeight()-1) / patchSize);
@@ -1268,7 +1268,7 @@ Vector2 WorldToNormalized(Image *height, Terrain *terrain, Vector3 world)
 
 Vector3 NormalizedToWorld(Image *height, Terrain *terrain, Vector2 normalized)
 {
-    if(!terrain || !height) return Vector2(0,0);
+    if(!terrain || !height) return Vector3(0,0,0);
     Vector3 spacing=terrain->GetSpacing();
     int patchSize=terrain->GetPatchSize();
     IntVector2 numPatches=IntVector2((height->GetWidth()-1) / patchSize, (height->GetHeight()-1) / patchSize);

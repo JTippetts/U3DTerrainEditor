@@ -1184,7 +1184,466 @@ distort={
          [3] = 12345;
       };
    };
-};
+},
+fBm={
+   ["instance"] = {
+      [1] = {
+         ["op"] = "Parameter";
+         ["param"] = 1;
+      };
+      [2] = {
+         ["op"] = "Function";
+         ["seeds"] = {
+            [1] = "nil";
+            [2] = 147234;
+         };
+         ["func"] = "gradientBasis";
+         ["indices"] = {
+            [1] = "nil";
+            [2] = "nil";
+         };
+         ["constants"] = {
+            [1] = 3;
+            [2] = "nil";
+         };
+      };
+      [3] = {
+         ["op"] = "Function";
+         ["seeds"] = {
+            [1] = 17892;
+            [2] = "nil";
+            [3] = "nil";
+         };
+         ["func"] = "randomize";
+         ["indices"] = {
+            [1] = "nil";
+            [2] = "nil";
+            [3] = "nil";
+         };
+         ["constants"] = {
+            [1] = "nil";
+            [2] = 0;
+            [3] = 1;
+         };
+      };
+      [4] = {
+         ["op"] = "Function";
+         ["seeds"] = {
+            [1] = "nil";
+            [2] = "nil";
+            [3] = "nil";
+            [4] = "nil";
+            [5] = "nil";
+         };
+         ["func"] = "rotateDomain";
+         ["indices"] = {
+            [1] = 2;
+            [2] = 3;
+            [3] = "nil";
+            [4] = "nil";
+            [5] = "nil";
+         };
+         ["constants"] = {
+            [1] = "nil";
+            [2] = "nil";
+            [3] = 0;
+            [4] = 0;
+            [5] = 1;
+         };
+      };
+      [5] = {
+         ["op"] = "Parameter";
+         ["param"] = 2;
+      };
+      [6] = {
+         ["op"] = "Parameter";
+         ["param"] = 3;
+      };
+      [7] = {
+         ["op"] = "Parameter";
+         ["param"] = 4;
+      };
+      [8] = {
+         ["op"] = "Parameter";
+         ["param"] = 5;
+      };
+      [9] = {
+         ["op"] = "Function";
+         ["seeds"] = {
+            [1] = "nil";
+            [2] = "nil";
+            [3] = "nil";
+            [4] = "nil";
+            [5] = "nil";
+            [6] = "nil";
+         };
+         ["func"] = "fractal";
+         ["indices"] = {
+            [1] = 1;
+            [2] = 4;
+            [3] = 5;
+            [4] = 6;
+            [5] = 7;
+            [6] = 8;
+         };
+         ["constants"] = {
+            [1] = "nil";
+            [2] = "nil";
+            [3] = "nil";
+            [4] = "nil";
+            [5] = "nil";
+            [6] = "nil";
+         };
+      };
+   };
+   ["inputs"] = {
+      [1] = {
+         [1] = "seed";
+         [2] = "Seed";
+         [3] = 12345;
+      };
+      [2] = {
+         [1] = "value";
+         [2] = "Persistence";
+         [3] = 0.5;
+      };
+      [3] = {
+         [1] = "value";
+         [2] = "Lacunarity";
+         [3] = 2;
+      };
+      [4] = {
+         [1] = "value";
+         [2] = "Octaves";
+         [3] = 8;
+      };
+      [5] = {
+         [1] = "value";
+         [2] = "Frequency";
+         [3] = 1;
+      };
+   };
+},
+billow={
+   ["instance"] = {
+      [1] = {
+         ["op"] = "Parameter";
+         ["param"] = 1;
+      };
+      [2] = {
+         ["op"] = "Function";
+         ["seeds"] = {
+            [1] = "nil";
+            [2] = 147234;
+         };
+         ["func"] = "gradientBasis";
+         ["indices"] = {
+            [1] = "nil";
+            [2] = "nil";
+         };
+         ["constants"] = {
+            [1] = 3;
+            [2] = "nil";
+         };
+      };
+      [3] = {
+         ["op"] = "Function";
+         ["seeds"] = {
+            [1] = "nil";
+         };
+         ["func"] = "abs";
+         ["indices"] = {
+            [1] = 2;
+         };
+         ["constants"] = {
+            [1] = "nil";
+         };
+      };
+      [4] = {
+         ["op"] = "Function";
+         ["seeds"] = {
+            [1] = 17892;
+            [2] = "nil";
+            [3] = "nil";
+         };
+         ["func"] = "randomize";
+         ["indices"] = {
+            [1] = "nil";
+            [2] = "nil";
+            [3] = "nil";
+         };
+         ["constants"] = {
+            [1] = "nil";
+            [2] = 0;
+            [3] = 1;
+         };
+      };
+      [5] = {
+         ["op"] = "Function";
+         ["seeds"] = {
+            [1] = "nil";
+            [2] = "nil";
+            [3] = "nil";
+            [4] = "nil";
+            [5] = "nil";
+         };
+         ["func"] = "rotateDomain";
+         ["indices"] = {
+            [1] = 3;
+            [2] = 4;
+            [3] = "nil";
+            [4] = "nil";
+            [5] = "nil";
+         };
+         ["constants"] = {
+            [1] = "nil";
+            [2] = "nil";
+            [3] = 0;
+            [4] = 0;
+            [5] = 1;
+         };
+      };
+      [6] = {
+         ["op"] = "Parameter";
+         ["param"] = 2;
+      };
+      [7] = {
+         ["op"] = "Parameter";
+         ["param"] = 3;
+      };
+      [8] = {
+         ["op"] = "Parameter";
+         ["param"] = 4;
+      };
+      [9] = {
+         ["op"] = "Parameter";
+         ["param"] = 5;
+      };
+      [10] = {
+         ["op"] = "Function";
+         ["seeds"] = {
+            [1] = "nil";
+            [2] = "nil";
+            [3] = "nil";
+            [4] = "nil";
+            [5] = "nil";
+            [6] = "nil";
+         };
+         ["func"] = "fractal";
+         ["indices"] = {
+            [1] = 1;
+            [2] = 5;
+            [3] = 6;
+            [4] = 7;
+            [5] = 8;
+            [6] = 9;
+         };
+         ["constants"] = {
+            [1] = "nil";
+            [2] = "nil";
+            [3] = "nil";
+            [4] = "nil";
+            [5] = "nil";
+            [6] = "nil";
+         };
+      };
+   };
+   ["inputs"] = {
+      [1] = {
+         [1] = "seed";
+         [2] = "Seed";
+         [3] = 12345;
+      };
+      [2] = {
+         [1] = "value";
+         [2] = "Persistence";
+         [3] = 0.5;
+      };
+      [3] = {
+         [1] = "value";
+         [2] = "Lacunarity";
+         [3] = 2;
+      };
+      [4] = {
+         [1] = "value";
+         [2] = "Octaves";
+         [3] = 8;
+      };
+      [5] = {
+         [1] = "value";
+         [2] = "Frequency";
+         [3] = 1;
+      };
+   };
+},
+ridged={
+   ["instance"] = {
+      [1] = {
+         ["op"] = "Parameter";
+         ["param"] = 1;
+      };
+      [2] = {
+         ["op"] = "Function";
+         ["seeds"] = {
+            [1] = "nil";
+            [2] = 147234;
+         };
+         ["func"] = "gradientBasis";
+         ["indices"] = {
+            [1] = "nil";
+            [2] = "nil";
+         };
+         ["constants"] = {
+            [1] = 3;
+            [2] = "nil";
+         };
+      };
+      [3] = {
+         ["op"] = "Function";
+         ["seeds"] = {
+            [1] = "nil";
+         };
+         ["func"] = "abs";
+         ["indices"] = {
+            [1] = 2;
+         };
+         ["constants"] = {
+            [1] = "nil";
+         };
+      };
+      [4] = {
+         ["op"] = "Function";
+         ["seeds"] = {
+            [1] = "nil";
+            [2] = "nil";
+         };
+         ["func"] = "subtract";
+         ["indices"] = {
+            [1] = "nil";
+            [2] = 3;
+         };
+         ["constants"] = {
+            [1] = 1;
+            [2] = "nil";
+         };
+      };
+      [5] = {
+         ["op"] = "Function";
+         ["seeds"] = {
+            [1] = 17892;
+            [2] = "nil";
+            [3] = "nil";
+         };
+         ["func"] = "randomize";
+         ["indices"] = {
+            [1] = "nil";
+            [2] = "nil";
+            [3] = "nil";
+         };
+         ["constants"] = {
+            [1] = "nil";
+            [2] = 0;
+            [3] = 1;
+         };
+      };
+      [6] = {
+         ["op"] = "Function";
+         ["seeds"] = {
+            [1] = "nil";
+            [2] = "nil";
+            [3] = "nil";
+            [4] = "nil";
+            [5] = "nil";
+         };
+         ["func"] = "rotateDomain";
+         ["indices"] = {
+            [1] = 4;
+            [2] = 5;
+            [3] = "nil";
+            [4] = "nil";
+            [5] = "nil";
+         };
+         ["constants"] = {
+            [1] = "nil";
+            [2] = "nil";
+            [3] = 0;
+            [4] = 0;
+            [5] = 1;
+         };
+      };
+      [7] = {
+         ["op"] = "Parameter";
+         ["param"] = 2;
+      };
+      [8] = {
+         ["op"] = "Parameter";
+         ["param"] = 3;
+      };
+      [9] = {
+         ["op"] = "Parameter";
+         ["param"] = 4;
+      };
+      [10] = {
+         ["op"] = "Parameter";
+         ["param"] = 5;
+      };
+      [11] = {
+         ["op"] = "Function";
+         ["seeds"] = {
+            [1] = "nil";
+            [2] = "nil";
+            [3] = "nil";
+            [4] = "nil";
+            [5] = "nil";
+            [6] = "nil";
+         };
+         ["func"] = "fractal";
+         ["indices"] = {
+            [1] = 1;
+            [2] = 6;
+            [3] = 7;
+            [4] = 8;
+            [5] = 9;
+            [6] = 10;
+         };
+         ["constants"] = {
+            [1] = "nil";
+            [2] = "nil";
+            [3] = "nil";
+            [4] = "nil";
+            [5] = "nil";
+            [6] = "nil";
+         };
+      };
+   };
+   ["inputs"] = {
+      [1] = {
+         [1] = "seed";
+         [2] = "Seed";
+         [3] = 12345;
+      };
+      [2] = {
+         [1] = "value";
+         [2] = "Persistence";
+         [3] = 0.5;
+      };
+      [3] = {
+         [1] = "value";
+         [2] = "Lacunarity";
+         [3] = 2;
+      };
+      [4] = {
+         [1] = "value";
+         [2] = "Octaves";
+         [3] = 8;
+      };
+      [5] = {
+         [1] = "value";
+         [2] = "Frequency";
+         [3] = 1;
+      };
+   };
+}
 }
 	
 }
