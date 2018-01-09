@@ -13,6 +13,7 @@
 #include <Urho3D/IO/Deserializer.h>
 #include <Urho3D/IO/File.h>
 #include <Urho3D/Scene/Scene.h>
+#include <Urho3D/Container/Vector.h>
 #include "Spline.h"
 #include <iostream>
 
@@ -384,24 +385,24 @@ void TerrainEdit::SetHeightBuffer(CArray2Dd &buffer, MaskSettings &masksettings)
             if(masksettings.usemask0)
             {
                 float mval=mask.r_;
-                if(masksettings.invertmask0) mval=1.0-mval;
+                if(masksettings.invertmask0) mval=1.0f-mval;
                 maskval*=mval;
             }
             if(masksettings.usemask1)
             {
                 float mval=mask.g_;
-                if(masksettings.invertmask1) mval=1.0-mval;
+                if(masksettings.invertmask1) mval=1.0f-mval;
                 maskval*=mval;
             }
             if(masksettings.usemask2)
             {
                 float mval=mask.b_;
-                if(masksettings.invertmask2) mval=1.0-mval;
+                if(masksettings.invertmask2) mval=1.0f-mval;
                 maskval*=mval;
             }
 
             v=oldheight+maskval*(v-oldheight);
-            SetHeightValue(x,y,v);
+            SetHeightValue(x,y,(float)v);
         }
     }
     terrain_->SetHeightMap(hmap_);
@@ -423,9 +424,9 @@ void TerrainEdit::SetMaskBuffer(CArray2Dd &buffer, int which)
             Color mask=mask_->GetPixel(x,y);
 			switch(which)
 			{
-				case 0: mask.r_ = 1.0f-v; break;
-				case 1: mask.g_ = 1.0f-v; break;
-				case 2: mask.b_ = 1.0f-v; break;
+				case 0: mask.r_ = 1.0f-(float)v; break;
+				case 1: mask.g_ = 1.0f- (float)v; break;
+				case 2: mask.b_ = 1.0f- (float)v; break;
 				default: break;
 			}
 			mask_->SetPixel(x,y,mask);
@@ -449,7 +450,7 @@ void TerrainEdit::SetLayerBuffer(CArray2Dd &buffer, int layer, MaskSettings &mas
             float nx=(float)x/(float)(w);
             float ny=(float)y/(float)(h);
 
-            float i=buffer.getBilinear(nx,ny);
+            float i=(float)buffer.getBilinear(nx,ny);
             i=std::max(0.0f, std::min(1.0f, i));
             Color mask=mask_->GetPixelBilinear(nx,ny);
 
@@ -529,7 +530,7 @@ void TerrainEdit::SetLayerBufferMax(CArray2Dd &buffer, int layer, MaskSettings &
             float nx=(float)x/(float)(w);
             float ny=(float)y/(float)(h);
 
-            float i=buffer.getBilinear(nx,ny);
+            float i= (float)buffer.getBilinear(nx,ny);
             i=std::max(0.0f, std::min(1.0f, i));
             Color mask=mask_->GetPixelBilinear(nx,ny);
 
@@ -603,8 +604,8 @@ void TerrainEdit::BlendHeightBuffer(CArray2Dd &buffer, CArray2Dd &blend, MaskSet
             float nx=(float)x / (float)(hmap_->GetWidth());
             float ny=(float)y / (float)(hmap_->GetHeight());
 
-            float v=buffer.getBilinear(nx,ny);
-            float bval=blend.getBilinear(nx,ny);
+            float v=(float)buffer.getBilinear(nx,ny);
+            float bval=(float)blend.getBilinear(nx,ny);
             float ht=GetHeightValue(x, y);
             Color mask=mask_->GetPixelBilinear(nx,ny);
             float maskval=1.0f;
@@ -642,7 +643,7 @@ void TerrainEdit::ApplyHeightBrush(float x, float z, float dt, BrushSettings &br
     Vector3 world=Vector3(x,0,z);
     IntVector2 ht=terrain_->WorldToHeightMap(world);
 
-    int sz=brush.radius+1;
+    int sz=(int)brush.radius+1;
     int comp=hmap_->GetComponents();
     for(int hx=ht.x_-sz; hx<=ht.x_+sz; ++hx)
     {
@@ -655,7 +656,7 @@ void TerrainEdit::ApplyHeightBrush(float x, float z, float dt, BrushSettings &br
                 float d=std::sqrt(dx*dx+dz*dz);
                 float i=((d-brush.radius)/(brush.hardness*brush.radius-brush.radius));
                 i=std::max(0.0f, std::min(1.0f, i));
-                i=std::sin(i*1.57079633);
+                i=(float)std::sin(i*1.57079633);
                 i=i*dt*brush.power;
                 if(masksettings.usemask0)
                 {
@@ -692,11 +693,11 @@ void TerrainEdit::ApplyBlendBrush(float x, float z, int layer, float dt, BrushSe
 
     Vector2 normalized=WorldToNormalized(Vector3(x,0,z));
     float ratio=((float)blend0_->GetWidth()/(float)hmap_->GetWidth());
-    int ix=(normalized.x_*(float)(blend0_->GetWidth()-1));
-    int iy=(normalized.y_*(float)(blend0_->GetHeight()-1));
+    int ix=(int)(normalized.x_*(float)(blend0_->GetWidth()-1));
+    int iy=(int)(normalized.y_*(float)(blend0_->GetHeight()-1));
     iy=blend0_->GetHeight()-iy;
     float rad=brush.radius*ratio;
-    int sz=rad+1;
+    int sz=(int)rad+1;
 
     for(int hx=ix-sz; hx<=ix+sz; ++hx)
     {
@@ -780,11 +781,11 @@ void TerrainEdit::ApplyMaskBrush(float x, float z, int which, float dt, BrushSet
 
     Vector2 normalized=WorldToNormalized(Vector3(x,0,z));
     float ratio=((float)mask_->GetWidth()/(float)hmap_->GetWidth());
-    int ix=(normalized.x_*(float)(mask_->GetWidth()-1));
-    int iy=(normalized.y_*(float)(mask_->GetHeight()-1));
+    int ix=(int)(normalized.x_*(float)(mask_->GetWidth()-1));
+    int iy=(int)(normalized.y_*(float)(mask_->GetHeight()-1));
     iy=mask_->GetHeight()-iy;
     float rad=brush.radius*ratio;
-    int sz=rad+1;
+    int sz=(int)rad+1;
 
     for(int hx=ix-sz; hx<=ix+sz; ++hx)
     {
@@ -834,7 +835,7 @@ void TerrainEdit::ApplySmoothBrush(float x, float z, float dt, BrushSettings &br
     Vector3 world=Vector3(x,0,z);
     IntVector2 ht=terrain_->WorldToHeightMap(world);
 
-    int sz=brush.radius+1;
+    int sz=(int)brush.radius+1;
     int comp=hmap_->GetComponents();
     for(int hx=ht.x_-sz; hx<=ht.x_+sz; ++hx)
     {
@@ -1200,26 +1201,26 @@ void TerrainEdit::GetCavityMap(CArray2Dd &buffer, float sampleradius, float scal
 	KISS rnd;
 	float pixsize=1.0f/(float)tw;
 
-    for(int y=0; y<th; ++y)
+    for(unsigned int y=0; y<th; ++y)
     {
-        for(int x=0; x<tw; ++x)
+        for(unsigned int x=0; x<tw; ++x)
         {
 			float nx=(float)x/(float)tw;
 			float ny=(float)y/(float)th;
 			Vector2 nrm(nx,ny);
 			// Calculate position and normal
 			Vector3 pos=Vector3(nx,ny,GetHeightValue(x,y));
-			float p1=GetHeightValue(std::max(0,std::min(hmap_->GetWidth()-1, x-1)), y);
-			float p2=GetHeightValue(std::max(0,std::min(hmap_->GetWidth()-1, x+1)), y);
-			float p3=GetHeightValue(x, std::max(0,std::min(hmap_->GetHeight()-1,y-1)));
-			float p4=GetHeightValue(x, std::max(0,std::min(hmap_->GetHeight()-1,y+1)));
+			float p1=GetHeightValue(std::max(0,std::min((int)hmap_->GetWidth()-1, (int)x-1)), y);
+			float p2=GetHeightValue(std::max(0,std::min((int)hmap_->GetWidth()-1, (int)x+1)), y);
+			float p3=GetHeightValue(x, std::max(0,std::min((int)hmap_->GetHeight()-1, (int)y-1)));
+			float p4=GetHeightValue(x, std::max(0,std::min((int)hmap_->GetHeight()-1, (int)y+1)));
 			Vector3 normal((p1-p2)/(pixsize*10.0f),(p3-p4)/(pixsize*10.0f),1.0);
 			normal.Normalize();
 			float ao=0.0f;
 			
 			for(unsigned int in=0; in<iterations; ++in)
 			{
-				float theta=(2.0f*3.141592)*rnd.get01();
+				float theta=(2.0f*3.141592f)*(float)rnd.get01();
 				Vector2 randvec(std::cos(theta), std::sin(theta));
 				for(unsigned int j=0; j<4; ++j)
 				{
@@ -1232,7 +1233,7 @@ void TerrainEdit::GetCavityMap(CArray2Dd &buffer, float sampleradius, float scal
 					ao += DoAmbientOcclusion(nrm,coord2, pos, normal, scale, bias, intensity);
 				}
 			}
-			ao/=(float)iterations*16.0;
+			ao/=(float)iterations*16.0f;
 			buffer.set(x,y,ao);
 		}
 	}
@@ -1308,7 +1309,7 @@ void ApplyHeightBrush(Terrain *terrain, Image *height, Image *mask, float x, flo
     Vector3 world=Vector3(x,0,z);
     IntVector2 ht=terrain->WorldToHeightMap(world);
 
-    int sz=radius+1;
+    int sz=(int)radius+1;
     int comp=height->GetComponents();
     for(int hx=ht.x_-sz; hx<=ht.x_+sz; ++hx)
     {
@@ -1321,7 +1322,7 @@ void ApplyHeightBrush(Terrain *terrain, Image *height, Image *mask, float x, flo
                 float d=std::sqrt(dx*dx+dz*dz);
                 float i=((d-radius)/(hardness*radius-radius));
                 i=std::max(0.0f, std::min(1.0f, i));
-                i=std::sin(i*1.57079633);
+                i=std::sin(i*1.57079633f);
                 i=i*dt*power;
                 if(usemask0)
                 {
@@ -1353,11 +1354,11 @@ void ApplyBlendBrush(Terrain *terrain, Image *height, Image *blend, Image *mask,
 
     Vector2 normalized=WorldToNormalized(height,terrain,Vector3(x,0,z));
     float ratio=((float)blend->GetWidth()/(float)height->GetWidth());
-    int ix=(normalized.x_*(float)(blend->GetWidth()-1));
-    int iy=(normalized.y_*(float)(blend->GetHeight()-1));
+    int ix=(int)(normalized.x_*(float)(blend->GetWidth()-1));
+    int iy=(int)(normalized.y_*(float)(blend->GetHeight()-1));
     iy=blend->GetHeight()-iy;
     float rad=radius*ratio;
-    int sz=rad+1;
+    int sz=(int)rad+1;
 
     for(int hx=ix-sz; hx<=ix+sz; ++hx)
     {
@@ -1436,11 +1437,11 @@ void ApplyBlendBrush8(Terrain *terrain, Image *height, Image *blend0, Image *ble
 
     Vector2 normalized=WorldToNormalized(height,terrain,Vector3(x,0,z));
     float ratio=((float)blend0->GetWidth()/(float)height->GetWidth());
-    int ix=(normalized.x_*(float)(blend0->GetWidth()-1));
-    int iy=(normalized.y_*(float)(blend0->GetHeight()-1));
+    int ix=(int)(normalized.x_*(float)(blend0->GetWidth()-1));
+    int iy=(int)(normalized.y_*(float)(blend0->GetHeight()-1));
     iy=blend0->GetHeight()-iy;
     float rad=radius*ratio;
-    int sz=rad+1;
+    int sz=(int)rad+1;
 
     for(int hx=ix-sz; hx<=ix+sz; ++hx)
     {
@@ -1518,11 +1519,11 @@ void ApplyMaskBrush(Terrain *terrain, Image *height, Image *mask, float x, float
 
     Vector2 normalized=WorldToNormalized(height,terrain,Vector3(x,0,z));
     float ratio=((float)mask->GetWidth()/(float)height->GetWidth());
-    int ix=(normalized.x_*(float)(mask->GetWidth()-1));
-    int iy=(normalized.y_*(float)(mask->GetHeight()-1));
+    int ix=(int)(normalized.x_*(float)(mask->GetWidth()-1));
+    int iy=(int)(normalized.y_*(float)(mask->GetHeight()-1));
     iy=mask->GetHeight()-iy;
     float rad=radius*ratio;
-    int sz=rad+1;
+    int sz=(int)rad+1;
 
     for(int hx=ix-sz; hx<=ix+sz; ++hx)
     {
@@ -1557,11 +1558,11 @@ void ApplySpeckleBrush(Terrain *terrain, Image *height, Image *color, Image *mas
 
     Vector2 normalized=WorldToNormalized(height,terrain,Vector3(x,0,z));
     float ratio=((float)color->GetWidth()/(float)height->GetWidth());
-    int ix=(normalized.x_*(float)(color->GetWidth()-1));
-    int iy=(normalized.y_*(float)(color->GetHeight()-1));
+    int ix=(int)(normalized.x_*(float)(color->GetWidth()-1));
+    int iy=(int)(normalized.y_*(float)(color->GetHeight()-1));
     iy=color->GetHeight()-iy;
     float rad=radius*ratio;
-    int sz=rad+1;
+    int sz=(int)rad+1;
 
     static KISS rnd;
 
@@ -1613,7 +1614,7 @@ void ApplySmoothBrush(Terrain *terrain, Image *height, Image *mask, float x, flo
     Vector3 world=Vector3(x,0,z);
     IntVector2 ht=terrain->WorldToHeightMap(world);
 
-    int sz=radius+1;
+    int sz=(int)radius+1;
     int comp=height->GetComponents();
     for(int hx=ht.x_-sz; hx<=ht.x_+sz; ++hx)
     {
@@ -1709,10 +1710,10 @@ void RenderANLKernelToHeight(Image *height, Image *mask, CKernel *kernel, double
             {
                 float oldheight=GetHeightValue(height,x,y);
                 float maskval=mask->GetPixelBilinear(nx,ny).r_;
-                if(invertMask) maskval=1.0-maskval;
+                if(invertMask) maskval=1.0f-maskval;
                 v=oldheight+maskval*(v-oldheight);
             }
-            SetHeightValue(height,x,y,v);
+            SetHeightValue(height,x,y,(float)v);
         }
     }
 }
@@ -1742,12 +1743,13 @@ Vector2 RenderANLKernelToImage(Image *buffer, CKernel *kernel, float lowrange, f
 		map2DNoZ(seamlessmode, img, *kernel, SMappingRanges(0,scalex,0,scaley,0,1), kernel->lastIndex());
 	else
 		map2D(seamlessmode, img, *kernel, SMappingRanges(0,scalex,0,scaley,0,1), z, kernel->lastIndex());
-	float low=img.getMin(),high=img.getMax();
+	float low=(float)img.getMin(),high=(float)img.getMax();
 	th(2);
 	if(histogram)
 	{
 		const int numdivs=histogram->GetWidth();
-		int counts[numdivs];
+		//int counts[numdivs];
+		Vector<int> counts(numdivs);
 		for(int c=0; c<numdivs; ++c) counts[c]=0;
 		th(1.5);
 		th(w);
@@ -1837,13 +1839,13 @@ void SetHeightFromRasterBuffer(Image *height, CArray2Dd *buffer, Image *mask, bo
             float nx=(float)x/(float)(w);
             float ny=(float)y/(float)(h);
 
-            float v=buffer->getBilinear(nx,ny);
+            float v=(float)buffer->getBilinear(nx,ny);
             float m=1.0;
             float oldht=GetHeightValue(height,x,y);
             if(useMask && mask)
             {
                 float maskval=mask->GetPixelBilinear(nx,ny).r_;
-                if(invertMask) maskval=1.0-maskval;
+                if(invertMask) maskval=1.0f-maskval;
                 m=maskval;
             }
             SetHeightValue(height,x,y,oldht+m*(v-oldht));
@@ -1859,23 +1861,23 @@ float Orient2D(RasterVertex &a, RasterVertex &b, RasterVertex &c)
 
 void RasterizeTriangle(CArray2Dd *buffer, RasterVertex v0, RasterVertex v1, RasterVertex v2)
 {
-    int minx=std::min(v0.x_, std::min(v1.x_, v2.x_));
-    int maxx=std::max(v0.x_, std::max(v1.x_, v2.x_));
-    int miny=std::min(v0.y_, std::min(v1.y_, v2.y_));
-    int maxy=std::max(v0.y_, std::max(v1.y_, v2.y_));
+    int minx=(int)std::min(v0.x_, std::min(v1.x_, v2.x_));
+    int maxx= (int)std::max(v0.x_, std::max(v1.x_, v2.x_));
+    int miny= (int)std::min(v0.y_, std::min(v1.y_, v2.y_));
+    int maxy= (int)std::max(v0.y_, std::max(v1.y_, v2.y_));
 
-    minx=std::max(0,minx);
-    miny=std::max(0,miny);
-    maxx=std::min(maxx, buffer->width()-1)+1;
-    maxy=std::min(maxy, buffer->height()-1)+1;
+    minx= (int)std::max(0,minx);
+    miny= (int)std::max(0,miny);
+    maxx= (int)std::min(maxx, buffer->width()-1)+1;
+    maxy= (int)std::min(maxy, buffer->height()-1)+1;
 
     RasterVertex p(0,0,0);
     for(int y=miny; y<=maxy; ++y)
     {
         for(int x=minx; x<=maxx; ++x)
         {
-            p.x_=x;
-            p.y_=y;
+            p.x_=(float)x;
+            p.y_=(float)y;
             float w0=Orient2D(v1,v2,p);
             float w1=Orient2D(v2,v0,p);
             float w2=Orient2D(v0,v1,p);
@@ -1895,7 +1897,7 @@ void RasterizeTriangle(CArray2Dd *buffer, RasterVertex v0, RasterVertex v1, Rast
 
 void RasterizeQuadStrip(CArray2Dd *buffer, RasterVertexList *strip)
 {
-    for(int c=0; c<=strip->size()-4; c+=2)
+    for(unsigned int c=0; c<=strip->size()-4; c+=2)
     {
         RasterizeTriangle(buffer, (*strip)[c], (*strip)[c+1], (*strip)[c+2]);
         RasterizeTriangle(buffer, (*strip)[c+1], (*strip)[c+2], (*strip)[c+3]);
@@ -1911,8 +1913,8 @@ void BlendHeightWithRasterizedBuffer(Image *height, CArray2Dd *buffer, CArray2Dd
             float nx=(float)x / (float)(height->GetWidth());
             float ny=(float)y / (float)(height->GetHeight());
 
-            float v=buffer->getBilinear(nx,ny);
-            float bval=blend->getBilinear(nx,ny);
+            float v=(float)buffer->getBilinear(nx,ny);
+            float bval=(float)blend->getBilinear(nx,ny);
             float ht=GetHeightValue(height, x, y);
             if(useMask)
             {
@@ -1936,7 +1938,7 @@ void BlendColorWithRasterizedBuffer(Image *img, CArray2Dd *buffer, Color endColo
             float nx=(float)x / (float)(img->GetWidth());
             float ny=(float)y / (float)(img->GetHeight());
 
-            float bval=buffer->getBilinear(nx,ny);
+            float bval=(float)buffer->getBilinear(nx,ny);
             bval=std::max(0.0f, std::min(1.0f, bval));
             Color col=img->GetPixel(x,y);
             if(useMask)
@@ -1961,7 +1963,7 @@ void BlendRasterizedBuffer8(Image *blend0, Image *blend1, CArray2Dd *buffer, int
             float nx=(float)x / (float)(blend0->GetWidth());
             float ny=(float)y / (float)(blend0->GetHeight());
 
-            float i=buffer->getBilinear(nx,ny);
+            float i=(float)buffer->getBilinear(nx,ny);
             i=std::max(0.0f, std::min(1.0f, i));
             if(useMask)
             {
@@ -2020,7 +2022,7 @@ void BlendRasterizedBuffer8Max(Image *blend0, Image *blend1, CArray2Dd *buffer, 
             float nx=(float)x / (float)(blend0->GetWidth());
             float ny=(float)y / (float)(blend0->GetHeight());
 
-            float i=buffer->getBilinear(nx,ny);
+            float i=(float)buffer->getBilinear(nx,ny);
             i=std::max(0.0f, std::min(1.0f, i));
             if(useMask)
             {
@@ -2097,7 +2099,7 @@ void TessellateLineList(RasterVertexList *in, RasterVertexList *out, int steps)
     //if(in->size()<4) return;
 
     CRSpline<Vector3> ll;
-    for(int c=0; c<in->size(); ++c)
+    for(unsigned int c=0; c<in->size(); ++c)
     {
         ll.Push(Vector3((*in)[c].x_, (*in)[c].y_, (*in)[c].val_));
     }
@@ -2105,7 +2107,7 @@ void TessellateLineList(RasterVertexList *in, RasterVertexList *out, int steps)
     Vector<Vector3> lo;
     ll.Solve(lo, steps*(ll.NumPoints()-1), 0.1);
 
-    for(int c=0; c<lo.Size(); ++c)
+    for(unsigned int c=0; c<lo.Size(); ++c)
     {
         out->push_back(RasterVertex(lo[c].x_, lo[c].y_, lo[c].z_));
     }
@@ -2141,11 +2143,11 @@ void ApplyBedFunction(CArray2Dd *buffer, float hardness, bool quintic)
     {
         for(int y=0; y<buffer->height(); ++y)
         {
-            float v=buffer->get(x,y);
+            float v=(float)buffer->get(x,y);
             float h=std::max(0.0f, std::min(1.0f,hardness));
-            v=std::abs(v*2.0-1.0);
-            v=std::max(0.0, std::min(1.0, (v-1.0)/(h-1.0)));
-            if(quintic) v=v*v*v*(v*(v*6.0-15.0)+10.0);
+            v=std::abs(v*2.0f-1.0f);
+            v=std::max(0.0f, std::min(1.0f, (v-1.0f)/(h-1.0f)));
+            if(quintic) v=v*v*v*(v*(v*6.0f-15.0f)+10.0f);
             buffer->set(x,y,v);
         }
     }
@@ -2176,14 +2178,14 @@ RasterVertex CalculateLineIntersection(RasterVertex p0, RasterVertex p1, RasterV
 void BuildQuadStrip(RasterVertexList *in, RasterVertexList *out, float width)
 {
     Vector<Vector3> points;
-    for(int c=0; c<in->size(); ++c) points.Push(Vector3((*in)[c].x_, (*in)[c].y_, (*in)[c].val_));
+    for(unsigned int c=0; c<in->size(); ++c) points.Push(Vector3((*in)[c].x_, (*in)[c].y_, (*in)[c].val_));
 
     Vector<Vector3> quads;
     BuildQuadStripA(points, quads, width);
 
     out->resize(0);
 
-    for(int c=0; c<quads.Size(); ++c) out->push_back(RasterVertex(quads[c].x_, quads[c].y_, quads[c].z_));
+    for(unsigned int c=0; c<quads.Size(); ++c) out->push_back(RasterVertex(quads[c].x_, quads[c].y_, quads[c].z_));
     /*if(in->size()<3) return;
     out->resize(0);
 
@@ -2276,7 +2278,7 @@ void BuildQuadStrip(RasterVertexList *in, RasterVertexList *out, float width)
 void BuildQuadStripRoad(RasterVertexList *curve, int steps, float width, float lengthscale, CustomGeometry *geom)
 {
 	CRSpline<Vector3> ll;
-    for(int c=0; c<curve->size(); ++c)
+    for(unsigned int c=0; c<curve->size(); ++c)
     {
         ll.Push(Vector3((*curve)[c].x_, (*curve)[c].y_, (*curve)[c].val_));
     }
@@ -2294,10 +2296,10 @@ void BuildQuadStripRoad(RasterVertexList *curve, int steps, float width, float l
 	geom->SetNumGeometries(1);
 	
 	geom->BeginGeometry(0,TRIANGLE_LIST);
-	for(int c=0; c<quadpoints.Size()-4; c+=2)
+	for(unsigned int c=0; c<quadpoints.Size()-4; c+=2)
 	{
 		// Calculate index into original list
-		int lineindex=std::max(0, (c/2-1));
+		int lineindex=std::max(0, (int)(c/2-1));
 		Vector3 tang1=tangents[lineindex];
 		tang1.Normalize();
 		Vector3 right1=tang1.CrossProduct(Vector3(0,1,0));
@@ -2338,14 +2340,14 @@ void BuildQuadStripRoad(RasterVertexList *curve, int steps, float width, float l
 void BuildQuadStripVarying(RasterVertexList *in, RasterVertexList *out, float startwidth, float endwidth)
 {
     Vector<Vector3> points;
-    for(int c=0; c<in->size(); ++c) points.Push(Vector3((*in)[c].x_, (*in)[c].y_, (*in)[c].val_));
+    for(unsigned int c=0; c<in->size(); ++c) points.Push(Vector3((*in)[c].x_, (*in)[c].y_, (*in)[c].val_));
 
     Vector<Vector3> quads;
     BuildQuadStripVaryingA(points, quads, startwidth, endwidth);
 
     out->resize(0);
 
-    for(int c=0; c<quads.Size(); ++c) out->push_back(RasterVertex(quads[c].x_, quads[c].y_, quads[c].z_));
+    for(unsigned int c=0; c<quads.Size(); ++c) out->push_back(RasterVertex(quads[c].x_, quads[c].y_, quads[c].z_));
     /*if(in->size()<3) return;
     out->resize(0);
 

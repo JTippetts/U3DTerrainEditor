@@ -178,7 +178,7 @@ void loadRGBAArray(std::string filename, TArray2D<anl::SRGBA> *array)
         for(int y=0; y<h; ++y)
         {
             unsigned char *a=&data[y*w*4+x*4];
-            SRGBA color((float)a[0]/255.0, (float)a[1]/255.0, (float)a[2]/255.0, (float)a[3]/255.0);
+            SRGBA color((float)a[0]/255.0f, (float)a[1]/255.0f, (float)a[2]/255.0f, (float)a[3]/255.0f);
             array->set(x,y,color);
         }
     }
@@ -506,7 +506,7 @@ void map2D(int seamlessmode, CArray2Dd &a, CKernel &k, SMappingRanges ranges, do
     map2DChunk(chunk);
 #else
     unsigned threadcount=std::thread::hardware_concurrency();
-    int chunksize=std::floor(a.height() / threadcount);
+    int chunksize=(int)std::floor(a.height() / threadcount);
     std::vector<std::thread> threads;
 
     for(unsigned int thread=0; thread<threadcount; ++thread)
@@ -552,7 +552,7 @@ void map2DNoZ(int seamlessmode, CArray2Dd &a, CKernel &k, SMappingRanges ranges,
     map2DChunkNoZ(chunk);
 #else
     unsigned threadcount=std::thread::hardware_concurrency();
-    int chunksize=std::floor(a.height() / threadcount);
+    int chunksize= (int)std::floor(a.height() / threadcount);
     std::vector<std::thread> threads;
 
     for(unsigned int thread=0; thread<threadcount; ++thread)
@@ -748,7 +748,7 @@ void map3D(int seamlessmode, CArray3Dd &a, CKernel &k, SMappingRanges ranges, CI
     map3DChunk(chunk);
 #else
     unsigned threadcount=std::thread::hardware_concurrency();
-    int chunksize=std::floor(a.depth() / threadcount);
+    int chunksize= (int)std::floor(a.depth() / threadcount);
 
     std::vector<std::thread> threads;
 
@@ -1091,7 +1091,7 @@ void mapRGBA2D(int seamlessmode, CArray2Drgba &a, CKernel &k, SMappingRanges ran
     mapRGBA2DChunk(chunk);
 #else
     unsigned threadcount=std::thread::hardware_concurrency();
-    int chunksize=std::floor(a.height() / threadcount);
+    int chunksize= (int)std::floor(a.height() / threadcount);
     std::vector<std::thread> threads;
 
     for(unsigned int thread=0; thread<threadcount; ++thread)
@@ -1137,7 +1137,7 @@ void mapRGBA2DNoZ(int seamlessmode, CArray2Drgba &a, CKernel &k, SMappingRanges 
     mapRGBA2DChunkNoZ(chunk);
 #else
     unsigned threadcount=std::thread::hardware_concurrency();
-    int chunksize=std::floor(a.height() / threadcount);
+    int chunksize= (int)std::floor(a.height() / threadcount);
     std::vector<std::thread> threads;
 
     for(unsigned int thread=0; thread<threadcount; ++thread)
@@ -1347,7 +1347,7 @@ void mapRGBA3D(int seamlessmode, CArray3Drgba &a, CKernel &k, SMappingRanges ran
     mapRGBA3DChunk(chunk);
 #else
     unsigned threadcount=std::thread::hardware_concurrency();
-    int chunksize=std::floor(a.depth() / threadcount);
+    int chunksize= (int)std::floor(a.depth() / threadcount);
 
     std::vector<std::thread> threads;
 
@@ -1395,19 +1395,19 @@ void calcNormalMap(CArray2Dd *map, CArray2Drgba *bump, float spacing, bool norma
     {
         for(int y=0; y<mh; ++y)
         {
-            float n[3]= {0.0, 1.0, 0.0};
+            float n[3]= {0.0f, 1.0f, 0.0f};
 
             if(!wrap)
             {
                 if(x==0 || y==0 || x==mw-1 || y==mh-1)
                 {
-                    n[0]=0.0;
-                    n[2]=0.0;
+                    n[0]=0.0f;
+                    n[2]=0.0f;
                 }
                 else
                 {
-                    n[0]=(map->get(x-1,y)-map->get(x+1,y)) / spacing;
-                    n[2]=(map->get(x,y-1)-map->get(x,y+1)) / spacing;
+                    n[0]=((float)map->get(x-1,y)- (float)map->get(x+1,y)) / spacing;
+                    n[2]=((float)map->get(x,y-1)- (float)map->get(x,y+1)) / spacing;
                 }
                 normalizeVec3(n);
             }
@@ -1426,17 +1426,17 @@ void calcNormalMap(CArray2Dd *map, CArray2Drgba *bump, float spacing, bool norma
                 if(y==mh-1) y2=0;
                 else y2=y+1;
 
-                n[0]=(map->get(x1,y)-map->get(x2,y)) / spacing;
-                n[2]=(map->get(x,y1)-map->get(x,y2)) / spacing;
+                n[0]=((float)map->get(x1,y)- (float)map->get(x2,y)) / spacing;
+                n[2]=((float)map->get(x,y1)- (float)map->get(x,y2)) / spacing;
                 normalizeVec3(n);
             }
             if(normalize)
             {
-                n[0]=n[0]*0.5 + 0.5;
-                n[1]=n[1]*0.5 + 0.5;
-                n[2]=n[2]*0.5 + 0.5;
+                n[0]=n[0]*0.5f + 0.5f;
+                n[1]=n[1]*0.5f + 0.5f;
+                n[2]=n[2]*0.5f + 0.5f;
             }
-            bump->set(x,y,SRGBA((float)n[0], (float)n[2], (float)n[1], 1.0));
+            bump->set(x,y,SRGBA((float)n[0], (float)n[2], (float)n[1], 1.0f));
         }
     }
 }
@@ -1452,19 +1452,19 @@ void calcBumpMap(CArray2Dd *map, CArray2Dd *bump, float light[3], float spacing,
     {
         for(int y=0; y<mh; ++y)
         {
-            float n[3]= {0.0, 1.0, 0.0};
+            float n[3]= {0.0f, 1.0f, 0.0f};
 
             if(!wrap)
             {
                 if(x==0 || y==0 || x==mw-1 || y==mh-1)
                 {
-                    n[0]=0.0;
-                    n[2]=0.0;
+                    n[0]=0.0f;
+                    n[2]=0.0f;
                 }
                 else
                 {
-                    n[0]=(map->get(x-1,y)-map->get(x+1,y)) / spacing;
-                    n[2]=(map->get(x,y-1)-map->get(x,y+1)) / spacing;
+                    n[0]=((float)map->get(x-1,y)- (float)map->get(x+1,y)) / spacing;
+                    n[2]=((float)map->get(x,y-1)- (float)map->get(x,y+1)) / spacing;
                 }
                 normalizeVec3(n);
             }
@@ -1483,13 +1483,13 @@ void calcBumpMap(CArray2Dd *map, CArray2Dd *bump, float light[3], float spacing,
                 if(y==mh-1) y2=0;
                 else y2=y+1;
 
-                n[0]=(map->get(x1,y)-map->get(x2,y)) / spacing;
-                n[2]=(map->get(x,y1)-map->get(x,y2)) / spacing;
+                n[0]=((float)map->get(x1,y)- (float)map->get(x2,y)) / spacing;
+                n[2]=((float)map->get(x,y1)- (float)map->get(x,y2)) / spacing;
                 normalizeVec3(n);
             }
             float b = light[0]*n[0] + light[1]*n[1] + light[2]*n[2];
-            if(b<0.0) b=0.0;
-            if(b>1.0) b=1.0;
+            if(b<0.0) b=0.0f;
+            if(b>1.0) b=1.0f;
             bump->set(x,y,b);
         }
     }

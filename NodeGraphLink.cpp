@@ -62,7 +62,7 @@ int NodeGraphLinkSource::GetNumLinks()
 
 NodeGraphLink *NodeGraphLinkSource::GetLink(int which)
 {
-    return (which>=0 && which<links_.Size()) ? links_[which] : 0;
+    return (which>=0 && which<(int)links_.Size()) ? links_[which] : 0;
 }
 
 NodeGraphLink *NodeGraphLinkSource::GetLink(NodeGraphLinkDest *target)
@@ -205,7 +205,7 @@ void NodeGraphLink::GetBatch(UIBatch &batch)
 
     BuildQuadStripA(linelist,quadlist,width);
 
-    for(int c=0; c<quadlist.Size()-3; c+=2)
+    for(unsigned int c=0; c<quadlist.Size()-3; c+=2)
     {
         Matrix3x4 mat;
         batch.AddQuad(mat,

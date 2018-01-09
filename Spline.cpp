@@ -29,7 +29,7 @@ void BuildQuadStripB(Vector<Vector3> &points, Vector<Vector3> &tangents, Vector<
 	outdistances.Push(distances[1]);
 	outdistances.Push(distances[1]);
 	
-	for(int c=1; c<points.Size()-1; ++c)
+	for(unsigned int c=1; c<points.Size()-1; ++c)
     {
         // Generate first set of points in quad.
         p0=points[c];
@@ -98,7 +98,7 @@ void BuildQuadStripA(Vector<Vector3> &points, Vector<Vector3> &out, float width,
     out.Push(p1+rightnorm*width*0.5f);
     out.Push(p1-rightnorm*width*0.5f);
 
-    for(int c=1; c<points.Size()-1; ++c)
+    for(unsigned int c=1; c<points.Size()-1; ++c)
     {
         // Generate first set of points in quad.
         p0=points[c];
@@ -166,7 +166,7 @@ void BuildQuadStripVaryingA(Vector<Vector3> &points, Vector<Vector3> &out, float
     out.Push(p1+rightnorm*swidth*0.5f);
     out.Push(p1-rightnorm*swidth*0.5f);
 
-    for(int c=1; c<points.Size()-1; ++c)
+    for(unsigned int c=1; c<points.Size()-1; ++c)
     {
         // Generate first set of points in quad.
         float wt=(float)c / (float)points.Size();

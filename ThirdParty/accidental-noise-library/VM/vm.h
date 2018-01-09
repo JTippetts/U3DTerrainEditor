@@ -31,7 +31,7 @@ struct SVMOutput
 
     }
 
-    SVMOutput(double v) : outfloat_(v), outrgba_(v,v,v,1)
+    SVMOutput(double v) : outfloat_(v), outrgba_((float)v, (float)v, (float)v,1)
     {
     }
 
@@ -48,7 +48,7 @@ struct SVMOutput
     void set(double v)
     {
         outfloat_=v;
-        outrgba_.r=outrgba_.g=outrgba_.b=v;
+        outrgba_.r=outrgba_.g=outrgba_.b=(float)v;
         outrgba_.a=1;
     }
 

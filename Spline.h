@@ -149,7 +149,7 @@ public:
             t+=inc;
         }
 		
-		for(int c=0; c<points.Size(); ++c)
+		for(unsigned int c=0; c<points.Size(); ++c)
 		{
 			if(c==0) distances.Push(dist);
 			else

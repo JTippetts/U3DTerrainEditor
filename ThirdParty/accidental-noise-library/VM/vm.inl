@@ -1360,7 +1360,7 @@ void CNoiseExecutor::evaluateInstruction(InstructionListType &kernel, EvaluatedT
 
     case OP_HexTile:
     {
-        TileCoord tile=calcHexPointTile(coord.x_, coord.y_);
+        TileCoord tile=calcHexPointTile((float)coord.x_, (float)coord.y_);
         unsigned int seed=(unsigned int)evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[0],coord);
         unsigned int hash=hash_coords_2(tile.x, tile.y, seed);
         cache[index].set((double)hash/255.0);
@@ -1371,7 +1371,7 @@ void CNoiseExecutor::evaluateInstruction(InstructionListType &kernel, EvaluatedT
 
     case OP_HexBump:
     {
-        TileCoord tile=calcHexPointTile(coord.x_, coord.y_);
+        TileCoord tile=calcHexPointTile((float)coord.x_, (float)coord.y_);
         CoordPair center=calcHexTileCenter(tile.x, tile.y);
         double dx=coord.x_-center.x;
         double dy=coord.y_-center.y;
@@ -1438,7 +1438,7 @@ void CNoiseExecutor::evaluateInstruction(InstructionListType &kernel, EvaluatedT
         double g=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[1],coord);
         double b=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[2],coord);
         double a=evaluateParameter(kernel,evaluated,coordcache,cache,i.sources_[3],coord);
-        cache[index].set(SRGBA(r,g,b,a));
+        cache[index].set(SRGBA((float)r, (float)g, (float)b, (float)a));
         evaluated[index]=true;
         return;
     }
@@ -1461,13 +1461,13 @@ void CNoiseExecutor::evaluateInstruction(InstructionListType &kernel, EvaluatedT
 		Q = v*(1.0-s*fract);
 		T = v*(1.0-s*(1.0-fract));
 		
-		if (h>=0 && h<1) col=SRGBA(v,T,P,1);
-		else if (h>=1 && h<2) col=SRGBA(Q,v,P,a);
-		else if (h>=2 && h<3) col=SRGBA(P,v,T,a);
-		else if (h>=3 && h<4) col=SRGBA(P,Q,v,a);
-		else if (h>=4 && h<5) col=SRGBA(T,P,v,a);
-		else if (h>=5 && h<6) col=SRGBA(v,P,Q,a);
-		else col=SRGBA(0,0,0,a);
+		if (h>=0 && h<1) col=SRGBA((float)v, (float)T, (float)P,1);
+		else if (h>=1 && h<2) col=SRGBA((float)Q, (float)v, (float)P, (float)a);
+		else if (h>=2 && h<3) col=SRGBA((float)P, (float)v, (float)T, (float)a);
+		else if (h>=3 && h<4) col=SRGBA((float)P, (float)Q, (float)v, (float)a);
+		else if (h>=4 && h<5) col=SRGBA((float)T, (float)P, (float)v, (float)a);
+		else if (h>=5 && h<6) col=SRGBA((float)v, (float)P, (float)Q, (float)a);
+		else col=SRGBA(0,0,0,(float)a);
 	
         cache[index].set(col);
         evaluated[index]=true;
@@ -1534,7 +1534,7 @@ TileCoord CNoiseExecutor::calcHexPointTile(float px, float py)
 CoordPair CNoiseExecutor::calcHexTileCenter(int tx, int ty)
 {
     CoordPair origin;
-    float ymod=fmod(ty, 2.0f);
+    float ymod= (float)fmod(ty, 2.0f);
     if(ymod==1.0f) ymod=0.8660254;
     else ymod=0.0f;
     origin.x=(float)tx*1.732051+ymod;
