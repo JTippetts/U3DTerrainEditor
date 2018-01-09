@@ -1746,7 +1746,7 @@ Vector2 RenderANLKernelToImage(Image *buffer, CKernel *kernel, float lowrange, f
 	th(2);
 	if(histogram)
 	{
-		int numdivs=histogram->GetWidth();
+		const int numdivs=histogram->GetWidth();
 		int counts[numdivs];
 		for(int c=0; c<numdivs; ++c) counts[c]=0;
 		th(1.5);

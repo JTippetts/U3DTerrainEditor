@@ -1461,12 +1461,12 @@ void CNoiseExecutor::evaluateInstruction(InstructionListType &kernel, EvaluatedT
 		Q = v*(1.0-s*fract);
 		T = v*(1.0-s*(1.0-fract));
 		
-		if (h>=0 and h<1) col=SRGBA(v,T,P,1);
-		else if (h>=1 and h<2) col=SRGBA(Q,v,P,a);
-		else if (h>=2 and h<3) col=SRGBA(P,v,T,a);
-		else if (h>=3 and h<4) col=SRGBA(P,Q,v,a);
-		else if (h>=4 and h<5) col=SRGBA(T,P,v,a);
-		else if (h>=5 and h<6) col=SRGBA(v,P,Q,a);
+		if (h>=0 && h<1) col=SRGBA(v,T,P,1);
+		else if (h>=1 && h<2) col=SRGBA(Q,v,P,a);
+		else if (h>=2 && h<3) col=SRGBA(P,v,T,a);
+		else if (h>=3 && h<4) col=SRGBA(P,Q,v,a);
+		else if (h>=4 && h<5) col=SRGBA(T,P,v,a);
+		else if (h>=5 && h<6) col=SRGBA(v,P,Q,a);
 		else col=SRGBA(0,0,0,a);
 	
         cache[index].set(col);
