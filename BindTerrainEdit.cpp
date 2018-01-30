@@ -744,6 +744,43 @@ static int tolua_BindTerrainEdit_TerrainEdit_delete00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: ResizeTerrain of class  TerrainEdit */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_TerrainEdit_ResizeTerrain00
+static int tolua_BindTerrainEdit_TerrainEdit_ResizeTerrain00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"TerrainEdit",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+ !tolua_isboolean(tolua_S,4,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,5,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  TerrainEdit* self = (TerrainEdit*)  tolua_tousertype(tolua_S,1,0);
+  int tw = ((int)  tolua_tonumber(tolua_S,2,0));
+  int th = ((int)  tolua_tonumber(tolua_S,3,0));
+  bool use16bit = ((bool)  tolua_toboolean(tolua_S,4,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'ResizeTerrain'", NULL);
+#endif
+ {
+  self->ResizeTerrain(tw,th,use16bit);
+ }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'ResizeTerrain'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: Initialize of class  TerrainEdit */
 #ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_TerrainEdit_Initialize00
 static int tolua_BindTerrainEdit_TerrainEdit_Initialize00(lua_State* tolua_S)
@@ -5899,6 +5936,7 @@ TOLUA_API int tolua_BindTerrainEdit_open (lua_State* tolua_S)
   tolua_function(tolua_S,"new_local",tolua_BindTerrainEdit_TerrainEdit_new00_local);
   tolua_function(tolua_S,".call",tolua_BindTerrainEdit_TerrainEdit_new00_local);
   tolua_function(tolua_S,"delete",tolua_BindTerrainEdit_TerrainEdit_delete00);
+  tolua_function(tolua_S,"ResizeTerrain",tolua_BindTerrainEdit_TerrainEdit_ResizeTerrain00);
   tolua_function(tolua_S,"Initialize",tolua_BindTerrainEdit_TerrainEdit_Initialize00);
   tolua_function(tolua_S,"SetTerrainSize",tolua_BindTerrainEdit_TerrainEdit_SetTerrainSize00);
   tolua_function(tolua_S,"SetBlendMaskSize",tolua_BindTerrainEdit_TerrainEdit_SetBlendMaskSize00);

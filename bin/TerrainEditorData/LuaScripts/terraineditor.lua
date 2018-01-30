@@ -109,6 +109,7 @@ function CreateScene()
 	cam.maxfollow=900
 	cam.follow=100
 	cam.clipdist=2000
+	--cam.orthographic=true
 	cam:Finalize()
 
 	projecttozero=true

@@ -100,6 +100,30 @@ function TerrainSelectUI:Start()
 		"Textures/cliff2_normal.png",
 	}
 	
+	--[[self.diffuse=
+	{
+		"Textures/Isometric/clover_large_diff.png",
+		"Textures/Isometric/clover_small_diff.png",
+		"Textures/Isometric/cloverrocks_large_diff.png",
+		"Textures/Isometric/cloverrocks_small_diff.png",
+		"Textures/Isometric/rocksclover_large_diff.png",
+		"Textures/Isometric/rocksclover_small_diff.png",
+		"Textures/Isometric/rocks_large_diff.png",
+		"Textures/Isometric/rocks_small_diff.png"
+	}
+	
+	self.normal=
+	{
+		"Textures/Isometric/clover_large_norm.png",
+		"Textures/Isometric/clover_small_norm.png",
+		"Textures/Isometric/cloverrocks_large_norm.png",
+		"Textures/Isometric/cloverrocks_small_norm.png",
+		"Textures/Isometric/rocksclover_large_norm.png",
+		"Textures/Isometric/rocksclover_small_norm.png",
+		"Textures/Isometric/rocks_large_norm.png",
+		"Textures/Isometric/rocks_small_norm.png"
+	}]]
+	
 	self.difftex=Texture2DArray:new()
 	self.normaltex=Texture2DArray:new()
 	
@@ -122,14 +146,14 @@ function TerrainSelectUI:Start()
 	
 	self.layerscales=
 	{
-		1.0,
-		1.0,
-		1.0,
-		1.0,
-		1.0,
-		1.0,
-		1.0,
-		1.0,
+		0.5,
+		0.5,
+		0.5,
+		0.5,
+		0.5,
+		0.5,
+		0.5,
+		0.5,
 	}
 	
 	self:SwitchLayer(1)

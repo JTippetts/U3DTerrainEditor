@@ -145,6 +145,17 @@ float CalcSmooth(Image *height, float *kernel, int kernelsize, int terrainx, int
 
 TerrainEdit::TerrainEdit() : terrainNode_(0), terrain_(0), material_(0), use16bit_(true), triplanar_(true), smoothing_(false), normalmapping_(true) {}
 
+void TerrainEdit::ResizeTerrain(int tw, int th, bool use16bit)
+{
+	if(!terrain_ || !hmap_) return;
+	
+	if(tw==hmap_->GetWidth() && th==hmap_->GetHeight()) return;
+	
+	hmap_->SetSize(tw, th, use16bit ? 3 : 1);
+	hmap_->Clear(Color(0,0,0));
+	terrain_->SetHeightMap(hmap_);
+}
+
 bool TerrainEdit::Initialize(Scene *scene, int tw, int th, int bw, int bh, Vector3 spacing, bool use16bit)
 {
     if(terrainNode_) terrainNode_->Remove();

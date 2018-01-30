@@ -55,7 +55,7 @@
 				<attribute name="Top Right Color" value="0.9 1 0.9 1" />
 				<attribute name="Bottom Left Color" value="0.9 1 0.9 1" />
 				<attribute name="Bottom Right Color" value="0.9 1 0.9 1" />
-				<attribute name="Text" value="2049" />
+				<attribute name="Text" value="1025" />
 			</element>
 			<element type="BorderImage" internal="true" style="none">
 				<attribute name="Size" value="4 15" />

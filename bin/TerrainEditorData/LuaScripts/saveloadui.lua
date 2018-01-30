@@ -25,6 +25,7 @@ function SaveLoadUI:Start()
 	
 	self:SubscribeToEvent(self.menu:GetChild("ApplyTerrainSpacing",true), "Pressed", "SaveLoadUI:HandleApplyTerrainSpacing")
 	self:SubscribeToEvent(self.menu:GetChild("ApplyTerrainHeight",true), "Pressed", "SaveLoadUI:HandleApplyTerrainHeight")
+	self:SubscribeToEvent(self.menu:GetChild("ApplyTerrainSize", true), "Pressed", "SaveLoadUI:HandleApplyTerrainSize")
 	
 	self:SubscribeToEvent(self.menu:GetChild("ExportNormals",true), "Pressed", "SaveLoadUI:SaveNormalmap")
 	
@@ -68,6 +69,11 @@ function SaveLoadUI:HandleApplyTerrainHeight(eventType,eventData)
 	local sp=TerrainState:GetTerrainSpacing()
 	sp.y=v
 	TerrainState:SetTerrainSpacing(sp)
+end
+
+function SaveLoadUI:HandleApplyTerrainSize(eventType, eventData)
+	local v=tonumber(self.menu:GetChild("TerrainSize",true).text)
+	TerrainState:ResizeTerrain(v,v,true)
 end
 
 function SaveLoadUI:CreateFileSelector(title, ok, cancel, initialPath, filters, initialFilter, autoLocalizeTitle)

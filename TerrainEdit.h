@@ -44,7 +44,8 @@ class TerrainEdit// : public Object
 public:
     //TerrainEdit(Context *context);
     TerrainEdit();
-
+	
+	void ResizeTerrain(int tw, int th, bool use16bit);
     bool Initialize(Scene *scene, int tw, int th, int bw, int bh, Vector3 spacing, bool use16bit=true);
     void SetTerrainSize(int w, int h, Vector3 spacing, bool use16bit=true);
     void SetBlendMaskSize(int w, int h);

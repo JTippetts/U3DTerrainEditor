@@ -20,7 +20,7 @@ function ThirdPersonCamera:Start()
 	
 	self.cellsize=128           -- Orthographic on-screen size of 1 unit 
 	self.pitch=30            -- 30 degrees for standard 2:1 tile ratio
-	self.yaw=45            -- 45 degrees for standard axonometric projections
+	self.yaw=180            -- 45 degrees for standard axonometric projections
 	self.follow=10              -- Target zoom distance
 	self.minfollow=1            -- Closest zoom distance for perspective modes
 	self.maxfollow=20           -- Furthest zoom distance for perspective modes
