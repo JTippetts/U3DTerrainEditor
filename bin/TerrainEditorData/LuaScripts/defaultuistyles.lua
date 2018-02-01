@@ -5,7 +5,7 @@ defaultuistyles={}
 defaultuistyles.BorderImage=
 {
 	Type="BorderImage",
-	Texture="Textures/ui.png",
+	Texture="Textures/UI_modified.png",
 }
 
 defaultuistyles.Button=
@@ -19,7 +19,7 @@ defaultuistyles.Button=
 	PressedChildOffset={-1,1},
 	HoverOffset={0,16},
 },
-	
+
 defaultuistyles.ToggledButton=
 {
 	Style=defaultuistyles.Button,

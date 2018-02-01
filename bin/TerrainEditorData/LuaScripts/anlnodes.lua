@@ -1,7 +1,7 @@
 -- Build ANL function from node graph
 -- Node-graph UI
 -- Instance data
--- Consists of opcodes. 
+-- Consists of opcodes.
 -- If opcode=="Parameter" then get the specified input parameter.
 -- If opcode=="Function" then instantiate the given ANL function, with the specified array indices
 require 'LuaScripts/tableshow'
@@ -1645,7 +1645,7 @@ ridged={
    };
 }
 }
-	
+
 }
 
 nodecategories=
@@ -1725,7 +1725,7 @@ nodecategories=
 	user=
 	{
 	}
-	
+
 }
 
 local nm,nt
@@ -1740,7 +1740,7 @@ end
 function InstanceFunction(k, desc, params)
 	local ins=desc.instance
 	if not ins then return end
-	
+
 	local n={}
 	local c
 	for _,c in ipairs(ins) do
@@ -1750,10 +1750,10 @@ function InstanceFunction(k, desc, params)
 			local indices=c.indices
 			local constants=c.constants
 			local seeds=c.seeds
-			
+
 			local inputs={}
 			local d
-			
+
 			local fdesc=GetNodeTypeDesc(c.func) --nodetypes[c.func]
 			print("numinputs for "..c.func..": "..#fdesc.inputs)
 			for d=1,#fdesc.inputs,1 do
@@ -1762,7 +1762,7 @@ function InstanceFunction(k, desc, params)
 				elseif seeds and seeds[d] ~= "nil" then print("seed: "..seeds[d]) table.insert(inputs, k:seed(seeds[d]))
 				end
 			end
-			
+
 			print("Function name: "..c.func)
 			if c.func=="add" then
 				table.insert(n, k:add(inputs[1],inputs[2]))
@@ -1877,7 +1877,7 @@ function CreateLibraryDesc(n)
 	local parameters={}
 	local paramnames={}
 	local paramtypes={}
-	
+
 	local isvisited=function(n)
 		local c
 		for _,c in ipairs(visited) do
@@ -1885,7 +1885,7 @@ function CreateLibraryDesc(n)
 		end
 		return false
 	end
-	
+
 	local nodeindex=function(n)
 		local i,c
 		for i,c in ipairs(visited) do
@@ -1893,7 +1893,7 @@ function CreateLibraryDesc(n)
 		end
 		return nil
 	end
-	
+
 	local parameterindex=function(n)
 		local i,c
 		for i,c in ipairs(parameters) do
@@ -1901,7 +1901,7 @@ function CreateLibraryDesc(n)
 		end
 		return nil
 	end
-	
+
 	local isrecursing=function(n)
 		local c
 		for _,c in ipairs(recursing) do
@@ -1909,15 +1909,15 @@ function CreateLibraryDesc(n)
 		end
 		return false
 	end
-	
+
 	local st=""
-	
+
 	local inst={}
-	
+
 	function writenode(n)
 		if n.name=="seed" or n.name=="constant" then
 			local pi=parameterindex(n)
-			if pi then 
+			if pi then
 				table.insert(inst, {op="Parameter", param=pi})
 				st=st.." P"..pi
 			else print("Parameter does not exist.")
@@ -1934,9 +1934,9 @@ function CreateLibraryDesc(n)
 				constants={},
 				seeds={},
 			}
-			
+
 			st=st.." "..n.name
-			
+
 			local c
 			local inputs=n:GetChild("Inputs",true)
 			local numparams=inputs:GetNumChildren()
@@ -1964,15 +1964,15 @@ function CreateLibraryDesc(n)
 			end
 			table.insert(inst, thing)
 		end
-		
-		
+
+
 	end
-	
+
 	local worker
-	
+
 	local visitnode=function(n)
 		if n.name=="constant" or n.name=="seed" then return true end
-		
+
 		local inputs=n:GetChild("Inputs",true)
 		local numparams=inputs:GetNumChildren()
 		local c
@@ -1982,7 +1982,7 @@ function CreateLibraryDesc(n)
 				print("Cycle detected.")
 				return false
 			end
-			
+
 			if s and not isvisited(s) then
 				if s.name=="constant" or s.name=="seed" then
 					if s.name=="constant" then
@@ -1996,11 +1996,11 @@ function CreateLibraryDesc(n)
 				local ss=worker(s)
 				if not ss then return false end
 			end
-			
+
 		end
 		return true
 	end
-	
+
 	worker=function(n)
 		table.insert(recursing,n)
 		if not visitnode(n) then
@@ -2014,7 +2014,7 @@ function CreateLibraryDesc(n)
 			return true
 		end
 	end
-	
+
 	if not worker(n) then st=st.."Cycle detected" end
 	print("Num params: "..#parameters)
 	local nodefunc=
@@ -2047,18 +2047,18 @@ function CreateNodeType(parent, type)
 		parent:AddChild(node)
 		return node
 	end
-	
+
 	local d=GetNodeTypeDesc(type)--nodetypes[type]
 	if not d then return end
-	
+
 	local node=ui:LoadLayout(cache:GetResource("XMLFile", "UI/NodeTemplate.xml"))
 	node.name=type
 	parent:AddChild(node)
 	node:GetChild("Title",true).text=type
-	
+
 	local c
 	local inputs=node:GetChild("Inputs", true)
-	
+
 	for c=1,#d.inputs,1 do
 		local input=inputs:CreateChild("UIElement")
 		input.name=d.inputs[c][1]
@@ -2068,8 +2068,8 @@ function CreateNodeType(parent, type)
 		e:SetMinSize(12,12)
 		e:SetMaxSize(12,12)
 		e:SetImageRect(IntRect(16,0,32,16))
-		e.texture=cache:GetResource("Texture2D", "Textures/UI.png")
-		
+		e.texture=cache:GetResource("Texture2D", "Textures/UI_modified.png")
+
 		e=input:CreateChild("LineEdit")
 		e.name="Value"..(c-1)
 		e:SetStyleAuto(cache:GetResource("XMLFile", "UI/DefaultStyle.xml"))
@@ -2077,14 +2077,14 @@ function CreateNodeType(parent, type)
 		e:SetText(d.inputs[c][3])
 		e:SetMinSize(40,12)
 		e:SetMaxSize(40,12)
-		
+
 		e=input:CreateChild("Text")
 		e:SetStyleAuto(cache:GetResource("XMLFile", "UI/DefaultStyle.xml"))
 		e.fontSize=9
 		e.text=tostring(d.inputs[c][2])
 	end
 	return node
-	
+
 end
 
 function GetSourceFromNode(node, inputname)
@@ -2112,7 +2112,7 @@ function BuildANLFunction(output)
 		end
 		return false
 	end
-	
+
 	local nodeindex=function(n)
 		local i,c
 		for i,c in ipairs(nodes) do
@@ -2120,7 +2120,7 @@ function BuildANLFunction(output)
 		end
 		return false
 	end
-	
+
 	function InstanceANLFunction(kernel, n)
 		local GetValue=function(n,which)
 			local s=GetSourceFromNode(n,"Input"..which)
@@ -2129,7 +2129,7 @@ function BuildANLFunction(output)
 			else local c=tonumber(n:GetChild("Value"..which,true).text) or 1.0 s1=kernel:constant(c) print("Value: "..c) end
 			return s1
 		end
-		
+
 		local GetSeed=function(n,which)
 			local s=GetSourceFromNode(n,"Input"..which)
 			local s1
@@ -2137,7 +2137,7 @@ function BuildANLFunction(output)
 			else local c=tonumber(n:GetChild("Value"..which,true).text) or 12345 s1=kernel:seed(c) print("Seed: "..c) end
 			return s1
 		end
-		
+
 		local desc=GetNodeTypeDesc(n.name)--nodetypes[n.name]
 		if not desc then return end
 		local numinputs=#desc.inputs
@@ -2146,12 +2146,12 @@ function BuildANLFunction(output)
 		for c=1,numinputs,1 do
 			if desc.inputs[c][1]=="value" then
 				table.insert(params, GetValue(n,c-1))
-			else 
+			else
 				table.insert(params, GetSeed(n,c-1))
 			end
 		end
 
-		
+
 		if n.name=="Output" then
 			local s1
 			local s1=GetValue(n,0)
@@ -2166,13 +2166,13 @@ function BuildANLFunction(output)
 			print("Instance function "..n.name)
 			return InstanceFunction(kernel, desc, params)
 		end
-		
+
 	end
-	
+
 	local kernel=CKernel()
-	
-	
-	
+
+
+
 	worker=function(n)
 		local visitnode=function(n,numparms)
 			local s,c
@@ -2181,11 +2181,11 @@ function BuildANLFunction(output)
 				if s and not isvisited(s) then worker(s) end
 			end
 		end
-		
+
 		if n.name~="Output" then
 			local desc=GetNodeTypeDesc(n.name)--nodetypes[n.name]
 			if not desc then print(n.name.." Doesn't exist") return false end
-		
+
 			local numinputs=#desc.inputs
 			if numinputs>0 then
 				visitnode(n, numinputs)
@@ -2193,13 +2193,13 @@ function BuildANLFunction(output)
 		else
 			visitnode(n,1)
 		end
-		
+
 		table.insert(nodes,n)
 		local ind=InstanceANLFunction(kernel, n)
 		table.insert(kernelindices, ind)
 	end
 	print("Packing node graph.")
-	
+
 	worker(output)
 	local c
 	for _,c in ipairs(nodes) do print(c.name) end

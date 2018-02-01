@@ -48,7 +48,7 @@
 					<attribute name="Min Size" value="12 12" />
 					<attribute name="Max Size" value="12 12" />
 					<attribute name="Pivot" value="0 0" />
-					<attribute name="Texture" value="Texture2D;Textures/UI.png" />
+					<attribute name="Texture" value="Texture2D;Textures/UI_modified.png" />
 					<attribute name="Image Rect" value="16 0 32 16" />
 				</element>
 				<element type="LineEdit">
@@ -93,7 +93,7 @@
 					<attribute name="Min Size" value="12 12" />
 					<attribute name="Max Size" value="12 12" />
 					<attribute name="Pivot" value="0 0" />
-					<attribute name="Texture" value="Texture2D;Textures/UI.png" />
+					<attribute name="Texture" value="Texture2D;Textures/UI_modified.png" />
 					<attribute name="Image Rect" value="16 0 32 16" />
 				</element>
 				<element type="LineEdit">
@@ -138,7 +138,7 @@
 					<attribute name="Min Size" value="12 12" />
 					<attribute name="Max Size" value="12 12" />
 					<attribute name="Pivot" value="0 0" />
-					<attribute name="Texture" value="Texture2D;Textures/UI.png" />
+					<attribute name="Texture" value="Texture2D;Textures/UI_modified.png" />
 					<attribute name="Image Rect" value="16 0 32 16" />
 				</element>
 				<element type="LineEdit">
@@ -202,7 +202,7 @@
 					<attribute name="Min Size" value="12 12" />
 					<attribute name="Max Size" value="12 12" />
 					<attribute name="Pivot" value="0 0" />
-					<attribute name="Texture" value="Texture2D;Textures/UI.png" />
+					<attribute name="Texture" value="Texture2D;Textures/UI_modified.png" />
 					<attribute name="Image Rect" value="16 0 32 16" />
 				</element>
 			</element>

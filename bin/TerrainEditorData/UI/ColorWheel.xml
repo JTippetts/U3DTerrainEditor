@@ -22,7 +22,7 @@
 				<attribute name="Position" value="64 64" />
 				<attribute name="Size" value="15 15" />
 				<attribute name="Hotspot" value="4 9" />
-				<attribute name="Texture" value="Texture2D;Textures/UI.png" />
+				<attribute name="Texture" value="Texture2D;Textures/UI_modified.png" />
 				<attribute name="Image Rect" value="63 83 78 98" />
 			</element>
 		</element>
