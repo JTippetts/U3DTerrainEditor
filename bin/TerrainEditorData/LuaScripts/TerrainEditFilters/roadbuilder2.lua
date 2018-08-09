@@ -66,7 +66,7 @@ return
 			local norm=TerrainState:WorldToNormalized(pos)
 			local hx=math.floor(norm.x*TerrainState:GetTerrainWidth())
 			local hy=math.floor(norm.y*TerrainState:GetTerrainHeight())
-			local ht=TerrainState:GetHeightValue(hx,hy)
+			local ht=TerrainState:GetHeightValue(hx,(TerrainState:GetTerrainHeight()-1)-hy)
 			plist:push_back(RasterVertex(hx,hy,ht))
 		end
 		
