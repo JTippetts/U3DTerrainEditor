@@ -45,8 +45,8 @@ function Spline:AddKnot(worldpos)
 	model.material=self.flagmat --:Clone()
 	model.model=cache:GetResource("Model", "Models/Flag.mdl")
 	model.castShadows=false
-	--local ht=TerrainState:GetTerrain():GetHeight(Vector3(groundx,0,groundz))
-	local ht=TerrainState:GetHeightValue(worldpos)
+	local ht=TerrainState:GetTerrain():GetHeight(Vector3(groundx,0,groundz))
+	--local ht=TerrainState:GetHeightValue(worldpos)
 	waynode.position=Vector3(worldpos.x, ht, worldpos.z)
 	waynode.scale=Vector3(0.25,0.25,0.25)
 	table.insert(self.knots, waynode)
@@ -65,7 +65,8 @@ end
 function Spline:UpdateKnots()
 	local c
 	for _,c in ipairs(self.knots) do
-		local ht=TerrainState:GetHeightValue(c.position)
+		--local ht=TerrainState:GetHeightValue(c.position)
+		local ht=TerrainState:GetTerrain():GetHeight(c.position)
 		if ht ~= c.position.y then self.dirty=true end
 		c.position=Vector3(c.position.x, ht, c.position.z)
 	end
@@ -80,7 +81,8 @@ function Spline:BuildRibbon()
 	
 	for _,c in ipairs(self.knots) do
 		local pos=c.position
-		local ht=TerrainState:GetHeightValue(pos)
+		--local ht=TerrainState:GetHeightValue(pos)
+		local ht=TerrainState:GetTerrain():GetHeight(pos)
 		plist:push_back(RasterVertex(pos.x, pos.z, ht))
 	end
 	
