@@ -72,6 +72,15 @@ function FilterUI:HandleButtonPress(eventType, eventData)
 						elseif c.type=="flag" then c.value=element.checked
 						elseif c.type=="list" then c.value=c.list[element.selection+1]
 						elseif c.type=="string" then c.value=element.textElement.text
+						elseif c.type=="spline" then
+							local splines=scene_:GetScriptObject("SplineUI")
+							local sel=element.selection
+							local item=element:GetItem(sel)
+							if item.name=="None" then
+								c.value=nil
+							else
+								c.value=splines:FindSplineByName(item.name)
+							end
 						end
 					end
 				end
@@ -159,6 +168,7 @@ function FilterUI:BuildFilterOptions(filter)
 			local i
 			for _,i in ipairs(c.list) do
 				local t=Text:new(context)
+				t.name=i
 				t.style=uiStyle
 				t.text=i
 				dlist:AddItem(t)
@@ -167,6 +177,36 @@ function FilterUI:BuildFilterOptions(filter)
 			dlist.selection=0
 			c.value=c.list[1]
 			window.size=IntVector2(title.size.x+dlist.size.x, 25)
+		elseif c.type=="spline" then
+			local splines=scene_:GetScriptObject("SplineUI")
+			if splines then
+				local dlist=window:CreateChild("DropDownList")
+				dlist.defaultStyle=uiStyle
+				dlist.style=AUTO_STYLE
+				dlist:SetAlignment(HA_LEFT, VA_CENTER)
+				dlist.name=c.name
+				dlist.resizePopup=true
+				
+				local i
+				if #splines.groups==0 then
+					local t=Text:new(context)
+					t.style=uiStyle
+					t.text="None"
+					t.name="None"
+					dlist:AddItem(t)
+				else
+					for _,i in ipairs(splines.groups) do
+						local t=Text:new(context)
+						t.style=uiStyle
+						t.text=i.name
+						t.name=i.name
+						dlist:AddItem(t)
+					end
+				end
+				dlist.selection=0
+				window.size=IntVector2(title.size.x+dlist.size.x, 25)
+				c.value=dlist.selection
+			end
 		end
 		window.maxSize=IntVector2(10000,25)
 		options:AddChild(window)

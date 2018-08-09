@@ -6,6 +6,7 @@ return
 	description="Construct a river from the current list of waypoints.",
 	options=
 	{
+		{name="Spline", type="spline", value=nil},
 		{name="Starting Bed width", type="value", value=64},
 		{name="Ending Bed Width", type="value", value=92},
 		{name="Bed Hardness", type="value", value=0.125},
@@ -24,10 +25,10 @@ return
 	
 	execute=function(self)
 		local ops=GetOptions(self.options)
-		local startbedwidth=self.options[1].value
-		local endbedwidth=self.options[2].value
-		local bedhardness=self.options[3].value
-		local pavinghardness=self.options[4].value
+		local startbedwidth=self.options[2].value
+		local endbedwidth=self.options[3].value
+		local bedhardness=self.options[4].value
+		local pavinghardness=self.options[5].value
 		
 		local layername=ops["Paving Layer"]
 		local which=0
@@ -41,9 +42,9 @@ return
 		elseif layername=="Layer 8" then which=7
 		end
 		
-		local segments=self.options[6].value
-		local startdepth=self.options[7].value
-		local enddepth=self.options[8].value
+		local segments=self.options[7].value
+		local startdepth=self.options[8].value
+		local enddepth=self.options[9].value
 		
 		local ms=MaskSettings(ops["Use Mask 0?"], ops["Invert Mask 0?"], ops["Use Mask 1?"], ops["Invert Mask 1?"], ops["Use Mask 2?"], ops["Invert Mask 2?"])
 		
@@ -53,8 +54,11 @@ return
 		
 		local c
 		
+		local spline=ops["Spline"]
+		if spline==nil then print("No spline selected for river builder filter.") return end
+		
 		local plist=RasterVertexList()
-		for _,c in ipairs(waypoints) do
+		for _,c in ipairs(spline.knots) do
 			local pos=c.position
 			local norm=TerrainState:WorldToNormalized(pos)
 			local hx=math.floor(norm.x*TerrainState:GetTerrainWidth())

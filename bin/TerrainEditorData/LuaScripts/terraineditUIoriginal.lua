@@ -4,6 +4,7 @@ require 'LuaScripts/terrainselectui'
 require 'LuaScripts/editheightui'
 require 'LuaScripts/smoothheightui'
 require 'LuaScripts/editmaskui'
+require 'LuaScripts/splineui'
 
 TerrainEditUI=ScriptObject()
 
@@ -79,6 +80,8 @@ function TerrainEditUI:BuildUI()
 	self:SubscribeToEvent(self.nodemapping:GetChild("Close",true),"Pressed","TerrainEditUI:HandleCloseMapping")
 	self.nodemapping.visible=false
 	
+	self.splinegroups=scene_:CreateScriptObject("SplineUI")
+	self.splinegroups:Deactivate()
 	
 	self.blendbrush:Deactivate()
 	self.maskbrush:Deactivate()
@@ -222,68 +225,6 @@ function TerrainEditUI:SetMaterial(blendwidth, blendheight, triplanar, smoothing
 	
 end
 
-function TerrainEditUI:UpdateWaypointVis()
-	self.waypointpreview:Clear()
-	self.waypointpreview.occludee=false
-	self.waypointpreview:SetNumGeometries(1)
-	local c
-	local spacing=TerrainState:GetTerrain():GetSpacing()
-	local plist=RasterVertexList()
-	for _,c in ipairs(waypoints) do
-		local pos=c.position
-		
-		local norm=TerrainState:WorldToNormalized(pos)
-		local hx=math.floor(norm.x*TerrainState:GetTerrainWidth())
-		local hy=math.floor(norm.y*TerrainState:GetTerrainHeight())
-		local ht=TerrainState:GetHeightValue(hx,(TerrainState:GetTerrainHeight()-1)-hy)
-		plist:push_back(RasterVertex(hx, hy, ht))
-	end
-	if plist:size()<4 then return end
-	local curve=RasterVertexList()
-	TessellateLineList(plist, curve, 10)
-	local quad=RasterVertexList()
-	BuildQuadStrip(curve, quad, 4)
-	
-	self.waypointpreview:BeginGeometry(0,TRIANGLE_LIST)
-	self.waypointpreview:SetDynamic(true)
-	
-	function buildVertex(rv)
-		local nx=rv.x_/TerrainState:GetTerrainWidth()
-		local ny=rv.y_/TerrainState:GetTerrainHeight()
-		local v=TerrainState:NormalizedToWorld(Vector2(nx,ny))
-		v.y=(rv.val_*255)*spacing.y
-		return v
-	end
-	
-	for c=0,quad:size()-4,2 do
-		self.waypointpreview:DefineVertex(buildVertex(quad:at(c)))
-		self.waypointpreview:DefineVertex(buildVertex(quad:at(c+1)))
-		self.waypointpreview:DefineVertex(buildVertex(quad:at(c+2)))
-		
-		self.waypointpreview:DefineVertex(buildVertex(quad:at(c+1)))
-		self.waypointpreview:DefineVertex(buildVertex(quad:at(c+2)))
-		self.waypointpreview:DefineVertex(buildVertex(quad:at(c+3)))
-	end
-	self.waypointpreview:Commit()
-	self.waypointpreview:SetMaterial(self.waypointpreviewmaterial)
-	local bbox=self.waypointpreview.worldBoundingBox
-	bbox:Define(Vector3(-1000,-1000,-1000), Vector3(1000,1000,1000))
-end
-
-function TerrainEditUI:AddWaypoint(groundx, groundz)
-	local waynode=scene_:CreateChild()
-	local model=waynode:CreateComponent("StaticModel")
-	model.material=cache:GetResource("Material", "Materials/Flag.xml")
-	model.model=cache:GetResource("Model", "Models/Flag.mdl")
-	model.castShadows=false
-	local ht=TerrainState:GetTerrain():GetHeight(Vector3(groundx,0,groundz))
-	waynode.position=Vector3(groundx, ht, groundz)
-	waynode.scale=Vector3(0.25,0.25,0.25)
-	table.insert(waypoints, waynode)
-	print("uwv")
-	self:UpdateWaypointVis()
-end
-
 function TerrainEditUI:Update(dt)
 	self.counter=self.counter+dt
 	if self.counter>4 then
@@ -298,26 +239,10 @@ function TerrainEditUI:Update(dt)
 		mousepos=ui:GetCursorPosition()
 	end
 	
-	if input:GetKeyPress(KEY_E) then
-		local mouseground=cam:PickGround(mousepos.x, mousepos.y)
-		self:AddWaypoint(mouseground.x, mouseground.z)
-		
-	elseif input:GetKeyPress(KEY_Q) then
-		if(#waypoints>0) then
-			waypoints[#waypoints]:Remove()
-			table.remove(waypoints)
-		end
-		self:UpdateWaypointVis()
-	elseif input:GetKeyPress(KEY_M) then
+	
+	if input:GetKeyPress(KEY_M) then
 		self.nodegraph:Deactivate()
 	end
-	
-	local c
-	for _,c in ipairs(waypoints) do
-		local ht=TerrainState:GetTerrain():GetHeight(Vector3(c.position.x,0,c.position.z))
-		c.position=Vector3(c.position.x,ht,c.position.z)
-	end
-	self:UpdateWaypointVis()
 end
 
 function TerrainEditUI:UncheckToolbar(except)
@@ -327,7 +252,7 @@ function TerrainEditUI:UncheckToolbar(except)
 	if except~="EditLayer" then self.toolbar:GetChild("EditLayer",true).checked=false self.blendbrush:Deactivate() end
 	if except~="EditMask" then self.toolbar:GetChild("EditMask",true).checked=false self.maskbrush:Deactivate() end
 	if except~="EditNoiseGraphs" then self.toolbar:GetChild("EditNoiseGraphs",true).checked=false self.nodegroupslist.visible=false end
-	if except~="EditWaypoints" then self.toolbar:GetChild("EditWaypoints",true).checked=false end
+	if except~="EditWaypoints" then self.toolbar:GetChild("EditWaypoints",true).checked=false self.splinegroups:Deactivate() end
 	if except~="Filters" then self.toolbar:GetChild("Filters",true).checked=false filterui:Deactivate() end
 	if except~="Help" then self.toolbar:GetChild("Help",true).checked=false end
 end
@@ -378,7 +303,11 @@ function TerrainEditUI:HandleToggled(eventType,eventData)
 			self.nodegroupslist.visible=false
 		end
 	elseif name=="EditWaypoints" then
-		-- TODO
+		if eventData["State"]:GetBool() then
+			self.splinegroups:Activate()
+		else
+			self.splinegroups:Deactivate()
+		end
 	elseif name=="Filters" then
 		if eventData["State"]:GetBool() then
 			filterui:Activate()

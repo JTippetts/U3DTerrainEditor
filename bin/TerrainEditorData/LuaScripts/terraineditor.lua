@@ -35,6 +35,8 @@ end
 
 TerrainState=TerrainEdit()
 
+g_rnd=KISS()
+g_rnd:setSeedTime()
 
 function Start()
     

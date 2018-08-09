@@ -11,6 +11,8 @@ return
 	
 	execute=function(self)
 		--print("1")
+		print("Deprecated filter.")
+		--return
 		local ops=GetOptions(self.options)
 		
 		local pavingwidth=ops["Paving Width"]
