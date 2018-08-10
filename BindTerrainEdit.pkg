@@ -35,6 +35,7 @@ public:
 	void SetTerrainSize(int w, int h, Vector3 spacing, bool use16bit=true);
 	void SetBlendMaskSize(int w, int h);
 	void SetTerrainSpacing(Vector3 spacing);
+	void ClearTerrain();
 	
 	Vector2 WorldToNormalized(Vector3 world);
 	Vector3 NormalizedToWorld(Vector2 normalized);

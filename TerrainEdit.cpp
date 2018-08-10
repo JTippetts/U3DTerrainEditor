@@ -235,6 +235,13 @@ void TerrainEdit::SetBlendMaskSize(int w, int h)
     masktex_->SetData(mask_, false);
 }
 
+void TerrainEdit::ClearTerrain()
+{
+	if(!hmap_) return;
+	hmap_->Clear(Color(0,0,0));
+	terrain_->SetHeightMap(hmap_);
+}
+
 Vector2 TerrainEdit::WorldToNormalized(Vector3 world)
 {
     if(!terrain_) return Vector2(0,0);

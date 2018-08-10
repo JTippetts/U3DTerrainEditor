@@ -23,6 +23,8 @@ function SaveLoadUI:Start()
 	self:SubscribeToEvent(self.menu:GetChild("LoadBlend0",true), "Pressed", "SaveLoadUI:LoadBlend1")
 	self:SubscribeToEvent(self.menu:GetChild("LoadBlend1",true), "Pressed", "SaveLoadUI:LoadBlend2")
 	
+	self:SubscribeToEvent(self.menu:GetChild("ClearTerrain",true), "Pressed", "SaveLoadUI:ClearTerrain")
+	
 	self:SubscribeToEvent(self.menu:GetChild("ApplyTerrainSpacing",true), "Pressed", "SaveLoadUI:HandleApplyTerrainSpacing")
 	self:SubscribeToEvent(self.menu:GetChild("ApplyTerrainHeight",true), "Pressed", "SaveLoadUI:HandleApplyTerrainHeight")
 	self:SubscribeToEvent(self.menu:GetChild("ApplyTerrainSize", true), "Pressed", "SaveLoadUI:HandleApplyTerrainSize")
@@ -116,6 +118,10 @@ function ExtractFilename(eventData, forSave)
 		end
     end
     return fileName
+end
+
+function SaveLoadUI:ClearTerrain(eventType, eventData)
+	TerrainState:ClearTerrain()
 end
 
 function SaveLoadUI:HandleApplyTerrainSpacing(eventType,eventData)

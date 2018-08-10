@@ -934,6 +934,37 @@ static int tolua_BindTerrainEdit_TerrainEdit_SetTerrainSpacing00(lua_State* tolu
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: ClearTerrain of class  TerrainEdit */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_TerrainEdit_ClearTerrain00
+static int tolua_BindTerrainEdit_TerrainEdit_ClearTerrain00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"TerrainEdit",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  TerrainEdit* self = (TerrainEdit*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'ClearTerrain'", NULL);
+#endif
+ {
+  self->ClearTerrain();
+ }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'ClearTerrain'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: WorldToNormalized of class  TerrainEdit */
 #ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_TerrainEdit_WorldToNormalized00
 static int tolua_BindTerrainEdit_TerrainEdit_WorldToNormalized00(lua_State* tolua_S)
@@ -5941,6 +5972,7 @@ TOLUA_API int tolua_BindTerrainEdit_open (lua_State* tolua_S)
   tolua_function(tolua_S,"SetTerrainSize",tolua_BindTerrainEdit_TerrainEdit_SetTerrainSize00);
   tolua_function(tolua_S,"SetBlendMaskSize",tolua_BindTerrainEdit_TerrainEdit_SetBlendMaskSize00);
   tolua_function(tolua_S,"SetTerrainSpacing",tolua_BindTerrainEdit_TerrainEdit_SetTerrainSpacing00);
+  tolua_function(tolua_S,"ClearTerrain",tolua_BindTerrainEdit_TerrainEdit_ClearTerrain00);
   tolua_function(tolua_S,"WorldToNormalized",tolua_BindTerrainEdit_TerrainEdit_WorldToNormalized00);
   tolua_function(tolua_S,"NormalizedToWorld",tolua_BindTerrainEdit_TerrainEdit_NormalizedToWorld00);
   tolua_function(tolua_S,"WorldToTerrain",tolua_BindTerrainEdit_TerrainEdit_WorldToTerrain00);
