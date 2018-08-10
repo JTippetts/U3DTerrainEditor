@@ -71,12 +71,6 @@ end
 function ColorChooser:SetColor(col)
 	local h,s,v = rgb2hsv(col)
 	
-	local rgb=hsv2rgb(h,s,v)
-	
-	print(col.r,col.g,col.b)
-	print(h,s,v)
-	print(rgb.r,rgb.g,rgb.b)
-	
 	self.value.value=math.floor((1-v)*127)
 	local angle=h/360
 	angle = angle*2.0-1.0
