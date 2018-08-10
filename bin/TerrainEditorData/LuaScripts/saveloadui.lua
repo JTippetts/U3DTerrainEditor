@@ -32,6 +32,68 @@ function SaveLoadUI:Start()
 	local sp=TerrainState:GetTerrainSpacing()
 	self.menu:GetChild("TerrainSpacing",true).text=tostring(sp.x)
 	self.menu:GetChild("TerrainHeight",true).text=tostring(sp.y)
+	
+	self.mainlight=self.menu:GetChild("MainLight",true)
+	self.backlight=self.menu:GetChild("BackLight",true)
+	self.ambfog=self.menu:GetChild("AmbFog",true)
+	
+	self.mainlight.hoverOffset=IntVector2(0,0)
+	self.mainlight.pressedOffset=IntVector2(0,0)
+	self.mainlight.border=IntRect(0,0,0,0)
+	
+	self.backlight.hoverOffset=IntVector2(0,0)
+	self.backlight.pressedOffset=IntVector2(0,0)
+	self.backlight.border=IntRect(0,0,0,0)
+	
+	self.ambfog.hoverOffset=IntVector2(0,0)
+	self.ambfog.pressedOffset=IntVector2(0,0)
+	self.ambfog.border=IntRect(0,0,0,0)
+	
+	self.mainchooser=scene_:CreateScriptObject("ColorChooser")
+	self.mainchooser:Hide()
+	self.backchooser=scene_:CreateScriptObject("ColorChooser")
+	self.backchooser:Hide()
+	self.ambfogchooser=scene_:CreateScriptObject("ColorChooser")
+	self.ambfogchooser:Hide()
+	
+	self:SubscribeToEvent(self.mainlight, "Pressed", "SaveLoadUI:ShowColorChooser")
+	self:SubscribeToEvent(self.backlight, "Pressed", "SaveLoadUI:ShowColorChooser")
+	self:SubscribeToEvent(self.ambfog, "Pressed", "SaveLoadUI:ShowColorChooser")
+	self:SubscribeToEvent(self.mainchooser.close, "Pressed", "SaveLoadUI:HideColorChooser")
+	self:SubscribeToEvent(self.backchooser.close, "Pressed", "SaveLoadUI:HideColorChooser")
+	self:SubscribeToEvent(self.ambfogchooser.close, "Pressed", "SaveLoadUI:HideColorChooser")
+	
+	self.mainchooser:SetColor(mainlight.color)
+	self.backchooser:SetColor(backlight.color)
+	self.ambfogchooser:SetColor(zone.fogColor)
+end
+
+function SaveLoadUI:ShowColorChooser(eventType, eventData)
+	local element=eventData["Element"]:GetPtr("UIElement")
+	if element==self.mainlight then
+		self.backchooser:Hide()
+		self.ambfogchooser:Hide()
+		self.mainchooser:Show()
+	elseif element==self.backlight then
+		self.mainchooser:Hide()
+		self.ambfogchooser:Hide()
+		self.backchooser:Show()
+	elseif element==self.ambfog then
+		self.mainchooser:Hide()
+		self.backchooser:Hide()
+		self.ambfogchooser:Show()
+	end
+end
+
+function SaveLoadUI:HideColorChooser(eventType, eventData)
+	local element=eventData["Element"]:GetPtr("UIElement")
+	if element==self.mainchooser.close then
+		self.mainchooser:Hide()
+	elseif element==self.backchooser.close then
+		self.backchooser:Hide()
+	elseif element==self.ambfogchooser.close then
+		self.ambfogchooser:Hide()
+	end
 end
 
 function CenterDialog(element)
@@ -214,4 +276,15 @@ function SaveLoadUI:HandleLoadBlend2(eventType, eventData)
 		TerrainState:LoadBlend1(fname)
 	end
 	self:CloseFileSelector()
+end
+
+function SaveLoadUI:Update(dt)
+	mainlight.color=self.mainchooser.color
+	backlight.color=self.backchooser.color
+	zone.ambientColor=self.ambfogchooser.color
+	zone.fogColor=self.ambfogchooser.color
+	
+	self.mainlight.color=mainlight.color
+	self.backlight.color=backlight.color
+	self.ambfog.color=zone.fogColor
 end

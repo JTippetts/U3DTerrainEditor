@@ -13,6 +13,7 @@ Spline=class(function(self)
 	vb:WriteFloat(col.b)
 	vb:WriteFloat(0.5)
 	self.colorbuf:Set(vb)
+	self.color=col
 	
 	self.dirty=false
 	
@@ -157,6 +158,7 @@ function SplineUI:HandleNewGroup(eventType, eventData)
 	local t=Text:new()
 	t:SetStyle("FileSelectorListText", cache:GetResource("XMLFile", "UI/DefaultStyle.xml"))
 	t.text=name
+	t.color=newgroup.color
 	newgroup.name=name
 	list:AddItem(t)
 	list.selection=list:GetNumItems()-1

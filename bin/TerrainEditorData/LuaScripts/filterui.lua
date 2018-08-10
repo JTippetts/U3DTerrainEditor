@@ -199,6 +199,7 @@ function FilterUI:BuildFilterOptions(filter)
 						local t=Text:new(context)
 						t.style=uiStyle
 						t.text=i.name
+						t.color=i.color
 						t.name=i.name
 						dlist:AddItem(t)
 					end

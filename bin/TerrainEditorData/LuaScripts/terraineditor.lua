@@ -13,6 +13,7 @@ require "LuaScripts/filterui"
 require "LuaScripts/saveloadui"
 require "LuaScripts/terrainselectui"
 require "LuaScripts/nodegraphui"
+require 'LuaScripts/colorchooser'
 
 require 'LuaScripts/Class'
 
@@ -66,7 +67,7 @@ function CreateScene()
 
     -- Create a Zone component for ambient lighting & fog control
     local zoneNode = scene_:CreateChild("Zone")
-    local zone = zoneNode:CreateComponent("Zone")
+    zone = zoneNode:CreateComponent("Zone")
     zone.boundingBox = BoundingBox(-1000.0, 1000.0)
     zone.ambientColor = Color(0.5, 0.5, 0.7)
     zone.fogColor = Color(0.7,0.8,0.9)
@@ -76,14 +77,24 @@ function CreateScene()
     -- Create a directional light to the world. Enable cascaded shadows on it
     local lightNode = scene_:CreateChild("DirectionalLight")
     lightNode.direction = Vector3(0.8, -1.0, 1.0)
-    local light = lightNode:CreateComponent("Light")
-    light.lightType = LIGHT_DIRECTIONAL
-    light.castShadows = true
+    mainlight = lightNode:CreateComponent("Light")
+    mainlight.lightType = LIGHT_DIRECTIONAL
+    mainlight.castShadows = true
     --light.shadowBias = BiasParameters(0.00025, 0.5)
     --light.shadowCascade = CascadeParameters(10.0, 50.0, 200.0, 0.0, 0.8)
-    light.specularIntensity = 0.125;
-    light.color = Color(1.2,1.2,1.2);
+    mainlight.specularIntensity = 0.125;
+    mainlight.color = Color(1,1,1);
 	--light.shadowBias = BiasParameters(0,0,0.015)
+	
+	lightNode = scene_:CreateChild("DirectionalLight")
+    lightNode.direction = Vector3(-0.8, -1.0, -1.0)
+    backlight = lightNode:CreateComponent("Light")
+    backlight.lightType = LIGHT_DIRECTIONAL
+    backlight.castShadows = false
+    --light.shadowBias = BiasParameters(0.00025, 0.5)
+    --light.shadowCascade = CascadeParameters(10.0, 50.0, 200.0, 0.0, 0.8)
+    backlight.specularIntensity = 0.125;
+    backlight.color = Color(0.25,0.25,0.25);
 	
 
     local skyNode = scene_:CreateChild("Sky")
