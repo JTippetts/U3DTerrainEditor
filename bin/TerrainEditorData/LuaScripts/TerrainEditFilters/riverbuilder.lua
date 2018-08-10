@@ -56,6 +56,7 @@ return
 		
 		local spline=ops["Spline"]
 		if spline==nil then print("No spline selected for river builder filter.") return end
+		if #spline.knots<2 then print("Spline must have at least 2 knots to function.") return end
 		
 		local plist=RasterVertexList()
 		for _,c in ipairs(spline.knots) do
