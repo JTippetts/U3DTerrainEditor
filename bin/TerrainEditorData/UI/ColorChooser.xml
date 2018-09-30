@@ -2,7 +2,7 @@
 <element type="Window">
 	<attribute name="Name" value="ColorChooser" />
 	<attribute name="Position" value="436 266" />
-	<attribute name="Size" value="184 160" />
+	<attribute name="Size" value="224 160" />
 	<attribute name="Pivot" value="0 0" />
 	<attribute name="Layout Mode" value="Vertical" />
 	<attribute name="Layout Border" value="4 4 4 4" />
@@ -47,6 +47,30 @@
 		</element>
 		<element type="Slider">
 			<attribute name="Name" value="Value" />
+			<attribute name="Min Size" value="16 128" />
+			<attribute name="Max Size" value="16 2147483647" />
+			<attribute name="Pivot" value="0 0" />
+			<attribute name="Image Rect" value="48 0 64 16" />
+			<attribute name="Border" value="4 4 4 4" />
+			<attribute name="Orientation" value="Vertical" />
+			<attribute name="Range" value="128" />
+			<attribute name="Value" value="64" />
+			<element type="BorderImage" internal="true" style="none">
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Image Rect" value="16 0 32 16" />
+				<attribute name="Border" value="4 4 4 4" />
+				<attribute name="Hover Image Offset" value="0 16" />
+			</element>
+		</element>
+		<element type="BorderImage">
+			<attribute name="Min Size" value="16 128" />
+			<attribute name="Max Size" value="16 128" />
+			<attribute name="Pivot" value="0 0" />
+			<attribute name="Texture" value="Texture2D;Textures/value.png" />
+			<attribute name="Image Rect" value="0 0 16 127" />
+		</element>
+		<element type="Slider">
+			<attribute name="Name" value="Brightness" />
 			<attribute name="Min Size" value="16 128" />
 			<attribute name="Max Size" value="16 2147483647" />
 			<attribute name="Pivot" value="0 0" />

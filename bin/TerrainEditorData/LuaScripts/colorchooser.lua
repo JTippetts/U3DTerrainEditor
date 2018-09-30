@@ -60,12 +60,18 @@ function ColorChooser:Start()
 	self.panel.visible=false
 	
 	self.value=self.panel:GetChild("Value", true)
+	self.brightness=self.panel:GetChild("Brightness", true)
 	self.close=self.panel:GetChild("Close", true)
 	self.cursor=self.panel:GetChild("Cursor", true)
 	self.colorwheel=self.panel:GetChild("ColorWheel", true)
 	self.swatch=self.panel:GetChild("Swatch", true)
 	self.color=Color(1,1,1)
 	self.swatch.color=self.color
+	self.brightness.value=127
+end
+
+function ColorChooser:GammaExpand(v)
+
 end
 
 function ColorChooser:SetColor(col)
@@ -82,6 +88,7 @@ function ColorChooser:SetColor(col)
 	print(newx,newy,self.value.value)
 	self.cursor.position=IntVector2(newx-4,newy-4)
 	self.color=col
+	self.brightness.value=127
 end
 
 function ColorChooser:Show(x,y)
@@ -95,7 +102,6 @@ end
 
 function ColorChooser:CalcColor()
 	local cursorpos=self.cursor:GetPosition()
-	--print(cursorpos.x,cursorpos.y)
 	local cx=cursorpos.x+4
 	local cy=cursorpos.y+4
 	
@@ -111,6 +117,11 @@ function ColorChooser:CalcColor()
 	--print(self.value.value, self.value.range)
 	
 	self.color=hsv2rgb(angle*360, len, v)
+	local bright=1.0-(self.brightness.value / self.brightness.range)
+	bright=bright+1.0
+	self.color.r = self.color.r*bright
+	self.color.g = self.color.g*bright
+	self.color.b = self.color.b*bright
 	self.swatch.color=self.color
 end
 

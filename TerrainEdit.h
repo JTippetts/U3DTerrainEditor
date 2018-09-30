@@ -44,7 +44,7 @@ class TerrainEdit// : public Object
 public:
     //TerrainEdit(Context *context);
     TerrainEdit();
-	
+
 	void ResizeTerrain(int tw, int th, bool use16bit);
     bool Initialize(Scene *scene, int tw, int th, int bw, int bh, Vector3 spacing, bool use16bit=true);
     void SetTerrainSize(int w, int h, Vector3 spacing, bool use16bit=true);
@@ -137,7 +137,7 @@ public:
 
     void GetSteepness(CArray2Dd &buffer, float threshold, float fade);
 	void GetCavityMap(CArray2Dd &buffer, float sampleradius, float scale, float bias, float intensity, unsigned int iterations);
-	
+	void GetCavityMap2(CArray2Dd &buffer, int radius);
 	Vector3 GetTerrainSpacing();
 	void SaveTerrainNormalMap(const String &filename);
 
@@ -151,8 +151,9 @@ protected:
 
     bool use16bit_;
     bool triplanar_, smoothing_, normalmapping_;
-	
+
 	float DoAmbientOcclusion(Vector2 tcoord, Vector2 uv, Vector3 p, Vector3 cnorm, float scale, float bias, float intensity);
+	float DoAmbientOcclusion2(int x, int y, int radius);
 };
 
 Vector2 WorldToNormalized(Image *height, Terrain *terrain, Vector3 world);

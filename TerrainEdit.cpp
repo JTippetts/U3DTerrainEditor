@@ -148,9 +148,9 @@ TerrainEdit::TerrainEdit() : terrainNode_(0), terrain_(0), material_(0), use16bi
 void TerrainEdit::ResizeTerrain(int tw, int th, bool use16bit)
 {
 	if(!terrain_ || !hmap_) return;
-	
+
 	if(tw==hmap_->GetWidth() && th==hmap_->GetHeight()) return;
-	
+
 	hmap_->SetSize(tw, th, use16bit ? 3 : 1);
 	hmap_->Clear(Color(0,0,0));
 	terrain_->SetHeightMap(hmap_);
@@ -1082,7 +1082,7 @@ void TerrainEdit::SetMaterialSettings(bool triplanar, bool smoothing, bool norma
 			material_=cache->GetResource<Material>("Materials/TerrainEdit8Bump.xml");
 		else
 			material_=cache->GetResource<Material>("Materials/TerrainEdit8.xml");
-			
+
     terrain_->SetMaterial(material_);
     material_->SetTexture(TU_DIFFUSE, blendtex0_);
     material_->SetTexture(TU_NORMAL, blendtex1_);
@@ -1100,14 +1100,14 @@ void TerrainEdit::SaveTerrainNormalMap(const String &filename)
 	if(!hmap_ || !terrain_) return;
 	Image img(terrain_->GetContext());
 	img.SetSize(hmap_->GetWidth(), hmap_->GetHeight(),3);
-	
+
 	for(int x=0; x<hmap_->GetWidth(); ++x)
 	{
 		for(int y=0; y<hmap_->GetHeight(); ++y)
 		{
 			float nx=(float)x/(float)(hmap_->GetWidth());
 			float ny=(float)y/(float)(hmap_->GetHeight());
-			
+
 			Vector3 world=NormalizedToWorld(Vector2(nx,ny));
 			Vector3 norm=terrain_->GetNormal(world);
 			img.SetPixel(x,y,Color(norm.x_*0.5f + 0.5f, norm.z_*0.5f+0.5f, 1.0));
@@ -1144,7 +1144,7 @@ void TerrainEdit::LoadHeightMap(const String &filename)
 void TerrainEdit::LoadBlend0(const String &filename)
 {
 	if(!terrain_) return;
-	LoadImage(terrain_->GetContext(), blend0_, filename.CString()); 
+	LoadImage(terrain_->GetContext(), blend0_, filename.CString());
 	blendtex0_->SetData(blend0_,false);
 }
 
@@ -1158,7 +1158,7 @@ void TerrainEdit::LoadBlend1(const String &filename)
 void TerrainEdit::LoadMask(const String &filename)
 {
 	if(!terrain_) return;
-	LoadImage(terrain_->GetContext(), mask_, filename.CString()); 
+	LoadImage(terrain_->GetContext(), mask_, filename.CString());
 	masktex_->SetData(mask_,false);
 }
 
@@ -1209,11 +1209,37 @@ float TerrainEdit::DoAmbientOcclusion(Vector2 tcoord, Vector2 uv, Vector3 p, Vec
 	return std::max(0.0f, cnorm.DotProduct(v)-bias)*(1.0f/(1.0f+d))*intensity;
 }
 
+float TerrainEdit::DoAmbientOcclusion2(int x, int y, int radius)
+{
+    int halfrad=radius/2+1;
+	float occ=0.0f;
+	float ht=GetHeightValue(x,y);
+
+	for(int nx=x-halfrad; nx<=x+halfrad; ++nx)
+	{
+		for(int ny=y-halfrad; ny<=y+halfrad; ++ny)
+		{
+			if(nx>=0 && nx<hmap_->GetWidth() && ny>=0 && ny<hmap_->GetHeight())
+			{
+			    float dx=(float)x-(float)nx;
+			    float dy=(float)y-(float)ny;
+				float dist=std::sqrt(dx*dx+dy*dy);
+				float rscale=std::max(0.0f, ((float)radius-dist)/(float)radius);
+				float dht=GetHeightValue(nx,ny);
+				//float delta=std::max(0.0f, dht-ht);
+				float delta=dht-ht;
+				occ += delta*rscale;
+			}
+		}
+	}
+	return occ;
+}
+
 void TerrainEdit::GetCavityMap(CArray2Dd &buffer, float sampleradius, float scale, float bias, float intensity, unsigned int iterations)
 {
 	unsigned int tw=hmap_->GetWidth();
     unsigned int th=hmap_->GetHeight();
-	
+
 	buffer.resize(tw,th);
 	Vector2 vecs[4]={{0,1},{0,-1},{1,0},{-1,0}};
 	KISS rnd;
@@ -1235,7 +1261,7 @@ void TerrainEdit::GetCavityMap(CArray2Dd &buffer, float sampleradius, float scal
 			Vector3 normal((p1-p2)/(pixsize*10.0f),(p3-p4)/(pixsize*10.0f),1.0);
 			normal.Normalize();
 			float ao=0.0f;
-			
+
 			for(unsigned int in=0; in<iterations; ++in)
 			{
 				float theta=(2.0f*3.141592f)*(float)rnd.get01();
@@ -1244,7 +1270,7 @@ void TerrainEdit::GetCavityMap(CArray2Dd &buffer, float sampleradius, float scal
 				{
 					Vector2 coord1=rot(vecs[j],randvec)*sampleradius;
 					Vector2 coord2=Vector2(coord1.x_*0.707f-coord1.y_*0.707f, coord1.x_*0.707f+coord1.y_*0.707f);
-				
+
 					ao += DoAmbientOcclusion(nrm,coord1*0.25, pos, normal, scale, bias, intensity);
 					ao += DoAmbientOcclusion(nrm,coord2*0.5, pos, normal, scale, bias, intensity);
 					ao += DoAmbientOcclusion(nrm,coord1*0.75, pos, normal, scale, bias, intensity);
@@ -1255,6 +1281,23 @@ void TerrainEdit::GetCavityMap(CArray2Dd &buffer, float sampleradius, float scal
 			buffer.set(x,y,ao);
 		}
 	}
+}
+
+void TerrainEdit::GetCavityMap2(CArray2Dd &buffer, int radius)
+{
+    int tw=hmap_->GetWidth();
+	int th=hmap_->GetHeight();
+
+	buffer.resize(tw,th);
+
+	for(int y=0; y<th; ++y)
+	{
+		for(int x=0; x<tw; ++x)
+		{
+			buffer.set(x,y,DoAmbientOcclusion2(x,y,radius));
+		}
+	}
+	buffer.scaleToRange(0.0f,1.0f);
 }
 
 Vector3 TerrainEdit::GetTerrainSpacing()
@@ -1794,7 +1837,7 @@ Vector2 RenderANLKernelToImage(Image *buffer, CKernel *kernel, float lowrange, f
 			if(counts[c]>maxcount) maxcount=c;
 			if(counts[c]<mincount) mincount=c;
 		}
-		
+
 		th(1.7)
 		histogram->Clear(Color(0,0,0));
 		for(int x=0; x<histogram->GetWidth(); ++x)
@@ -1829,7 +1872,7 @@ void RenderANLKernelToImageRGBA(Image *buffer, CKernel *kernel,int seamlessmode,
     int w=buffer->GetWidth();
     int h=buffer->GetHeight();
     img.resize(w,h);
-	
+
 	if(!usez)
 		mapRGBA2DNoZ(seamlessmode, img, *kernel, SMappingRanges(0,scalex,0,scaley,0,1), kernel->lastIndex());
 	else
@@ -2303,16 +2346,16 @@ void BuildQuadStripRoad(RasterVertexList *curve, int steps, float width, float l
 
     Vector<Vector3> points, tangents;
 	Vector<float> distances;
-	
+
     ll.Solve(points, tangents, distances, steps*(ll.NumPoints()-1), 0.1);
-	
+
 	Vector<Vector3> quadpoints;
 	Vector<float> quaddistances;
-	
+
 	BuildQuadStripB(points,tangents,distances,quadpoints,quaddistances,width, Vector3(0,1,0));
 	geom->Clear();
 	geom->SetNumGeometries(1);
-	
+
 	geom->BeginGeometry(0,TRIANGLE_LIST);
 	for(unsigned int c=0; c<quadpoints.Size()-4; c+=2)
 	{
@@ -2323,13 +2366,13 @@ void BuildQuadStripRoad(RasterVertexList *curve, int steps, float width, float l
 		Vector3 right1=tang1.CrossProduct(Vector3(0,1,0));
 		right1.Normalize();
 		Vector3 norm1=right1.CrossProduct(tang1);
-		
+
 		Vector3 tang2=tangents[lineindex+1];
 		tang2.Normalize();
 		Vector3 right2=tang2.CrossProduct(Vector3(0,1,0));
 		right2.Normalize();
 		Vector3 norm2=right2.CrossProduct(tang2);
-		
+
 		geom->DefineVertex(quadpoints[c]);
 		geom->DefineNormal(norm1);
 		geom->DefineTexCoord(Vector2(0,quaddistances[c]*lengthscale));
@@ -2339,7 +2382,7 @@ void BuildQuadStripRoad(RasterVertexList *curve, int steps, float width, float l
 		geom->DefineVertex(quadpoints[c+2]);
 		geom->DefineNormal(norm2);
 		geom->DefineTexCoord(Vector2(0,quaddistances[c+2]*lengthscale));
-		
+
 		geom->DefineVertex(quadpoints[c+1]);
 		geom->DefineNormal(norm1);
 		geom->DefineTexCoord(Vector2(1,quaddistances[c+1]*lengthscale));
@@ -2350,9 +2393,9 @@ void BuildQuadStripRoad(RasterVertexList *curve, int steps, float width, float l
 		geom->DefineNormal(norm2);
 		geom->DefineTexCoord(Vector2(1,quaddistances[c+3]*lengthscale));
 	}
-	
+
 	geom->Commit();
-	
+
 }
 
 void BuildQuadStripVarying(RasterVertexList *in, RasterVertexList *out, float startwidth, float endwidth)
