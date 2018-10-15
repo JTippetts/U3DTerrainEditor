@@ -1,0 +1,32 @@
+{
+"normal": [
+"Textures/densenormal.png",
+"Textures/sand_normal.png",
+"Textures/tiletexturegrass_normal.png",
+"Textures/tg1_normal.png",
+"Textures/pebbles3_norm.png",
+"Textures/cliff_normal.png",
+"Textures/rockface1_normal.png",
+"Textures/cliff2_normal.png",
+],
+"diffuse": [
+"Textures/pebbles.png",
+"Textures/sand.png",
+"Textures/tiletexturegrass.png",
+"Textures/tg1.png",
+"Textures/pebbles3_diff.png",
+"Textures/cliff.png",
+"Textures/rockface1.png",
+"Textures/cliff2.png",
+],
+"scales": [
+0.5,
+0.5,
+0.5,
+0.5,
+0.5,
+0.5,
+0.5,
+0.5,
+],
+}

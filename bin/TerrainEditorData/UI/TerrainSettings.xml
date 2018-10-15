@@ -670,7 +670,8 @@
 			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
-			<attribute name="Text" value="Main Light" />
+			<attribute name="Text" value="Main" />
+			<attribute name="Text Alignment" value="Center" />
 		</element>
 		<element type="Text">
 			<attribute name="Pivot" value="0 0" />
@@ -678,7 +679,19 @@
 			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
-			<attribute name="Text" value="Back Light" />
+			<attribute name="Text" value="Back" />
+			<attribute name="Text Alignment" value="Center" />
+		</element>
+		<element type="Text">
+			<attribute name="Min Anchor" value="0 0.5" />
+			<attribute name="Max Anchor" value="0 0.5" />
+			<attribute name="Pivot" value="0 0.5" />
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Text" value="Ambient" />
+			<attribute name="Text Alignment" value="Center" />
 		</element>
 		<element type="Text">
 			<attribute name="Pivot" value="0 0" />
@@ -686,7 +699,8 @@
 			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
-			<attribute name="Text" value="Amb/Fog" />
+			<attribute name="Text" value="Fog" />
+			<attribute name="Text Alignment" value="Center" />
 		</element>
 	</element>
 	<element type="Window">
@@ -701,6 +715,9 @@
 			<attribute name="Min Size" value="0 12" />
 			<attribute name="Pivot" value="0 0" />
 			<attribute name="Image Rect" value="86 92 88 94" />
+			<attribute name="Border" value="4 4 4 4" />
+			<attribute name="Hover Image Offset" value="0 16" />
+			<attribute name="Pressed Image Offset" value="16 0" />
 			<attribute name="Pressed Child Offset" value="-1 1" />
 		</element>
 		<element type="Button">
@@ -708,14 +725,103 @@
 			<attribute name="Min Size" value="0 12" />
 			<attribute name="Pivot" value="0 0" />
 			<attribute name="Image Rect" value="86 92 88 94" />
+			<attribute name="Border" value="4 4 4 4" />
+			<attribute name="Hover Image Offset" value="0 16" />
+			<attribute name="Pressed Image Offset" value="16 0" />
 			<attribute name="Pressed Child Offset" value="-1 1" />
 		</element>
 		<element type="Button">
-			<attribute name="Name" value="AmbFog" />
+			<attribute name="Name" value="Ambient" />
 			<attribute name="Min Size" value="0 12" />
 			<attribute name="Pivot" value="0 0" />
 			<attribute name="Image Rect" value="86 92 88 94" />
+			<attribute name="Border" value="4 4 4 4" />
+			<attribute name="Hover Image Offset" value="0 16" />
+			<attribute name="Pressed Image Offset" value="16 0" />
 			<attribute name="Pressed Child Offset" value="-1 1" />
+		</element>
+		<element type="Button">
+			<attribute name="Name" value="Fog" />
+			<attribute name="Min Size" value="0 12" />
+			<attribute name="Pivot" value="0 0" />
+			<attribute name="Image Rect" value="86 92 88 94" />
+			<attribute name="Border" value="4 4 4 4" />
+			<attribute name="Hover Image Offset" value="0 16" />
+			<attribute name="Pressed Image Offset" value="16 0" />
+			<attribute name="Pressed Child Offset" value="-1 1" />
+		</element>
+	</element>
+	<element>
+		<attribute name="Pivot" value="0 0" />
+		<attribute name="Layout Mode" value="Vertical" />
+		<element type="Text">
+			<attribute name="Min Anchor" value="0.5 0" />
+			<attribute name="Max Anchor" value="0.5 0" />
+			<attribute name="Pivot" value="0.5 0" />
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Text" value="Fog Settings" />
+			<attribute name="Text Alignment" value="Center" />
+		</element>
+		<element>
+			<attribute name="Pivot" value="0 0" />
+			<attribute name="Layout Mode" value="Horizontal" />
+			<element type="Text">
+				<attribute name="Min Size" value="40 15" />
+				<attribute name="Max Size" value="40 15" />
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Text" value="Near:" />
+				<attribute name="Text Alignment" value="Right" />
+			</element>
+			<element type="Slider">
+				<attribute name="Name" value="NearFog" />
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Image Rect" value="48 0 64 16" />
+				<attribute name="Border" value="4 4 4 4" />
+				<attribute name="Range" value="100" />
+				<attribute name="Value" value="50" />
+				<element type="BorderImage" internal="true" style="none">
+					<attribute name="Pivot" value="0 0" />
+					<attribute name="Image Rect" value="16 0 32 16" />
+					<attribute name="Border" value="4 4 4 4" />
+					<attribute name="Hover Image Offset" value="0 16" />
+				</element>
+			</element>
+		</element>
+		<element>
+			<attribute name="Pivot" value="0 0" />
+			<attribute name="Layout Mode" value="Horizontal" />
+			<element type="Text">
+				<attribute name="Min Size" value="40 15" />
+				<attribute name="Max Size" value="40 15" />
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Text" value="Far:" />
+				<attribute name="Text Alignment" value="Right" />
+			</element>
+			<element type="Slider">
+				<attribute name="Name" value="FarFog" />
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Image Rect" value="48 0 64 16" />
+				<attribute name="Border" value="4 4 4 4" />
+				<attribute name="Range" value="100" />
+				<attribute name="Value" value="50" />
+				<element type="BorderImage" internal="true" style="none">
+					<attribute name="Pivot" value="0 0" />
+					<attribute name="Image Rect" value="16 0 32 16" />
+					<attribute name="Border" value="4 4 4 4" />
+					<attribute name="Hover Image Offset" value="0 16" />
+				</element>
+			</element>
 		</element>
 	</element>
 </element>

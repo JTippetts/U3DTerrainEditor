@@ -104,6 +104,14 @@ function TerrainEditUI:Update(dt)
 	if input:GetKeyPress(KEY_M) then
 		self.nodegraph:HideGroup()
 	end
+
+	if input:GetKeyPress(KEY_O) then
+		self:SaveArea("test")
+	end
+
+	if input:GetKeyPress(KEY_I) then
+		self:LoadArea("test")
+	end
 end
 
 function TerrainEditUI:UncheckToolbar(except)
@@ -178,4 +186,52 @@ function TerrainEditUI:HandleToggled(eventType,eventData)
 	elseif name=="Help" then
 
 	end
+end
+
+function TerrainEditUI:SaveArea(dirname)
+	local fullpath=fileSystem:GetProgramDir().."GCData/Areas/"..dirname
+
+	if not fileSystem:DirExists(fullpath) then
+		fileSystem:CreateDir(fullpath)
+	end
+
+	--Save Terrain
+	TerrainState:SaveHeightMap(fullpath.."/elev.png")
+	TerrainState:SaveTerrainNormalMap(fullpath.."/normal.png")
+	TerrainState:SaveBlend0(fullpath.."/blend0.png")
+	TerrainState:SaveBlend1(fullpath.."/blend1.png")
+	TerrainState:SaveMask(fullpath.."/mask.png")
+
+	--Save data
+	self.splinegroups:Save(fullpath)
+	self.blendbrush:Save(fullpath)
+	saveloadui:Save(fullpath)
+	--self.doodads:Save(fullpath)
+	self.nodegraph:Save(fullpath)
+end
+
+function TerrainEditUI:LoadArea(dirname)
+	-- TODO: Clear all data before loading to avoid duplicate data groups
+	local fullpath=fileSystem:GetProgramDir().."GCData/Areas/"..dirname
+
+	if not fileSystem:DirExists(fullpath) then return end
+
+	TerrainState:LoadHeightMap(fullpath.."/elev.png")
+	TerrainState:LoadBlend0(fullpath.."/blend0.png")
+	TerrainState:LoadBlend1(fullpath.."/blend1.png")
+	TerrainState:LoadMask(fullpath.."/mask.png")
+
+	-- Load data
+	loader={}
+	--dofile(fullpath.."/doodads.lua")
+	--self.doodads:Load(loader)
+	dofile(fullpath.."/lighting.lua")
+	saveloadui:Load(loader)
+	dofile(fullpath.."/textures.lua")
+	self.blendbrush:Load(loader)
+	dofile(fullpath.."/splines.lua")
+	self.splinegroups:Load(loader)
+	dofile(fullpath.."/nodegroups.lua")
+	self.nodegraph:Load(loader)
+
 end

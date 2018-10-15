@@ -1,89 +1,174 @@
 SaveLoadUI=ScriptObject()
 imageFilters={"*.png"}
 
+function LuaToJSON(v, f)
+	if type(v)=='number' then
+		f:write(tostring(v))
+	elseif type(v)=='string' then
+		f:write("\""..v.."\"")
+	elseif type(v)=='table' then
+		if v[1]~=nil then -- Output array
+			f:write("[\n")
+			local j
+			for _,j in ipairs(v) do
+				LuaToJSON(j, f)
+				f:write(",\n")
+			end
+			f:write("]")
+		else -- Output object
+			f:write("{\n")
+			local i,j
+			for i,j in pairs(v) do
+				f:write("\""..i.."\": ")
+				LuaToJSON(j,f)
+				f:write(",\n")
+			end
+			f:write("}")
+		end
+	end
+end
+
 function SaveLoadUI:Start()
 	--self.menu=ui:LoadLayout(cache:GetResource("XMLFile", "UI/TerrainEditSaveLoadMenu.xml"))
 	self.menu=ui:LoadLayout(cache:GetResource("XMLFile", "UI/TerrainSettings.xml"))
 	self.menu.style=uiStyle
 	self.menu.visible=true
-	
+
 	ui.root:AddChild(self.menu)
-	
+
 	self:SubscribeToEvent("SaveHeightmap", "SaveLoadUI:SaveHeightmap")
 	self:SubscribeToEvent("SaveBlend1", "SaveLoadUI:SaveBlend1")
 	self:SubscribeToEvent("SaveBlend2", "SaveLoadUI:SaveBlend2")
 	self:SubscribeToEvent("LoadHeightmap", "SaveLoadUI:LoadHeightmap")
 	self:SubscribeToEvent("LoadBlend1", "SaveLoadUI:LoadBlend1")
 	self:SubscribeToEvent("LoadBlend2", "SaveLoadUI:LoadBlend2")
-	
+
 	self:SubscribeToEvent(self.menu:GetChild("SaveTerrain",true), "Pressed", "SaveLoadUI:SaveHeightmap")
 	self:SubscribeToEvent(self.menu:GetChild("SaveBlend0",true), "Pressed", "SaveLoadUI:SaveBlend1")
 	self:SubscribeToEvent(self.menu:GetChild("SaveBlend1",true), "Pressed", "SaveLoadUI:SaveBlend2")
 	self:SubscribeToEvent(self.menu:GetChild("LoadTerrain",true), "Pressed", "SaveLoadUI:LoadHeightmap")
 	self:SubscribeToEvent(self.menu:GetChild("LoadBlend0",true), "Pressed", "SaveLoadUI:LoadBlend1")
 	self:SubscribeToEvent(self.menu:GetChild("LoadBlend1",true), "Pressed", "SaveLoadUI:LoadBlend2")
-	
+
 	self:SubscribeToEvent(self.menu:GetChild("ClearTerrain",true), "Pressed", "SaveLoadUI:ClearTerrain")
-	
+
 	self:SubscribeToEvent(self.menu:GetChild("ApplyTerrainSpacing",true), "Pressed", "SaveLoadUI:HandleApplyTerrainSpacing")
 	self:SubscribeToEvent(self.menu:GetChild("ApplyTerrainHeight",true), "Pressed", "SaveLoadUI:HandleApplyTerrainHeight")
 	self:SubscribeToEvent(self.menu:GetChild("ApplyTerrainSize", true), "Pressed", "SaveLoadUI:HandleApplyTerrainSize")
-	
+
 	self:SubscribeToEvent(self.menu:GetChild("ExportNormals",true), "Pressed", "SaveLoadUI:SaveNormalmap")
-	
+
 	local sp=TerrainState:GetTerrainSpacing()
 	self.menu:GetChild("TerrainSpacing",true).text=tostring(sp.x)
 	self.menu:GetChild("TerrainHeight",true).text=tostring(sp.y)
-	
+
 	self.mainlight=self.menu:GetChild("MainLight",true)
 	self.backlight=self.menu:GetChild("BackLight",true)
-	self.ambfog=self.menu:GetChild("AmbFog",true)
-	
+	self.ambient=self.menu:GetChild("Ambient",true)
+	self.fog=self.menu:GetChild("Fog", true)
+
 	self.mainlight.hoverOffset=IntVector2(0,0)
 	self.mainlight.pressedOffset=IntVector2(0,0)
 	self.mainlight.border=IntRect(0,0,0,0)
-	
+
 	self.backlight.hoverOffset=IntVector2(0,0)
 	self.backlight.pressedOffset=IntVector2(0,0)
 	self.backlight.border=IntRect(0,0,0,0)
-	
-	self.ambfog.hoverOffset=IntVector2(0,0)
-	self.ambfog.pressedOffset=IntVector2(0,0)
-	self.ambfog.border=IntRect(0,0,0,0)
-	
+
+	self.ambient.hoverOffset=IntVector2(0,0)
+	self.ambient.pressedOffset=IntVector2(0,0)
+	self.ambient.border=IntRect(0,0,0,0)
+
+	self.fog.hoverOffset=IntVector2(0,0)
+	self.fog.pressedOffset=IntVector2(0,0)
+	self.fog.border=IntRect(0,0,0,0)
+
 	self.mainchooser=scene_:CreateScriptObject("ColorChooser")
 	self.mainchooser:Hide()
 	self.backchooser=scene_:CreateScriptObject("ColorChooser")
 	self.backchooser:Hide()
-	self.ambfogchooser=scene_:CreateScriptObject("ColorChooser")
-	self.ambfogchooser:Hide()
-	
+	self.ambientchooser=scene_:CreateScriptObject("ColorChooser")
+	self.ambientchooser:Hide()
+	self.fogchooser=scene_:CreateScriptObject("ColorChooser")
+	self.fogchooser:Hide()
+
 	self:SubscribeToEvent(self.mainlight, "Pressed", "SaveLoadUI:ShowColorChooser")
 	self:SubscribeToEvent(self.backlight, "Pressed", "SaveLoadUI:ShowColorChooser")
-	self:SubscribeToEvent(self.ambfog, "Pressed", "SaveLoadUI:ShowColorChooser")
+	self:SubscribeToEvent(self.fog, "Pressed", "SaveLoadUI:ShowColorChooser")
+	self:SubscribeToEvent(self.ambient, "Pressed", "SaveLoadUI:ShowColorChooser")
 	self:SubscribeToEvent(self.mainchooser.close, "Pressed", "SaveLoadUI:HideColorChooser")
 	self:SubscribeToEvent(self.backchooser.close, "Pressed", "SaveLoadUI:HideColorChooser")
-	self:SubscribeToEvent(self.ambfogchooser.close, "Pressed", "SaveLoadUI:HideColorChooser")
-	
+	self:SubscribeToEvent(self.ambientchooser.close, "Pressed", "SaveLoadUI:HideColorChooser")
+	self:SubscribeToEvent(self.fogchooser.close, "Pressed", "SaveLoadUI:HideColorChooser")
+
 	self.mainchooser:SetColor(mainlight.color)
 	self.backchooser:SetColor(backlight.color)
-	self.ambfogchooser:SetColor(zone.fogColor)
+	self.ambientchooser:SetColor(zone.ambientColor)
+	self.fogchooser:SetColor(zone.fogColor)
+end
+
+function SaveLoadUI:Save(fullpath)
+	-- Save lighting and fog
+
+	local data={}
+	local t=mainlight.color
+	data.main={t.r,t.g,t.b}
+	t=backlight.color
+	data.back={t.r,t.g,t.b}
+	t=zone.ambientColor
+	data.ambient={t.r,t.g,t.b}
+	t=zone.fogColor
+	data.fog={t.r,t.g,t.b}
+	data.near=zone.fogStart
+	data.far=zone.fogEnd
+
+	local f=io.open(fullpath.."/lighting.json", "w")
+	if f then
+		LuaToJSON(data, f)
+		f:close()
+	else print("Couldn't open lighting file.")
+	end
+
+	local str=table.show(data, "loader.lighting")
+	local f=io.open(fullpath.."/lighting.lua", "w")
+	f:write(str)
+	f:close()
+end
+
+function SaveLoadUI:Load(loader)
+	if not loader or not loader.lighting then return end
+	local lighting=loader.lighting
+
+	self.backchooser:SetColor(Color(lighting.back[1],lighting.back[2],lighting.back[3]))
+	self.mainchooser:SetColor(Color(lighting.main[1],lighting.main[2],lighting.main[3]))
+	self.fogchooser:SetColor(Color(lighting.fog[1],lighting.fog[2],lighting.fog[3]))
+	self.ambientchooser:SetColor(Color(lighting.ambient[1],lighting.ambient[2],lighting.ambient[3]))
+	zone.fogStart=lighting.near
+	zone.fogEnd=lighting.far
 end
 
 function SaveLoadUI:ShowColorChooser(eventType, eventData)
 	local element=eventData["Element"]:GetPtr("UIElement")
 	if element==self.mainlight then
 		self.backchooser:Hide()
-		self.ambfogchooser:Hide()
+		self.ambientchooser:Hide()
+		self.fogchooser:Hide()
 		self.mainchooser:Show()
 	elseif element==self.backlight then
 		self.mainchooser:Hide()
-		self.ambfogchooser:Hide()
+		self.ambientchooser:Hide()
+		self.fogchooser:Hide()
 		self.backchooser:Show()
-	elseif element==self.ambfog then
+	elseif element==self.ambient then
 		self.mainchooser:Hide()
 		self.backchooser:Hide()
-		self.ambfogchooser:Show()
+		self.ambientchooser:Show()
+		self.fogchooser:Hide()
+	elseif element==self.fog then
+		self.mainchooser:Hide()
+		self.backchooser:Hide()
+		self.ambientchooser:Hide()
+		self.fogchooser:Show()
 	end
 end
 
@@ -93,8 +178,10 @@ function SaveLoadUI:HideColorChooser(eventType, eventData)
 		self.mainchooser:Hide()
 	elseif element==self.backchooser.close then
 		self.backchooser:Hide()
-	elseif element==self.ambfogchooser.close then
-		self.ambfogchooser:Hide()
+	elseif element==self.ambientchooser.close then
+		self.ambientchooser:Hide()
+	elseif element==self.fogchooser.close then
+		self.fogchooser:Hide()
 	end
 end
 
@@ -146,11 +233,11 @@ end
 
 function SaveLoadUI:CreateFileSelector(title, ok, cancel, initialPath, filters, initialFilter, autoLocalizeTitle)
 	if autoLocalizeTitle==nil then autoLocalizeTitle=true end
-	
+
 	if self.fileSelector then
 		self:UnsubscribeFromEvent(self.fileSelector, "FileSelected")
 	end
-	
+
 	self.fileSelector=FileSelector()
 	self.fileSelector.defaultStyle=uiStyle
 	self.fileSelector.title=title
@@ -166,7 +253,7 @@ function SaveLoadUI:CloseFileSelector()
 	if self.fileSelector then
 		self:UnsubscribeFromEvent(self.fileSelector, "FileSelected")
 	end
-	
+
 	self.fileSelector=nil
 end
 
@@ -218,7 +305,7 @@ function SaveLoadUI:HandleSaveNormalmap(eventType, eventData)
 	local fname=ExtractFilename(eventData, true)
 	if fname~="" then
 		print("Save at "..fname)
-		
+
 		TerrainState:SaveTerrainNormalMap(fname)
 	end
 	self:CloseFileSelector()
@@ -287,10 +374,22 @@ end
 function SaveLoadUI:Update(dt)
 	mainlight.color=self.mainchooser.color
 	backlight.color=self.backchooser.color
-	zone.ambientColor=self.ambfogchooser.color
-	zone.fogColor=self.ambfogchooser.color
-	
+	zone.ambientColor=self.ambientchooser.color
+	zone.fogColor=self.fogchooser.color
+
 	self.mainlight.color=mainlight.color
 	self.backlight.color=backlight.color
-	self.ambfog.color=zone.fogColor
+	self.ambient.color=zone.ambientColor
+	self.fog.color=zone.fogColor
+
+	local nearfog=self.menu:GetChild("NearFog", true)
+	local farfog=self.menu:GetChild("FarFog", true)
+
+	local near=nearfog.value / nearfog.range
+	local far=farfog.value / farfog.range
+
+	local fogstart=near*256
+	local fogend=fogstart+far*80
+	zone.fogStart=fogstart
+	zone.fogEnd=fogend
 end
