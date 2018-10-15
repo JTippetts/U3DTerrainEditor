@@ -1,3 +1,0 @@
-loader.splines = {
-   ["groups"] = {};
-};

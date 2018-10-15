@@ -189,7 +189,7 @@ function TerrainEditUI:HandleToggled(eventType,eventData)
 end
 
 function TerrainEditUI:SaveArea(dirname)
-	local fullpath=fileSystem:GetProgramDir().."GCData/Areas/"..dirname
+	local fullpath=fileSystem:GetProgramDir().."Save/"..dirname
 
 	if not fileSystem:DirExists(fullpath) then
 		fileSystem:CreateDir(fullpath)
@@ -212,7 +212,7 @@ end
 
 function TerrainEditUI:LoadArea(dirname)
 	-- TODO: Clear all data before loading to avoid duplicate data groups
-	local fullpath=fileSystem:GetProgramDir().."GCData/Areas/"..dirname
+	local fullpath=fileSystem:GetProgramDir().."Save/"..dirname
 
 	if not fileSystem:DirExists(fullpath) then return end
 

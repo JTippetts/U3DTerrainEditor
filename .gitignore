@@ -15,6 +15,7 @@ bin/tolua++.exe
 !bin/TerrainEditorData/*.png
 bin/TerrainEditorData/Save
 bin/GCData
+bin/Save
 *.bat
 *.sh
 *.exe
