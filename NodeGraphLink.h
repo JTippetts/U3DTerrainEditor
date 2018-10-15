@@ -44,8 +44,13 @@ public:
     void ClearLink();
     NodeGraphLink *GetLink();
 
+	void SetRoot(UIElement *root);
+    void ClearRoot();
+    UIElement *GetRoot();
+
 protected:
     WeakPtr<NodeGraphLink> link_;
+	UIElement *root_;
 };
 
 class NodeGraphLink : public Object

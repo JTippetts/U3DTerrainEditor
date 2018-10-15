@@ -101,6 +101,21 @@ NodeGraphLinkDest::NodeGraphLinkDest(Context *context) : Button(context)
 {
 }
 
+void NodeGraphLinkDest::SetRoot(UIElement *root)
+{
+    root_=root;
+}
+
+void NodeGraphLinkDest::ClearRoot()
+{
+    root_=0;
+}
+
+UIElement *NodeGraphLinkDest::GetRoot()
+{
+    return root_;
+}
+
 void NodeGraphLinkDest::SetLink(NodeGraphLink *link)
 {
     link_=link;

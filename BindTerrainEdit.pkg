@@ -210,6 +210,9 @@ class NodeGraphLinkDest : public Button
 	void SetLink(NodeGraphLink *link);
 	void ClearLink();
 	NodeGraphLink *GetLink();
+	void SetRoot(UIElement *root);
+	void ClearRoot();
+	UIElement *GetRoot();
 };
 
 class NodeGraphLink : public Object
