@@ -40,25 +40,25 @@ g_rnd=KISS()
 g_rnd:setSeedTime()
 
 function Start()
-    
+
     SampleStart()
     CreateScene()
     SubscribeToEvents()
-	
+
 end
 
 function Stop()
-	
+
 end
 
 function CreateScene()
     scene_ = Scene()
 	CreateCursor()
-	
+
 	local buf=VectorBuffer()
 	buf:WriteFloat(1.4)
 	buf:WriteFloat(2.3)
-	
+
 	local ary=Variant()
 	ary:Set(buf)
 
@@ -85,7 +85,7 @@ function CreateScene()
     mainlight.specularIntensity = 0.125;
     mainlight.color = Color(1,1,1);
 	--light.shadowBias = BiasParameters(0,0,0.015)
-	
+
 	lightNode = scene_:CreateChild("DirectionalLight")
     lightNode.direction = Vector3(-0.8, -1.0, -1.0)
     backlight = lightNode:CreateComponent("Light")
@@ -95,24 +95,24 @@ function CreateScene()
     --light.shadowCascade = CascadeParameters(10.0, 50.0, 200.0, 0.0, 0.8)
     backlight.specularIntensity = 0.125;
     backlight.color = Color(0.25,0.25,0.25);
-	
 
-    local skyNode = scene_:CreateChild("Sky")
+
+    --[[local skyNode = scene_:CreateChild("Sky")
     skyNode:SetScale(500.0) -- The scale actually does not matter
     local skybox = skyNode:CreateComponent("Skybox")
     skybox.model = cache:GetResource("Model", "Models/Box.mdl")
-    skybox.material = cache:GetResource("Material", "Materials/Skybox.xml")
+    skybox.material = cache:GetResource("Material", "Materials/Skybox.xml")]]
 
-    
-	
+
+
 	terrainui=scene_:CreateScriptObject("TerrainEditUI")
-	
+
 	terrainui:NewTerrain(1025,1025,2048,2048,true,false,true)
 	terrainui:BuildUI()
 	filterui=scene_:CreateScriptObject("FilterUI")
 	saveloadui=scene_:CreateScriptObject("SaveLoadUI")
 	saveloadui:Deactivate()
-	
+
     cameraNode=scene_:CreateChild("Camera")
 	cam=cameraNode:CreateScriptObject("ThirdPersonCamera")
 	cam.clipcamera=false
@@ -127,18 +127,18 @@ function CreateScene()
 
 	projecttozero=true
 	--graphics.flushGPU=true
-	
+
 	function distortKernel(detail, frequency, seed)
 		local k=CKernel()
 		local eb=CExpressionBuilder(k)
-		
+
 		eb:setRandomSeed(seed)
-		
+
 		local gradientLayer="clamp(rotateDomain(scale(gradientBasis(3,rand), 2^n),rand01,rand01,0,rand01*3),-1,1)"
 		local fBmcombine="prev+(1/(2^n))*layer"
 		local fractal=fractalBuilder(eb,k,detail,gradientLayer,fBmcombine)
 		local freq=k:constant(frequency)
-		
+
 		k:scaleDomain(fractal, freq)
 		return k
 	end
@@ -155,7 +155,7 @@ function CreateScene()
 end
 
 function CreateInstructions()
-    
+
 end
 
 function SubscribeToEvents()
@@ -165,8 +165,8 @@ end
 function HandleUpdate(eventType, eventData)
     -- Take the frame time step, which is stored as a float
     local timeStep = eventData["TimeStep"]:GetFloat()
-	
-	
+
+
 	if input:GetKeyPress(KEY_PRINTSCREEN) then
 		local img=Image(context)
 		graphics:TakeScreenShot(img)
@@ -174,5 +174,5 @@ function HandleUpdate(eventType, eventData)
 		local filename="screen-"..tostring(t.year).."-"..tostring(t.month).."-"..tostring(t.day).."-"..tostring(t.hour).."-"..tostring(t.min).."-"..tostring(t.sec)..".png"
 		img:SavePNG(filename)
 	end
-	
+
 end

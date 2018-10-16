@@ -364,8 +364,6 @@ end
 function SaveLoadUI:HandleLoadBlend2(eventType, eventData)
 	local fname=ExtractFilename(eventData, true)
 	if fname~="" then
-		--LoadImage(context, TerrainState.blend2, fname)
-		--TerrainState.blendtex2:SetData(TerrainState.blend2, false)
 		TerrainState:LoadBlend1(fname)
 	end
 	self:CloseFileSelector()
@@ -388,8 +386,10 @@ function SaveLoadUI:Update(dt)
 	local near=nearfog.value / nearfog.range
 	local far=farfog.value / farfog.range
 
-	local fogstart=near*256
-	local fogend=fogstart+far*80
+	local fogstart=near*1024
+	local fogend=fogstart+far*512
 	zone.fogStart=fogstart
 	zone.fogEnd=fogend
+
+	cam.clipdist=fogend
 end

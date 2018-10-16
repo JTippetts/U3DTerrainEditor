@@ -1306,6 +1306,119 @@ Vector3 TerrainEdit::GetTerrainSpacing()
 	return terrain_->GetSpacing();
 }
 
+bool NeighborBasins(CArray2Dd &arr, CArray2Dd &W, float E, int x, int y)
+{
+	bool something_done=false;
+	for(int i=-1; i<=1; ++i)
+	{
+		for(int j=-1; j<=1; ++j)
+		{
+			if(i!=0 || j!=0)
+			{
+				if(arr.get(x,y)>=W.get(x+i,y+j)+E)
+				{
+					W.set(x,y,arr.get(x,y));
+					return true;
+				}
+				if(W.get(x,y)>W.get(x+i,y+j)+E)
+				{
+					W.set(x,y,W.get(x+i,y+j)+E);
+					something_done=true;
+				}
+			}
+		}
+	}
+	return something_done;
+}
+
+void FillBasins(CArray2Dd &arr, float E)
+{
+	// A fast, simple and versatile algorithm to fill the depressions of digital elevation models Olivier Planchon, Frederic Darboux
+	// http://horizon.documentation.ird.fr/exl-doc/pleins_textes/pleins_textes_7/sous_copyright/010031925.pdf
+	CArray2Dd W(arr.width(), arr.height());
+
+	float mn=arr.getMin();
+	float mx=arr.getMax();
+	// Stage 1
+	for(int x=0; x<arr.width(); ++x)
+	{
+		for(int y=0; y<arr.height(); ++y)
+		{
+			if(x==0 || y==0 || x==arr.width()-1 || y==arr.height()-1) W.set(x,y,arr.get(x,y));
+			else W.set(x,y,mx+1.0);
+		}
+	}
+
+	// Stage 2
+	int w=arr.width();
+	int h=arr.height();
+
+	int noffsets[8]=
+	{
+		-(w+1),
+		-w,
+		-(w-1),
+		-1,
+		1,
+		+(w-1),
+		+w,
+		+(w+1)
+	};
+
+	for(;;)
+	{
+		bool something_done=false;
+		for(int i=0; i<arr.width()*arr.height(); ++i)
+		{
+
+			if(arr.getIndexed(i)==W.getIndexed(i)) continue;
+
+			for(int nb=0; nb<8; ++nb)
+			{
+				double nval=W.getIndexed(i+noffsets[nb]);
+				if(arr.getIndexed(i)>=nval+E)
+				{
+					W.setIndexed(i,arr.getIndexed(i));
+					something_done=true;
+					break;
+				}
+				double hval=nval+E;
+				if((W.getIndexed(i) > hval) && (hval > arr.getIndexed(i)))
+				{
+					W.setIndexed(i,hval);
+					something_done=true;
+				}
+			}
+		}
+		if(!something_done) break;
+	}
+
+	arr.scaleToRange(mn,mx);
+	for(int x=0; x<arr.width(); ++x)
+	{
+		for(int y=0; y<arr.height(); ++y)
+		{
+			arr.set(x,y,W.get(x,y));
+		}
+	}
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/////////////////////// Deprecated
+
 bool LoadImage(Context *c, Image *i, const char *fname)
 {
     //SharedPtr<File> file(new File(c,fname));

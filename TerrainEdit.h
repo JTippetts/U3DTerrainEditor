@@ -156,6 +156,22 @@ protected:
 	float DoAmbientOcclusion2(int x, int y, int radius);
 };
 
+void FillBasins(CArray2Dd &arr, float E);
+
+
+
+
+
+
+
+
+
+
+
+
+
+/////////////////////// Deprecated
+
 Vector2 WorldToNormalized(Image *height, Terrain *terrain, Vector3 world);
 Vector3 NormalizedToWorld(Image *height, Terrain *terrain, Vector2 normalized);
 

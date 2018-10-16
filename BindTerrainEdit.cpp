@@ -2910,6 +2910,36 @@ static int tolua_BindTerrainEdit_TerrainEdit_GetCavityMap200(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* function: FillBasins */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_FillBasins00
+static int tolua_BindTerrainEdit_FillBasins00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ (tolua_isvaluenil(tolua_S,1,&tolua_err) || !tolua_isusertype(tolua_S,1,"CArray2Dd",0,&tolua_err)) ||
+ !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  CArray2Dd* arr = ((CArray2Dd*)  tolua_tousertype(tolua_S,1,0));
+  float E = ((float)  tolua_tonumber(tolua_S,2,0));
+ {
+  FillBasins(*arr,E);
+ }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'FillBasins'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* function: WorldToNormalized */
 #ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_WorldToNormalized00
 static int tolua_BindTerrainEdit_WorldToNormalized00(lua_State* tolua_S)
@@ -6158,6 +6188,7 @@ TOLUA_API int tolua_BindTerrainEdit_open (lua_State* tolua_S)
   tolua_function(tolua_S,"SaveTerrainNormalMap",tolua_BindTerrainEdit_TerrainEdit_SaveTerrainNormalMap00);
   tolua_function(tolua_S,"GetCavityMap2",tolua_BindTerrainEdit_TerrainEdit_GetCavityMap200);
  tolua_endmodule(tolua_S);
+ tolua_function(tolua_S,"FillBasins",tolua_BindTerrainEdit_FillBasins00);
  tolua_function(tolua_S,"WorldToNormalized",tolua_BindTerrainEdit_WorldToNormalized00);
  tolua_function(tolua_S,"NormalizedToWorld",tolua_BindTerrainEdit_NormalizedToWorld00);
  tolua_function(tolua_S,"SetHeightValue",tolua_BindTerrainEdit_SetHeightValue00);
