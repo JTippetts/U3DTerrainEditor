@@ -1712,7 +1712,8 @@ static int tolua_BindTerrainEdit_TerrainEdit_SetHeightBuffer00(lua_State* tolua_
  !tolua_isusertype(tolua_S,1,"TerrainEdit",0,&tolua_err) ||
  (tolua_isvaluenil(tolua_S,2,&tolua_err) || !tolua_isusertype(tolua_S,2,"CArray2Dd",0,&tolua_err)) ||
  (tolua_isvaluenil(tolua_S,3,&tolua_err) || !tolua_isusertype(tolua_S,3,"MaskSettings",0,&tolua_err)) ||
- !tolua_isnoobj(tolua_S,4,&tolua_err)
+ !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,5,&tolua_err)
  )
  goto tolua_lerror;
  else
@@ -1721,11 +1722,12 @@ static int tolua_BindTerrainEdit_TerrainEdit_SetHeightBuffer00(lua_State* tolua_
   TerrainEdit* self = (TerrainEdit*)  tolua_tousertype(tolua_S,1,0);
   CArray2Dd* buffer = ((CArray2Dd*)  tolua_tousertype(tolua_S,2,0));
   MaskSettings* masksettings = ((MaskSettings*)  tolua_tousertype(tolua_S,3,0));
+  int blendop = ((int)  tolua_tonumber(tolua_S,4,0));
 #ifndef TOLUA_RELEASE
  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'SetHeightBuffer'", NULL);
 #endif
  {
-  self->SetHeightBuffer(*buffer,*masksettings);
+  self->SetHeightBuffer(*buffer,*masksettings,blendop);
  }
  }
  return 0;
@@ -6118,6 +6120,12 @@ TOLUA_API int tolua_BindTerrainEdit_open (lua_State* tolua_S)
   tolua_function(tolua_S,"new_local",tolua_BindTerrainEdit_MaskSettings_new01_local);
   tolua_function(tolua_S,".call",tolua_BindTerrainEdit_MaskSettings_new01_local);
  tolua_endmodule(tolua_S);
+ tolua_constant(tolua_S,"HeightReplace",HeightReplace);
+ tolua_constant(tolua_S,"HeightAdd",HeightAdd);
+ tolua_constant(tolua_S,"HeightSubtract",HeightSubtract);
+ tolua_constant(tolua_S,"HeightMultiply",HeightMultiply);
+ tolua_constant(tolua_S,"HeightMin",HeightMin);
+ tolua_constant(tolua_S,"HeightMax",HeightMax);
  #ifdef __cplusplus
  tolua_cclass(tolua_S,"TerrainEdit","TerrainEdit","",tolua_collect_TerrainEdit);
  #else

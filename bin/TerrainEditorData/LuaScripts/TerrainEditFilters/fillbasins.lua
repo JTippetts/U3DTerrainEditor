@@ -4,7 +4,7 @@ return
 	description="Fill basins on heightmap",
 	options=
 	{
-		{name="Max delta", type="value", value=0.00001},
+		{name="Max delta", type="value", value=0.000001},
 		{name="Use Mask 0?", type="flag", value=false},
 		{name="Invert Mask 0?", type="flag", value=false},
 		{name="Use Mask 1?", type="flag", value=false},
@@ -23,6 +23,6 @@ return
 		FillBasins(arr,E)
 
 		local ms=MaskSettings(ops["Use Mask 0?"], ops["Invert Mask 0?"], ops["Use Mask 1?"], ops["Invert Mask 1?"], ops["Use Mask 2?"], ops["Invert Mask 2?"])
-		TerrainState:SetHeightBuffer(arr,ms)
+		TerrainState:SetHeightBuffer(arr,ms,0)
 	end
 }

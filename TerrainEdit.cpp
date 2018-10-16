@@ -380,7 +380,7 @@ void TerrainEdit::GetHeightMap(CArray2Dd &buffer)
 	}
 }
 
-void TerrainEdit::SetHeightBuffer(CArray2Dd &buffer, MaskSettings &masksettings)
+void TerrainEdit::SetHeightBuffer(CArray2Dd &buffer, MaskSettings &masksettings, int blendop)
 {
     if(!terrain_) return;
 
@@ -395,7 +395,7 @@ void TerrainEdit::SetHeightBuffer(CArray2Dd &buffer, MaskSettings &masksettings)
             float nx=(float)x/(float)(w);
             float ny=(float)y/(float)(h);
 
-            double v=buffer.getBilinear(nx,ny);
+            float v=buffer.getBilinear(nx,ny);
             Color mask=mask_->GetPixelBilinear(nx,ny);
             float oldheight=GetHeightValue(x,y);
             float maskval=1.0f;
@@ -419,7 +419,20 @@ void TerrainEdit::SetHeightBuffer(CArray2Dd &buffer, MaskSettings &masksettings)
                 maskval*=mval;
             }
 
-            v=oldheight+maskval*(v-oldheight);
+			float newval=0.0f;
+
+			switch(blendop)
+			{
+				case HeightReplace: newval=v; break;
+				case HeightAdd: newval=oldheight+v; break;
+				case HeightSubtract: newval=oldheight-v; break;
+				case HeightMultiply: newval=oldheight*v; break;
+				case HeightMin: newval=std::min(v, oldheight); break;
+				case HeightMax: newval=std::max(v, oldheight); break;
+				default: newval=v; break;
+			}
+
+            v=oldheight+maskval*(newval-oldheight);
             SetHeightValue(x,y,(float)v);
         }
     }

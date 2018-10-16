@@ -38,6 +38,16 @@ struct MaskSettings
 
 };
 
+enum
+{
+	HeightReplace,
+	HeightAdd,
+	HeightSubtract,
+	HeightMultiply,
+	HeightMin,
+	HeightMax
+};
+
 class TerrainEdit// : public Object
 {
     //URHO3D_OBJECT(TerrainEdit, Object);
@@ -91,7 +101,7 @@ public:
     float GetHeightValue(Vector3 worldpos);
 	void GetHeightMap(CArray2Dd &buffer);
 
-    void SetHeightBuffer(CArray2Dd &buffer, MaskSettings &masksettings);
+    void SetHeightBuffer(CArray2Dd &buffer, MaskSettings &masksettings, int blendop);
     void SetLayerBuffer(CArray2Dd &buffer, int layer, MaskSettings &masksettings);
     void SetLayerBufferMax(CArray2Dd &buffer, int layer, MaskSettings &masksettings);
     void BlendHeightBuffer(CArray2Dd &buffer, CArray2Dd &blend, MaskSettings &masksettings);

@@ -383,6 +383,26 @@ function NodeGraphUI:CreateNodeGroup()
 	end
 	list.selection=0
 
+	list=nodegroup.output:GetChild("BlendOpList",true)
+	local bops=
+	{
+		"Replace",
+		"Add",
+		"Subtract",
+		"Multiply",
+		"Min",
+		"Max",
+	}
+	for _,c in ipairs(bops) do
+		local t=Text:new(context)
+		t:SetFont(cache:GetResource("Font", "Fonts/Anonymous Pro.ttf"), 9)
+		t.text=c
+		t.color=Color(1,1,1)
+		t.minSize=IntVector2(0,16)
+		list:AddItem(t)
+	end
+	list.selection=0
+
 	--nodegroup.pane:AddChild(self.createnodemenu)
 
 	self:SubscribeToEvent(nodegroup.output:GetChild("Generate",true),"Pressed","NodeGraphUI:HandleGenerate")
@@ -617,6 +637,7 @@ function NodeGraphUI:HandleExecute(eventType, eventData)
 	if not self.nodegroup then return end
 
 	local target=self.nodegroup.output:GetChild("TargetList",true).selection
+	local blendop=self.nodegroup.output:GetChild("BlendOpList",true).selection
 
 	local um1,im1=self.nodegroup.output:GetChild("UseMask1",true).checked,self.nodegroup.output:GetChild("InvertMask1",true).checked
 	local um2,im2=self.nodegroup.output:GetChild("UseMask2",true).checked,self.nodegroup.output:GetChild("InvertMask2",true).checked
@@ -635,7 +656,7 @@ function NodeGraphUI:HandleExecute(eventType, eventData)
 		local arr=CArray2Dd(TerrainState:GetTerrainWidth(), TerrainState:GetTerrainHeight())
 		map2DNoZ(SEAMLESS_NONE,arr,kernel,SMappingRanges(0,1,0,1,0,1), kernel:lastIndex())
 		if rescale then arr:scaleToRange(low,high) end
-		TerrainState:SetHeightBuffer(arr,ms)
+		TerrainState:SetHeightBuffer(arr,ms,blendop)
 		--self.nodemapping.visible=false
 		saveDoubleArray("map.png",arr)
 		return

@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <element type="Window">
 	<attribute name="Name" value="Output" />
-	<attribute name="Position" value="399 31" />
-	<attribute name="Size" value="264 515" />
+	<attribute name="Position" value="399 -6" />
+	<attribute name="Size" value="264 546" />
 	<attribute name="Pivot" value="0 0" />
 	<attribute name="Clip Children" value="false" />
 	<attribute name="Focus Mode" value="Focusable" />
@@ -583,6 +583,71 @@
 	<element>
 		<attribute name="Pivot" value="0 0" />
 		<attribute name="Layout Mode" value="Horizontal" />
+		<element type="DropDownList">
+			<attribute name="Name" value="BlendOpList" />
+			<attribute name="Pivot" value="0 0" />
+			<attribute name="Layout Mode" value="Horizontal" />
+			<attribute name="Layout Border" value="4 1 4 1" />
+			<attribute name="Image Rect" value="16 0 32 16" />
+			<attribute name="Border" value="4 4 4 4" />
+			<attribute name="Hover Image Offset" value="0 16" />
+			<attribute name="Pressed Image Offset" value="16 0" />
+			<attribute name="Pressed Child Offset" value="-1 1" />
+			<attribute name="Selection" value="-1" />
+			<attribute name="Resize Popup" value="true" />
+			<element internal="true" style="none">
+				<attribute name="Pivot" value="0 0" />
+				<element type="Text" internal="true" style="none">
+					<attribute name="Pivot" value="0 0" />
+					<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+					<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+					<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+					<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+				</element>
+			</element>
+			<element popup="true" type="Window" internal="true" style="none">
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Priority" value="2147483647" />
+				<attribute name="Layout Border" value="2 4 2 4" />
+				<attribute name="Image Rect" value="48 0 64 16" />
+				<attribute name="Border" value="4 4 4 4" />
+				<attribute name="Resize Border" value="8 8 8 8" />
+				<element type="ListView" internal="true" style="none">
+					<attribute name="Pivot" value="0 0" />
+					<attribute name="Highlight Mode" value="Always" />
+					<element type="BorderImage" internal="true" style="none">
+						<attribute name="Pivot" value="0 0" />
+						<attribute name="Clip Border" value="2 0 2 0" />
+						<attribute name="Opacity" value="0" />
+						<attribute name="Image Rect" value="48 0 64 16" />
+						<attribute name="Border" value="4 4 4 4" />
+						<attribute name="Hover Image Offset" value="16 16" />
+						<element internal="true" style="none">
+							<attribute name="Pivot" value="0 0" />
+						</element>
+					</element>
+				</element>
+			</element>
+		</element>
+		<element type="Text">
+			<attribute name="Pivot" value="0 0" />
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Font Size" value="9" />
+			<attribute name="Text" value="Blend Mode" />
+		</element>
+	</element>
+	<element>
+		<attribute name="Min Size" value="0 8" />
+		<attribute name="Max Size" value="2147483647 8" />
+		<attribute name="Pivot" value="0 0" />
+		<attribute name="Layout Mode" value="Horizontal" />
+	</element>
+	<element>
+		<attribute name="Pivot" value="0 0" />
+		<attribute name="Layout Mode" value="Horizontal" />
 		<element type="Button">
 			<attribute name="Name" value="Execute" />
 			<attribute name="Min Size" value="0 12" />
@@ -606,5 +671,4 @@
 			</element>
 		</element>
 	</element>
-	
 </element>
