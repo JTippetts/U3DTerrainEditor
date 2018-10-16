@@ -4,7 +4,7 @@ return
 	description="Fill basins on heightmap",
 	options=
 	{
-		{name="Max delta", type="value", value=0.000001},
+		{name="Max delta", type="value", value=0.0005},
 		{name="Use Mask 0?", type="flag", value=false},
 		{name="Invert Mask 0?", type="flag", value=false},
 		{name="Use Mask 1?", type="flag", value=false},

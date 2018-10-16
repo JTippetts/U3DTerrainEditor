@@ -109,7 +109,7 @@ void waterFlow(anl::CArray2Dd &map, anl::CArray2Dd &flow, unsigned int numdrops)
     {
         drops.push_back(SDrop(rnd.getRange(0,w-1), rnd.getRange(0,h-1)));
     }
-	
+
 	flow.resize(map.width(), map.height());
 	flow.fill(0);
 

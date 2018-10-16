@@ -5,7 +5,7 @@ return
 	options=
 	{
 		{name="Layer", type="list", value="Layer 2", list={"Layer 1","Layer 2","Layer 3","Layer 4","Layer 5","Layer 6","Layer 7","Layer 8","Mask 1","Mask 2","Mask 3"}},
-		{name="Bias", type="value", value=0.7},
+		{name="Bias", type="value", value=0.87},
 		{name="Replace value?", type="flag", value=false},
 		{name="Use Mask 0?", type="flag", value=false},
 		{name="Invert Mask 0?", type="flag", value=false},
@@ -13,9 +13,9 @@ return
 		{name="Invert Mask 1?", type="flag", value=false},
 		{name="Use Mask 2?", type="flag", value=false},
 		{name="Invert Mask 2?", type="flag", value=false},
-		
+
 	},
-	
+
 	execute=function(self)
 		local ops=GetOptions(self.options)
 		local b=ops["Bias"]
@@ -30,17 +30,19 @@ return
 		elseif layername=="Layer 7" then which=6
 		elseif layername=="Layer 8" then which=7
 		end
-		
+
 		local ms=MaskSettings(ops["Use Mask 0?"], ops["Invert Mask 0?"], ops["Use Mask 1?"], ops["Invert Mask 1?"], ops["Use Mask 2?"], ops["Invert Mask 2?"])
-		
+
 		local buf=CArray2Dd()
-		
+
 		local arr=CArray2Dd()
 		TerrainState:GetHeightMap(arr)
 		waterFlow(arr,buf,0)
+
+		print("Water flow min/max: "..buf:getMin().." / "..buf:getMax())
 		buf:scaleToRange(0,1)
 		buf:bias(b)
-		
+
 		if which==-1 then
 			if layername=="Mask 1" then
 				TerrainState:SetMaskBuffer(buf, 0)

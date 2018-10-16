@@ -4,7 +4,7 @@ return
 	description="Calculate a mask from the fill-basins routine.",
 	options=
 	{
-		{name="Max delta", type="value", value=0.000001},
+		{name="Max delta", type="value", value=0.0005},
 		{name="Which Mask?", type="list", value="Mask 0", list={"Mask 0", "Mask 1", "Mask 2"}},
 		{name="Invert Mask?", type="flag", value=false},
 		{name="Mask Bias", type="value", value=0.5},
