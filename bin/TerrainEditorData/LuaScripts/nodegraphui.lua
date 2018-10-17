@@ -126,6 +126,21 @@ function NodeGraphUI:Deactivate()
 	end
 end
 
+function NodeGraphUI:Clear()
+	local list=self.nodegroupslist:GetChild("List",true)
+	list:RemoveAllItems()
+
+	local g
+	for _,g in ipairs(self.nodegroups) do
+		g.pane:Remove()
+		--g.previewtex:delete()
+		--g.histotex:delete()
+	end
+	self.nodegroup=nil
+	self.nodegroups={}
+	self.nodegroupcounter=0
+end
+
 function NodeGraphUI:Save(fullpath)
 	local groups={}
 
@@ -216,6 +231,7 @@ end
 function NodeGraphUI:Load(loader)
 	if not loader or not loader.nodegroups then return end
 
+	self:Clear()
 	local g
 	for _,g in ipairs(loader.nodegroups) do
 		local group=self:CreateNodeGroup()

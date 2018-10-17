@@ -248,7 +248,7 @@ function SaveLoadUI:CreateFileSelector(title, ok, cancel, initialPath, --[[filte
 		self:UnsubscribeFromEvent(self.fileSelector, "FileSelected")
 	end
 
-	self.fileSelector=FileSelector()
+	self.fileSelector=FileSelector:new()
 	self.fileSelector.defaultStyle=uiStyle
 	self.fileSelector.title=title
 	self.fileSelector.titleText.autoLocalizable=autoLocalizeTitle
@@ -265,6 +265,7 @@ function SaveLoadUI:CloseFileSelector()
 		self:UnsubscribeFromEvent(self.fileSelector, "FileSelected")
 	end
 
+	self.fileSelector:delete()
 	self.fileSelector=nil
 end
 
@@ -380,7 +381,7 @@ end
 function SaveLoadUI:HandleLoadProject(eventType, eventData)
 	local fname=ExtractFilename(eventData, true)
 	if fname~="" then
-		print("Save project at "..fname..self.fileSelector:GetFileName())
+		print("Load project at "..fname..self.fileSelector:GetFileName())
 		terrainui:LoadArea(fname..self.fileSelector:GetFileName())
 	end
 	self:CloseFileSelector()

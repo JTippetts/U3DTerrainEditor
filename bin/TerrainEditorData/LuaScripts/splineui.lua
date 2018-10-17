@@ -157,6 +157,17 @@ function SplineUI:Start()
 	self:SubscribeToEvent(self.menu:GetChild("List", true), "ItemSelected", "SplineUI:HandleSelectedItem")
 end
 
+function SplineUI:Clear()
+	local list=self.menu:GetChild("List", true)
+	list:RemoveAllItems()
+	local g
+	for _,g in ipairs(self.groups) do
+		g.node:Remove()
+	end
+	self.groups={}
+	self.currentgroup=nil
+end
+
 function SplineUI:FindSplineByName(name)
 	local c
 	for _,c in ipairs(self.groups) do
@@ -260,6 +271,8 @@ end
 function SplineUI:Load(loader)
 	if not loader or not loader.splines then return end
 	local splines=loader.splines
+
+	self:Clear()
 
 	local c
 	for _,c in ipairs(splines.groups) do
