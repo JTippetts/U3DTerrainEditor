@@ -87,12 +87,6 @@ function TerrainEditUI:SetMaterial(blendwidth, blendheight, triplanar, smoothing
 end
 
 function TerrainEditUI:Update(dt)
-	self.counter=self.counter+dt
-	if self.counter>4 then
-		self.counter=self.counter-4
-		print("Used mem: "..collectgarbage("count"))
-		collectgarbage()
-	end
 	local mousepos
 	if input.mouseVisible then
 		mousepos=input:GetMousePosition()
@@ -105,13 +99,6 @@ function TerrainEditUI:Update(dt)
 		self.nodegraph:HideGroup()
 	end
 
-	if input:GetKeyPress(KEY_O) then
-		self:SaveArea("test")
-	end
-
-	if input:GetKeyPress(KEY_I) then
-		self:LoadArea("test")
-	end
 end
 
 function TerrainEditUI:UncheckToolbar(except)
@@ -189,7 +176,7 @@ function TerrainEditUI:HandleToggled(eventType,eventData)
 end
 
 function TerrainEditUI:SaveArea(dirname)
-	local fullpath=fileSystem:GetProgramDir().."Save/"..dirname
+	local fullpath=dirname--fileSystem:GetProgramDir().."Save/"..dirname
 
 	if not fileSystem:DirExists(fullpath) then
 		fileSystem:CreateDir(fullpath)
@@ -212,7 +199,7 @@ end
 
 function TerrainEditUI:LoadArea(dirname)
 	-- TODO: Clear all data before loading to avoid duplicate data groups
-	local fullpath=fileSystem:GetProgramDir().."Save/"..dirname
+	local fullpath=dirname--fileSystem:GetProgramDir().."Save/"..dirname
 
 	if not fileSystem:DirExists(fullpath) then return end
 

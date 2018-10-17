@@ -36,6 +36,15 @@ function SaveLoadUI:Start()
 
 	ui.root:AddChild(self.menu)
 
+	self:SubscribeToEvent("SaveProject", "SaveLoadUI:SaveProject")
+	self:SubscribeToEvent("LoadProject", "SaveLoadUI:LoadProject")
+	self:SubscribeToEvent("ClearProject", "SaveLoadUI:ClearProject")
+
+	self:SubscribeToEvent(self.menu:GetChild("SaveProject",true), "Pressed", "SaveLoadUI:SaveProject")
+	self:SubscribeToEvent(self.menu:GetChild("LoadProject",true), "Pressed", "SaveLoadUI:LoadProject")
+	self:SubscribeToEvent(self.menu:GetChild("ClearProject",true), "Pressed", "SaveLoadUI:ClearProject")
+
+--[[
 	self:SubscribeToEvent("SaveHeightmap", "SaveLoadUI:SaveHeightmap")
 	self:SubscribeToEvent("SaveBlend1", "SaveLoadUI:SaveBlend1")
 	self:SubscribeToEvent("SaveBlend2", "SaveLoadUI:SaveBlend2")
@@ -51,12 +60,13 @@ function SaveLoadUI:Start()
 	self:SubscribeToEvent(self.menu:GetChild("LoadBlend1",true), "Pressed", "SaveLoadUI:LoadBlend2")
 
 	self:SubscribeToEvent(self.menu:GetChild("ClearTerrain",true), "Pressed", "SaveLoadUI:ClearTerrain")
+	]]
 
 	self:SubscribeToEvent(self.menu:GetChild("ApplyTerrainSpacing",true), "Pressed", "SaveLoadUI:HandleApplyTerrainSpacing")
 	self:SubscribeToEvent(self.menu:GetChild("ApplyTerrainHeight",true), "Pressed", "SaveLoadUI:HandleApplyTerrainHeight")
 	self:SubscribeToEvent(self.menu:GetChild("ApplyTerrainSize", true), "Pressed", "SaveLoadUI:HandleApplyTerrainSize")
 
-	self:SubscribeToEvent(self.menu:GetChild("ExportNormals",true), "Pressed", "SaveLoadUI:SaveNormalmap")
+	--self:SubscribeToEvent(self.menu:GetChild("ExportNormals",true), "Pressed", "SaveLoadUI:SaveNormalmap")
 
 	local sp=TerrainState:GetTerrainSpacing()
 	self.menu:GetChild("TerrainSpacing",true).text=tostring(sp.x)
@@ -199,15 +209,15 @@ function ExtractFilename(eventData, forSave)
         local filter = eventData["Filter"]:GetString();
         fileName = eventData["FileName"]:GetString();
         -- Add default extension for saving if not specified
-        if (GetExtension(fileName)=="" and forSave==true and filter ~= "*.*")
-		then
-            fileName = fileName..string.sub(filter,2)
-		end
+        --if (GetExtension(fileName)=="" and forSave==true and filter ~= "*.*")
+		--then
+            --fileName = fileName..string.sub(filter,2)
+		--end
     end
     return fileName
 end
 
-function SaveLoadUI:ClearTerrain(eventType, eventData)
+function SaveLoadUI:ClearProject(eventType, eventData)
 	TerrainState:ClearTerrain()
 end
 
@@ -231,7 +241,7 @@ function SaveLoadUI:HandleApplyTerrainSize(eventType, eventData)
 	TerrainState:ResizeTerrain(v,v,true)
 end
 
-function SaveLoadUI:CreateFileSelector(title, ok, cancel, initialPath, filters, initialFilter, autoLocalizeTitle)
+function SaveLoadUI:CreateFileSelector(title, ok, cancel, initialPath, --[[filters, initialFilter,]] autoLocalizeTitle)
 	if autoLocalizeTitle==nil then autoLocalizeTitle=true end
 
 	if self.fileSelector then
@@ -244,7 +254,8 @@ function SaveLoadUI:CreateFileSelector(title, ok, cancel, initialPath, filters, 
 	self.fileSelector.titleText.autoLocalizable=autoLocalizeTitle
 	self.fileSelector.path=initialPath
 	self.fileSelector:SetButtonTexts(ok, cancel)
-	self.fileSelector:SetFilters(filters, initialFilter)
+	--self.fileSelector:SetFilters(filters, initialFilter)
+	self.fileSelector:SetDirectoryMode(true)
 	CenterDialog(self.fileSelector.window)
 	self.fileSelector.visible=true
 end
@@ -257,6 +268,12 @@ function SaveLoadUI:CloseFileSelector()
 	self.fileSelector=nil
 end
 
+function SaveLoadUI:SaveProject(eventType, eventData)
+	self:CreateFileSelector("Save Project", "Save", "Cancel", fileSystem:GetProgramDir().."TerrainEditorData/Save", false)
+	self:SubscribeToEvent(self.fileSelector, "FileSelected", "SaveLoadUI:HandleSaveProject")
+end
+
+--[[
 function SaveLoadUI:SaveNormalmap(eventType, eventData)
 	self:CreateFileSelector("Save Normalmap", "Save", "Cancel", fileSystem:GetProgramDir().."TerrainEditorData/Save", imageFilters, 0, false)
 	self:SubscribeToEvent(self.fileSelector, "FileSelected", "SaveLoadUI:HandleSaveNormalmap")
@@ -276,7 +293,14 @@ function SaveLoadUI:SaveBlend2(eventType, eventData)
 	self:CreateFileSelector("Save Blendmap 2", "Save", "Cancel", fileSystem:GetProgramDir().."TerrainEditorData/Save", imageFilters, 0, false)
 	self:SubscribeToEvent(self.fileSelector, "FileSelected", "SaveLoadUI:HandleSaveBlend2")
 end
+]]
 
+function SaveLoadUI:LoadProject(eventType, eventData)
+	self:CreateFileSelector("Load Project", "Load", "Cancel", fileSystem:GetProgramDir().."TerrainEditorData/Save", false)
+	self:SubscribeToEvent(self.fileSelector, "FileSelected", "SaveLoadUI:HandleLoadProject")
+end
+
+--[[
 function SaveLoadUI:LoadHeightmap(eventType, eventData)
 	self:CreateFileSelector("Load Heightmap", "Load", "Cancel", fileSystem:GetProgramDir().."TerrainEditorData/Save", imageFilters, 0, false)
 	self:SubscribeToEvent(self.fileSelector, "FileSelected", "SaveLoadUI:HandleLoadHeightmap")
@@ -291,6 +315,7 @@ function SaveLoadUI:LoadBlend2(eventType, eventData)
 	self:CreateFileSelector("Load Blend 2", "Load", "Cancel", fileSystem:GetProgramDir().."TerrainEditorData/Save", imageFilters, 0, false)
 	self:SubscribeToEvent(self.fileSelector, "FileSelected", "SaveLoadUI:HandleLoadBlend2")
 end
+]]
 
 function SaveLoadUI:Activate()
 	self.menu.visible=true
@@ -301,6 +326,16 @@ function SaveLoadUI:Deactivate()
 	self.menu.visible=false
 end
 
+function SaveLoadUI:HandleSaveProject(eventType, eventData)
+	local fname=ExtractFilename(eventData, true)
+	if fname~="" then
+		print("Save project at "..fname..self.fileSelector:GetFileName())
+		terrainui:SaveArea(fname..self.fileSelector:GetFileName())
+	end
+	self:CloseFileSelector()
+end
+
+--[[
 function SaveLoadUI:HandleSaveNormalmap(eventType, eventData)
 	local fname=ExtractFilename(eventData, true)
 	if fname~="" then
@@ -340,7 +375,22 @@ function SaveLoadUI:HandleSaveBlend2(eventType, eventData)
 	end
 	self:CloseFileSelector()
 end
+--]]
 
+function SaveLoadUI:HandleLoadProject(eventType, eventData)
+	local fname=ExtractFilename(eventData, true)
+	if fname~="" then
+		print("Save project at "..fname..self.fileSelector:GetFileName())
+		terrainui:LoadArea(fname..self.fileSelector:GetFileName())
+	end
+	self:CloseFileSelector()
+end
+
+function SaveLoadUI:HandleClearProject(eventType, eventData)
+
+end
+
+--[[
 function SaveLoadUI:HandleLoadHeightmap(eventType, eventData)
 	local fname=ExtractFilename(eventData, true)
 	if fname~="" then
@@ -368,6 +418,7 @@ function SaveLoadUI:HandleLoadBlend2(eventType, eventData)
 	end
 	self:CloseFileSelector()
 end
+]]
 
 function SaveLoadUI:Update(dt)
 	mainlight.color=self.mainchooser.color
