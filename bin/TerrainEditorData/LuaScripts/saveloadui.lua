@@ -270,7 +270,7 @@ function SaveLoadUI:CloseFileSelector()
 end
 
 function SaveLoadUI:SaveProject(eventType, eventData)
-	self:CreateFileSelector("Save Project", "Save", "Cancel", fileSystem:GetProgramDir().."TerrainEditorData/Save", false)
+	self:CreateFileSelector("Save Project", "Save", "Cancel", fileSystem:GetProgramDir().."/Save", false)
 	self:SubscribeToEvent(self.fileSelector, "FileSelected", "SaveLoadUI:HandleSaveProject")
 end
 
@@ -297,7 +297,7 @@ end
 ]]
 
 function SaveLoadUI:LoadProject(eventType, eventData)
-	self:CreateFileSelector("Load Project", "Load", "Cancel", fileSystem:GetProgramDir().."TerrainEditorData/Save", false)
+	self:CreateFileSelector("Load Project", "Load", "Cancel", fileSystem:GetProgramDir().."Save", false)
 	self:SubscribeToEvent(self.fileSelector, "FileSelected", "SaveLoadUI:HandleLoadProject")
 end
 
