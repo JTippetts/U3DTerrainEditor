@@ -143,17 +143,21 @@ float CalcSmooth(Image *height, float *kernel, int kernelsize, int terrainx, int
     else return 0.0f;
 }
 
-TerrainEdit::TerrainEdit() : terrainNode_(0), terrain_(0), material_(0), use16bit_(true), triplanar_(true), smoothing_(false), normalmapping_(true) {}
+TerrainEdit::TerrainEdit() : terrainNode_(0), terrain_(0), material_(0), waterNode_(0), water_(0), waterMaterial_(0), use16bit_(true), triplanar_(true), smoothing_(false), normalmapping_(true) {}
 
 void TerrainEdit::ResizeTerrain(int tw, int th, bool use16bit)
 {
-	if(!terrain_ || !hmap_) return;
+	if(!terrain_ || !water_ || !hmap_) return;
 
 	if(tw==hmap_->GetWidth() && th==hmap_->GetHeight()) return;
 
 	hmap_->SetSize(tw, th, use16bit ? 3 : 1);
 	hmap_->Clear(Color(0,0,0));
 	terrain_->SetHeightMap(hmap_);
+
+	waterMap_->SetSize(tw, th, use16bit ? 3 : 1);
+	waterMap_->Clear(Color(0,0,0));
+	water_->SetHeightMap(waterMap_);
 }
 
 bool TerrainEdit::Initialize(Scene *scene, int tw, int th, int bw, int bh, Vector3 spacing, bool use16bit)
@@ -165,7 +169,16 @@ bool TerrainEdit::Initialize(Scene *scene, int tw, int th, int bw, int bh, Vecto
     terrain_->SetSpacing(spacing);
     terrain_->SetSmoothing(true);
 
+	if(waterNode_) waterNode_->Remove();
+	waterNode_=scene->CreateChild("Terrain");
+	water_=waterNode_->CreateComponent<Terrain>();
+	waterNode_->SetPosition(Vector3(0.0f,-0.1f,0.0f));
+	water_->SetPatchSize(64);
+	water_->SetSpacing(spacing);
+	water_->SetSmoothing(true);
+
     hmap_=new Image(scene->GetContext());
+	waterMap_=new Image(scene->GetContext());
     blend0_=new Image(scene->GetContext());
     blend1_=new Image(scene->GetContext());
     mask_=new Image(scene->GetContext());
@@ -177,12 +190,19 @@ bool TerrainEdit::Initialize(Scene *scene, int tw, int th, int bw, int bh, Vecto
     use16bit_=true;
 
     hmap_->SetSize(tw, th, use16bit ? 3 : 1);
+	waterMap_->SetSize(tw,th,use16bit ? 3 : 1);
     terrain_->SetHeightMap(hmap_);
     terrain_->SetCastShadows(true);
+	water_->SetHeightMap(waterMap_);
+	water_->SetCastShadows(false);
+
     material_=scene->GetSubsystem<ResourceCache>()->GetResource<Material>("Materials/TerrainEdit8TriplanarBump.xml");
     blendtex0_=new Texture2D(scene->GetContext());
     blendtex1_=new Texture2D(scene->GetContext());
     masktex_=new Texture2D(scene->GetContext());
+
+	waterMaterial_=scene->GetSubsystem<ResourceCache>()->GetResource<Material>("Materials/Water.xml");
+	water_->SetMaterial(waterMaterial_);
 
     mask_->Clear(Color(1.0f,1.0f,1.0f));
     blend0_->Clear(Color(1.0f,0.0f,0.0f,0.0f));
@@ -207,6 +227,7 @@ void TerrainEdit::SetTerrainSpacing(Vector3 spacing)
     if(!terrain_) return;
 
     terrain_->SetSpacing(spacing);
+	water_->SetSpacing(spacing);
 }
 
 void TerrainEdit::SetTerrainSize(int w, int h, Vector3 spacing, bool use16bit)
@@ -216,6 +237,12 @@ void TerrainEdit::SetTerrainSize(int w, int h, Vector3 spacing, bool use16bit)
     hmap_->Clear(Color(0,0,0));
     terrain_->SetHeightMap(hmap_);
     terrain_->SetSpacing(spacing);
+
+	if(!water_) return;
+    hmap_->SetSize(w, h, use16bit ? 3 : 1);
+    hmap_->Clear(Color(0,0,0));
+    water_->SetHeightMap(hmap_);
+    water_->SetSpacing(spacing);
 }
 
 void TerrainEdit::SetBlendMaskSize(int w, int h)
@@ -240,6 +267,8 @@ void TerrainEdit::ClearTerrain()
 	if(!hmap_) return;
 	hmap_->Clear(Color(0,0,0));
 	terrain_->SetHeightMap(hmap_);
+	waterMap_->Clear(Color(0,0,0));
+	water_->SetHeightMap(waterMap_);
 }
 
 Vector2 TerrainEdit::WorldToNormalized(Vector3 world)
@@ -320,6 +349,123 @@ IntVector2 TerrainEdit::NormalizedToTerrain(Vector2 norm)
     if(!terrain_) return IntVector2();
 
     return IntVector2((int)(norm.x_ * (float)hmap_->GetWidth()), (int)(norm.y_ * (float)hmap_->GetHeight()));
+}
+
+void TerrainEdit::SetWaterValue(int x, int y, float val)
+{
+	if(!waterMap_) return;
+    if(waterMap_->GetComponents()==1) waterMap_->SetPixel(x,y,Color(val,0,0));
+    else
+    {
+        float expht=std::floor(val*255.0f);
+        float rm=val*255.0f-expht;
+        waterMap_->SetPixel(x,y,Color(expht/255.0f, rm, 0));
+    }
+}
+
+float TerrainEdit::GetWaterValue(int x, int y)
+{
+	if(!waterMap_) return 0.0f;
+    if(waterMap_->GetComponents()==1) return waterMap_->GetPixel(x,y).r_;
+    else
+    {
+        Color c=waterMap_->GetPixel(x,y);
+        return c.r_+c.g_/255.0f;
+    }
+}
+
+float TerrainEdit::GetWaterValueFromNormalized(Vector2 nrm)
+{
+	if(!waterMap_) return 0.0f;
+	if(waterMap_->GetComponents()==1) return waterMap_->GetPixelBilinear(nrm.x_, nrm.y_).r_;
+	else
+	{
+		Color c=waterMap_->GetPixelBilinear(nrm.x_,nrm.y_);
+		return c.r_+c.g_/255.0f;
+	}
+}
+
+float TerrainEdit::GetWaterValue(Vector3 worldpos)
+{
+    if(!water_) return 0.0f;
+    IntVector2 htm=water_->WorldToHeightMap(worldpos);
+    Color c=waterMap_->GetPixelBilinear((float)htm.x_ / (float)waterMap_->GetWidth(), (float)htm.y_ / (float)waterMap_->GetHeight());
+    if(waterMap_->GetComponents()==1) return c.r_;
+    else return c.r_+c.g_/255.0f;
+}
+
+void TerrainEdit::GetWaterMap(CArray2Dd &buffer)
+{
+	if(!waterMap_) return;
+	buffer.resize(waterMap_->GetWidth(), waterMap_->GetHeight());
+	for(int x=0; x<waterMap_->GetWidth(); ++x)
+	{
+		for(int y=0; y<waterMap_->GetHeight(); ++y)
+		{
+			Color c=waterMap_->GetPixel(x,y);
+			if(waterMap_->GetComponents()==1) buffer.set(x,y,c.r_);
+			else buffer.set(x,y,c.r_+c.g_/255.0f);
+		}
+	}
+}
+
+void TerrainEdit::SetWaterBuffer(CArray2Dd &buffer, MaskSettings &masksettings, int blendop)
+{
+    if(!water_) return;
+
+    //if(buffer.width()!=waterMap_->GetWidth() || buffer.height()!=waterMap_->GetWater()) return;
+    int w=waterMap_->GetWidth();
+    int h=waterMap_->GetHeight();
+
+    for(int x=0; x<=w; ++x)
+    {
+        for(int y=0; y<=h; ++y)
+        {
+            float nx=(float)x/(float)(w);
+            float ny=(float)y/(float)(h);
+
+            float v=buffer.getBilinear(nx,ny);
+            Color mask=mask_->GetPixelBilinear(nx,ny);
+            float oldheight=GetWaterValue(x,y);
+            float maskval=1.0f;
+
+            if(masksettings.usemask0)
+            {
+                float mval=mask.r_;
+                if(masksettings.invertmask0) mval=1.0f-mval;
+                maskval*=mval;
+            }
+            if(masksettings.usemask1)
+            {
+                float mval=mask.g_;
+                if(masksettings.invertmask1) mval=1.0f-mval;
+                maskval*=mval;
+            }
+            if(masksettings.usemask2)
+            {
+                float mval=mask.b_;
+                if(masksettings.invertmask2) mval=1.0f-mval;
+                maskval*=mval;
+            }
+
+			float newval=0.0f;
+
+			switch(blendop)
+			{
+				case HeightReplace: newval=v; break;
+				case HeightAdd: newval=oldheight+v; break;
+				case HeightSubtract: newval=oldheight-v; break;
+				case HeightMultiply: newval=oldheight*v; break;
+				case HeightMin: newval=std::min(v, oldheight); break;
+				case HeightMax: newval=std::max(v, oldheight); break;
+				default: newval=v; break;
+			}
+
+            v=oldheight+maskval*(newval-oldheight);
+            SetWaterValue(x,y,(float)v);
+        }
+    }
+    water_->SetHeightMap(waterMap_);
 }
 
 void TerrainEdit::SetHeightValue(int x, int y, float val)
@@ -665,6 +811,57 @@ void TerrainEdit::BlendHeightBuffer(CArray2Dd &buffer, CArray2Dd &blend, MaskSet
         }
     }
     terrain_->SetHeightMap(hmap_);
+}
+
+void TerrainEdit::ApplyWaterBrush(float x, float z, float dt, BrushSettings &brush, MaskSettings &masksettings)
+{
+    if(!water_) return;
+
+    Vector3 world=Vector3(x,0,z);
+    IntVector2 ht=water_->WorldToHeightMap(world);
+
+    int sz=(int)brush.radius+1;
+    int comp=waterMap_->GetComponents();
+    for(int hx=ht.x_-sz; hx<=ht.x_+sz; ++hx)
+    {
+        for(int hz=ht.y_-sz; hz<=ht.y_+sz; ++hz)
+        {
+            if(hx>=0 && hx<waterMap_->GetWidth() && hz>=0 && hz<waterMap_->GetHeight())
+            {
+                float dx=(float)(hx-ht.x_);
+                float dz=(float)(hz-ht.y_);
+                float d=std::sqrt(dx*dx+dz*dz);
+                float i=((d-brush.radius)/(brush.hardness*brush.radius-brush.radius));
+                i=std::max(0.0f, std::min(1.0f, i));
+                i=(float)std::sin(i*1.57079633);
+                i=i*dt*brush.power;
+                if(masksettings.usemask0)
+                {
+                    float m=mask_->GetPixelBilinear((float)(hx)/(float)(waterMap_->GetWidth()), (float)(hz)/(float)(waterMap_->GetHeight())).r_;
+                    if(masksettings.invertmask0) m=1.0f-m;
+                    i=i*m;
+                }
+                if(masksettings.usemask1)
+                {
+                    float m=mask_->GetPixelBilinear((float)(hx)/(float)(waterMap_->GetWidth()), (float)(hz)/(float)(waterMap_->GetHeight())).g_;
+                    if(masksettings.invertmask1) m=1.0f-m;
+                    i=i*m;
+                }
+                if(masksettings.usemask2)
+                {
+                    float m=mask_->GetPixelBilinear((float)(hx)/(float)(waterMap_->GetWidth()), (float)(hz)/(float)(waterMap_->GetHeight())).b_;
+                    if(masksettings.invertmask2) m=1.0f-m;
+                    i=i*m;
+                }
+                float hval=GetWaterValue(hx,hz);
+                float newhval=hval+(brush.max-hval)*i;
+                SetWaterValue(hx,hz,newhval);
+
+            }
+        }
+    }
+
+    water_->SetHeightMap(waterMap_);
 }
 
 void TerrainEdit::ApplyHeightBrush(float x, float z, float dt, BrushSettings &brush, MaskSettings &masksettings)
@@ -1108,6 +1305,12 @@ void TerrainEdit::SaveHeightMap(const String &filename)
 	hmap_->SavePNG(filename);
 }
 
+void TerrainEdit::SaveWaterMap(const String &filename)
+{
+	if(!waterMap_) return;
+	waterMap_->SavePNG(filename);
+}
+
 void TerrainEdit::SaveTerrainNormalMap(const String &filename)
 {
 	if(!hmap_ || !terrain_) return;
@@ -1152,6 +1355,13 @@ void TerrainEdit::LoadHeightMap(const String &filename)
 	if(!terrain_) return;
 	LoadImage(terrain_->GetContext(), hmap_, filename.CString());
 	terrain_->SetHeightMap(hmap_);
+}
+
+void TerrainEdit::LoadWaterMap(const String &filename)
+{
+	if(!water_) return;
+	LoadImage(water_->GetContext(), waterMap_, filename.CString());
+	water_->SetHeightMap(waterMap_);
 }
 
 void TerrainEdit::LoadBlend0(const String &filename)

@@ -1405,6 +1405,175 @@ static int tolua_BindTerrainEdit_TerrainEdit_NormalizedToTerrain00(lua_State* to
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: SetWaterValue of class  TerrainEdit */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_TerrainEdit_SetWaterValue00
+static int tolua_BindTerrainEdit_TerrainEdit_SetWaterValue00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"TerrainEdit",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,5,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  TerrainEdit* self = (TerrainEdit*)  tolua_tousertype(tolua_S,1,0);
+  int x = ((int)  tolua_tonumber(tolua_S,2,0));
+  int y = ((int)  tolua_tonumber(tolua_S,3,0));
+  float val = ((float)  tolua_tonumber(tolua_S,4,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'SetWaterValue'", NULL);
+#endif
+ {
+  self->SetWaterValue(x,y,val);
+ }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'SetWaterValue'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: GetWaterValue of class  TerrainEdit */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_TerrainEdit_GetWaterValue00
+static int tolua_BindTerrainEdit_TerrainEdit_GetWaterValue00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"TerrainEdit",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  TerrainEdit* self = (TerrainEdit*)  tolua_tousertype(tolua_S,1,0);
+  int x = ((int)  tolua_tonumber(tolua_S,2,0));
+  int y = ((int)  tolua_tonumber(tolua_S,3,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'GetWaterValue'", NULL);
+#endif
+ {
+  float tolua_ret = (float)  self->GetWaterValue(x,y);
+ tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'GetWaterValue'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: GetWaterValue of class  TerrainEdit */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_TerrainEdit_GetWaterValue01
+static int tolua_BindTerrainEdit_TerrainEdit_GetWaterValue01(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"TerrainEdit",0,&tolua_err) ||
+ (tolua_isvaluenil(tolua_S,2,&tolua_err) || !tolua_isusertype(tolua_S,2,"Vector3",0,&tolua_err)) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+ {
+  TerrainEdit* self = (TerrainEdit*)  tolua_tousertype(tolua_S,1,0);
+  Vector3 worldpos = *((Vector3*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'GetWaterValue'", NULL);
+#endif
+ {
+  float tolua_ret = (float)  self->GetWaterValue(worldpos);
+ tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+ }
+ }
+ return 1;
+tolua_lerror:
+ return tolua_BindTerrainEdit_TerrainEdit_GetWaterValue00(tolua_S);
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: GetWaterValueFromNormalized of class  TerrainEdit */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_TerrainEdit_GetWaterValueFromNormalized00
+static int tolua_BindTerrainEdit_TerrainEdit_GetWaterValueFromNormalized00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"TerrainEdit",0,&tolua_err) ||
+ (tolua_isvaluenil(tolua_S,2,&tolua_err) || !tolua_isusertype(tolua_S,2,"Vector2",0,&tolua_err)) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  TerrainEdit* self = (TerrainEdit*)  tolua_tousertype(tolua_S,1,0);
+  Vector2 nrm = *((Vector2*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'GetWaterValueFromNormalized'", NULL);
+#endif
+ {
+  float tolua_ret = (float)  self->GetWaterValueFromNormalized(nrm);
+ tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'GetWaterValueFromNormalized'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: GetWaterMap of class  TerrainEdit */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_TerrainEdit_GetWaterMap00
+static int tolua_BindTerrainEdit_TerrainEdit_GetWaterMap00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"TerrainEdit",0,&tolua_err) ||
+ (tolua_isvaluenil(tolua_S,2,&tolua_err) || !tolua_isusertype(tolua_S,2,"CArray2Dd",0,&tolua_err)) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  TerrainEdit* self = (TerrainEdit*)  tolua_tousertype(tolua_S,1,0);
+  CArray2Dd* buffer = ((CArray2Dd*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'GetWaterMap'", NULL);
+#endif
+ {
+  self->GetWaterMap(*buffer);
+ }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'GetWaterMap'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: SetHeightValue of class  TerrainEdit */
 #ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_TerrainEdit_SetHeightValue00
 static int tolua_BindTerrainEdit_TerrainEdit_SetHeightValue00(lua_State* tolua_S)
@@ -1739,6 +1908,43 @@ static int tolua_BindTerrainEdit_TerrainEdit_SetHeightBuffer00(lua_State* tolua_
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: SetWaterBuffer of class  TerrainEdit */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_TerrainEdit_SetWaterBuffer00
+static int tolua_BindTerrainEdit_TerrainEdit_SetWaterBuffer00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"TerrainEdit",0,&tolua_err) ||
+ (tolua_isvaluenil(tolua_S,2,&tolua_err) || !tolua_isusertype(tolua_S,2,"CArray2Dd",0,&tolua_err)) ||
+ (tolua_isvaluenil(tolua_S,3,&tolua_err) || !tolua_isusertype(tolua_S,3,"MaskSettings",0,&tolua_err)) ||
+ !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,5,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  TerrainEdit* self = (TerrainEdit*)  tolua_tousertype(tolua_S,1,0);
+  CArray2Dd* buffer = ((CArray2Dd*)  tolua_tousertype(tolua_S,2,0));
+  MaskSettings* masksettings = ((MaskSettings*)  tolua_tousertype(tolua_S,3,0));
+  int blendop = ((int)  tolua_tonumber(tolua_S,4,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'SetWaterBuffer'", NULL);
+#endif
+ {
+  self->SetWaterBuffer(*buffer,*masksettings,blendop);
+ }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'SetWaterBuffer'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: SetLayerBuffer of class  TerrainEdit */
 #ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_TerrainEdit_SetLayerBuffer00
 static int tolua_BindTerrainEdit_TerrainEdit_SetLayerBuffer00(lua_State* tolua_S)
@@ -1921,6 +2127,47 @@ static int tolua_BindTerrainEdit_TerrainEdit_ApplyHeightBrush00(lua_State* tolua
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'ApplyHeightBrush'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: ApplyWaterBrush of class  TerrainEdit */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_TerrainEdit_ApplyWaterBrush00
+static int tolua_BindTerrainEdit_TerrainEdit_ApplyWaterBrush00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"TerrainEdit",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+ (tolua_isvaluenil(tolua_S,5,&tolua_err) || !tolua_isusertype(tolua_S,5,"BrushSettings",0,&tolua_err)) ||
+ (tolua_isvaluenil(tolua_S,6,&tolua_err) || !tolua_isusertype(tolua_S,6,"MaskSettings",0,&tolua_err)) ||
+ !tolua_isnoobj(tolua_S,7,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  TerrainEdit* self = (TerrainEdit*)  tolua_tousertype(tolua_S,1,0);
+  float x = ((float)  tolua_tonumber(tolua_S,2,0));
+  float z = ((float)  tolua_tonumber(tolua_S,3,0));
+  float dt = ((float)  tolua_tonumber(tolua_S,4,0));
+  BrushSettings* brush = ((BrushSettings*)  tolua_tousertype(tolua_S,5,0));
+  MaskSettings* masksettings = ((MaskSettings*)  tolua_tousertype(tolua_S,6,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'ApplyWaterBrush'", NULL);
+#endif
+ {
+  self->ApplyWaterBrush(x,z,dt,*brush,*masksettings);
+ }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'ApplyWaterBrush'.",&tolua_err);
  return 0;
 #endif
 }
@@ -2410,6 +2657,70 @@ static int tolua_BindTerrainEdit_TerrainEdit_GetTerrain00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: GetWaterMaterial of class  TerrainEdit */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_TerrainEdit_GetWaterMaterial00
+static int tolua_BindTerrainEdit_TerrainEdit_GetWaterMaterial00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"TerrainEdit",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  TerrainEdit* self = (TerrainEdit*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'GetWaterMaterial'", NULL);
+#endif
+ {
+  Material* tolua_ret = (Material*)  self->GetWaterMaterial();
+  tolua_pushusertype(tolua_S,(void*)tolua_ret,"Material");
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'GetWaterMaterial'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: GetWater of class  TerrainEdit */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_TerrainEdit_GetWater00
+static int tolua_BindTerrainEdit_TerrainEdit_GetWater00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"TerrainEdit",0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  TerrainEdit* self = (TerrainEdit*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'GetWater'", NULL);
+#endif
+ {
+  Terrain* tolua_ret = (Terrain*)  self->GetWater();
+  tolua_pushusertype(tolua_S,(void*)tolua_ret,"Terrain");
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'GetWater'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: SetMaterialSettings of class  TerrainEdit */
 #ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_TerrainEdit_SetMaterialSettings00
 static int tolua_BindTerrainEdit_TerrainEdit_SetMaterialSettings00(lua_State* tolua_S)
@@ -2478,6 +2789,40 @@ static int tolua_BindTerrainEdit_TerrainEdit_SaveHeightMap00(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'SaveHeightMap'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: SaveWaterMap of class  TerrainEdit */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_TerrainEdit_SaveWaterMap00
+static int tolua_BindTerrainEdit_TerrainEdit_SaveWaterMap00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"TerrainEdit",0,&tolua_err) ||
+ !tolua_isurho3dstring(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  TerrainEdit* self = (TerrainEdit*)  tolua_tousertype(tolua_S,1,0);
+  const String filename = ((const String)  tolua_tourho3dstring(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'SaveWaterMap'", NULL);
+#endif
+ {
+  self->SaveWaterMap(filename);
+ tolua_pushurho3dstring(tolua_S,(const char*)filename);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'SaveWaterMap'.",&tolua_err);
  return 0;
 #endif
 }
@@ -2614,6 +2959,40 @@ static int tolua_BindTerrainEdit_TerrainEdit_LoadHeightMap00(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'LoadHeightMap'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: LoadWaterMap of class  TerrainEdit */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_TerrainEdit_LoadWaterMap00
+static int tolua_BindTerrainEdit_TerrainEdit_LoadWaterMap00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"TerrainEdit",0,&tolua_err) ||
+ !tolua_isurho3dstring(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  TerrainEdit* self = (TerrainEdit*)  tolua_tousertype(tolua_S,1,0);
+  const String filename = ((const String)  tolua_tourho3dstring(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'LoadWaterMap'", NULL);
+#endif
+ {
+  self->LoadWaterMap(filename);
+ tolua_pushurho3dstring(tolua_S,(const char*)filename);
+ }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'LoadWaterMap'.",&tolua_err);
  return 0;
 #endif
 }
@@ -6152,6 +6531,11 @@ TOLUA_API int tolua_BindTerrainEdit_open (lua_State* tolua_S)
   tolua_function(tolua_S,"BlendToNormalized",tolua_BindTerrainEdit_TerrainEdit_BlendToNormalized00);
   tolua_function(tolua_S,"NormalizedToBlend",tolua_BindTerrainEdit_TerrainEdit_NormalizedToBlend00);
   tolua_function(tolua_S,"NormalizedToTerrain",tolua_BindTerrainEdit_TerrainEdit_NormalizedToTerrain00);
+  tolua_function(tolua_S,"SetWaterValue",tolua_BindTerrainEdit_TerrainEdit_SetWaterValue00);
+  tolua_function(tolua_S,"GetWaterValue",tolua_BindTerrainEdit_TerrainEdit_GetWaterValue00);
+  tolua_function(tolua_S,"GetWaterValue",tolua_BindTerrainEdit_TerrainEdit_GetWaterValue01);
+  tolua_function(tolua_S,"GetWaterValueFromNormalized",tolua_BindTerrainEdit_TerrainEdit_GetWaterValueFromNormalized00);
+  tolua_function(tolua_S,"GetWaterMap",tolua_BindTerrainEdit_TerrainEdit_GetWaterMap00);
   tolua_function(tolua_S,"SetHeightValue",tolua_BindTerrainEdit_TerrainEdit_SetHeightValue00);
   tolua_function(tolua_S,"GetHeightValue",tolua_BindTerrainEdit_TerrainEdit_GetHeightValue00);
   tolua_function(tolua_S,"GetHeightValue",tolua_BindTerrainEdit_TerrainEdit_GetHeightValue01);
@@ -6162,11 +6546,13 @@ TOLUA_API int tolua_BindTerrainEdit_open (lua_State* tolua_S)
   tolua_function(tolua_S,"GetBlendWidth",tolua_BindTerrainEdit_TerrainEdit_GetBlendWidth00);
   tolua_function(tolua_S,"GetBlendHeight",tolua_BindTerrainEdit_TerrainEdit_GetBlendHeight00);
   tolua_function(tolua_S,"SetHeightBuffer",tolua_BindTerrainEdit_TerrainEdit_SetHeightBuffer00);
+  tolua_function(tolua_S,"SetWaterBuffer",tolua_BindTerrainEdit_TerrainEdit_SetWaterBuffer00);
   tolua_function(tolua_S,"SetLayerBuffer",tolua_BindTerrainEdit_TerrainEdit_SetLayerBuffer00);
   tolua_function(tolua_S,"SetLayerBufferMax",tolua_BindTerrainEdit_TerrainEdit_SetLayerBufferMax00);
   tolua_function(tolua_S,"BlendHeightBuffer",tolua_BindTerrainEdit_TerrainEdit_BlendHeightBuffer00);
   tolua_function(tolua_S,"SetMaskBuffer",tolua_BindTerrainEdit_TerrainEdit_SetMaskBuffer00);
   tolua_function(tolua_S,"ApplyHeightBrush",tolua_BindTerrainEdit_TerrainEdit_ApplyHeightBrush00);
+  tolua_function(tolua_S,"ApplyWaterBrush",tolua_BindTerrainEdit_TerrainEdit_ApplyWaterBrush00);
   tolua_function(tolua_S,"ApplyBlendBrush",tolua_BindTerrainEdit_TerrainEdit_ApplyBlendBrush00);
   tolua_function(tolua_S,"ApplyMaskBrush",tolua_BindTerrainEdit_TerrainEdit_ApplyMaskBrush00);
   tolua_function(tolua_S,"ApplySmoothBrush",tolua_BindTerrainEdit_TerrainEdit_ApplySmoothBrush00);
@@ -6181,12 +6567,16 @@ TOLUA_API int tolua_BindTerrainEdit_open (lua_State* tolua_S)
   tolua_function(tolua_S,"ClearHeight",tolua_BindTerrainEdit_TerrainEdit_ClearHeight00);
   tolua_function(tolua_S,"GetMaterial",tolua_BindTerrainEdit_TerrainEdit_GetMaterial00);
   tolua_function(tolua_S,"GetTerrain",tolua_BindTerrainEdit_TerrainEdit_GetTerrain00);
+  tolua_function(tolua_S,"GetWaterMaterial",tolua_BindTerrainEdit_TerrainEdit_GetWaterMaterial00);
+  tolua_function(tolua_S,"GetWater",tolua_BindTerrainEdit_TerrainEdit_GetWater00);
   tolua_function(tolua_S,"SetMaterialSettings",tolua_BindTerrainEdit_TerrainEdit_SetMaterialSettings00);
   tolua_function(tolua_S,"SaveHeightMap",tolua_BindTerrainEdit_TerrainEdit_SaveHeightMap00);
+  tolua_function(tolua_S,"SaveWaterMap",tolua_BindTerrainEdit_TerrainEdit_SaveWaterMap00);
   tolua_function(tolua_S,"SaveBlend0",tolua_BindTerrainEdit_TerrainEdit_SaveBlend000);
   tolua_function(tolua_S,"SaveBlend1",tolua_BindTerrainEdit_TerrainEdit_SaveBlend100);
   tolua_function(tolua_S,"SaveMask",tolua_BindTerrainEdit_TerrainEdit_SaveMask00);
   tolua_function(tolua_S,"LoadHeightMap",tolua_BindTerrainEdit_TerrainEdit_LoadHeightMap00);
+  tolua_function(tolua_S,"LoadWaterMap",tolua_BindTerrainEdit_TerrainEdit_LoadWaterMap00);
   tolua_function(tolua_S,"LoadBlend0",tolua_BindTerrainEdit_TerrainEdit_LoadBlend000);
   tolua_function(tolua_S,"LoadBlend1",tolua_BindTerrainEdit_TerrainEdit_LoadBlend100);
   tolua_function(tolua_S,"LoadMask",tolua_BindTerrainEdit_TerrainEdit_LoadMask00);

@@ -5,6 +5,7 @@ require 'LuaScripts/editheightui'
 require 'LuaScripts/smoothheightui'
 require 'LuaScripts/editmaskui'
 require 'LuaScripts/splineui'
+require 'LuaScripts/editwaterui'
 
 TerrainEditUI=ScriptObject()
 
@@ -23,6 +24,7 @@ end
 
 function TerrainEditUI:BuildUI()
 	self.heightbrush=scene_:CreateScriptObject("EditHeightUI")
+	self.waterbrush=scene_:CreateScriptObject("EditWaterUI")
 	self.smoothbrush=scene_:CreateScriptObject("SmoothHeightUI")
 	self.maskbrush=scene_:CreateScriptObject("EditMaskUI")
 	self.newterrain=ui:LoadLayout(cache:GetResource("XMLFile", "UI/TerrainEditNewTerrain.xml"))
@@ -36,6 +38,7 @@ function TerrainEditUI:BuildUI()
 	self.splinegroups:Deactivate()
 
 	self.blendbrush:Deactivate()
+	self.waterbrush:Deactivate()
 	self.maskbrush:Deactivate()
 	self.smoothbrush:Deactivate()
 	self.heightbrush:Deactivate()
@@ -52,6 +55,7 @@ function TerrainEditUI:BuildUI()
 
 	self:SubscribeToEvent(self.toolbar:GetChild("TerrainSettings",true), "Toggled", "TerrainEditUI:HandleToggled")
 	self:SubscribeToEvent(self.toolbar:GetChild("EditHeight",true), "Toggled", "TerrainEditUI:HandleToggled")
+	self:SubscribeToEvent(self.toolbar:GetChild("EditWater",true), "Toggled", "TerrainEditUI:HandleToggled")
 	self:SubscribeToEvent(self.toolbar:GetChild("SmoothHeight",true), "Toggled", "TerrainEditUI:HandleToggled")
 	self:SubscribeToEvent(self.toolbar:GetChild("EditLayer",true), "Toggled", "TerrainEditUI:HandleToggled")
 	self:SubscribeToEvent(self.toolbar:GetChild("EditMask",true), "Toggled", "TerrainEditUI:HandleToggled")
@@ -104,6 +108,7 @@ end
 function TerrainEditUI:UncheckToolbar(except)
 	if except~="TerrainSettings" then self.toolbar:GetChild("TerrainSettings",true).checked=false saveloadui:Deactivate() end
 	if except~="EditHeight" then self.toolbar:GetChild("EditHeight",true).checked=false self.heightbrush:Deactivate() end
+	if except~="EditWater" then self.toolbar:GetChild("EditWater",true).checked=false self.waterbrush:Deactivate() end
 	if except~="SmoothHeight" then self.toolbar:GetChild("SmoothHeight",true).checked=false self.smoothbrush:Deactivate() end
 	if except~="EditLayer" then self.toolbar:GetChild("EditLayer",true).checked=false self.blendbrush:Deactivate() end
 	if except~="EditMask" then self.toolbar:GetChild("EditMask",true).checked=false self.maskbrush:Deactivate() end
@@ -133,6 +138,12 @@ function TerrainEditUI:HandleToggled(eventType,eventData)
 		else
 			self.heightbrush:Deactivate()
 			cam.tracksurface=true
+		end
+	elseif name=="EditWater" then
+		if eventData["State"]:GetBool() then
+			self.waterbrush:Activate()
+		else
+			self.waterbrush:Deactivate()
 		end
 	elseif name=="SmoothHeight" then
 		if eventData["State"]:GetBool() then
@@ -184,6 +195,7 @@ function TerrainEditUI:SaveArea(dirname)
 
 	--Save Terrain
 	TerrainState:SaveHeightMap(fullpath.."/elev.png")
+	TerrainState:SaveWaterMap(fullpath.."/water.png")
 	TerrainState:SaveTerrainNormalMap(fullpath.."/normal.png")
 	TerrainState:SaveBlend0(fullpath.."/blend0.png")
 	TerrainState:SaveBlend1(fullpath.."/blend1.png")
@@ -204,6 +216,7 @@ function TerrainEditUI:LoadArea(dirname)
 	if not fileSystem:DirExists(fullpath) then return end
 
 	TerrainState:LoadHeightMap(fullpath.."/elev.png")
+	TerrainState:LoadWaterMap(fullpath.."/water.png")
 	TerrainState:LoadBlend0(fullpath.."/blend0.png")
 	TerrainState:LoadBlend1(fullpath.."/blend1.png")
 	TerrainState:LoadMask(fullpath.."/mask.png")

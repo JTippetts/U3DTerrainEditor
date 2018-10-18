@@ -59,6 +59,12 @@ public:
 	IntVector2 NormalizedToBlend(Vector2 norm);
 	IntVector2 NormalizedToTerrain(Vector2 norm);
 
+	void SetWaterValue(int x, int y, float val);
+	float GetWaterValue(int x, int y);
+	float GetWaterValue(Vector3 worldpos);
+	float GetWaterValueFromNormalized(Vector2 nrm);
+	void GetWaterMap(CArray2Dd &buffer);
+
 	void SetHeightValue(int x, int y, float val);
 	float GetHeightValue(int x, int y);
 	float GetHeightValue(Vector3 worldpos);
@@ -71,12 +77,14 @@ public:
 	int GetBlendHeight();
 
 	void SetHeightBuffer(CArray2Dd &buffer, MaskSettings &masksettings, int blendop);
+	void SetWaterBuffer(CArray2Dd &buffer, MaskSettings &masksettings, int blendop);
 	void SetLayerBuffer(CArray2Dd &buffer, int layer, MaskSettings &masksettings);
 	void SetLayerBufferMax(CArray2Dd &buffer, int layer, MaskSettings &masksettings);
 	void BlendHeightBuffer(CArray2Dd &buffer, CArray2Dd &blend, MaskSettings &masksettings);
 	void SetMaskBuffer(CArray2Dd &buffer, int which);
 
 	void ApplyHeightBrush(float x, float z, float dt, BrushSettings &brush, MaskSettings &masksettings);
+	void ApplyWaterBrush(float x, float z, float dt, BrushSettings &brush, MaskSettings &masksettings);
 	void ApplyBlendBrush(float x, float z, int layer, float dt, BrushSettings &brush, MaskSettings &masksettings);
 	void ApplyMaskBrush(float x, float z, int which, float dt, BrushSettings &brush, MaskSettings &masksettings);
 	void ApplySmoothBrush(float x, float z, float dt, BrushSettings &brush, MaskSettings &masksettings);
@@ -96,14 +104,19 @@ public:
 
 	Material *GetMaterial();
 	Terrain *GetTerrain();
+
+	Material *GetWaterMaterial();
+	Terrain *GetWater();
 	void SetMaterialSettings(bool triplanar, bool smoothing, bool normalmapping, bool reduce);
 
 	void SaveHeightMap(const String &filename);
+	void SaveWaterMap(const String &filename);
 	void SaveBlend0(const String &filename);
 	void SaveBlend1(const String &filename);
 	void SaveMask(const String &filename);
 
 	void LoadHeightMap(const String &filename);
+	void LoadWaterMap(const String &filename);
 	void LoadBlend0(const String &filename);
 	void LoadBlend1(const String &filename);
 	void LoadMask(const String &filename);

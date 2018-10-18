@@ -77,6 +77,10 @@ public:
     float GetHeightValue(int x, int y);
 	float GetHeightValueFromNormalized(Vector2 nrm);
 
+	void SetWaterValue(int x, int y, float val);
+    float GetWaterValue(int x, int y);
+	float GetWaterValueFromNormalized(Vector2 nrm);
+
     int GetTerrainWidth()
     {
         if (hmap_) return hmap_->GetWidth();
@@ -101,13 +105,18 @@ public:
     float GetHeightValue(Vector3 worldpos);
 	void GetHeightMap(CArray2Dd &buffer);
 
+	float GetWaterValue(Vector3 worldpos);
+	void GetWaterMap(CArray2Dd &buffer);
+
     void SetHeightBuffer(CArray2Dd &buffer, MaskSettings &masksettings, int blendop);
+	void SetWaterBuffer(CArray2Dd &buffer, MaskSettings &masksettings, int blendop);
     void SetLayerBuffer(CArray2Dd &buffer, int layer, MaskSettings &masksettings);
     void SetLayerBufferMax(CArray2Dd &buffer, int layer, MaskSettings &masksettings);
     void BlendHeightBuffer(CArray2Dd &buffer, CArray2Dd &blend, MaskSettings &masksettings);
 	void SetMaskBuffer(CArray2Dd &buffer, int which);
 
     void ApplyHeightBrush(float x, float z, float dt, BrushSettings &brush, MaskSettings &masksettings);
+	void ApplyWaterBrush(float x, float z, float dt, BrushSettings &brush, MaskSettings &masksettings);
     void ApplyBlendBrush(float x, float z, int layer, float dt, BrushSettings &brush, MaskSettings &masksettings);
     void ApplyMaskBrush(float x, float z, int which, float dt, BrushSettings &brush, MaskSettings &masksettings);
     void ApplySmoothBrush(float x, float z, float dt, BrushSettings &brush, MaskSettings &masksettings);
@@ -133,14 +142,27 @@ public:
     {
         return terrain_;
     }
+
+	Material *GetWaterMaterial()
+	{
+		return waterMaterial_;
+	}
+
+	Terrain *GetWater()
+	{
+		return water_;
+	}
+
     void SetMaterialSettings(bool triplanar, bool smoothing, bool normalmapping, bool reduce);
 
     void SaveHeightMap(const String &filename);
+	void SaveWaterMap(const String &filename);
     void SaveBlend0(const String &filename);
     void SaveBlend1(const String &filename);
     void SaveMask(const String &filename);
 
     void LoadHeightMap(const String &filename);
+	void LoadWaterMap(const String &filename);
     void LoadBlend0(const String &filename);
     void LoadBlend1(const String &filename);
     void LoadMask(const String &filename);
@@ -156,7 +178,11 @@ protected:
     Terrain *terrain_;
     Material *material_;
 
-    Image *hmap_, *blend0_, *blend1_, *mask_;
+	Node *waterNode_;
+	Terrain *water_;
+	Material *waterMaterial_;
+
+    Image *hmap_, *waterMap_, *blend0_, *blend1_, *mask_;
     SharedPtr<Texture2D> blendtex0_, blendtex1_, masktex_;
 
     bool use16bit_;

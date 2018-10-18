@@ -52,6 +52,30 @@
 		</element>
 	</element>
 	<element type="CheckBox">
+		<attribute name="Name" value="EditWater" />
+		<attribute name="Min Size" value="64 64" />
+		<attribute name="Max Size" value="64 64" />
+		<attribute name="Pivot" value="0 0" />
+		<attribute name="Texture" value="Texture2D;Textures/toolbar.png" />
+		<attribute name="Image Rect" value="320 0 384 64" />
+		<attribute name="Hover Image Offset" value="0 0" />
+		<attribute name="Checked Image Offset" value="0 64" />
+		<element type="ToolTip" style="ToolTip">
+			<attribute name="Position" value="0 64" />
+			<attribute name="Pivot" value="0 0" />
+			<attribute name="Priority" value="2147483647" />
+			<attribute name="Is Visible" value="false" />
+			<element type="Text">
+				<attribute name="Pivot" value="0 0" />
+				<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+				<attribute name="Text" value="Edit Water" />
+			</element>
+		</element>
+	</element>
+	<element type="CheckBox">
 		<attribute name="Name" value="SmoothHeight" />
 		<attribute name="Min Size" value="64 64" />
 		<attribute name="Max Size" value="64 64" />
