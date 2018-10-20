@@ -185,5 +185,5 @@ function EditWaterUI:Update(dt)
 		end
 	end
 
-	self.cursor:SetBrushCursorWater()
+	self.cursor:SetBrushCursorHeight()
 end

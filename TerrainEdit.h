@@ -173,6 +173,8 @@ public:
 	Vector3 GetTerrainSpacing();
 	void SaveTerrainNormalMap(const String &filename);
 
+	void BuildWaterDepthTexture();
+
 protected:
     Node *terrainNode_;
     Terrain *terrain_;
@@ -182,8 +184,9 @@ protected:
 	Terrain *water_;
 	Material *waterMaterial_;
 
-    Image *hmap_, *waterMap_, *blend0_, *blend1_, *mask_;
+    Image *hmap_, *waterMap_, *blend0_, *blend1_, *mask_, *waterdepth_;
     SharedPtr<Texture2D> blendtex0_, blendtex1_, masktex_;
+	SharedPtr<Texture2D> waterdepthtex_;
 
     bool use16bit_;
     bool triplanar_, smoothing_, normalmapping_;

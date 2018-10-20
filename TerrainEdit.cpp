@@ -160,6 +160,25 @@ void TerrainEdit::ResizeTerrain(int tw, int th, bool use16bit)
 	water_->SetHeightMap(waterMap_);
 }
 
+void TerrainEdit::BuildWaterDepthTexture()
+{
+	if(!waterdepth_ || !waterMap_ || !hmap_) return;
+	for(unsigned int x=0; x<waterdepth_->GetWidth(); ++x)
+	{
+		for(unsigned int y=0; y<waterdepth_->GetHeight(); ++y)
+		{
+			float nx=(float)x/(float)(waterdepth_->GetWidth());
+			float ny=(float)y/(float)(waterdepth_->GetHeight());
+			Vector2 nrm(nx,ny);
+			float ht=GetHeightValueFromNormalized(nrm);
+			float wat=GetWaterValueFromNormalized(nrm);
+			float v=std::max(0.0f, std::min(1.0f, (wat-ht)*16.0f));
+			waterdepth_->SetPixel(x,y,Color(v,0,0));
+		}
+	}
+	waterdepthtex_->SetData(waterdepth_,false);
+}
+
 bool TerrainEdit::Initialize(Scene *scene, int tw, int th, int bw, int bh, Vector3 spacing, bool use16bit)
 {
     if(terrainNode_) terrainNode_->Remove();
@@ -182,10 +201,12 @@ bool TerrainEdit::Initialize(Scene *scene, int tw, int th, int bw, int bh, Vecto
     blend0_=new Image(scene->GetContext());
     blend1_=new Image(scene->GetContext());
     mask_=new Image(scene->GetContext());
+	waterdepth_=new Image(scene->GetContext());
 
     blend0_->SetSize(bw,bh,4);
     blend1_->SetSize(bw,bh,4);
     mask_->SetSize(bw,bh,3);
+	waterdepth_->SetSize(tw,th,1);
 
     use16bit_=true;
 
@@ -200,8 +221,10 @@ bool TerrainEdit::Initialize(Scene *scene, int tw, int th, int bw, int bh, Vecto
     blendtex0_=new Texture2D(scene->GetContext());
     blendtex1_=new Texture2D(scene->GetContext());
     masktex_=new Texture2D(scene->GetContext());
+	waterdepthtex_=new Texture2D(scene->GetContext());
 
-	waterMaterial_=scene->GetSubsystem<ResourceCache>()->GetResource<Material>("Materials/Water.xml");
+	waterMaterial_=scene->GetSubsystem<ResourceCache>()->GetResource<Material>("Materials/FlowWater.xml");
+	waterMaterial_->SetTexture(TU_SPECULAR, waterdepthtex_);
 	water_->SetMaterial(waterMaterial_);
 
     mask_->Clear(Color(1.0f,1.0f,1.0f));
@@ -211,6 +234,7 @@ bool TerrainEdit::Initialize(Scene *scene, int tw, int th, int bw, int bh, Vecto
     blendtex0_->SetData(blend0_, false);
     blendtex1_->SetData(blend1_, false);
     masktex_->SetData(mask_, false);
+	waterdepthtex_->SetData(waterdepth_, false);
 
     material_->SetTexture(TU_DIFFUSE, blendtex0_);
     material_->SetTexture(TU_NORMAL, blendtex1_);
@@ -466,6 +490,7 @@ void TerrainEdit::SetWaterBuffer(CArray2Dd &buffer, MaskSettings &masksettings, 
         }
     }
     water_->SetHeightMap(waterMap_);
+	BuildWaterDepthTexture();
 }
 
 void TerrainEdit::SetHeightValue(int x, int y, float val)
@@ -583,6 +608,7 @@ void TerrainEdit::SetHeightBuffer(CArray2Dd &buffer, MaskSettings &masksettings,
         }
     }
     terrain_->SetHeightMap(hmap_);
+	BuildWaterDepthTexture();
 }
 
 void TerrainEdit::SetMaskBuffer(CArray2Dd &buffer, int which)
@@ -857,11 +883,17 @@ void TerrainEdit::ApplyWaterBrush(float x, float z, float dt, BrushSettings &bru
                 float newhval=hval+(brush.max-hval)*i;
                 SetWaterValue(hx,hz,newhval);
 
+				float ht=GetHeightValue(hx,hz);
+				float v=std::max(0.0f, std::min(1.0f, (newhval-ht)*16.0f));
+				waterdepth_->SetPixel(hx,hz,Color(v,0,0));
+
             }
         }
     }
 
     water_->SetHeightMap(waterMap_);
+	//BuildWaterDepthTexture();
+	waterdepthtex_->SetData(waterdepth_,false);
 }
 
 void TerrainEdit::ApplyHeightBrush(float x, float z, float dt, BrushSettings &brush, MaskSettings &masksettings)
@@ -1362,6 +1394,7 @@ void TerrainEdit::LoadWaterMap(const String &filename)
 	if(!water_) return;
 	LoadImage(water_->GetContext(), waterMap_, filename.CString());
 	water_->SetHeightMap(waterMap_);
+	BuildWaterDepthTexture();
 }
 
 void TerrainEdit::LoadBlend0(const String &filename)
