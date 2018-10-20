@@ -525,7 +525,8 @@ function TerrainSelectUI:Activate()
 	--self.cursor:BuildCursorMesh(self.radius)
 	--self.cursor:Show()
 	--self.cursor:SetBrushPreview(self.brushtex)
-	self.panel:SetPosition(IntVector2(0,graphics.height-self.panel.height))
+	self.panel:SetPosition(IntVector2(104,graphics.height-self.panel.height))
+	terrainui.alphas:Activate()
 end
 
 function TerrainSelectUI:Deactivate()
@@ -533,6 +534,7 @@ function TerrainSelectUI:Deactivate()
 	self.active=false
 	self:SetCursor(-100,-100,1,0)
 	--self.cursor:Hide()
+	terrainui.alphas:Deactivate()
 end
 
 function TerrainSelectUI:ChangeLayer(which)
@@ -630,7 +632,8 @@ function TerrainSelectUI:Update(dt)
 		if input:GetMouseButtonDown(MOUSEB_LEFT) and ui:GetElementAt(mousepos.x, mousepos.y)==nil then
 			local gx,gz=ground.x,ground.z
 			--ApplyBlendBrush8(TerrainState.terrain,TerrainState.hmap,TerrainState.blend1,TerrainState.blend2,TerrainState.mask,gx,gz,self.radius,self.max,self.power,self.hardness,self.layer-1,self.usemask0, self.usemask1,self.usemask2,dt)TerrainState. blendtex1:SetData(TerrainState.blend1) TerrainState.blendtex2:SetData(TerrainState.blend2)
-			TerrainState:ApplyBlendBrush(gx,gz,self.layer-1,dt,bs,ms)
+			--TerrainState:ApplyBlendBrush(gx,gz,self.layer-1,dt,bs,ms)
+			TerrainState:ApplyBlendBrushAlpha(gx,gz,self.layer-1,dt,bs,ms,terrainui.alphas.selected.image)
 		end
 	end
 

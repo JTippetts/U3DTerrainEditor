@@ -2132,6 +2132,49 @@ static int tolua_BindTerrainEdit_TerrainEdit_ApplyHeightBrush00(lua_State* tolua
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: ApplyHeightBrushAlpha of class  TerrainEdit */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_TerrainEdit_ApplyHeightBrushAlpha00
+static int tolua_BindTerrainEdit_TerrainEdit_ApplyHeightBrushAlpha00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"TerrainEdit",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+ (tolua_isvaluenil(tolua_S,5,&tolua_err) || !tolua_isusertype(tolua_S,5,"BrushSettings",0,&tolua_err)) ||
+ (tolua_isvaluenil(tolua_S,6,&tolua_err) || !tolua_isusertype(tolua_S,6,"MaskSettings",0,&tolua_err)) ||
+ (tolua_isvaluenil(tolua_S,7,&tolua_err) || !tolua_isusertype(tolua_S,7,"Image",0,&tolua_err)) ||
+ !tolua_isnoobj(tolua_S,8,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  TerrainEdit* self = (TerrainEdit*)  tolua_tousertype(tolua_S,1,0);
+  float x = ((float)  tolua_tonumber(tolua_S,2,0));
+  float z = ((float)  tolua_tonumber(tolua_S,3,0));
+  float dt = ((float)  tolua_tonumber(tolua_S,4,0));
+  BrushSettings* brush = ((BrushSettings*)  tolua_tousertype(tolua_S,5,0));
+  MaskSettings* masksettings = ((MaskSettings*)  tolua_tousertype(tolua_S,6,0));
+  Image* alpha = ((Image*)  tolua_tousertype(tolua_S,7,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'ApplyHeightBrushAlpha'", NULL);
+#endif
+ {
+  self->ApplyHeightBrushAlpha(x,z,dt,*brush,*masksettings,*alpha);
+ }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'ApplyHeightBrushAlpha'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: ApplyWaterBrush of class  TerrainEdit */
 #ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_TerrainEdit_ApplyWaterBrush00
 static int tolua_BindTerrainEdit_TerrainEdit_ApplyWaterBrush00(lua_State* tolua_S)
@@ -2211,6 +2254,51 @@ static int tolua_BindTerrainEdit_TerrainEdit_ApplyBlendBrush00(lua_State* tolua_
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'ApplyBlendBrush'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: ApplyBlendBrushAlpha of class  TerrainEdit */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_TerrainEdit_ApplyBlendBrushAlpha00
+static int tolua_BindTerrainEdit_TerrainEdit_ApplyBlendBrushAlpha00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"TerrainEdit",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,5,0,&tolua_err) ||
+ (tolua_isvaluenil(tolua_S,6,&tolua_err) || !tolua_isusertype(tolua_S,6,"BrushSettings",0,&tolua_err)) ||
+ (tolua_isvaluenil(tolua_S,7,&tolua_err) || !tolua_isusertype(tolua_S,7,"MaskSettings",0,&tolua_err)) ||
+ (tolua_isvaluenil(tolua_S,8,&tolua_err) || !tolua_isusertype(tolua_S,8,"Image",0,&tolua_err)) ||
+ !tolua_isnoobj(tolua_S,9,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  TerrainEdit* self = (TerrainEdit*)  tolua_tousertype(tolua_S,1,0);
+  float x = ((float)  tolua_tonumber(tolua_S,2,0));
+  float z = ((float)  tolua_tonumber(tolua_S,3,0));
+  int layer = ((int)  tolua_tonumber(tolua_S,4,0));
+  float dt = ((float)  tolua_tonumber(tolua_S,5,0));
+  BrushSettings* brush = ((BrushSettings*)  tolua_tousertype(tolua_S,6,0));
+  MaskSettings* masksettings = ((MaskSettings*)  tolua_tousertype(tolua_S,7,0));
+  Image* alpha = ((Image*)  tolua_tousertype(tolua_S,8,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'ApplyBlendBrushAlpha'", NULL);
+#endif
+ {
+  self->ApplyBlendBrushAlpha(x,z,layer,dt,*brush,*masksettings,*alpha);
+ }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'ApplyBlendBrushAlpha'.",&tolua_err);
  return 0;
 #endif
 }
@@ -6552,8 +6640,10 @@ TOLUA_API int tolua_BindTerrainEdit_open (lua_State* tolua_S)
   tolua_function(tolua_S,"BlendHeightBuffer",tolua_BindTerrainEdit_TerrainEdit_BlendHeightBuffer00);
   tolua_function(tolua_S,"SetMaskBuffer",tolua_BindTerrainEdit_TerrainEdit_SetMaskBuffer00);
   tolua_function(tolua_S,"ApplyHeightBrush",tolua_BindTerrainEdit_TerrainEdit_ApplyHeightBrush00);
+  tolua_function(tolua_S,"ApplyHeightBrushAlpha",tolua_BindTerrainEdit_TerrainEdit_ApplyHeightBrushAlpha00);
   tolua_function(tolua_S,"ApplyWaterBrush",tolua_BindTerrainEdit_TerrainEdit_ApplyWaterBrush00);
   tolua_function(tolua_S,"ApplyBlendBrush",tolua_BindTerrainEdit_TerrainEdit_ApplyBlendBrush00);
+  tolua_function(tolua_S,"ApplyBlendBrushAlpha",tolua_BindTerrainEdit_TerrainEdit_ApplyBlendBrushAlpha00);
   tolua_function(tolua_S,"ApplyMaskBrush",tolua_BindTerrainEdit_TerrainEdit_ApplyMaskBrush00);
   tolua_function(tolua_S,"ApplySmoothBrush",tolua_BindTerrainEdit_TerrainEdit_ApplySmoothBrush00);
   tolua_function(tolua_S,"SetBrushCursorHeight",tolua_BindTerrainEdit_TerrainEdit_SetBrushCursorHeight00);

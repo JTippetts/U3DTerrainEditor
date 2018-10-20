@@ -106,7 +106,8 @@ function EditHeightUI:Activate()
 	--self.cursor:Show()
 	--self.cursor:SetBrushPreview(self.brushtex)
 
-	self.panel:SetPosition(0,graphics.height-self.panel.height)
+	self.panel:SetPosition(106,graphics.height-self.panel.height)
+	terrainui.alphas:Activate()
 end
 
 function EditHeightUI:SetCursor(x,y,radius,hardness)
@@ -126,6 +127,7 @@ function EditHeightUI:Deactivate()
 	self.active=false
 	--self.cursor:Hide()
 	self:SetCursor(-100,-100,1,0)
+	terrainui.alphas:Deactivate()
 end
 
 function EditHeightUI:SetHeight(ht)
@@ -199,7 +201,8 @@ function EditHeightUI:Update(dt)
 			else
 				local gx,gz=ground.x,ground.z
 				--ApplyHeightBrush(TerrainState.terrain,TerrainState.hmap,TerrainState.mask,gx,gz,self.radius, self.max, self.power, self.hardness, self.usemask0, self.usemask1, self.usemask2, dt) TerrainState.terrain:ApplyHeightMap()
-				TerrainState:ApplyHeightBrush(gx,gz,dt,bs,ms)
+				--TerrainState:ApplyHeightBrush(gx,gz,dt,bs,ms)
+				TerrainState:ApplyHeightBrushAlpha(gx,gz,dt,bs,ms,terrainui.alphas.selected.image)
 			end
 		end
 	end

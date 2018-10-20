@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<element type="Window">
+	<attribute name="Position" value="512 384" />
+	<attribute name="Size" value="80 80" />
+	<attribute name="Max Size" value="80 80" />
+	<attribute name="Pivot" value="0 0" />
+	<attribute name="Layout Mode" value="Horizontal" />
+	<attribute name="Layout Spacing" value="8" />
+	<attribute name="Layout Border" value="8 8 8 8" />
+	<attribute name="Image Rect" value="48 0 64 16" />
+	<attribute name="Border" value="4 4 4 4" />
+	<attribute name="Resize Border" value="8 8 8 8" />
+	<element type="Button">
+		<attribute name="Name" value="Thumb" />
+		<attribute name="Min Size" value="64 64" />
+		<attribute name="Max Size" value="64 64" />
+		<attribute name="Pivot" value="0 0" />
+		<attribute name="Image Rect" value="0 0 63 63" />
+		<attribute name="Border" value="4 4 4 4" />
+		<attribute name="Pressed Child Offset" value="-1 1" />
+		<attribute name="Hover Image Offset" value="0 0" />
+		<attribute name="Pressed Image Offset" value="0 0" />
+	</element>
+</element>

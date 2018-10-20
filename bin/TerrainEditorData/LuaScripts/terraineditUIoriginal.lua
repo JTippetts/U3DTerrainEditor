@@ -6,6 +6,7 @@ require 'LuaScripts/smoothheightui'
 require 'LuaScripts/editmaskui'
 require 'LuaScripts/splineui'
 require 'LuaScripts/editwaterui'
+require 'LuaScripts/alphalistui'
 
 TerrainEditUI=ScriptObject()
 
@@ -30,6 +31,7 @@ function TerrainEditUI:BuildUI()
 	self.newterrain=ui:LoadLayout(cache:GetResource("XMLFile", "UI/TerrainEditNewTerrain.xml"))
 	self.toolbar=ui:LoadLayout(cache:GetResource("XMLFile", "UI/TerrainMainToolbar.xml"))
 	self.blendbrush=scene_:CreateScriptObject("TerrainSelectUI")
+	self.alphas=scene_:CreateScriptObject("AlphaListUI")
 
 	self.nodegraph=scene_:CreateScriptObject("NodeGraphUI")
 	self.nodegraph:Deactivate()
