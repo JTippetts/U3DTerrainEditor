@@ -158,6 +158,8 @@ void TerrainEdit::ResizeTerrain(int tw, int th, bool use16bit)
 	waterMap_->SetSize(tw, th, use16bit ? 3 : 1);
 	waterMap_->Clear(Color(0,0,0));
 	water_->SetHeightMap(waterMap_);
+
+	waterdepth_->SetSize(tw,th,1);
 }
 
 void TerrainEdit::BuildWaterDepthTexture()
