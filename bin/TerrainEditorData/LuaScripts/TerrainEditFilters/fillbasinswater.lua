@@ -66,7 +66,7 @@ return
 			end
 		end
 
-		buf2:blur(0.005,false)
+		--buf2:blur(0.005,false)
 
 		for x=0,arr:width()-1,1 do
 			for y=0,arr:height()-1,1 do

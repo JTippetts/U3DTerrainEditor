@@ -64,14 +64,17 @@ void PS()
     reflectUV += noise;
 
     float fresnel = pow(1.0 - clamp(dot(normalize(vEyeVec.xyz), vNormal), 0.0, 1.0), cFresnelPower);
-    vec3 refractColor = texture2D(sEnvMap, refractUV).rgb * cWaterTint;
-    vec3 reflectColor = texture2D(sDiffMap, reflectUV).rgb;
+	vec3 backColor = texture2D(sEnvMap, refractUV).rgb;
+    vec3 refractColor = backColor * cWaterTint;
+    //vec3 reflectColor = texture2D(sDiffMap, reflectUV).rgb;
+	vec3 reflectColor = cFogColor.rgb;
     vec3 finalColor = mix(refractColor, reflectColor, fresnel);
 
 	vec3 foamColor = texture2D(sFoam3, vWaterUV).rgb;
-	float depthValue = texture2D(sFlowMap2, vFlowUV).r;
+	float depthValue = (1.0-texture2D(sFlowMap2, vFlowUV).r);
 
-	finalColor = finalColor + foamColor*(1.0-depthValue)*0.5;// mix(foamColor, finalColor, depthValue.r);
+	finalColor = finalColor + foamColor*depthValue;// mix(foamColor, finalColor, depthValue.r);
+	finalColor = mix(finalColor, backColor, depthValue*depthValue-0.01);
 
 	//finalColor = vec3(depthValue,depthValue,depthValue);
 
