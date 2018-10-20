@@ -44,6 +44,24 @@ uniform sampler2D sWeightMap0;
 uniform sampler2D sWeightMap1;
 uniform sampler2DArray sDetailMap2;
 
+#ifdef EDITING
+	uniform vec4 cCursor;
+
+	float calcCursor(vec4 cursor, vec4 worldpos)
+	{
+		// cursor format:
+		// x,y : position
+		// z   : radius
+		// w   : hardness
+		float dx=cursor.x-worldpos.x;
+		float dy=cursor.y-worldpos.z;
+		float len=sqrt(dx*dx+dy*dy);
+		float i=(len-cursor.z)/(cursor.w*cursor.z-cursor.z);
+		i=clamp(i,0.0,1.0);
+		return i;
+	};
+#endif
+
 #ifdef BUMPMAP
 	uniform sampler2DArray sNormal3;
 #endif
@@ -102,7 +120,7 @@ void VS()
     gl_Position = GetClipPos(worldPos);
     vNormal = GetWorldNormal(modelMatrix);
     vWorldPos = vec4(worldPos, GetDepth(gl_Position));
-	
+
 	#ifdef BUMPMAP
         vec4 tangent = GetWorldTangent(modelMatrix);
         vec3 bitangent = cross(tangent.xyz, vNormal) * tangent.w;
@@ -111,7 +129,7 @@ void VS()
     #else
         vTexCoord = GetTexCoord(iTexCoord);
     #endif
-	
+
     vDetailTexCoord = worldPos.xyz / cDetailTiling;
 
     #ifdef PERPIXEL
@@ -128,7 +146,7 @@ void VS()
             // Spotlight projection: transform from world space to projector texture coordinates
             vSpotPos = cLightMatrices[0] * projWorldPos;
         #endif
-    
+
         #ifdef POINTLIGHT
             vCubeMaskVec = mat3(cLightMatrices[0][0].xyz, cLightMatrices[0][1].xyz, cLightMatrices[0][2].xyz) * (worldPos - cLightPos.xyz);
         #endif
@@ -142,12 +160,12 @@ void VS()
         #else
             vVertexLight = GetAmbient(GetZonePos(worldPos));
         #endif
-        
+
         #ifdef NUMVERTEXLIGHTS
             for (int i = 0; i < NUMVERTEXLIGHTS; ++i)
                 vVertexLight += GetVertexLight(i, worldPos, vNormal) * cVertexLights[i * 3].rgb;
         #endif
-        
+
         vScreenPos = GetScreenPos(gl_Position);
 
         #ifdef ENVCUBEMAP
@@ -161,19 +179,19 @@ void PS()
     // Get material diffuse albedo
     vec4 weights0 = texture(sWeightMap0, vTexCoord.xy);
 	vec4 weights1 = texture(sWeightMap1, vTexCoord.xy);
-	
+
 	#ifdef USEMASKTEXTURE
 		vec3 mask=texture(sMask4, vTexCoord.xy).rgb;
 	#endif
-	
+
 	#ifdef TRIPLANAR
-	
+
 	vec3 nrm = normalize(vNormal);
 	vec3 blending=abs(nrm);
 	blending = normalize(max(blending, 0.00001));
 	float b=blending.x+blending.y+blending.z;
 	blending=blending/b;
-	
+
 	vec4 tex1=SampleDiffuse(vDetailTexCoord, 0, blending);
 	vec4 tex2=SampleDiffuse(vDetailTexCoord, 1, blending);
 	vec4 tex3=SampleDiffuse(vDetailTexCoord, 2, blending);
@@ -182,7 +200,7 @@ void PS()
 	vec4 tex6=SampleDiffuse(vDetailTexCoord, 5, blending);
 	vec4 tex7=SampleDiffuse(vDetailTexCoord, 6, blending);
 	vec4 tex8=SampleDiffuse(vDetailTexCoord, 7, blending);
-	
+
 	#else
 		#ifdef REDUCETILING
 			vec4 tex1=(texture(sDetailMap2, vec3(vDetailTexCoord.xz*cLayerScaling[0], 0))+texture(sDetailMap2, vec3(vDetailTexCoord.xz*cLayerScaling[0]*0.27, 0)))*0.5;
@@ -204,7 +222,7 @@ void PS()
 			vec4 tex8=texture(sDetailMap2, vec3(vDetailTexCoord.xz*cLayerScaling[7], 7));
 		#endif
 	#endif
-	
+
 	#ifndef SMOOTHBLEND
 		float ma=max(tex1.a+weights0.r, max(tex2.a+weights0.g, max(tex3.a+weights0.b, max(tex4.a+weights0.a, max(tex5.a+weights1.r, max(tex6.a+weights1.g, max(tex7.a+weights1.b, tex8.a+weights1.a)))))))-0.2;
 		float b1=max(0, tex1.a+weights0.r-ma);
@@ -228,7 +246,7 @@ void PS()
 		float bsum=b1+b2+b3+b4+b5+b6+b7+b8;
 	vec4 diffColor=(tex1*b1+tex2*b2+tex3*b3+tex4*b4+tex5*b5+tex6*b6+tex7*b7+tex8*b8)/bsum;
 	//vec4 diffColor=tex1;
-	
+
 	#ifdef USEMASKTEXTURE
 	diffColor.r=mix(1.0, diffColor.r, mask.r);
 	diffColor.g=mix(1.0, diffColor.g, mask.g);
@@ -241,7 +259,7 @@ void PS()
     // Get normal
 	#ifdef BUMPMAP
         mat3 tbn = mat3(vTangent.xyz, vec3(vTexCoord.zw, vTangent.w), vNormal);
-		
+
 		#ifdef TRIPLANAR
 		vec3 bump1=SampleBump(vDetailTexCoord, 0, blending);
 		vec3 bump2=SampleBump(vDetailTexCoord, 1, blending);
@@ -272,14 +290,14 @@ void PS()
 				vec3 bump8=DecodeNormal(texture(sNormal3, vec3(vDetailTexCoord.xz*cLayerScaling[7],7)));
 			#endif
 		#endif
-		
+
 		vec3 normal=tbn*normalize(((bump1*b1+bump2*b2+bump3*b3+bump4*b4+bump5*b5+bump6*b6+bump7*b7+bump8*b8)/bsum));
-		
+
     #else
         vec3 normal = normalize(vNormal);
     #endif
     //vec3 normal = normalize(vNormal);
-	
+
 
     #ifdef HEIGHTFOG
         float fogFactor = GetHeightFogFactor(vWorldPos.w, vWorldPos.y);
@@ -299,7 +317,7 @@ void PS()
         #ifdef SHADOW
             diff *= GetShadow(vShadowPos, vWorldPos.w);
         #endif
-    
+
         #if defined(SPOTLIGHT)
             lightColor = vSpotPos.w > 0.0 ? texture2DProj(sLightSpotMap, vSpotPos).rgb * cLightColor.rgb : vec3(0.0, 0.0, 0.0);
         #elif defined(CUBEMASK)
@@ -307,7 +325,7 @@ void PS()
         #else
             lightColor = cLightColor.rgb;
         #endif
-    
+
         #ifdef SPECULAR
             float spec = GetSpecular(normal, cCameraPosPS - vWorldPos.xyz, lightDir, cMatSpecColor.a);
             finalColor = diff * lightColor * (diffColor.rgb + spec * specColor * cLightColor.a);
@@ -362,7 +380,7 @@ void PS()
             // If using AO, the vertex light ambient is black, calculate occluded ambient here
             finalColor += texture2D(sEmissiveMap, vTexCoord2).rgb * cAmbientColor.rgb * diffColor.rgb;
         #endif
-        
+
         #ifdef MATERIAL
             // Add light pre-pass accumulation result
             // Lights are accumulated at half intensity. Bring back to full intensity now
@@ -386,4 +404,8 @@ void PS()
 
         gl_FragColor = vec4(GetFog(finalColor, fogFactor), diffColor.a);
     #endif
+	#ifdef EDITING
+		float j=calcCursor(cCursor, vWorldPos);
+		gl_FragColor = mix(gl_FragColor, vec4(1,1,1,1), j*0.75);
+	#endif
 }

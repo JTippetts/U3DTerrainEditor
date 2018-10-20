@@ -36,6 +36,8 @@ function TerrainSelectUI:Start()
 	--self.brushtex:SetSize(0,0,0,TEXTURE_DYNAMIC)
 	self.panel:GetChild("BrushPreview",true).texture=self.brushtex
 
+	self.buf=VectorBuffer()
+	self.ary=Variant()
 
 	--self:SubscribeToEvent("Pressed", "TerrainSelectUI:HandleButtonPress")
 	self:SubscribeToEvent("SliderChanged", "TerrainSelectUI:HandleSliderChanged")
@@ -69,10 +71,10 @@ function TerrainSelectUI:Start()
 	text=self.panel:GetChild("HardnessText", true)
 	if text then text.text=string.format("%.2f", self.hardness) end
 
-	self.cursor=EditingBrush(scene_)
+	--[[self.cursor=EditingBrush(scene_)
 	self.cursor:BuildCursorMesh(self.radius)
 	self.cursor:SetBrushPreview(self.brushtex)
-	self.cursor:Hide()
+	self.cursor:Hide()]]
 
 	print(graphics.apiName)
 
@@ -195,6 +197,16 @@ end
 
 function TerrainSelectUI:ClearAllLayers(eventType, eventData)
 
+end
+
+function TerrainSelectUI:SetCursor(x,y,radius,hardness)
+	self.buf:Clear()
+	self.buf:WriteFloat(x)
+	self.buf:WriteFloat(y)
+	self.buf:WriteFloat(radius)
+	self.buf:WriteFloat(hardness)
+	self.ary:Set(self.buf)
+	TerrainState:GetMaterial():SetShaderParameter("Cursor", self.ary)
 end
 
 function TerrainSelectUI:SetLayerScales()
@@ -510,16 +522,17 @@ function TerrainSelectUI:Activate()
 	self.panel.visible=true
 	self.active=true
 	self:GenerateBrushPreview(self.hardness)
-	self.cursor:BuildCursorMesh(self.radius)
-	self.cursor:Show()
-	self.cursor:SetBrushPreview(self.brushtex)
+	--self.cursor:BuildCursorMesh(self.radius)
+	--self.cursor:Show()
+	--self.cursor:SetBrushPreview(self.brushtex)
 	self.panel:SetPosition(IntVector2(0,graphics.height-self.panel.height))
 end
 
 function TerrainSelectUI:Deactivate()
 	self.panel.visible=false
 	self.active=false
-	self.cursor:Hide()
+	self:SetCursor(-100,-100,1,0)
+	--self.cursor:Hide()
 end
 
 function TerrainSelectUI:ChangeLayer(which)
@@ -582,7 +595,7 @@ function TerrainSelectUI:HandleSliderChanged(eventType, eventData)
 	elseif which==self.panel:GetChild("RadiusSlider", true) then
 		local text=self.panel:GetChild("RadiusText", true)
 		if text then text.text=tostring(math.floor(self.radius)) end
-		self.cursor:BuildCursorMesh(self.radius)
+		--self.cursor:BuildCursorMesh(self.radius)
 	elseif which==self.panel:GetChild("MaxSlider", true) then
 		local text=self.panel:GetChild("MaxText", true)
 		if text then text.text=string.format("%.2f", self.max) end
@@ -608,8 +621,9 @@ function TerrainSelectUI:Update(dt)
 
 	if ground then
 		local world=Vector3(ground.x,0,ground.z)
-		self.cursor:SetPosition(world)
+		--self.cursor:SetPosition(world)
 		self.power, self.max, self.radius, self.hardness, self.usemask0, self.usemask1, self.usemask2=self:GetBrushSettings()
+		self:SetCursor(ground.x, ground.z, self.radius, self.hardness)
 		local bs=BrushSettings(self.radius, self.max, self.power, self.hardness)
 		local ms=MaskSettings(self.usemask0, false, self.usemask1, false, self.usemask2, false)
 
@@ -620,5 +634,5 @@ function TerrainSelectUI:Update(dt)
 		end
 	end
 
-	self.cursor:SetBrushCursorHeight()
+	--self.cursor:SetBrushCursorHeight()
 end
