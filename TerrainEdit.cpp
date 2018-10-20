@@ -940,11 +940,16 @@ void TerrainEdit::ApplyHeightBrush(float x, float z, float dt, BrushSettings &br
                 float newhval=hval+(brush.max-hval)*i;
                 SetHeightValue(hx,hz,newhval);
 
+				float wt=GetWaterValue(hx,hz);
+				float v=std::max(0.0f, std::min(1.0f, (wt-newhval)*16.0f));
+				waterdepth_->SetPixel(hx,hz,Color(v,0,0));
+
             }
         }
     }
 
     terrain_->SetHeightMap(hmap_);
+	waterdepthtex_->SetData(waterdepth_,false);
 }
 
 void TerrainEdit::ApplyBlendBrush(float x, float z, int layer, float dt, BrushSettings &brush, MaskSettings &masksettings)
