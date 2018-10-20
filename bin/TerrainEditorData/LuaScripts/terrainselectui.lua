@@ -207,6 +207,10 @@ function TerrainSelectUI:SetCursor(x,y,radius,hardness)
 	self.buf:WriteFloat(hardness)
 	self.ary:Set(self.buf)
 	TerrainState:GetMaterial():SetShaderParameter("Cursor", self.ary)
+	self.buf:Clear()
+	self.buf:WriteFloat(-cam.yaw*3.14159265/180.0)
+	self.ary:Set(self.buf)
+	TerrainState:GetMaterial():SetShaderParameter("Angle", self.ary)
 end
 
 function TerrainSelectUI:SetLayerScales()
@@ -633,7 +637,7 @@ function TerrainSelectUI:Update(dt)
 			local gx,gz=ground.x,ground.z
 			--ApplyBlendBrush8(TerrainState.terrain,TerrainState.hmap,TerrainState.blend1,TerrainState.blend2,TerrainState.mask,gx,gz,self.radius,self.max,self.power,self.hardness,self.layer-1,self.usemask0, self.usemask1,self.usemask2,dt)TerrainState. blendtex1:SetData(TerrainState.blend1) TerrainState.blendtex2:SetData(TerrainState.blend2)
 			--TerrainState:ApplyBlendBrush(gx,gz,self.layer-1,dt,bs,ms)
-			TerrainState:ApplyBlendBrushAlpha(gx,gz,self.layer-1,dt,bs,ms,terrainui.alphas.selected.image)
+			TerrainState:ApplyBlendBrushAlpha(gx,gz,self.layer-1,dt,bs,ms,terrainui.alphas.selected.image, -cam.yaw*3.14159645/180.0)
 		end
 	end
 

@@ -102,18 +102,7 @@ function CreateScene()
     local skybox = skyNode:CreateComponent("Skybox")
     skybox.model = cache:GetResource("Model", "Models/Box.mdl")
     skybox.material = cache:GetResource("Material", "Materials/Skybox.xml")]]
-
-
-
-	terrainui=scene_:CreateScriptObject("TerrainEditUI")
-
-	terrainui:NewTerrain(1025,1025,2048,2048,true,false,true)
-	terrainui:BuildUI()
-	filterui=scene_:CreateScriptObject("FilterUI")
-	saveloadui=scene_:CreateScriptObject("SaveLoadUI")
-	saveloadui:Deactivate()
-
-    cameraNode=scene_:CreateChild("Camera")
+	 cameraNode=scene_:CreateChild("Camera")
 	cam=cameraNode:CreateScriptObject("ThirdPersonCamera")
 	cam.clipcamera=false
 	cam.allowspin=true
@@ -124,6 +113,17 @@ function CreateScene()
 	cam.clipdist=2000
 	--cam.orthographic=true
 	cam:Finalize()
+
+
+	terrainui=scene_:CreateScriptObject("TerrainEditUI")
+
+	terrainui:NewTerrain(1025,1025,2048,2048,true,false,true)
+	terrainui:BuildUI()
+	filterui=scene_:CreateScriptObject("FilterUI")
+	saveloadui=scene_:CreateScriptObject("SaveLoadUI")
+	saveloadui:Deactivate()
+
+
 
 	projecttozero=true
 	--graphics.flushGPU=true

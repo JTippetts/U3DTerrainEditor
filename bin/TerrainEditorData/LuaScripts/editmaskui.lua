@@ -90,6 +90,10 @@ function EditMaskUI:SetCursor(x,y,radius,hardness)
 	self.buf:WriteFloat(hardness)
 	self.ary:Set(self.buf)
 	TerrainState:GetMaterial():SetShaderParameter("Cursor", self.ary)
+	self.buf:Clear()
+	self.buf:WriteFloat(-cam.yaw*3.14159265/180.0)
+	self.ary:Set(self.buf)
+	TerrainState:GetMaterial():SetShaderParameter("Angle", self.ary)
 end
 
 function EditMaskUI:GenerateBrushPreview()
@@ -130,7 +134,8 @@ function EditMaskUI:Activate()
 	self.which=math.max(0, math.min(2,self.panel:GetChild("WhichMask",true).selection))
 	local name=self.panel:GetChild("MaskName", true)
 	if name then name.text = "Edit Mask "..self.which end
-	self.panel:SetPosition(IntVector2(0,graphics.height-self.panel.height))
+	self.panel:SetPosition(IntVector2(104,graphics.height-self.panel.height))
+	terrainui.alphas:Activate()
 end
 
 function EditMaskUI:Deactivate()
@@ -138,6 +143,7 @@ function EditMaskUI:Deactivate()
 	self.active=false
 	self:SetCursor(-100,-100,1,0)
 	--self.cursor:Hide()
+	terrainui.alphas:Deactivate()
 end
 
 function EditMaskUI:HandleClearMask(eventType, eventData)
@@ -194,7 +200,8 @@ function EditMaskUI:Update(dt)
 		if input:GetMouseButtonDown(MOUSEB_LEFT) and ui:GetElementAt(mousepos.x, mousepos.y)==nil then
 			local gx,gz=ground.x,ground.z
 			--ApplyMaskBrush(TerrainState.terrain,TerrainState.hmap,TerrainState.mask,gx,gz,self.radius,self.max,self.power,self.hardness,dt,self.which) TerrainState.masktex:SetData(TerrainState.mask)
-			TerrainState:ApplyMaskBrush(gx,gz,which,dt,bs,ms)
+			--TerrainState:ApplyMaskBrush(gx,gz,which,dt,bs,ms)
+			TerrainState:ApplyMaskBrushAlpha(gx,gz,which,dt,bs,ms,terrainui.alphas.selected.image, -cam.yaw*3.14159265/180.0)
 		end
 	end
 

@@ -120,6 +120,11 @@ function EditHeightUI:SetCursor(x,y,radius,hardness)
 	self.buf:WriteFloat(hardness)
 	self.ary:Set(self.buf)
 	TerrainState:GetMaterial():SetShaderParameter("Cursor", self.ary)
+
+	self.buf:Clear()
+	self.buf:WriteFloat(-cam.yaw*3.14159265/180.0)
+	self.ary:Set(self.buf)
+	TerrainState:GetMaterial():SetShaderParameter("Angle", self.ary)
 end
 
 function EditHeightUI:Deactivate()
@@ -202,7 +207,7 @@ function EditHeightUI:Update(dt)
 				local gx,gz=ground.x,ground.z
 				--ApplyHeightBrush(TerrainState.terrain,TerrainState.hmap,TerrainState.mask,gx,gz,self.radius, self.max, self.power, self.hardness, self.usemask0, self.usemask1, self.usemask2, dt) TerrainState.terrain:ApplyHeightMap()
 				--TerrainState:ApplyHeightBrush(gx,gz,dt,bs,ms)
-				TerrainState:ApplyHeightBrushAlpha(gx,gz,dt,bs,ms,terrainui.alphas.selected.image)
+				TerrainState:ApplyHeightBrushAlpha(gx,gz,dt,bs,ms,terrainui.alphas.selected.image, -cam.yaw*3.14159265/180.0)
 			end
 		end
 	end

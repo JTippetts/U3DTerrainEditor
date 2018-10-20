@@ -84,11 +84,12 @@ public:
 	void SetMaskBuffer(CArray2Dd &buffer, int which);
 
 	void ApplyHeightBrush(float x, float z, float dt, BrushSettings &brush, MaskSettings &masksettings);
-	void ApplyHeightBrushAlpha(float x, float z, float dt, BrushSettings &brush, MaskSettings &masksettings, Image &alpha);
+	void ApplyHeightBrushAlpha(float x, float z, float dt, BrushSettings &brush, MaskSettings &masksettings, Image &alpha, float angle);
 	void ApplyWaterBrush(float x, float z, float dt, BrushSettings &brush, MaskSettings &masksettings);
 	void ApplyBlendBrush(float x, float z, int layer, float dt, BrushSettings &brush, MaskSettings &masksettings);
-	void ApplyBlendBrushAlpha(float x, float z, int layer, float dt, BrushSettings &brush, MaskSettings &masksettings, Image &alpha);
+	void ApplyBlendBrushAlpha(float x, float z, int layer, float dt, BrushSettings &brush, MaskSettings &masksettings, Image &alpha, float angle);
 	void ApplyMaskBrush(float x, float z, int which, float dt, BrushSettings &brush, MaskSettings &masksettings);
+	void ApplyMaskBrushAlpha(float x, float z, int which, float dt, BrushSettings &brush, MaskSettings &masksettings, Image &alpha, float angle);
 	void ApplySmoothBrush(float x, float z, float dt, BrushSettings &brush, MaskSettings &masksettings);
 
 	void SetBrushCursorHeight(CustomGeometry *brush, float groundx, float groundz);

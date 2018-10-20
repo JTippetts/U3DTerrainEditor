@@ -2146,7 +2146,8 @@ static int tolua_BindTerrainEdit_TerrainEdit_ApplyHeightBrushAlpha00(lua_State* 
  (tolua_isvaluenil(tolua_S,5,&tolua_err) || !tolua_isusertype(tolua_S,5,"BrushSettings",0,&tolua_err)) ||
  (tolua_isvaluenil(tolua_S,6,&tolua_err) || !tolua_isusertype(tolua_S,6,"MaskSettings",0,&tolua_err)) ||
  (tolua_isvaluenil(tolua_S,7,&tolua_err) || !tolua_isusertype(tolua_S,7,"Image",0,&tolua_err)) ||
- !tolua_isnoobj(tolua_S,8,&tolua_err)
+ !tolua_isnumber(tolua_S,8,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,9,&tolua_err)
  )
  goto tolua_lerror;
  else
@@ -2159,11 +2160,12 @@ static int tolua_BindTerrainEdit_TerrainEdit_ApplyHeightBrushAlpha00(lua_State* 
   BrushSettings* brush = ((BrushSettings*)  tolua_tousertype(tolua_S,5,0));
   MaskSettings* masksettings = ((MaskSettings*)  tolua_tousertype(tolua_S,6,0));
   Image* alpha = ((Image*)  tolua_tousertype(tolua_S,7,0));
+  float angle = ((float)  tolua_tonumber(tolua_S,8,0));
 #ifndef TOLUA_RELEASE
  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'ApplyHeightBrushAlpha'", NULL);
 #endif
  {
-  self->ApplyHeightBrushAlpha(x,z,dt,*brush,*masksettings,*alpha);
+  self->ApplyHeightBrushAlpha(x,z,dt,*brush,*masksettings,*alpha,angle);
  }
  }
  return 0;
@@ -2274,7 +2276,8 @@ static int tolua_BindTerrainEdit_TerrainEdit_ApplyBlendBrushAlpha00(lua_State* t
  (tolua_isvaluenil(tolua_S,6,&tolua_err) || !tolua_isusertype(tolua_S,6,"BrushSettings",0,&tolua_err)) ||
  (tolua_isvaluenil(tolua_S,7,&tolua_err) || !tolua_isusertype(tolua_S,7,"MaskSettings",0,&tolua_err)) ||
  (tolua_isvaluenil(tolua_S,8,&tolua_err) || !tolua_isusertype(tolua_S,8,"Image",0,&tolua_err)) ||
- !tolua_isnoobj(tolua_S,9,&tolua_err)
+ !tolua_isnumber(tolua_S,9,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,10,&tolua_err)
  )
  goto tolua_lerror;
  else
@@ -2288,11 +2291,12 @@ static int tolua_BindTerrainEdit_TerrainEdit_ApplyBlendBrushAlpha00(lua_State* t
   BrushSettings* brush = ((BrushSettings*)  tolua_tousertype(tolua_S,6,0));
   MaskSettings* masksettings = ((MaskSettings*)  tolua_tousertype(tolua_S,7,0));
   Image* alpha = ((Image*)  tolua_tousertype(tolua_S,8,0));
+  float angle = ((float)  tolua_tonumber(tolua_S,9,0));
 #ifndef TOLUA_RELEASE
  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'ApplyBlendBrushAlpha'", NULL);
 #endif
  {
-  self->ApplyBlendBrushAlpha(x,z,layer,dt,*brush,*masksettings,*alpha);
+  self->ApplyBlendBrushAlpha(x,z,layer,dt,*brush,*masksettings,*alpha,angle);
  }
  }
  return 0;
@@ -2342,6 +2346,53 @@ static int tolua_BindTerrainEdit_TerrainEdit_ApplyMaskBrush00(lua_State* tolua_S
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'ApplyMaskBrush'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: ApplyMaskBrushAlpha of class  TerrainEdit */
+#ifndef TOLUA_DISABLE_tolua_BindTerrainEdit_TerrainEdit_ApplyMaskBrushAlpha00
+static int tolua_BindTerrainEdit_TerrainEdit_ApplyMaskBrushAlpha00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+ !tolua_isusertype(tolua_S,1,"TerrainEdit",0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+ !tolua_isnumber(tolua_S,5,0,&tolua_err) ||
+ (tolua_isvaluenil(tolua_S,6,&tolua_err) || !tolua_isusertype(tolua_S,6,"BrushSettings",0,&tolua_err)) ||
+ (tolua_isvaluenil(tolua_S,7,&tolua_err) || !tolua_isusertype(tolua_S,7,"MaskSettings",0,&tolua_err)) ||
+ (tolua_isvaluenil(tolua_S,8,&tolua_err) || !tolua_isusertype(tolua_S,8,"Image",0,&tolua_err)) ||
+ !tolua_isnumber(tolua_S,9,0,&tolua_err) ||
+ !tolua_isnoobj(tolua_S,10,&tolua_err)
+ )
+ goto tolua_lerror;
+ else
+#endif
+ {
+  TerrainEdit* self = (TerrainEdit*)  tolua_tousertype(tolua_S,1,0);
+  float x = ((float)  tolua_tonumber(tolua_S,2,0));
+  float z = ((float)  tolua_tonumber(tolua_S,3,0));
+  int which = ((int)  tolua_tonumber(tolua_S,4,0));
+  float dt = ((float)  tolua_tonumber(tolua_S,5,0));
+  BrushSettings* brush = ((BrushSettings*)  tolua_tousertype(tolua_S,6,0));
+  MaskSettings* masksettings = ((MaskSettings*)  tolua_tousertype(tolua_S,7,0));
+  Image* alpha = ((Image*)  tolua_tousertype(tolua_S,8,0));
+  float angle = ((float)  tolua_tonumber(tolua_S,9,0));
+#ifndef TOLUA_RELEASE
+ if (!self) tolua_error(tolua_S,"invalid 'self' in function 'ApplyMaskBrushAlpha'", NULL);
+#endif
+ {
+  self->ApplyMaskBrushAlpha(x,z,which,dt,*brush,*masksettings,*alpha,angle);
+ }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'ApplyMaskBrushAlpha'.",&tolua_err);
  return 0;
 #endif
 }
@@ -6645,6 +6696,7 @@ TOLUA_API int tolua_BindTerrainEdit_open (lua_State* tolua_S)
   tolua_function(tolua_S,"ApplyBlendBrush",tolua_BindTerrainEdit_TerrainEdit_ApplyBlendBrush00);
   tolua_function(tolua_S,"ApplyBlendBrushAlpha",tolua_BindTerrainEdit_TerrainEdit_ApplyBlendBrushAlpha00);
   tolua_function(tolua_S,"ApplyMaskBrush",tolua_BindTerrainEdit_TerrainEdit_ApplyMaskBrush00);
+  tolua_function(tolua_S,"ApplyMaskBrushAlpha",tolua_BindTerrainEdit_TerrainEdit_ApplyMaskBrushAlpha00);
   tolua_function(tolua_S,"ApplySmoothBrush",tolua_BindTerrainEdit_TerrainEdit_ApplySmoothBrush00);
   tolua_function(tolua_S,"SetBrushCursorHeight",tolua_BindTerrainEdit_TerrainEdit_SetBrushCursorHeight00);
   tolua_function(tolua_S,"InvertMask",tolua_BindTerrainEdit_TerrainEdit_InvertMask00);

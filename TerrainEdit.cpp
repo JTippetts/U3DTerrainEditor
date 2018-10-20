@@ -954,7 +954,7 @@ void TerrainEdit::ApplyHeightBrush(float x, float z, float dt, BrushSettings &br
 	waterdepthtex_->SetData(waterdepth_,false);
 }
 
-void TerrainEdit::ApplyHeightBrushAlpha(float x, float z, float dt, BrushSettings &brush, MaskSettings &masksettings, Image &alpha)
+void TerrainEdit::ApplyHeightBrushAlpha(float x, float z, float dt, BrushSettings &brush, MaskSettings &masksettings, Image &alpha, float angle)
 {
     if(!terrain_) return;
 
@@ -976,8 +976,10 @@ void TerrainEdit::ApplyHeightBrushAlpha(float x, float z, float dt, BrushSetting
                 i=std::max(0.0f, std::min(1.0f, i));
                 i=(float)std::sin(i*1.57079633);
 
-				float alphanx=dx/brush.radius;
-				float alphany=dz/brush.radius;
+				float anx=dx/brush.radius;
+				float any=dz/brush.radius;
+				float alphanx = anx*std::cos(angle) - any*std::sin(angle);
+				float alphany = any*std::cos(angle) + anx*std::sin(angle);
 				alphanx=alphanx*0.5+0.5;
 				alphany=alphany*0.5+0.5;
 				alphanx=std::max(0.0f, std::min(1.0f, alphanx));
@@ -1108,7 +1110,7 @@ void TerrainEdit::ApplyBlendBrush(float x, float z, int layer, float dt, BrushSe
     blendtex1_->SetData(blend1_, false);
 }
 
-void TerrainEdit::ApplyBlendBrushAlpha(float x, float z, int layer, float dt, BrushSettings &brush, MaskSettings &masksettings, Image &alpha)
+void TerrainEdit::ApplyBlendBrushAlpha(float x, float z, int layer, float dt, BrushSettings &brush, MaskSettings &masksettings, Image &alpha, float angle)
 {
     if(!terrain_) return;
 
@@ -1132,8 +1134,10 @@ void TerrainEdit::ApplyBlendBrushAlpha(float x, float z, int layer, float dt, Br
                 float i=((d-rad)/(brush.hardness*rad-rad));
                 i=std::max(0.0f, std::min(1.0f, i));
 
-				float alphanx=dx/rad;
-				float alphany=dz/rad;
+				float anx=dx/rad;
+				float any=dz/rad;
+				float alphanx = anx*std::cos(angle) - any*std::sin(angle);
+				float alphany = any*std::cos(angle) + anx*std::sin(angle);
 				alphanx=alphanx*0.5+0.5;
 				alphany=alphany*0.5+0.5;
 				alphanx=std::max(0.0f, std::min(1.0f, alphanx));
@@ -1229,6 +1233,58 @@ void TerrainEdit::ApplyMaskBrush(float x, float z, int which, float dt, BrushSet
                 float i=((d-rad)/(brush.hardness*rad-rad));
                 i=std::max(0.0f, std::min(1.0f, i));
                 i=i*dt*brush.power;
+
+                Color col=mask_->GetPixel(hx,hz);
+                if(which==0)
+                    col.r_=col.r_+i*((1.0f-brush.max)-col.r_);
+                else if(which==1)
+                    col.g_=col.g_+i*((1.0f-brush.max)-col.g_);
+                else
+                    col.b_=col.b_+i*((1.0f-brush.max)-col.b_);
+                mask_->SetPixel(hx,hz,col);
+            }
+        }
+    }
+
+    masktex_->SetData(mask_, false);
+}
+
+void TerrainEdit::ApplyMaskBrushAlpha(float x, float z, int which, float dt, BrushSettings &brush, MaskSettings &masksettings, Image &alpha, float angle)
+{
+    if(!terrain_) return;
+
+    Vector2 normalized=WorldToNormalized(Vector3(x,0,z));
+    float ratio=((float)mask_->GetWidth()/(float)hmap_->GetWidth());
+    int ix=(int)(normalized.x_*(float)(mask_->GetWidth()-1));
+    int iy=(int)(normalized.y_*(float)(mask_->GetHeight()-1));
+    iy=mask_->GetHeight()-iy;
+    float rad=brush.radius*ratio;
+    int sz=(int)rad+1;
+
+    for(int hx=ix-sz; hx<=ix+sz; ++hx)
+    {
+        for(int hz=iy-sz; hz<=iy+sz; ++hz)
+        {
+            if(hx>=0 && hx<mask_->GetWidth() && hz>=0 && hz<mask_->GetHeight())
+            {
+                float dx=(float)hx-(float)ix;
+                float dz=(float)hz-(float)iy;
+                float d=std::sqrt(dx*dx+dz*dz);
+                float i=((d-rad)/(brush.hardness*rad-rad));
+                i=std::max(0.0f, std::min(1.0f, i));
+				float anx=dx/rad;
+				float any=dz/rad;
+
+				float alphanx = anx*std::cos(angle) - any*std::sin(angle);
+				float alphany = any*std::cos(angle) + anx*std::sin(angle);
+
+				alphanx=alphanx*0.5+0.5;
+				alphany=alphany*0.5+0.5;
+				alphanx=std::max(0.0f, std::min(1.0f, alphanx));
+				alphany=std::max(0.0f, std::min(1.0f, alphany));
+				float alphapower=alpha.GetPixelBilinear(alphanx,alphany).r_;
+
+                i=i*dt*brush.power*alphapower;
 
                 Color col=mask_->GetPixel(hx,hz);
                 if(which==0)

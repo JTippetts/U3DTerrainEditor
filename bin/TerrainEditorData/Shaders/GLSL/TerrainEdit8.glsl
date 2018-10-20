@@ -46,6 +46,7 @@ uniform sampler2DArray sDetailMap2;
 
 #ifdef EDITING
 	uniform vec4 cCursor;
+	uniform float cAngle;
 	uniform sampler2D sAlpha5;
 
 	float calcCursor(vec4 cursor, vec4 worldpos)
@@ -62,13 +63,19 @@ uniform sampler2DArray sDetailMap2;
 		return i;
 	};
 
-	vec2 calcCursorUV(vec4 cursor, vec4 worldpos)
+	vec2 calcCursorUV(vec4 cursor, vec4 worldpos, float angle)
 	{
 		float dx=(cursor.x-worldpos.x)/cursor.z;
 		float dy=(cursor.y-worldpos.z)/cursor.z;
-		dx=clamp(dx,-1.0,1.0)*0.5+0.5;
-		dy=clamp(dy,-1.0,1.0)*0.5+0.5;
-		return vec2(dx,dy);
+		dx=clamp(dx,-1.0,1.0);
+		dy=clamp(dy,-1.0,1.0);
+		dx=-dx;
+
+		float rx=dx*cos(angle) - dy*sin(angle);
+		float ry=dy*cos(angle) + dx*sin(angle);
+		rx=rx*0.5+0.5;
+		ry=ry*0.5+0.5;
+		return vec2(rx,ry);
 	};
 #endif
 
@@ -416,7 +423,7 @@ void PS()
     #endif
 	#ifdef EDITING
 		float j=calcCursor(cCursor, vWorldPos);
-		float alpha=texture2D(sAlpha5, calcCursorUV(cCursor, vWorldPos)).r;
+		float alpha=texture2D(sAlpha5, calcCursorUV(cCursor, vWorldPos, cAngle)).r;
 		gl_FragColor = mix(gl_FragColor, vec4(1,1,1,1), j*0.75*alpha);
 	#endif
 }
