@@ -16,7 +16,6 @@ function EditWaterUI:Start()
 	self.brushpreview=Image(context)
 	self.brushpreview:SetSize(64,64,3)
 	self.brushtex=Texture2D:new(context)
-	--self.brushtex:SetSize(0,0,0,TEXTURE_DYNAMIC)
 	self.panel:GetChild("BrushPreview",true).texture=self.brushtex
 
 	self.power,self.max,self.radius,self.hardness,self.usemask=self:GetBrushSettings()
@@ -33,11 +32,6 @@ function EditWaterUI:Start()
 
 	self.buf=VectorBuffer()
 	self.ary=Variant()
-
-	--[[self.cursor=EditingBrush(scene_)
-	self.cursor:BuildCursorMesh(self.radius)
-	self.cursor:SetBrushPreview(self.brushtex)
-	self.cursor:Show()]]
 end
 
 function EditWaterUI:GetBrushSettings()
@@ -82,7 +76,6 @@ function EditWaterUI:GenerateBrushPreview()
 			local dx=x-w/2
 			local dy=y-h/2
 			local d=math.sqrt(dx*dx+dy*dy)
-			--local i=(rad-d)/rad
 			local i=(d-rad)/(hardness*rad-rad)
 			i=math.max(0, math.min(1,i))
 
@@ -102,30 +95,27 @@ function EditWaterUI:Activate()
 	self.panel.visible=true
 	self.active=true
 	self:GenerateBrushPreview(self.hardness)
-	--self.cursor:BuildCursorMesh(self.radius)
-	--self.cursor:Show()
-	--self.cursor:SetBrushPreview(self.brushtex)
-
 	self.panel:SetPosition(0,graphics.height-self.panel.height)
 end
 
 function EditWaterUI:SetCursor(x,y,radius,hardness)
 	self.buf:Clear()
-	--local hc=TerrainState:CalcPointTile(x,y)
-	--local pc=TerrainState:CalcTileCenter(hc.x, hc.y)
 	self.buf:WriteFloat(x)
 	self.buf:WriteFloat(y)
 	self.buf:WriteFloat(radius)
 	self.buf:WriteFloat(hardness)
 	self.ary:Set(self.buf)
 	TerrainState:GetMaterial():SetShaderParameter("Cursor", self.ary)
+	self.buf:Clear()
+	self.buf:WriteFloat(-cam.yaw*3.14159265/180.0)
+	self.ary:Set(self.buf)
+	TerrainState:GetMaterial():SetShaderParameter("Angle", self.ary)
 end
 
 
 function EditWaterUI:Deactivate()
 	self.panel.visible=false
 	self.active=false
-	--self.cursor:Hide()
 	self:SetCursor(-100,-100,1,0)
 end
 
@@ -144,7 +134,6 @@ function EditWaterUI:HandleSliderChanged(eventType, eventData)
 	if which==nil then return end
 
 	self.power, self.max, self.radius, self.hardness, self.usemask0, self.usemask1, self.usemask2=self:GetBrushSettings(self.panel)
-	--self:BuildCursorMesh(self.radius)
 
 	if which==self.panel:GetChild("PowerSlider", true) then
 		local text=self.panel:GetChild("PowerText", true)
@@ -152,8 +141,7 @@ function EditWaterUI:HandleSliderChanged(eventType, eventData)
 	elseif which==self.panel:GetChild("RadiusSlider", true) then
 		local text=self.panel:GetChild("RadiusText", true)
 		if text then text.text=tostring(math.floor(self.radius)) end
-		--self.cursor:BuildCursorMesh(self.radius)
-	elseif which==self.panel:GetChild("MaxSlider", true) then
+		elseif which==self.panel:GetChild("MaxSlider", true) then
 		local text=self.panel:GetChild("MaxText", true)
 		if text then text.text=string.format("%.2f", self.max) end
 	elseif which==self.panel:GetChild("HardnessSlider", true) then
@@ -165,20 +153,15 @@ end
 
 function EditWaterUI:Update(dt)
 	if not self.active then return end
-
-
 	local mousepos
 	if input.mouseVisible then
 		mousepos=input:GetMousePosition()
 	else
 		mousepos=ui:GetCursorPosition()
 	end
-
 	local ground=cam:GetScreenGround(mousepos.x, mousepos.y)
-
 	if ground then
 		local world=Vector3(ground.x,0,ground.z)
-		--self.cursor:SetPosition(world)
 		self.power, self.max, self.radius, self.hardness, self.usemask0, self.usemask1, self.usemask2=self:GetBrushSettings()
 		self:SetCursor(ground.x, ground.z, self.radius, self.hardness)
 		local bs=BrushSettings(self.radius, self.max, self.power, self.hardness)
@@ -186,22 +169,12 @@ function EditWaterUI:Update(dt)
 
 		if input:GetMouseButtonDown(MOUSEB_LEFT) and ui:GetElementAt(mousepos.x, mousepos.y)==nil then
 			if input:GetQualifierDown(QUAL_CTRL) then
-				--local norm=WorldToNormalized(TerrainState.hmap,TerrainState.terrain,ground)
-				--local col=TerrainState.hmap:GetPixelBilinear(norm.x,1-norm.y)
-				--local ht=0
-				--if TerrainState.hmap.components==1 then ht=col.r
-				--else ht=col.r+col.g/256.0
-				--end
-				--print(ht)
 				local ht=TerrainState:GetWaterValue(world)
 				self:SetWater(ht)
 			else
 				local gx,gz=ground.x,ground.z
-				--ApplyWaterBrush(TerrainState.terrain,TerrainState.hmap,TerrainState.mask,gx,gz,self.radius, self.max, self.power, self.hardness, self.usemask0, self.usemask1, self.usemask2, dt) TerrainState.terrain:ApplyWaterMap()
 				TerrainState:ApplyWaterBrush(gx,gz,dt,bs,ms)
 			end
 		end
 	end
-
-	--self.cursor:SetBrushCursorHeight()
 end

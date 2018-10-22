@@ -33,11 +33,6 @@ function EditHeightUI:Start()
 
 	self.buf=VectorBuffer()
 	self.ary=Variant()
-
-	--[[self.cursor=EditingBrush(scene_)
-	self.cursor:BuildCursorMesh(self.radius)
-	self.cursor:SetBrushPreview(self.brushtex)
-	self.cursor:Show()]]
 end
 
 function EditHeightUI:GetBrushSettings()
@@ -82,7 +77,6 @@ function EditHeightUI:GenerateBrushPreview()
 			local dx=x-w/2
 			local dy=y-h/2
 			local d=math.sqrt(dx*dx+dy*dy)
-			--local i=(rad-d)/rad
 			local i=(d-rad)/(hardness*rad-rad)
 			i=math.max(0, math.min(1,i))
 
@@ -102,18 +96,12 @@ function EditHeightUI:Activate()
 	self.panel.visible=true
 	self.active=true
 	self:GenerateBrushPreview(self.hardness)
-	--self.cursor:BuildCursorMesh(self.radius)
-	--self.cursor:Show()
-	--self.cursor:SetBrushPreview(self.brushtex)
-
 	self.panel:SetPosition(106,graphics.height-self.panel.height)
 	terrainui.alphas:Activate()
 end
 
 function EditHeightUI:SetCursor(x,y,radius,hardness)
 	self.buf:Clear()
-	--local hc=TerrainState:CalcPointTile(x,y)
-	--local pc=TerrainState:CalcTileCenter(hc.x, hc.y)
 	self.buf:WriteFloat(x)
 	self.buf:WriteFloat(y)
 	self.buf:WriteFloat(radius)
@@ -130,7 +118,6 @@ end
 function EditHeightUI:Deactivate()
 	self.panel.visible=false
 	self.active=false
-	--self.cursor:Hide()
 	self:SetCursor(-100,-100,1,0)
 	terrainui.alphas:Deactivate()
 end
@@ -150,15 +137,13 @@ function EditHeightUI:HandleSliderChanged(eventType, eventData)
 	if which==nil then return end
 
 	self.power, self.max, self.radius, self.hardness, self.usemask0, self.usemask1, self.usemask2=self:GetBrushSettings(self.panel)
-	--self:BuildCursorMesh(self.radius)
-
 	if which==self.panel:GetChild("PowerSlider", true) then
 		local text=self.panel:GetChild("PowerText", true)
 		if text then text.text=string.format("%.2f", self.power) end
 	elseif which==self.panel:GetChild("RadiusSlider", true) then
 		local text=self.panel:GetChild("RadiusText", true)
 		if text then text.text=tostring(math.floor(self.radius)) end
-		self.cursor:BuildCursorMesh(self.radius)
+		--self.cursor:BuildCursorMesh(self.radius)
 	elseif which==self.panel:GetChild("MaxSlider", true) then
 		local text=self.panel:GetChild("MaxText", true)
 		if text then text.text=string.format("%.2f", self.max*256) end
@@ -184,33 +169,19 @@ function EditHeightUI:Update(dt)
 
 	if ground then
 		local world=Vector3(ground.x,0,ground.z)
-		--self.cursor:SetPosition(world)
 		self.power, self.max, self.radius, self.hardness, self.usemask0, self.usemask1, self.usemask2=self:GetBrushSettings()
-
 		self:SetCursor(ground.x, ground.z, self.radius, self.hardness)
-
 		local bs=BrushSettings(self.radius, self.max, self.power, self.hardness)
 		local ms=MaskSettings(self.usemask0, false, self.usemask1, false, self.usemask2, false)
 
 		if input:GetMouseButtonDown(MOUSEB_LEFT) and ui:GetElementAt(mousepos.x, mousepos.y)==nil then
 			if input:GetQualifierDown(QUAL_CTRL) then
-				--local norm=WorldToNormalized(TerrainState.hmap,TerrainState.terrain,ground)
-				--local col=TerrainState.hmap:GetPixelBilinear(norm.x,1-norm.y)
-				--local ht=0
-				--if TerrainState.hmap.components==1 then ht=col.r
-				--else ht=col.r+col.g/256.0
-				--end
-				--print(ht)
 				local ht=TerrainState:GetHeightValue(world)
 				self:SetHeight(ht)
 			else
 				local gx,gz=ground.x,ground.z
-				--ApplyHeightBrush(TerrainState.terrain,TerrainState.hmap,TerrainState.mask,gx,gz,self.radius, self.max, self.power, self.hardness, self.usemask0, self.usemask1, self.usemask2, dt) TerrainState.terrain:ApplyHeightMap()
-				--TerrainState:ApplyHeightBrush(gx,gz,dt,bs,ms)
 				TerrainState:ApplyHeightBrushAlpha(gx,gz,dt,bs,ms,terrainui.alphas.selected.image, -cam.yaw*3.14159265/180.0)
 			end
 		end
 	end
-
-	--self.cursor:SetBrushCursorHeight()
 end

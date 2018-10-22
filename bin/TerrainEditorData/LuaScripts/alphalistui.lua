@@ -57,7 +57,7 @@ function AlphaListUI:PopulateList()
 
 	-- Select first alpha
 	self.selected=self.alphas[1]
-	self.selected.element.imageRect=IntRect(32,0,48,16)
+	self.selected.element.imageRect=IntRect(160,64,176,80)
 	TerrainState:GetMaterial():SetTexture(5,self.selected.tex)
 end
 
@@ -73,7 +73,7 @@ function AlphaListUI:HandleAlphaSelected(eventType, eventData)
 				self.selected.element.imageRect=IntRect(48,0,64,16)
 			end
 			self.selected=c
-			c.element.imageRect=IntRect(32,0,48,16)
+			c.element.imageRect=IntRect(160,64,176,80)
 			TerrainState:GetMaterial():SetTexture(5,self.selected.tex)
 		end
 
