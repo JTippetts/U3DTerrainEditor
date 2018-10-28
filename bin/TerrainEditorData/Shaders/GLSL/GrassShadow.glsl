@@ -17,16 +17,20 @@ void VS()
     mat4 modelMatrix = iModelMatrix;
     vec3 worldPos = GetWorldPos(modelMatrix);
 
-	vec2 htuv=vec2(worldPos.x/(cHeightData.x)+0.5, 1.0-(worldPos.z/(cHeightData.y)+0.5));
+	// Convert world coords to UV coords
+	float tu=worldPos.x / cHeightData.z;
+	float tv=worldPos.z / cHeightData.z;
 
+	vec2 htuv=vec2((tu/cHeightData.x)+0.5, 1.0-((tv/cHeightData.y)+0.5));
 	vec4 htt=textureLod(sHeightMap1, htuv, 0.0);
 	vec4 cov=textureLod(sCoverMap2, htuv, 0.0);
+
 	float vx=cov.r*2.0-1.0;
 	float vz=cov.b*2.0-1.0;
-	worldPos.x=worldPos.x+vx*cHeightData.w;
-	worldPos.z=worldPos.z+vz*cHeightData.w;
+	worldPos.x=worldPos.x+vx*cHeightData.w*0.5;
+	worldPos.z=worldPos.z+vz*cHeightData.w*0.5;
 	float htscale=cHeightData.w*255.0;
-	float ht=htt.r*htscale + htt.g;
+	float ht=htt.r*htscale + htt.g*cHeightData.w;
 
 	float dx=worldPos.x - cCameraPos.x;
 	float dz=worldPos.z - cCameraPos.z;

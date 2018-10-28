@@ -114,21 +114,17 @@ function CreateScene()
 	--cam.orthographic=true
 	cam:Finalize()
 
-	--[[gmat=cache:GetResource("Material", "Materials/White.xml")
-
+	gmat=cache:GetResource("Material", "Materials/White.xml")
 	grass=scene_:CreateChild("Grass")
 	g1=grass:CreateComponent("StaticModel")
 	g1.model=cache:GetResource("Model", "Models/GrassMesh.mdl")
-	--g1.model:SetBoundingBox(BoundingBox(-1000.0, 1000.0))
 	g1.material=gmat
 	g1.castShadows=true
-
-
 	local covmap=cache:GetResource("Texture2D", "Textures/testfoliagecover.png")
 	gmat:SetTexture(2, covmap)
-	--covmap:SetFilterMode(FILTER_NEAREST)
+	covmap:SetFilterMode(FILTER_NEAREST)
 
-]]
+
 
 
 	terrainui=scene_:CreateScriptObject("TerrainEditUI")
@@ -162,16 +158,6 @@ function CreateScene()
 		k:scaleDomain(fractal, freq)
 		return k
 	end
-
-	--[[xdistort=CArray2Dd(blend1:GetWidth(), blend1:GetHeight())
-	local xdk=distortKernel(6, 64, 1234)
-	map2D(SEAMLESS_NONE, xdistort, xdk, SMappingRanges(0,1,0,1,0,1), 0, xdk:lastIndex())
-	xdistort:scaleToRange(-1,1)
-
-	ydistort=CArray2Dd(blend1:GetWidth(), blend1:GetHeight())
-	local ydk=distortKernel(6, 64, 1234)
-	map2D(SEAMLESS_NONE, ydistort, ydk, SMappingRanges(0,1,0,1,0,1), 0, ydk:lastIndex())
-	ydistort:scaleToRange(0,1)]]
 end
 
 function CreateInstructions()
@@ -195,7 +181,7 @@ function HandleUpdate(eventType, eventData)
 		img:SavePNG(filename)
 	end
 
-	--[[local spacing=TerrainState:GetTerrainSpacing()
+	local spacing=TerrainState:GetTerrainSpacing()
 	local campos=cameraNode:GetPosition()
 	local gpos=Vector3(campos.x, campos.y, campos.z)
 	gpos.x=math.floor(campos.x / spacing.x) * spacing.x
@@ -213,6 +199,5 @@ function HandleUpdate(eventType, eventData)
 	ary:Set(buf)
 	gmat:SetShaderParameter("HeightData", ary)
 	gmat:SetTexture(1, TerrainState:GetHeightTex())
-	]]
 
 end
