@@ -114,6 +114,22 @@ function CreateScene()
 	--cam.orthographic=true
 	cam:Finalize()
 
+	--[[gmat=cache:GetResource("Material", "Materials/White.xml")
+
+	grass=scene_:CreateChild("Grass")
+	g1=grass:CreateComponent("StaticModel")
+	g1.model=cache:GetResource("Model", "Models/GrassMesh.mdl")
+	--g1.model:SetBoundingBox(BoundingBox(-1000.0, 1000.0))
+	g1.material=gmat
+	g1.castShadows=true
+
+
+	local covmap=cache:GetResource("Texture2D", "Textures/testfoliagecover.png")
+	gmat:SetTexture(2, covmap)
+	--covmap:SetFilterMode(FILTER_NEAREST)
+
+]]
+
 
 	terrainui=scene_:CreateScriptObject("TerrainEditUI")
 
@@ -122,6 +138,10 @@ function CreateScene()
 	filterui=scene_:CreateScriptObject("FilterUI")
 	saveloadui=scene_:CreateScriptObject("SaveLoadUI")
 	saveloadui:Deactivate()
+
+	--gmat:SetTexture(0, TerrainState:GetHeightTex())
+	print("Height tex:")
+	print(TerrainState:GetHeightTex())
 
 
 
@@ -174,5 +194,25 @@ function HandleUpdate(eventType, eventData)
 		local filename="screen-"..tostring(t.year).."-"..tostring(t.month).."-"..tostring(t.day).."-"..tostring(t.hour).."-"..tostring(t.min).."-"..tostring(t.sec)..".png"
 		img:SavePNG(filename)
 	end
+
+	--[[local spacing=TerrainState:GetTerrainSpacing()
+	local campos=cameraNode:GetPosition()
+	local gpos=Vector3(campos.x, campos.y, campos.z)
+	gpos.x=math.floor(campos.x / spacing.x) * spacing.x
+	gpos.z=math.floor(campos.z / spacing.z) * spacing.z
+	gpos.y=-0.01
+	grass:SetPosition(gpos)
+
+	local buf=VectorBuffer()
+	local ary=Variant()
+
+	buf:WriteFloat(TerrainState:GetTerrainWidth())
+	buf:WriteFloat(TerrainState:GetTerrainWidth())
+	buf:WriteFloat(spacing.x)
+	buf:WriteFloat(spacing.y)
+	ary:Set(buf)
+	gmat:SetShaderParameter("HeightData", ary)
+	gmat:SetTexture(1, TerrainState:GetHeightTex())
+	]]
 
 end

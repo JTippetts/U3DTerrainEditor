@@ -131,6 +131,7 @@ public:
 	void SaveTerrainNormalMap(const String &filename);
 
 	void GetCavityMap2(CArray2Dd &buffer, int radius);
+	Texture2D *GetHeightTex();
 };
 
 void FillBasins(CArray2Dd &arr, float E);

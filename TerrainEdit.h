@@ -178,6 +178,8 @@ public:
 
 	void BuildWaterDepthTexture();
 
+	Texture2D *GetHeightTex(){return heightTex_;}
+
 protected:
     Node *terrainNode_;
     Terrain *terrain_;
@@ -190,6 +192,7 @@ protected:
     Image *hmap_, *waterMap_, *blend0_, *blend1_, *mask_, *waterdepth_;
     SharedPtr<Texture2D> blendtex0_, blendtex1_, masktex_;
 	SharedPtr<Texture2D> waterdepthtex_;
+	SharedPtr<Texture2D> heightTex_;
 
     bool use16bit_;
     bool triplanar_, smoothing_, normalmapping_;

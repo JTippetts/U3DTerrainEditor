@@ -234,7 +234,7 @@ function NodeGraphUI:Load(loader)
 	self:Clear()
 	local g
 	for _,g in ipairs(loader.nodegroups) do
-		local group=self:CreateNodeGroup()
+		local group=self:CreateNodeGroup(g.name)
 		local n
 		for _,n in ipairs(g.nodes) do
 			local node=self:BuildNode(group, n.type)
@@ -276,7 +276,40 @@ function NodeGraphUI:Load(loader)
 end
 
 function NodeGraphUI:HandleNewGroup(eventType, eventData)
-	local newgroup=self:CreateNodeGroup()
+	--local newgroup=self:CreateNodeGroup()
+	self.newnodegroupdlg=ui:LoadLayout(cache:GetResource("XMLFile", "UI/NewNodeGroupDlg.xml"))
+	ui.root:AddChild(self.newnodegroupdlg)
+	self.newnodegroupdlg:SetModal(true)
+	self:SubscribeToEvent(self.newnodegroupdlg:GetChild("OK",true), "Pressed", "NodeGraphUI:HandleNewGroupAccept")
+	self:SubscribeToEvent(self.newnodegroupdlg:GetChild("Close",true), "Pressed", "NodeGraphUI:HandleNewGroupCancel")
+	self:SubscribeToEvent(self.newnodegroupdlg:GetChild("Cancel",true), "Pressed", "NodeGraphUI:HandleNewGroupCancel")
+	local w,h=self.newnodegroupdlg:GetWidth(), self.newnodegroupdlg:GetHeight()
+	self.newnodegroupdlg:SetPosition(IntVector2(graphics.width/2 - w/2, graphics.height/2 - w/2))
+end
+
+function NodeGraphUI:HandleNewGroupCancel(eventType, eventData)
+	self.newnodegroupdlg:Remove()
+	self.newnodegroupdlg=nil
+end
+
+function NodeGraphUI:HandleNewGroupAccept(eventType, eventData)
+	local name=self.newnodegroupdlg:GetChild("GroupName",true):GetText()
+	local g
+	for _,g in ipairs(self.nodegroups) do
+		if name==g.name then
+			self.newnodegroupdlg:GetChild("Status",true).text="Group already exists!"
+			return
+		end
+	end
+
+	if name=="" then
+		self.newnodegroupdlg:GetChild("Status",true).text="Please enter a name for the group."
+		return
+	end
+
+	self:CreateNodeGroup(name)
+	self.newnodegroupdlg:Remove()
+	self.newnodegroupdlg=nil
 end
 
 function NodeGraphUI:HandleOpenGroup(eventType, eventData)
@@ -330,7 +363,7 @@ function NodeGraphUI:CreateNodeCreateMenu(parent)
 
 end
 
-function NodeGraphUI:CreateNodeGroup()
+function NodeGraphUI:CreateNodeGroup(name)
 	local nodegroup=
 	{
 		nodes={}
@@ -426,8 +459,8 @@ function NodeGraphUI:CreateNodeGroup()
 	self:SubscribeToEvent(nodegroup.output:GetChild("Store",true),"Pressed","NodeGraphUI:HandleStore")
 	nodegroup.pane.visible=false
 
-	local name="Group "..self.nodegroupcounter
-	self.nodegroupcounter=self.nodegroupcounter+1
+	--local name="Group "..self.nodegroupcounter
+	--self.nodegroupcounter=self.nodegroupcounter+1
 	local nlist=self.nodegroupslist:GetChild("List",true)
 	local sel=nlist.selection
 

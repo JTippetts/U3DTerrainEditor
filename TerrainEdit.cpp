@@ -188,7 +188,7 @@ bool TerrainEdit::Initialize(Scene *scene, int tw, int th, int bw, int bh, Vecto
     terrain_=terrainNode_->CreateComponent<Terrain>();
     terrain_->SetPatchSize(64);
     terrain_->SetSpacing(spacing);
-    terrain_->SetSmoothing(true);
+    terrain_->SetSmoothing(false);
 
 	if(waterNode_) waterNode_->Remove();
 	waterNode_=scene->CreateChild("Terrain");
@@ -224,6 +224,10 @@ bool TerrainEdit::Initialize(Scene *scene, int tw, int th, int bw, int bh, Vecto
     blendtex1_=new Texture2D(scene->GetContext());
     masktex_=new Texture2D(scene->GetContext());
 	waterdepthtex_=new Texture2D(scene->GetContext());
+	heightTex_=new Texture2D(scene->GetContext());
+
+	heightTex_->SetFilterMode(FILTER_NEAREST);
+
 
 	waterMaterial_=scene->GetSubsystem<ResourceCache>()->GetResource<Material>("Materials/FlowWater.xml");
 	waterMaterial_->SetTexture(TU_SPECULAR, waterdepthtex_);
@@ -237,6 +241,7 @@ bool TerrainEdit::Initialize(Scene *scene, int tw, int th, int bw, int bh, Vecto
     blendtex1_->SetData(blend1_, false);
     masktex_->SetData(mask_, false);
 	waterdepthtex_->SetData(waterdepth_, false);
+	heightTex_->SetData(hmap_, false);
 
     material_->SetTexture(TU_DIFFUSE, blendtex0_);
     material_->SetTexture(TU_NORMAL, blendtex1_);
@@ -269,6 +274,7 @@ void TerrainEdit::SetTerrainSize(int w, int h, Vector3 spacing, bool use16bit)
     hmap_->Clear(Color(0,0,0));
     water_->SetHeightMap(hmap_);
     water_->SetSpacing(spacing);
+	heightTex_->SetData(hmap_,false);
 }
 
 void TerrainEdit::SetBlendMaskSize(int w, int h)
@@ -295,6 +301,7 @@ void TerrainEdit::ClearTerrain()
 	terrain_->SetHeightMap(hmap_);
 	waterMap_->Clear(Color(0,0,0));
 	water_->SetHeightMap(waterMap_);
+	heightTex_->SetData(hmap_, false);
 }
 
 Vector2 TerrainEdit::WorldToNormalized(Vector3 world)
@@ -610,6 +617,7 @@ void TerrainEdit::SetHeightBuffer(CArray2Dd &buffer, MaskSettings &masksettings,
         }
     }
     terrain_->SetHeightMap(hmap_);
+	heightTex_->SetData(hmap_, false);
 	BuildWaterDepthTexture();
 }
 
@@ -839,6 +847,7 @@ void TerrainEdit::BlendHeightBuffer(CArray2Dd &buffer, CArray2Dd &blend, MaskSet
         }
     }
     terrain_->SetHeightMap(hmap_);
+	heightTex_->SetData(hmap_, false);
 }
 
 void TerrainEdit::ApplyWaterBrush(float x, float z, float dt, BrushSettings &brush, MaskSettings &masksettings)
@@ -951,6 +960,7 @@ void TerrainEdit::ApplyHeightBrush(float x, float z, float dt, BrushSettings &br
     }
 
     terrain_->SetHeightMap(hmap_);
+	heightTex_->SetData(hmap_,false);
 	waterdepthtex_->SetData(waterdepth_,false);
 }
 
@@ -1018,6 +1028,7 @@ void TerrainEdit::ApplyHeightBrushAlpha(float x, float z, float dt, BrushSetting
     }
 
     terrain_->SetHeightMap(hmap_);
+	heightTex_->SetData(hmap_,false);
 	waterdepthtex_->SetData(waterdepth_,false);
 }
 
@@ -1361,6 +1372,7 @@ void TerrainEdit::ApplySmoothBrush(float x, float z, float dt, BrushSettings &br
         }
     }
     terrain_->SetHeightMap(hmap_);
+	heightTex_->SetData(hmap_,false);
 }
 
 void TerrainEdit::SetBrushCursorHeight(CustomGeometry *brush, float groundx, float groundz)
@@ -1613,6 +1625,7 @@ void TerrainEdit::LoadHeightMap(const String &filename)
 	if(!terrain_) return;
 	LoadImage(terrain_->GetContext(), hmap_, filename.CString());
 	terrain_->SetHeightMap(hmap_);
+	heightTex_->SetData(hmap_,false);
 }
 
 void TerrainEdit::LoadWaterMap(const String &filename)
