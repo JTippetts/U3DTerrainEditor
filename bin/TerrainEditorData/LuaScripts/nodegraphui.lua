@@ -106,6 +106,8 @@ function NodeGraphUI:Start()
 	self:SubscribeToEvent(self.nodegroupslist:GetChild("Edit", true), "Pressed", "NodeGraphUI:HandleEditGroup")
 	self:SubscribeToEvent(self.nodegroupslist:GetChild("Map", true), "Pressed", "NodeGraphUI:HandleMapGroup")
 
+	self:SubscribeToEvent(self.nodegroupslist:GetChild("List",true), "ItemSelected", "NodeGraphUI:HandleGroupSelected")
+
 	--self.nodegroupslist:SetPosition(IntVector2(graphics.width-self.nodegroupslist.width, graphics.height-self.nodegroupslist.height))
 	self.nodegroupslist:SetPosition(IntVector2(0, graphics.height-self.nodegroupslist.height))
 	self.nodegroupslist.visible=false
@@ -315,6 +317,7 @@ function NodeGraphUI:HandleNewGroupAccept(eventType, eventData)
 		return
 	end
 
+	self:HideGroup()
 	self:CreateNodeGroup(name)
 	self:ActivateGroup(self.nodegroup)
 	self.newnodegroupdlg:Remove()
@@ -332,9 +335,17 @@ end
 function NodeGraphUI:HandleEditGroup(eventType, eventData)
 	local which=self.nodegroupslist:GetChild("List",true).selection
 	if which==-1 then return end
-	self.nodegroup=self.nodegroups[which+1]
-	if not self.nodegroup then print("wut: "..which..","..self.nodegroupslist:GetChild("List",true):GetNumItems()..","..#self.nodegroups) return end
-	self:ActivateGroup(self.nodegroup)
+	local nodegroup=self.nodegroups[which+1]
+	if not nodegroup then print("wut: "..which..","..self.nodegroupslist:GetChild("List",true):GetNumItems()..","..#self.nodegroups) return end
+	self:ActivateGroup(nodegroup)
+end
+
+function NodeGraphUI:HandleGroupSelected(eventType, eventData)
+	local which=self.nodegroupslist:GetChild("List",true).selection
+	if which==-1 then return end
+	local nodegroup=self.nodegroups[which+1]
+	if not nodegroup then print("wat: "..which..","..self.nodegroupslist:GetChild("List",true):GetNumItems()..","..#self.nodegroups) return end
+	self:ActivateGroup(nodegroup)
 end
 
 function NodeGraphUI:HandleMapGroup(eventType, eventData)
@@ -497,8 +508,8 @@ end
 
 function NodeGraphUI:ActivateGroup(nodegroup)
 	if self.nodegroup then
-		nodegroup.pane.visible=false
-		nodegroup.pane.focus=false
+		self.nodegroup.pane.visible=false
+		self.nodegroup.pane.focus=false
 
 	end
 	self.nodegroup=nodegroup
