@@ -292,6 +292,7 @@ function NodeGraphUI:HandleNewGroup(eventType, eventData)
 	self:SubscribeToEvent(self.newnodegroupdlg:GetChild("Cancel",true), "Pressed", "NodeGraphUI:HandleNewGroupCancel")
 	local w,h=self.newnodegroupdlg:GetWidth(), self.newnodegroupdlg:GetHeight()
 	self.newnodegroupdlg:SetPosition(IntVector2(graphics.width/2 - w/2, graphics.height/2 - w/2))
+	ui:SetFocusElement(self.newnodegroupdlg:GetChild("GroupName", true),false)
 end
 
 function NodeGraphUI:HandleNewGroupCancel(eventType, eventData)
@@ -315,6 +316,7 @@ function NodeGraphUI:HandleNewGroupAccept(eventType, eventData)
 	end
 
 	self:CreateNodeGroup(name)
+	self:ActivateGroup(self.nodegroup)
 	self.newnodegroupdlg:Remove()
 	self.newnodegroupdlg=nil
 end
