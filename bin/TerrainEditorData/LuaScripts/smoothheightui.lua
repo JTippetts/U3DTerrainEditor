@@ -13,10 +13,7 @@ function SmoothHeightUI:Start()
 	self.brushpreview=Image(context)
 	self.brushpreview:SetSize(64,64,3)
 	self.brushtex=Texture2D:new(context)
-	--self.brushtex:SetSize(0,0,0,TEXTURE_DYNAMIC)
 	self.panel:GetChild("BrushPreview",true).texture=self.brushtex
-
-	--self:SubscribeToEvent("Pressed", "SmoothHeightUI:HandleButtonPress")
 	self:SubscribeToEvent("SliderChanged", "SmoothHeightUI:HandleSliderChanged")
 
 
@@ -33,11 +30,6 @@ function SmoothHeightUI:Start()
 
 	self.buf=VectorBuffer()
 	self.ary=Variant()
-
-	--[[self.cursor=EditingBrush(scene_)
-	self.cursor:BuildCursorMesh(self.radius)
-	self.cursor:SetBrushPreview(self.brushtex)
-	self.cursor:Hide()]]
 end
 
 function SmoothHeightUI:GetBrushSettings()
@@ -76,7 +68,6 @@ function SmoothHeightUI:GenerateBrushPreview()
 			local dx=x-w/2
 			local dy=y-h/2
 			local d=math.sqrt(dx*dx+dy*dy)
-			--local i=(rad-d)/rad
 			local i=(d-rad)/(hardness*rad-rad)
 			i=math.max(0, math.min(1,i))
 
@@ -95,9 +86,6 @@ function SmoothHeightUI:Activate()
 	self.panel.visible=true
 	self.active=true
 	self:GenerateBrushPreview(self.hardness)
-	--self.cursor:BuildCursorMesh(self.radius)
-	--self.cursor:Show()
-	--self.cursor:SetBrushPreview(self.brushtex)
 	self.panel:SetPosition(IntVector2(0,graphics.height-self.panel.height))
 end
 
@@ -157,7 +145,6 @@ function SmoothHeightUI:Update(dt)
 
 	if ground then
 		local world=Vector3(ground.x,0,ground.z)
-		--self.cursor:SetPosition(world)
 		self.power, self.max, self.radius, self.hardness, self.usemask0, self.usemask1, self.usemask2=self:GetBrushSettings()
 		self:SetCursor(ground.x, ground.z, self.radius, self.hardness)
 		local bs=BrushSettings(self.radius,self.max,self.power,self.hardness)
@@ -165,11 +152,8 @@ function SmoothHeightUI:Update(dt)
 
 		if input:GetMouseButtonDown(MOUSEB_LEFT) and ui:GetElementAt(mousepos.x, mousepos.y)==nil then
 			local gx,gz=ground.x,ground.z
-			--ApplySmoothBrush(TerrainState.terrain,TerrainState.hmap,TerrainState.mask,gx,gz,self.radius, self.max, self.power, self.hardness, self.usemask0, self.usemask1, self.usemask2, dt) TerrainState.terrain:ApplyHeightMap()
 			TerrainState:ApplySmoothBrush(gx,gz,dt,bs,ms)
 		end
 	end
-
-	self.cursor:SetBrushCursorHeight()
 end
 

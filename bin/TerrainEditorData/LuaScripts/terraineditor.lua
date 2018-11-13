@@ -114,6 +114,8 @@ function CreateScene()
 	--cam.orthographic=true
 	cam:Finalize()
 
+	-- Experimental grass technology
+--[[
 	gmat=cache:GetResource("Material", "Materials/White.xml")
 	grass=scene_:CreateChild("Grass")
 	g1=grass:CreateComponent("StaticModel")
@@ -123,7 +125,7 @@ function CreateScene()
 	local covmap=cache:GetResource("Texture2D", "Textures/testfoliagecover.png")
 	gmat:SetTexture(2, covmap)
 	covmap:SetFilterMode(FILTER_NEAREST)
-
+]]
 
 
 
@@ -181,6 +183,8 @@ function HandleUpdate(eventType, eventData)
 		img:SavePNG(filename)
 	end
 
+	-- Experimental grass technology
+--[[
 	local spacing=TerrainState:GetTerrainSpacing()
 	local campos=cameraNode:GetPosition()
 	local gpos=Vector3(campos.x, campos.y, campos.z)
@@ -199,5 +203,5 @@ function HandleUpdate(eventType, eventData)
 	ary:Set(buf)
 	gmat:SetShaderParameter("HeightData", ary)
 	gmat:SetTexture(1, TerrainState:GetHeightTex())
-
+]]
 end

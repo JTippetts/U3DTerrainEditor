@@ -4,5 +4,5 @@
     <parameter name="MatSpecColor" value="1 1 1 16" />
 	<cull value="none" />
     <shadowcull value="none" />
-	<texture unit="diffuse" name="Textures/grassbillboard2.png" />
+	<texture unit="diffuse" name="Textures/grass4.png" />
 </material>

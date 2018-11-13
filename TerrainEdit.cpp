@@ -219,7 +219,7 @@ bool TerrainEdit::Initialize(Scene *scene, int tw, int th, int bw, int bh, Vecto
 	water_->SetHeightMap(waterMap_);
 	water_->SetCastShadows(false);
 
-    material_=scene->GetSubsystem<ResourceCache>()->GetResource<Material>("Materials/TerrainEdit8TriplanarBump.xml");
+    material_=scene->GetSubsystem<ResourceCache>()->GetResource<Material>("Materials/TerrainEdit8TriplanarBumpReduce.xml");
     blendtex0_=new Texture2D(scene->GetContext());
     blendtex1_=new Texture2D(scene->GetContext());
     masktex_=new Texture2D(scene->GetContext());
@@ -248,7 +248,7 @@ bool TerrainEdit::Initialize(Scene *scene, int tw, int th, int bw, int bh, Vecto
     material_->SetTexture(TU_ENVIRONMENT, masktex_);
     terrain_->SetMaterial(material_);
     SetBlendMaskSize(bw,bh);
-    SetMaterialSettings(true, false, true, false);
+    SetMaterialSettings(true, false, true, true);
 
     return true;
 }

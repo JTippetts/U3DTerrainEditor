@@ -247,6 +247,7 @@ function TerrainSelectUI:ChangeMaterial(triplanar, smoothing, normalmapping, red
 	TerrainState:GetMaterial():SetTexture(2,self.difftex)
 	if normalmapping then TerrainState:GetMaterial():SetTexture(3,self.normaltex) end
 	self:SetLayerScales()
+	terrainui.alphas:ReApplyAlphaTex()
 end
 
 function TerrainSelectUI:HandleMaterialSettingToggled(eventType, eventData)
@@ -355,7 +356,7 @@ end
 
 
 function TerrainSelectUI:HandleSelectDiffuseFile(eventType, eventData)
-	if(eventData["Ok"]:GetBool()==false) then
+	if(not eventData["Ok"] or eventData["Ok"]:GetBool()==false) then
 		self.fileselector=nil
 
 	end
@@ -383,7 +384,7 @@ function TerrainSelectUI:HandlePickNormal(eventType, eventData)
 end
 
 function TerrainSelectUI:HandleSelectNormalFile(eventType, eventData)
-	if(eventData["Ok"]:GetBool()==false) then
+	if(not eventData["Ok"] or eventData["Ok"]:GetBool()==false) then
 		self.fileselector=nil
 
 	end

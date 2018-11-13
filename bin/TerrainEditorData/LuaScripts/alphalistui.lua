@@ -79,3 +79,9 @@ function AlphaListUI:HandleAlphaSelected(eventType, eventData)
 
 	end
 end
+
+function AlphaListUI:ReApplyAlphaTex()
+	if(self.selected) then
+		TerrainState:GetMaterial():SetTexture(5,self.selected.tex)
+	end
+end

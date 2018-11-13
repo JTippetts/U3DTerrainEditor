@@ -60,10 +60,10 @@ void VS()
 
 	float vx=cov.r*2.0-1.0;
 	float vz=cov.b*2.0-1.0;
-	worldPos.x=worldPos.x+vx*cHeightData.w*0.5;
-	worldPos.z=worldPos.z+vz*cHeightData.w*0.5;
+	worldPos.x=worldPos.x+vx*cHeightData.w;
+	worldPos.z=worldPos.z+vz*cHeightData.w;
 	float htscale=cHeightData.w*255.0;
-	float ht=htt.r*htscale + htt.g*cHeightData.w;
+	float ht=htt.r*htscale*cov.g + htt.g*cHeightData.w;
 
 	float dx=worldPos.x - cCameraPos.x;
 	float dz=worldPos.z - cCameraPos.z;
@@ -141,9 +141,10 @@ void PS()
 
 	//htuv=vec2(floor(tu)/cHeightData.x+0.5, 1.0-(floor(tv)/cHeightData.y+0.5));
 	vec4 cov=texture2D(sCoverMap2, htuv);
+	float u=vTexCoord.x*0.25+floor(cov.a*4.0)*0.25;
 
     // Get material diffuse albedo
-	vec4 diffInput = texture2D(sDiffMap, vTexCoord.xy);
+	vec4 diffInput = texture2D(sDiffMap, vec2(u,vTexCoord.y));
 
 	//diffInput=cov;
 

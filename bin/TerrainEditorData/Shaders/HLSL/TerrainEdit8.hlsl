@@ -16,11 +16,11 @@ static const int numlayers=8;
 #ifndef D3D11
 	// D3D9 Uniforms
 	#ifdef COMPILEVS
-	
+
 	#endif
-	
+
 	#ifdef COMPILEPS
-	
+
 	#endif
 #else
 	// D3D11 Uniforms
@@ -30,11 +30,15 @@ static const int numlayers=8;
 			float3 cDetailTiling;
 		};
 	#endif
-	
+
 	#ifdef COMPILEPS
 		cbuffer CustomPS : register(b6)
 		{
 			float cLayerScaling[numlayers];
+			#ifdef EDITING
+				float4 cCursor;
+				float cAngle;
+			#endif
 		};
 	#endif
 #endif
@@ -58,13 +62,18 @@ static const int numlayers=8;
 			Texture2DArray tNormal3 : register(t3);
 			SamplerState sNormal3 : register(s3);
 		#endif
-		
+
 		#ifdef USEMASKTEXTURE
 			Texture2D tMask4 : register(t4);
 			SamplerState sMask4 : register(s4);
 		#endif
+
+		#ifdef EDITING
+			Texture2D tAlpha5 : register(t5);
+			SamplerState sAlpha5 : register(s5);
+		#endif
 	#endif
-	
+
 	// PS functions
 	#ifndef REDUCETILING
 		float4 SampleDiffuse(float3 detailtexcoord, int layer, float3 blend)
@@ -73,7 +82,7 @@ static const int numlayers=8;
 				tDetailMap2.Sample(sDetailMap2, float3(detailtexcoord.xy*cLayerScaling[layer], layer))*blend.z +
 				tDetailMap2.Sample(sDetailMap2, float3(detailtexcoord.xz*cLayerScaling[layer], layer))*blend.y;
 		}
-	
+
 		#ifdef BUMPMAP
 			float3 SampleBump(float3 detailtexcoord, int layer, float3 blend)
 			{
@@ -89,7 +98,7 @@ static const int numlayers=8;
 				(tDetailMap2.Sample(sDetailMap2, float3(detailtexcoord.xy*cLayerScaling[layer], layer))+tDetailMap2.Sample(sDetailMap2, float3(detailtexcoord.xy*cLayerScaling[layer]*0.27, layer)))*blend.z*0.5 +
 				(tDetailMap2.Sample(sDetailMap2, float3(detailtexcoord.xz*cLayerScaling[layer], layer))+tDetailMap2.Sample(sDetailMap2, float3(detailtexcoord.xz*cLayerScaling[layer]*0.27, layer)))*blend.y*0.5;
 		}
-	
+
 		#ifdef BUMPMAP
 			float3 SampleBump(float3 detailtexcoord, int layer, float3 blend)
 			{
@@ -99,6 +108,38 @@ static const int numlayers=8;
 			}
 		#endif
 	#endif
+
+	#ifdef EDITING
+
+	float calcCursor(float4 cursor, float4 worldpos)
+	{
+		// cursor format:
+		// x,y : position
+		// z   : radius
+		// w   : hardness
+		float dx=cursor.x-worldpos.x;
+		float dy=cursor.y-worldpos.z;
+		float len=sqrt(dx*dx+dy*dy);
+		float i=(len-cursor.z)/(cursor.w*cursor.z-cursor.z);
+		i=clamp(i,0.0,1.0);
+		return i;
+	};
+
+	float2 calcCursorUV(float4 cursor, float4 worldpos, float angle)
+	{
+		float dx=(cursor.x-worldpos.x)/cursor.z;
+		float dy=(cursor.y-worldpos.z)/cursor.z;
+		dx=clamp(dx,-1.0,1.0);
+		dy=clamp(dy,-1.0,1.0);
+		dx=-dx;
+
+		float rx=dx*cos(angle) - dy*sin(angle);
+		float ry=dy*cos(angle) + dx*sin(angle);
+		rx=rx*0.5+0.5;
+		ry=ry*0.5+0.5;
+		return float2(rx,ry);
+	};
+#endif
 
 #endif
 
@@ -110,7 +151,7 @@ void VS(float4 iPos : POSITION,
     #if (defined(BUMPMAP) || defined(TRAILFACECAM) || defined(TRAILBONE)) && !defined(BILLBOARD) && !defined(DIRBILLBOARD)
         float4 iTangent : TANGENT,
     #endif
-    
+
     #ifdef INSTANCED
         float4x3 iModelInstance : TEXCOORD4,
     #endif
@@ -146,7 +187,7 @@ void VS(float4 iPos : POSITION,
             out float2 oTexCoord2 : TEXCOORD7,
         #endif
     #endif
-    
+
     #if defined(D3D11) && defined(CLIPPLANE)
         out float oClip : SV_CLIPDISTANCE0,
     #endif
@@ -205,7 +246,7 @@ void VS(float4 iPos : POSITION,
             for (int i = 0; i < NUMVERTEXLIGHTS; ++i)
                 oVertexLight += GetVertexLight(i, worldPos, oNormal) * cVertexLights[i * 3].rgb;
         #endif
-        
+
         oScreenPos = GetScreenPos(oPos);
 
         #ifdef ENVCUBEMAP
@@ -259,18 +300,18 @@ void PS(
 {
 	float4 weights0 = tWeightMap0.Sample(sWeightMap0, iTexCoord.xy);
 	float4 weights1 = tWeightMap1.Sample(sWeightMap1, iTexCoord.xy);
-	
+
 	#ifdef USEMASKTEXTURE
 		float3 mask=tMask4.Sample(sMask4, iTexCoord.xy).rgb;
 	#endif
-	
+
 	#ifdef TRIPLANAR
 		float3 nrm = normalize(iNormal);
 		float3 blending=abs(nrm);
 		blending = normalize(max(blending, 0.00001));
 		float b=blending.x+blending.y+blending.z;
 		blending=blending/b;
-		
+
 		float4 tex1=SampleDiffuse(iDetailTexCoord, 0, blending);
 		float4 tex2=SampleDiffuse(iDetailTexCoord, 1, blending);
 		float4 tex3=SampleDiffuse(iDetailTexCoord, 2, blending);
@@ -279,7 +320,7 @@ void PS(
 		float4 tex6=SampleDiffuse(iDetailTexCoord, 5, blending);
 		float4 tex7=SampleDiffuse(iDetailTexCoord, 6, blending);
 		float4 tex8=SampleDiffuse(iDetailTexCoord, 7, blending);
-	
+
 	#else
 		#ifdef REDUCETILING
 			float4 tex1=(tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xz*cLayerScaling[0], 0))+tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xz*cLayerScaling[0]*0.27, 0)))*0.5;
@@ -301,7 +342,7 @@ void PS(
 			float4 tex8=tDetailMap2.Sample(sDetailMap2, float3(iDetailTexCoord.xz*cLayerScaling[7], 7));
 		#endif
 	#endif
-	
+
 	#ifndef SMOOTHBLEND
 		float ma=max(tex1.a+weights0.r, max(tex2.a+weights0.g, max(tex3.a+weights0.b, max(tex4.a+weights0.a, max(tex5.a+weights1.r, max(tex6.a+weights1.g, max(tex7.a+weights1.b, tex8.a+weights1.a)))))))-0.2;
 		float b1=max(0, tex1.a+weights0.r-ma);
@@ -324,7 +365,7 @@ void PS(
 	#endif
 	float bsum=b1+b2+b3+b4+b5+b6+b7+b8;
 	float4 diffColor=(tex1*b1+tex2*b2+tex3*b3+tex4*b4+tex5*b5+tex6*b6+tex7*b7+tex8*b8)/bsum;
-	
+
 	#ifdef USEMASKTEXTURE
 		diffColor.r=lerp(1.0, diffColor.r, mask.r);
 		diffColor.g=lerp(1.0, diffColor.g, mask.g);
@@ -346,7 +387,7 @@ void PS(
 		float3 bump6=SampleBump(iDetailTexCoord, 5, blending);
 		float3 bump7=SampleBump(iDetailTexCoord, 6, blending);
 		float3 bump8=SampleBump(iDetailTexCoord, 7, blending);
-		
+
 		#else
 			#ifndef REDUCETILING
 				float3 bump1=DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xz*cLayerScaling[0],0)));
@@ -368,8 +409,8 @@ void PS(
 				float3 bump8=(DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xz*cLayerScaling[7],7)))+DecodeNormal(tNormal3.Sample(sNormal3, float3(iDetailTexCoord.xz*cLayerScaling[7]*0.27,7))))*0.5;
 			#endif
 		#endif
-		
-		
+
+
 		float3 normal=mul(normalize(((bump1*b1+bump2*b2+bump3*b3+bump4*b4+bump5*b5+bump6*b6+bump7*b7+bump8*b8)/bsum)),tbn);
     #else
         float3 normal = normalize(iNormal);
@@ -401,7 +442,7 @@ void PS(
         #else
             lightColor = cLightColor.rgb;
         #endif
-    
+
         #ifdef SPECULAR
             float spec = GetSpecular(normal, cCameraPosPS - iWorldPos.xyz, lightDir, cMatSpecColor.a);
             finalColor = diff * lightColor * (diffColor.rgb + spec * specColor * cLightColor.a);
@@ -479,4 +520,10 @@ void PS(
 
         oColor = float4(GetFog(finalColor, fogFactor), diffColor.a);
     #endif
+
+	#ifdef EDITING
+		float j=calcCursor(cCursor, iWorldPos);
+		float alpha=tAlpha5.Sample(sAlpha5, calcCursorUV(cCursor, iWorldPos, cAngle)).r;
+		oColor = lerp(oColor, float4(1,1,1,1), j*0.75*alpha);
+	#endif
 }
