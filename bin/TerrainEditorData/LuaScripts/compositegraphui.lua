@@ -191,68 +191,6 @@ function CompositeGraphUI:Load(loader)
 	end
 end
 
-function CompositeGraphUI:HandleNewGroup(eventType, eventData)
-	--local newgroup=self:CreateNodeGroup()
-	self.newnodegroupdlg=ui:LoadLayout(cache:GetResource("XMLFile", "UI/NewNodeGroupDlg.xml"))
-	ui.root:AddChild(self.newnodegroupdlg)
-	self.newnodegroupdlg:SetModal(true)
-	self:SubscribeToEvent(self.newnodegroupdlg:GetChild("OK",true), "Pressed", "CompositeGraphUI:HandleNewGroupAccept")
-	self:SubscribeToEvent(self.newnodegroupdlg:GetChild("Close",true), "Pressed", "CompositeGraphUI:HandleNewGroupCancel")
-	self:SubscribeToEvent(self.newnodegroupdlg:GetChild("Cancel",true), "Pressed", "CompositeGraphUI:HandleNewGroupCancel")
-	local w,h=self.newnodegroupdlg:GetWidth(), self.newnodegroupdlg:GetHeight()
-	self.newnodegroupdlg:SetPosition(IntVector2(graphics.width/2 - w/2, graphics.height/2 - w/2))
-end
-
-function CompositeGraphUI:HandleNewGroupCancel(eventType, eventData)
-	self.newnodegroupdlg:Remove()
-	self.newnodegroupdlg=nil
-end
-
-function CompositeGraphUI:HandleNewGroupAccept(eventType, eventData)
-	local name=self.newnodegroupdlg:GetChild("GroupName",true):GetText()
-	local g
-	for _,g in ipairs(self.nodegroups) do
-		if name==g.name then
-			self.newnodegroupdlg:GetChild("Status",true).text="Group already exists!"
-			return
-		end
-	end
-
-	if name=="" then
-		self.newnodegroupdlg:GetChild("Status",true).text="Please enter a name for the group."
-		return
-	end
-
-	self:CreateNodeGroup(name)
-	self.newnodegroupdlg:Remove()
-	self.newnodegroupdlg=nil
-end
-
-function CompositeGraphUI:HandleOpenGroup(eventType, eventData)
-
-end
-
-function CompositeGraphUI:HandleDeleteGroup(eventType, eventData)
-
-end
-
-function CompositeGraphUI:HandleEditGroup(eventType, eventData)
-	local which=self.nodegroupslist:GetChild("List",true).selection
-	if which==-1 then return end
-	self.nodegroup=self.nodegroups[which+1]
-	if not self.nodegroup then print("wut: "..which..","..self.nodegroupslist:GetChild("List",true):GetNumItems()..","..#self.nodegroups) return end
-	self:ActivateGroup(self.nodegroup)
-end
-
-function CompositeGraphUI:HandleMapGroup(eventType, eventData)
-	local which=self.nodegroupslist:GetChild("List",true).selection
-	if which==-1 then return end
-
-	self.currentnodegroup=which
-	self.nodegroup=self.nodegroups[self.currentnodegroup+1]
-	self.nodemapping.visible=true
-end
-
 function CompositeGraphUI:CreateNodeCreateMenu(parent)
 	local menu=ui:LoadLayout(cache:GetResource("XMLFile", "UI/CreateNodeButton.xml"))
 	local mn=menu:GetChild("Menu",true)
@@ -370,22 +308,13 @@ function CompositeGraphUI:CreateNodeGroup(name)
 
 	--nodegroup.pane:AddChild(self.createnodemenu)
 
-	self:SubscribeToEvent(nodegroup.output:GetChild("Generate",true),"Pressed","CompositeGraphUI:HandleGenerate")
+	--self:SubscribeToEvent(nodegroup.output:GetChild("Generate",true),"Pressed","CompositeGraphUI:HandleGenerate")
 	self:SubscribeToEvent(nodegroup.output:GetChild("Execute",true),"Pressed","CompositeGraphUI:HandleExecute")
-	self:SubscribeToEvent(nodegroup.output:GetChild("Store",true),"Pressed","CompositeGraphUI:HandleStore")
+	--self:SubscribeToEvent(nodegroup.output:GetChild("Store",true),"Pressed","CompositeGraphUI:HandleStore")
 	nodegroup.pane.visible=false
 
 	--local name="Group "..self.nodegroupcounter
 	--self.nodegroupcounter=self.nodegroupcounter+1
-	local nlist=self.nodegroupslist:GetChild("List",true)
-	local sel=nlist.selection
-
-	local t=Text:new()
-	t:SetStyle("FileSelectorListText", cache:GetResource("XMLFile","UI/DefaultStyle.xml"))
-	t.text=name
-	nlist:AddItem(t)
-	nlist.selection=nlist:GetNumItems()-1
-	table.insert(self.nodegroups, nodegroup)
 	nodegroup.name=name
 
 	self.nodegroup=nodegroup
@@ -399,31 +328,6 @@ function CompositeGraphUI:HideGroup()
 		self.nodegroup.pane.focus=false
 	end
 	self.pane.visible=false
-end
-
-
-function CompositeGraphUI:ActivateGroup(nodegroup)
-	if self.nodegroup then
-		nodegroup.pane.visible=false
-		nodegroup.pane.focus=false
-
-	end
-	self.nodegroup=nodegroup
-	nodegroup.pane.visible=true
-	nodegroup.pane.focus=true
-	self.pane.visible=true
-	--nodegroup.pane:AddChild(self.createnodemenu)
-	--self.createnodemenu.visible=true
-	--self.createnodemenu.position=IntVector2(-self.nodegroup.pane.position.x,-self.nodegroup.pane.position.y+graphics.height-self.createnodemenu.height)
-
-	self.testmenu.visible=true
-	nodegroup.pane:AddChild(self.testmenu)
-	--nodegroup.pane:AddChild(self.closetext)
-	self.testmenu.position=IntVector2(-self.nodegroup.pane.position.x+100, -self.nodegroup.pane.position.y+100)
-end
-
-function CompositeGraphUI:HandleCloseCreateNodeMenu(eventType, eventData)
-	--self.createnodemenu.visible=false
 end
 
 function CompositeGraphUI:HandleCreateNode(eventType, eventData)
