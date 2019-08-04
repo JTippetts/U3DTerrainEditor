@@ -390,7 +390,7 @@ function NodeGraphUI:CreateNodeGroup(name)
 	}
 	nodegroup.pane=self.pane:CreateChild("Window")
 	nodegroup.pane.size=IntVector2(graphics.width*2, graphics.height*2)
-	nodegroup.pane.position=IntVector2(-graphics.width/2, -graphics.height/2)
+	nodegroup.pane.position=IntVector2(-graphics.width/2-128, -graphics.height/2)
 	nodegroup.pane:SetImageRect(IntRect(208,0,223,15))
 	nodegroup.pane:SetImageBorder(IntRect(4,4,4,4))
 	nodegroup.pane:SetTexture(cache:GetResource("Texture2D", "Textures/UI_modified.png"))

@@ -89,7 +89,7 @@ end
 function CompositeGraphUI:Save(fullpath)
 	local groups={}
 
-	print("Saving "..#self.nodegroups.." node groups.")
+	print("Saving "..#self.nodegroups.." composite node groups.")
 
 	function FindLinkIndex(group, target)
 		local c
@@ -253,6 +253,7 @@ function CompositeGraphUI:HandleNewGroupAccept(eventType, eventData)
 		return
 	end
 
+	self:HideGroup()
 	self:CreateNodeGroup(name)
 	self:ActivateGroup(self.nodegroup)
 	self.newnodegroupdlg:Remove()
@@ -270,9 +271,17 @@ end
 function CompositeGraphUI:HandleEditGroup(eventType, eventData)
 	local which=self.nodegroupslist:GetChild("List",true).selection
 	if which==-1 then return end
-	self.nodegroup=self.nodegroups[which+1]
-	if not self.nodegroup then print("wut: "..which..","..self.nodegroupslist:GetChild("List",true):GetNumItems()..","..#self.nodegroups) return end
-	self:ActivateGroup(self.nodegroup)
+	local nodegroup=self.nodegroups[which+1]
+	if not nodegroup then print("wut: "..which..","..self.nodegroupslist:GetChild("List",true):GetNumItems()..","..#self.nodegroups) return end
+	self:ActivateGroup(nodegroup)
+end
+
+function CompositeGraphUI:HandleGroupSelected(eventType, eventData)
+	local which=self.nodegroupslist:GetChild("List",true).selection
+	if which==-1 then return end
+	local nodegroup=self.nodegroups[which+1]
+	if not nodegroup then print("wat: "..which..","..self.nodegroupslist:GetChild("List",true):GetNumItems()..","..#self.nodegroups) return end
+	self:ActivateGroup(nodegroup)
 end
 
 function CompositeGraphUI:HandleMapGroup(eventType, eventData)
@@ -317,7 +326,7 @@ function CompositeGraphUI:CreateNodeGroup(name)
 	}
 	nodegroup.pane=self.pane:CreateChild("Window")
 	nodegroup.pane.size=IntVector2(graphics.width*2, graphics.height*2)
-	nodegroup.pane.position=IntVector2(-graphics.width/2, -graphics.height/2)
+	nodegroup.pane.position=IntVector2(-graphics.width/2-128, -graphics.height/2)
 	nodegroup.pane:SetImageRect(IntRect(208,0,223,15))
 	nodegroup.pane:SetImageBorder(IntRect(4,4,4,4))
 	nodegroup.pane:SetTexture(cache:GetResource("Texture2D", "Textures/UI_modified.png"))
@@ -435,8 +444,8 @@ end
 
 function CompositeGraphUI:ActivateGroup(nodegroup)
 	if self.nodegroup then
-		nodegroup.pane.visible=false
-		nodegroup.pane.focus=false
+		self.nodegroup.pane.visible=false
+		self.nodegroup.pane.focus=false
 
 	end
 	self.nodegroup=nodegroup
