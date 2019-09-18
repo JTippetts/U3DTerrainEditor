@@ -16,8 +16,6 @@ bin/tolua++.exe
 bin/TerrainEditorData/Save
 bin/GCData
 bin/Save
-*.bat
-*.sh
 *.exe
 *.log
 *.ps3
