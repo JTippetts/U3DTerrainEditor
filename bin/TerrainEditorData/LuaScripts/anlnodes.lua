@@ -2043,7 +2043,7 @@ function CreateNodeType(parent, type)
 		parent:AddChild(node)
 		return node
 	elseif type=="constant" then
-		local node=ui:LoadLayout(cache:GetResource("XMLFIle", "UI/ConstantNode.xml"))
+		local node=ui:LoadLayout(cache:GetResource("XMLFile", "UI/ConstantNode.xml"))
 		parent:AddChild(node)
 		return node
 	end
