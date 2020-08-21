@@ -752,7 +752,7 @@ function NodeGraphUI:HandleExecute(eventType, eventData)
 		local arr=CArray2Dd(TerrainState:GetTerrainWidth(), TerrainState:GetTerrainHeight())
 		map2DNoZ(SEAMLESS_NONE,arr,kernel,SMappingRanges(0,1,0,1,0,1), kernel:lastIndex())
 		if rescale then arr:scaleToRange(low,high) end
-		TerrainState:SetWaterBuffer(arr,ms)
+		TerrainState:SetWaterBuffer(arr,ms,blendop)
 	end
 end
 
