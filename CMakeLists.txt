@@ -20,12 +20,10 @@ set (CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/CMake/Modules)
 include (UrhoCommon)
 set(INCLUDE_DIRS_ONLY ${INCLUDE_DIRS_ONLY} ThirdParty/accidental-noise-library/VM ThirdParty/accidental-noise-library/Imaging )
 include_directories (${INCLUDE_DIRS_ONLY})
-include_directories(${URHO3D_HOME}/include/Urho3D/ThirdParty/Lua${JIT})
-include_directories(${URHO3D_HOME}/include/Urho3D/ThirdParty/toluapp)
 
 # Define target name
 set (TARGET_NAME TEdit)
 # Define source files
-define_source_files (EXTRA_CPP_FILES ThirdParty/accidental-noise-library/Bindings/bind_anl.cpp)
+define_source_files (GLOB_CPP_PATTERNS Source/*.c* GLOB_H_PATTERNS Source/*.h* RECURSE GROUP)
 # Setup target with resource copying
 setup_main_executable ()
