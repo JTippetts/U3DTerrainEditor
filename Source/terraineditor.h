@@ -25,6 +25,11 @@
 #include "Urho3D/Engine/Application.h"
 #include "Components/editingcamera.h"
 #include <Urho3D/Scene/Scene.h>
+#include "terraincontext.h"
+#include "terrainmaterialbuilder.h"
+#include "UI/alphabrushselectorui.h"
+#include "UI/editheightui.h"
+#include "UI/terraintexturingui.h"
 
 using namespace Urho3D;
 
@@ -47,4 +52,11 @@ public:
 private:
 	SharedPtr<Scene> scene_;
 	EditingCamera *camera_;
+	SharedPtr<TerrainContext> terrainContext_;
+	SharedPtr<TerrainMaterialBuilder> materialBuilder_;
+	SharedPtr<AlphaBrushSelectorUI> alphaSelector_;
+	SharedPtr<EditHeightUI> editHeight_;
+	SharedPtr<TerrainTexturingUI> terrainTexturing_;
+	
+	void HandleUpdate(StringHash eventType, VariantMap &eventData);
 };

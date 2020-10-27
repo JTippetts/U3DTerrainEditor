@@ -11,6 +11,7 @@
 
 using namespace Urho3D;
 
+class TerrainContext;
 class EditingCamera : public LogicComponent
 {
 	URHO3D_OBJECT(EditingCamera, LogicComponent);
@@ -39,6 +40,10 @@ class EditingCamera : public LogicComponent
 	void SetFarClip(float f){clipdistance_=f;}
 	void SetScrollSpeed(float s){scrollspeed_=s;}
 	void SetCameraBounds(const Vector2 &mn, const Vector2 &mx){minbounds_=mn; maxbounds_=mx;}
+	void SetGroundHeight(float h);
+	
+	float GetYaw(){return yaw_;}
+	void SetTerrainContext(TerrainContext *tc){terrainContext_=tc;}
 	
 	protected:
 	float pitch_, yaw_;
@@ -49,6 +54,7 @@ class EditingCamera : public LogicComponent
 	Vector2 minbounds_, maxbounds_;
 	Node *anglenode_, *cameranode_;
 	Camera *camera_;
+	TerrainContext *terrainContext_;
 	SharedPtr<Viewport> viewport_;
 	IntVector2 lastmouse_;
 	

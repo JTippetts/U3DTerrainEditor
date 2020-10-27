@@ -6,6 +6,9 @@
 #include <Urho3D/Graphics/Drawable.h>
 #include <Urho3D/Graphics/OctreeQuery.h>
 #include <Urho3D/Graphics/Octree.h>
+#include <Urho3D/IO/Log.h>
+
+#include "../terraincontext.h"
 
 EditingCamera::EditingCamera(Context *context) : LogicComponent(context),
 	pitch_(30), yaw_(180),
@@ -14,6 +17,7 @@ EditingCamera::EditingCamera(Context *context) : LogicComponent(context),
 	allowpitch_(true), allowspin_(true), allowzoom_(true),
 	clipsolid_(false), tracksurface_(true),
 	anglenode_(nullptr), cameranode_(nullptr),
+	terrainContext_(nullptr),
 	camera_(nullptr)
 {
 	SetUpdateEventMask(USE_UPDATE);
@@ -57,9 +61,7 @@ bool EditingCamera::GetScreenGround(Vector3 &out, const IntVector2 &mousepos)
 	Ray ray=GetScreenRay(mousepos);
 	float hitdist=ray.HitDistance(Plane(Vector3(0,1,0), Vector3(0,0,0)));
 	if(hitdist==M_INFINITY) return false;
-	float dx=(ray.origin_.x_ + ray.direction_.x_ * hitdist);
-	float dy=(ray.origin_.y_ + ray.direction_.y_ * hitdist);
-	out=Vector3(dx,0,dy);
+	out=ray.origin_ + ray.direction_*hitdist;
 	return true;
 }
 
@@ -170,8 +172,7 @@ void EditingCamera::Update(float dt)
 			bool t=GetScreenGround(newground, mousepos);
 			if(t)
 			{
-				trans.x_+=(oldground.x_-newground.x_);
-				trans.z_+=(oldground.z_-newground.z_);
+				trans=oldground-newground;
 				lastmouse_=mousepos;
 			}
 		}
@@ -182,7 +183,7 @@ void EditingCamera::Update(float dt)
 		if(input->GetKeyDown(KEY_W)) trans.z_+=1.0f;
 		if(input->GetKeyDown(KEY_S)) trans.z_-=1.0f;
 		if(input->GetKeyDown(KEY_A)) trans.x_-=1.0f;
-		if(input->GetKeyDown(KEY_S)) trans.x_+=1.0f;
+		if(input->GetKeyDown(KEY_D)) trans.x_+=1.0f;
 		
 		trans=quat*trans*dt*scrollspeed_;
 	}
@@ -192,9 +193,10 @@ void EditingCamera::Update(float dt)
 	np.x_=std::max(minbounds_.x_, std::min(maxbounds_.x_, np.x_));
 	np.z_=std::max(minbounds_.y_, std::min(maxbounds_.y_, np.z_));
 	
-	if(tracksurface_)
+	if(tracksurface_ && terrainContext_)
 	{
-		// TODO: Track surface
+		float ht=terrainContext_->GetHeight(np);
+		np.y_=ht+offset_;
 	}
 	
 	node_->SetPosition(np);
@@ -239,6 +241,13 @@ void EditingCamera::SpringFollow(float dt)
 	float af=9.0f*df-6.0f*followvel_;
 	followvel_+=dt*af;
 	curfollow_+=dt*followvel_;
+}
+
+void EditingCamera::SetGroundHeight(float e)
+{
+	Vector3 pos=node_->GetPosition();
+	pos.y_=e+offset_;
+	node_->SetPosition(pos);
 }
 
 Node *EditingCamera::TopLevelNodeFromDrawable(Drawable *d, Scene *s)

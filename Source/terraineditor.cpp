@@ -36,6 +36,9 @@
 #include <Urho3D/Graphics/Light.h>
 #include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/Input/Input.h>
+#include <Urho3D/Graphics/Material.h>
+#include <Urho3D/Graphics/Texture2DArray.h>
+#include <Urho3D/Graphics/Graphics.h>
 
 #include "registercomponents.h"
 #include "terraineditor.h"
@@ -66,12 +69,61 @@ void TerrainEditor::Setup()
 void TerrainEditor::Start()
 {
 	auto input=GetSubsystem<Input>();
+	auto cache=GetSubsystem<ResourceCache>();
+	auto graphics=GetSubsystem<Graphics>();
+	
     RegisterComponents(context_);
 	
 	input->SetMouseVisible(true);
+	
+	scene_=new Scene(context_);
+	scene_->CreateComponent<Octree>();
+	
+	// Setup camera
+	Node *camnode=scene_->CreateChild();
+	camera_=camnode->CreateComponent<EditingCamera>();
+	camnode->SetPosition(Vector3(0,0,0));
+	camera_->SetCameraBounds(Vector2(-200,-200), Vector2(200,200));
+	camera_->SetScrollSpeed(32.0f);
+	camera_->SetMaxFollow(600.f);
+	
+	terrainContext_=SharedPtr<TerrainContext>(new TerrainContext(context_));
+	terrainContext_->Construct(scene_, camera_);
+	terrainContext_->SetHeightMapSize(IntVector2(1025,1025));
+	terrainContext_->SetBlendMapSize(IntVector2(2048,2048));
+	terrainContext_->SetMaskSize(IntVector2(2048,2048));
+	
+	materialBuilder_=SharedPtr<TerrainMaterialBuilder>(new TerrainMaterialBuilder(context_));
+	materialBuilder_->Construct(terrainContext_);
+	
+	alphaSelector_=SharedPtr<AlphaBrushSelectorUI>(new AlphaBrushSelectorUI(context_));
+	alphaSelector_->Construct(materialBuilder_);
+	
+	editHeight_=SharedPtr<EditHeightUI>(new EditHeightUI(context_));
+	editHeight_->Construct(terrainContext_, materialBuilder_, alphaSelector_, camera_);
+	editHeight_->SetVisible(false);
+	
+	terrainTexturing_=SharedPtr<TerrainTexturingUI>(new TerrainTexturingUI(context_));
+	terrainTexturing_->Construct(terrainContext_, materialBuilder_, alphaSelector_, camera_);
+	terrainTexturing_->SetVisible(true);
+	
+	camera_->SetTerrainContext(terrainContext_);
+	
+	Node *ln=scene_->CreateChild();
+	Light *l=ln->CreateComponent<Light>();
+	l->SetLightType(LIGHT_DIRECTIONAL);
+	ln->SetDirection(Vector3(1.5,-3.5,-1.5));
+	l->SetCastShadows(true);
+	
+	SubscribeToEvent(StringHash("Update"), URHO3D_HANDLER(TerrainEditor, HandleUpdate));
 }
 
 void TerrainEditor::Stop()
 {
 
+}
+
+void TerrainEditor::HandleUpdate(StringHash eventType, VariantMap &eventData)
+{
+	float dt=eventData["TimeStep"].GetFloat();
 }
