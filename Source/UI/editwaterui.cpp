@@ -1,4 +1,4 @@
-#include "editheightui.h"
+#include "editwaterui.h"
 
 #include "alphabrushselectorui.h"
 #include "../terrainmaterialbuilder.h"
@@ -15,26 +15,23 @@
 #include <Urho3D/UI/Slider.h>
 #include <Urho3D/UI/CheckBox.h>
 #include <Urho3D/Input/Input.h>
-#include <Urho3D/IO/Log.h>
 
 #include "../format.h"
 
 
-EditHeightUI::EditHeightUI(Context *context) : Object(context),
+EditWaterUI::EditWaterUI(Context *context) : Object(context),
 	terrainContext_(nullptr),
 	materialBuilder_(nullptr),
-	alphaSelector_(nullptr),
 	camera_(nullptr),
 	brushSettings_{0.5f, 0.5f, 1.0f, 0.0f},
 	brushPreview_(context)
 {
 }
 
-void EditHeightUI::Construct(TerrainContext *tc, TerrainMaterialBuilder *tmb, AlphaBrushSelectorUI *abs, EditingCamera *camera)
+void EditWaterUI::Construct(TerrainContext *tc, TerrainMaterialBuilder *tmb, EditingCamera *camera)
 {
 	terrainContext_=tc;
 	materialBuilder_=tmb;
-	alphaSelector_=abs;
 	camera_=camera;
 
 	auto cache=GetSubsystem<ResourceCache>();
@@ -53,24 +50,23 @@ void EditHeightUI::Construct(TerrainContext *tc, TerrainMaterialBuilder *tmb, Al
 		GenerateBrushPreview();
 		SetBrushUIFields();
 
-		SubscribeToEvent(element_->GetChild("PowerSlider", true), StringHash("SliderChanged"), URHO3D_HANDLER(EditHeightUI, HandleSliderChanged));
-		SubscribeToEvent(element_->GetChild("RadiusSlider", true), StringHash("SliderChanged"), URHO3D_HANDLER(EditHeightUI, HandleSliderChanged));
-		SubscribeToEvent(element_->GetChild("MaxSlider", true), StringHash("SliderChanged"), URHO3D_HANDLER(EditHeightUI, HandleSliderChanged));
-		SubscribeToEvent(element_->GetChild("HardnessSlider", true), StringHash("SliderChanged"), URHO3D_HANDLER(EditHeightUI, HandleSliderChanged));
+		SubscribeToEvent(element_->GetChild("PowerSlider", true), StringHash("SliderChanged"), URHO3D_HANDLER(EditWaterUI, HandleSliderChanged));
+		SubscribeToEvent(element_->GetChild("RadiusSlider", true), StringHash("SliderChanged"), URHO3D_HANDLER(EditWaterUI, HandleSliderChanged));
+		SubscribeToEvent(element_->GetChild("MaxSlider", true), StringHash("SliderChanged"), URHO3D_HANDLER(EditWaterUI, HandleSliderChanged));
+		SubscribeToEvent(element_->GetChild("HardnessSlider", true), StringHash("SliderChanged"), URHO3D_HANDLER(EditWaterUI, HandleSliderChanged));
 	}
 
-	SubscribeToEvent(StringHash("Update"), URHO3D_HANDLER(EditHeightUI, HandleUpdate));
+	SubscribeToEvent(StringHash("Update"), URHO3D_HANDLER(EditWaterUI, HandleUpdate));
 }
 
-void EditHeightUI::SetVisible(bool v)
+void EditWaterUI::SetVisible(bool v)
 {
 	if(element_) element_->SetVisible(v);
-	if(alphaSelector_) alphaSelector_->SetVisible(v);
 
 	if(!v) materialBuilder_->SetEditingCursor(-100000, -100000, brushSettings_.radius_*100.0f, brushSettings_.hardness_, camera_->GetYaw());
 }
 
-void EditHeightUI::HandleSliderChanged(StringHash eventType, VariantMap &eventData)
+void EditWaterUI::HandleSliderChanged(StringHash eventType, VariantMap &eventData)
 {
 	GetBrushUIFields();
 
@@ -95,7 +91,7 @@ void EditHeightUI::HandleSliderChanged(StringHash eventType, VariantMap &eventDa
 	GenerateBrushPreview();
 }
 
-void EditHeightUI::GenerateBrushPreview()
+void EditWaterUI::GenerateBrushPreview()
 {
 	unsigned int w=brushPreview_.GetWidth();
 	unsigned int h=brushPreview_.GetHeight();
@@ -119,7 +115,7 @@ void EditHeightUI::GenerateBrushPreview()
 	brushPreviewTex_->SetData(&brushPreview_, false);
 }
 
-void EditHeightUI::SetBrushUIFields()
+void EditWaterUI::SetBrushUIFields()
 {
 	if(!element_) return;
 
@@ -151,7 +147,7 @@ void EditHeightUI::SetBrushUIFields()
 	button->SetChecked(maskSettings_.usemask2_);
 }
 
-void EditHeightUI::GetBrushUIFields()
+void EditWaterUI::GetBrushUIFields()
 {
 	if(!element_) return;
 
@@ -175,7 +171,7 @@ void EditHeightUI::GetBrushUIFields()
 	maskSettings_.usemask2_=button->IsChecked();
 }
 
-void EditHeightUI::HandleUpdate(StringHash eventType, VariantMap &eventData)
+void EditWaterUI::HandleUpdate(StringHash eventType, VariantMap &eventData)
 {
 	float dt=eventData["TimeStep"].GetFloat();
 	if(!element_ || !element_->IsVisible()) return;
@@ -195,19 +191,19 @@ void EditHeightUI::HandleUpdate(StringHash eventType, VariantMap &eventData)
 		{
 			if(input->GetQualifierDown(QUAL_CTRL))
 			{
-				float ht=terrainContext_->GetHeightValue(ground);
+				float ht=terrainContext_->GetWaterValue(ground);
 				SetBrushMax(ht);
 			}
 			else
 			{
 				GetBrushUIFields();
-				terrainContext_->ApplyHeightAlpha(ground.x_, ground.z_, dt, brushSettings_, maskSettings_, *(alphaSelector_->GetAlphaBrush()), -camera_->GetYaw()*3.14159265f/180.0f);
+				terrainContext_->ApplyWaterBrush(ground.x_, ground.z_, dt, brushSettings_, maskSettings_);
 			}
 		}
 	}
 }
 
-void EditHeightUI::SetBrushMax(float ht)
+void EditWaterUI::SetBrushMax(float ht)
 {
 	if(!element_) return;
 	Slider *s=element_->GetChildDynamicCast<Slider>("MaxSlider", true);

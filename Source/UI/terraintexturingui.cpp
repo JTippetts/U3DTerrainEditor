@@ -46,55 +46,55 @@ void TerrainTexturingUI::Construct(TerrainContext *tc, TerrainMaterialBuilder *t
 	materialBuilder_=tmb;
 	alphaSelector_=abs;
 	camera_=camera;
-	
+
 	auto cache=GetSubsystem<ResourceCache>();
 	auto graphics=GetSubsystem<Graphics>();
 	auto ui=GetSubsystem<UI>();
-	
+
 	XMLFile *style=cache->GetResource<XMLFile>("UI/DefaultStyle.xml");
-	
+
 	element_=ui->LoadLayout(cache->GetResource<XMLFile>("UI/TerrainEditBlendBrush.xml"), style);
 	if(element_)
 	{
-		ui->GetRoot()->AddChild(element_);
+		ui->GetRoot()->GetChild("Base",true)->AddChild(element_);
 		brushPreview_.SetSize(64,64,3);
 		brushPreviewTex_=SharedPtr<Texture2D>(new Texture2D(context_));
 		element_->GetChildDynamicCast<BorderImage>("BrushPreview", true)->SetTexture(brushPreviewTex_);
 		GenerateBrushPreview();
 		SetBrushUIFields();
-		
+
 		SubscribeToEvent(element_->GetChild("PowerSlider", true), StringHash("SliderChanged"), URHO3D_HANDLER(TerrainTexturingUI, HandleSliderChanged));
 		SubscribeToEvent(element_->GetChild("RadiusSlider", true), StringHash("SliderChanged"), URHO3D_HANDLER(TerrainTexturingUI, HandleSliderChanged));
 		SubscribeToEvent(element_->GetChild("MaxSlider", true), StringHash("SliderChanged"), URHO3D_HANDLER(TerrainTexturingUI, HandleSliderChanged));
 		SubscribeToEvent(element_->GetChild("HardnessSlider", true), StringHash("SliderChanged"), URHO3D_HANDLER(TerrainTexturingUI, HandleSliderChanged));
-		
-		
-		
+
+
+
 		SubscribeToEvent(element_->GetChild("TriplanarCheck", true), StringHash("Toggled"), URHO3D_HANDLER(TerrainTexturingUI, HandleMaterialSettingToggled));
 		SubscribeToEvent(element_->GetChild("SmoothCheck", true), StringHash("Toggled"), URHO3D_HANDLER(TerrainTexturingUI, HandleMaterialSettingToggled));
 		SubscribeToEvent(element_->GetChild("NormalMapCheck", true), StringHash("Toggled"), URHO3D_HANDLER(TerrainTexturingUI, HandleMaterialSettingToggled));
 		SubscribeToEvent(element_->GetChild("ReduceCheck", true), StringHash("Toggled"), URHO3D_HANDLER(TerrainTexturingUI, HandleMaterialSettingToggled));
 		SubscribeToEvent(element_->GetChild("ClearLayer",true), StringHash("Pressed"), URHO3D_HANDLER(TerrainTexturingUI, HandleClearLayer));
 		SubscribeToEvent(element_->GetChild("ClearAllLayers",true), StringHash("Pressed"), URHO3D_HANDLER(TerrainTexturingUI, HandleClearAllLayers));
-		
+
 		for(unsigned int c=0; c<8; ++c)
 		{
 			SubscribeToEvent(element_->GetChild(String("EditTerrain")+String(c), true), StringHash("Pressed"), URHO3D_HANDLER(TerrainTexturingUI, HandleEditLayerButton));
 			SubscribeToEvent(element_->GetChild(String("Terrain")+String(c), true), StringHash("Pressed"), URHO3D_HANDLER(TerrainTexturingUI, HandleTextureButton));
 		}
 	}
-	
+
 	editLayerElement_=ui->LoadLayout(cache->GetResource<XMLFile>("UI/TerrainLayerSettings.xml"), style);
 	editLayerElement_->SetVisible(false);
-	ui->GetRoot()->AddChild(editLayerElement_);
-	
+	ui->GetRoot()->GetChild("Base",true)->AddChild(editLayerElement_);
+
 	SubscribeToEvent(editLayerElement_->GetChild("Apply", true), StringHash("Pressed"), URHO3D_HANDLER(TerrainTexturingUI, HandleEditLayerApply));
 	SubscribeToEvent(editLayerElement_->GetChild("Cancel", true), StringHash("Pressed"), URHO3D_HANDLER(TerrainTexturingUI, HandleEditLayerCancel));
 	SubscribeToEvent(editLayerElement_->GetChild("DiffusePick", true), StringHash("Pressed"), URHO3D_HANDLER(TerrainTexturingUI, HandlePickDiffuse));
 	SubscribeToEvent(editLayerElement_->GetChild("NormalPick", true), StringHash("Pressed"), URHO3D_HANDLER(TerrainTexturingUI, HandlePickNormal));
-	
+
 	SubscribeToEvent(StringHash("Update"), URHO3D_HANDLER(TerrainTexturingUI, HandleUpdate));
-	
+
 	InitializeTextures();
 	SetLayerScales();
 	SelectLayer(0);
@@ -104,7 +104,7 @@ void TerrainTexturingUI::InitializeTextures()
 {
 	if(!materialBuilder_ || !element_) return;
 	auto cache=GetSubsystem<ResourceCache>();
-	
+
 	std::vector<String> diffuse{
 		"Textures/pebbles.png",
 		"Textures/sand.png",
@@ -115,7 +115,7 @@ void TerrainTexturingUI::InitializeTextures()
 		"Textures/rockface1.png",
 		"Textures/cliff2.png",
 	};
-	
+
 	std::vector<String> normal{
 		"Textures/pebbles_normal.png",
 		"Textures/sand_normal.png",
@@ -126,36 +126,36 @@ void TerrainTexturingUI::InitializeTextures()
 		"Textures/rockface1_normal.png",
 		"Textures/cliff2_normal.png",
 	};
-	
+
 	diffuseLayerNames_=diffuse;
 	normalLayerNames_=normal;
-	
+
 	for(unsigned int c=0; c<8; ++c)
 	{
 		Image *i=cache->GetResource<Image>(diffuse[c]);
 		SharedPtr<Image> thumb=SharedPtr<Image>(new Image(context_));
-		
+
 		GenerateThumbnailImage(*thumb, *i);
 		diffThumbnailImages_.push_back(thumb);
-		
+
 		materialBuilder_->SetDiffuseTexture(c, *i);
 		SharedPtr<Texture2D> tex=SharedPtr<Texture2D>(new Texture2D(context_));
 		tex->SetData(thumb, false);
 		layerThumbnailTex_.push_back(tex);
-		
+
 		element_->GetChildDynamicCast<Button>(String("Terrain")+String(c), true)->SetTexture(tex);
-		
+
 		i=cache->GetResource<Image>(normal[c]);
 		thumb=SharedPtr<Image>(new Image(context_));
 		GenerateThumbnailImage(*thumb, *i);
 		normalThumbnailImages_.push_back(thumb);
 		materialBuilder_->SetNormalTexture(c, *i);
 	}
-	
+
 	// Create textures for the preview thumbnails in the editing box
 	editLayerDiffTex_=SharedPtr<Texture2D>(new Texture2D(context_));
 	editLayerNormalTex_=SharedPtr<Texture2D>(new Texture2D(context_));
-	
+
 	editLayerElement_->GetChildDynamicCast<BorderImage>("DiffuseThumb", true)->SetTexture(editLayerDiffTex_);
 	editLayerElement_->GetChildDynamicCast<BorderImage>("NormalThumb", true)->SetTexture(editLayerNormalTex_);
 }
@@ -164,30 +164,32 @@ void TerrainTexturingUI::SetVisible(bool v)
 {
 	if(element_) element_->SetVisible(v);
 	if(alphaSelector_) alphaSelector_->SetVisible(v);
+
+	if(!v) materialBuilder_->SetEditingCursor(-100000, -100000, brushSettings_.radius_*100.0f, brushSettings_.hardness_, camera_->GetYaw());
 }
 
 void TerrainTexturingUI::HandleSliderChanged(StringHash eventType, VariantMap &eventData)
 {
 	GetBrushUIFields();
-	
+
 	Slider *slider;
-	
+
 	slider=element_->GetChildDynamicCast<Slider>("PowerSlider", true);
 	slider->SetValue(brushSettings_.power_ * slider->GetRange());
 	element_->GetChildDynamicCast<Text>("PowerText", true)->SetText("%.2f"_fmt(brushSettings_.power_));
-	
+
 	slider=element_->GetChildDynamicCast<Slider>("RadiusSlider", true);
 	slider->SetValue(brushSettings_.radius_ * slider->GetRange());
 	element_->GetChildDynamicCast<Text>("RadiusText", true)->SetText("%.2f"_fmt(brushSettings_.radius_));
-	
+
 	slider=element_->GetChildDynamicCast<Slider>("MaxSlider", true);
 	slider->SetValue(brushSettings_.max_ * slider->GetRange());
 	element_->GetChildDynamicCast<Text>("MaxText", true)->SetText("%.2f"_fmt(brushSettings_.max_));
-	
+
 	slider=element_->GetChildDynamicCast<Slider>("HardnessSlider", true);
 	slider->SetValue(brushSettings_.hardness_ * slider->GetRange());
 	element_->GetChildDynamicCast<Text>("HardnessText", true)->SetText("%.2f"_fmt(brushSettings_.hardness_));
-	
+
 	GenerateBrushPreview();
 }
 
@@ -195,10 +197,10 @@ void TerrainTexturingUI::GenerateBrushPreview()
 {
 	unsigned int w=brushPreview_.GetWidth();
 	unsigned int h=brushPreview_.GetHeight();
-	
+
 	float rad=(float)w*0.5f;
 	float hardness=std::min(0.99f, brushSettings_.hardness_);
-	
+
 	for(unsigned int y=0; y<h; ++y)
 	{
 		for(unsigned int x=0; x<w; ++x)
@@ -208,36 +210,36 @@ void TerrainTexturingUI::GenerateBrushPreview()
 			float d=std::sqrt(dx*dx+dy*dy);
 			float i=(d-rad)/(hardness*rad-rad);
 			brushPreview_.SetPixel(x,y,Color(i*0.5f, i*0.5f, i*0.5f));
-			
+
 		}
 	}
-	
+
 	brushPreviewTex_->SetData(&brushPreview_, false);
 }
 
 void TerrainTexturingUI::SetBrushUIFields()
 {
 	if(!element_) return;
-	
+
 	Slider *slider;
-	
+
 	slider=element_->GetChildDynamicCast<Slider>("PowerSlider", true);
 	slider->SetValue(brushSettings_.power_ * slider->GetRange());
 	element_->GetChildDynamicCast<Text>("PowerText", true)->SetText("%.2f"_fmt(brushSettings_.power_));
-	
+
 	slider=element_->GetChildDynamicCast<Slider>("RadiusSlider", true);
 	slider->SetValue(brushSettings_.radius_ * slider->GetRange());
 	element_->GetChildDynamicCast<Text>("RadiusText", true)->SetText("%.2f"_fmt(brushSettings_.radius_));
-	
+
 	slider=element_->GetChildDynamicCast<Slider>("MaxSlider", true);
 	slider->SetValue(brushSettings_.max_ * slider->GetRange());
 	element_->GetChildDynamicCast<Text>("MaxText", true)->SetText("%.2f"_fmt(brushSettings_.max_));
-	
+
 	slider=element_->GetChildDynamicCast<Slider>("HardnessSlider", true);
 	slider->SetValue(brushSettings_.hardness_ * slider->GetRange());
 	element_->GetChildDynamicCast<Text>("HardnessText", true)->SetText("%.2f"_fmt(brushSettings_.hardness_));
-	
-	
+
+
 	CheckBox *button;
 	button=element_->GetChildDynamicCast<CheckBox>("Mask0Check", true);
 	button->SetChecked(maskSettings_.usemask0_);
@@ -250,9 +252,9 @@ void TerrainTexturingUI::SetBrushUIFields()
 void TerrainTexturingUI::GetBrushUIFields()
 {
 	if(!element_) return;
-	
+
 	Slider *slider;
-	
+
 	slider=element_->GetChildDynamicCast<Slider>("PowerSlider", true);
 	brushSettings_.power_ = slider->GetValue() / slider->GetRange();
 	slider=element_->GetChildDynamicCast<Slider>("RadiusSlider", true);
@@ -261,7 +263,7 @@ void TerrainTexturingUI::GetBrushUIFields()
 	brushSettings_.max_ = slider->GetValue() / slider->GetRange();
 	slider=element_->GetChildDynamicCast<Slider>("HardnessSlider", true);
 	brushSettings_.hardness_ = std::min(0.99f, slider->GetValue() / slider->GetRange());
-	
+
 	CheckBox *button;
 	button=element_->GetChildDynamicCast<CheckBox>("Mask0Check", true);
 	maskSettings_.usemask0_=button->IsChecked();
@@ -281,20 +283,21 @@ void TerrainTexturingUI::HandleUpdate(StringHash eventType, VariantMap &eventDat
 {
 	float dt=eventData["TimeStep"].GetFloat();
 	if(!element_ || !element_->IsVisible()) return;
-	
+
 	auto input=GetSubsystem<Input>();
 	auto ui=GetSubsystem<UI>();
-	
+
 	IntVector2 mousepos=input->GetMousePosition();
-	
+
 	Vector3 ground;
 	bool s=camera_->GetMouseGround(ground);
 	if(s)
 	{
 		materialBuilder_->SetEditingCursor(ground.x_, ground.z_, brushSettings_.radius_*100.0f, brushSettings_.hardness_, camera_->GetYaw());
-		
+
 		if(input->GetMouseButtonDown(MOUSEB_LEFT) && !ui->GetElementAt(mousepos.x_, mousepos.y_))
 		{
+			GetBrushUIFields();
 			terrainContext_->ApplyBlendAlpha(ground.x_, ground.z_, selectedLayer_, dt, brushSettings_, maskSettings_, *(alphaSelector_->GetAlphaBrush()), -camera_->GetYaw()*3.14159265f/180.0f);
 		}
 	}
@@ -308,23 +311,23 @@ void TerrainTexturingUI::HandleEditLayerApply(StringHash eventType, VariantMap &
 		materialBuilder_->SetDiffuseTexture(editingLayer_, *selectedDiffImage_);
 		CopyImage(selectedDiffImageThumb_, *diffThumbnailImages_[editingLayer_]);
 		layerThumbnailTex_[editingLayer_]->SetData(diffThumbnailImages_[editingLayer_], false);
-		
+
 		selectedDiffImageName_="";
 		selectedDiffImage_=nullptr;
 		diffuseSelected_=false;
 	}
-	
+
 	if(normalSelected_)
 	{
 		normalLayerNames_[editingLayer_]=selectedNormalImageName_;
 		materialBuilder_->SetNormalTexture(editingLayer_, *selectedNormalImage_);
 		CopyImage(selectedNormalImageThumb_, *normalThumbnailImages_[editingLayer_]);
-		
+
 		selectedNormalImageName_="";
 		selectedNormalImage_=nullptr;
 		normalSelected_=false;
 	}
-	
+
 	layerScales_[editingLayer_]=ToFloat(editLayerElement_->GetChildDynamicCast<LineEdit>("LayerScale", true)->GetText());
 	SetLayerScales();
 	editLayerElement_->SetVisible(false);
@@ -340,12 +343,12 @@ void TerrainTexturingUI::HandleEditLayerCancel(StringHash eventType, VariantMap 
 void TerrainTexturingUI::HandleMaterialSettingToggled(StringHash eventType, VariantMap &eventData)
 {
 	if(!element_ || !materialBuilder_) return;
-	
+
 	bool triplanar=element_->GetChildDynamicCast<CheckBox>("TriplanarCheck", true)->IsChecked();
 	bool smooth=element_->GetChildDynamicCast<CheckBox>("SmoothCheck", true)->IsChecked();
 	bool bump=element_->GetChildDynamicCast<CheckBox>("NormalMapCheck", true)->IsChecked();
 	bool reduce=element_->GetChildDynamicCast<CheckBox>("ReduceCheck", true)->IsChecked();
-	
+
 	materialBuilder_->SetUseTriplanar(triplanar);
 	materialBuilder_->SetUseSmooth(smooth);
 	materialBuilder_->SetUseBump(bump);
@@ -364,9 +367,9 @@ void TerrainTexturingUI::HandleEditLayerButton(StringHash eventType, VariantMap 
 {
 	if(!element_ || !editLayerElement_) return;
 	UIElement *elem=static_cast<UIElement *>(eventData["Element"].GetPtr());
-	
+
 	String name=elem->GetName();
-	
+
 	if(name=="EditTerrain0") editingLayer_=0;
 	else if(name=="EditTerrain1") editingLayer_=1;
 	else if(name=="EditTerrain2") editingLayer_=2;
@@ -376,7 +379,7 @@ void TerrainTexturingUI::HandleEditLayerButton(StringHash eventType, VariantMap 
 	else if(name=="EditTerrain6") editingLayer_=6;
 	else if(name=="EditTerrain7") editingLayer_=7;
 	else return;
-	
+
 	editLayerElement_->SetVisible(true);
 	editLayerDiffTex_->SetData(diffThumbnailImages_[editingLayer_], false);
 	editLayerNormalTex_->SetData(normalThumbnailImages_[editingLayer_], false);
@@ -414,7 +417,7 @@ void TerrainTexturingUI::HandlePickNormal(StringHash eventType, VariantMap &even
 void TerrainTexturingUI::HandleSelectDiffuseFile(StringHash eventType, VariantMap &eventData)
 {
 	auto cache=GetSubsystem<ResourceCache>();
-	
+
 	String name=eventData["FileName"].GetString();
 	String fname=GetFilenameFromPath(name);
 	Log::Write(LOG_INFO, String("Path: ") + name + " filename: " + fname);
@@ -436,7 +439,7 @@ void TerrainTexturingUI::HandleSelectDiffuseFile(StringHash eventType, VariantMa
 void TerrainTexturingUI::HandleSelectNormalFile(StringHash eventType, VariantMap &eventData)
 {
 	auto cache=GetSubsystem<ResourceCache>();
-	
+
 	String name=eventData["FileName"].GetString();
 	String fname=GetFilenameFromPath(name);
 	Log::Write(LOG_INFO, String("Path: ") + name + " filename: " + fname);
@@ -492,7 +495,7 @@ SharedPtr<FileSelector> TerrainTexturingUI::CreateFileSelector(const String &tit
 {
 	auto cache=GetSubsystem<ResourceCache>();
 	XMLFile *style=cache->GetResource<XMLFile>("UI/DefaultStyle.xml");
-	
+
 	SharedPtr<FileSelector> fs=SharedPtr<FileSelector>(new FileSelector(context_));
 	fs->SetDefaultStyle(style);
 	fs->SetTitle(title);
@@ -505,10 +508,10 @@ SharedPtr<FileSelector> TerrainTexturingUI::CreateFileSelector(const String &tit
 String TerrainTexturingUI::GetFilenameFromPath(const String &path)
 {
 	auto cache=GetSubsystem<ResourceCache>();
-	
+
 	const Vector<String> &resourceDirs=cache->GetResourceDirs();
 	String pl=path.ToLower();
-	
+
 	for(unsigned int c=0; c<resourceDirs.Size(); ++c)
 	{
 		String rl=resourceDirs[c].ToLower();
@@ -519,6 +522,6 @@ String TerrainTexturingUI::GetFilenameFromPath(const String &path)
 			return sub;
 		}
 	}
-	
+
 	return String("");
 }

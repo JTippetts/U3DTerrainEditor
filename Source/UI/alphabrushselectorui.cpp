@@ -22,16 +22,16 @@ void AlphaBrushSelectorUI::Construct(TerrainMaterialBuilder *tmb)
 	auto ui=GetSubsystem<UI>();
 	auto cache=GetSubsystem<ResourceCache>();
 	auto graphics=GetSubsystem<Graphics>();
-	
+
 	materialBuilder_=tmb;
-	
+
 	XMLFile *style=cache->GetResource<XMLFile>("UI/DefaultStyle.xml");
-	
+
 	element_=ui->LoadLayout(cache->GetResource<XMLFile>("UI/AlphaList.xml"),style);
 	if(!element_) return;
 	element_->SetPosition(IntVector2(0, graphics->GetHeight()-element_->GetHeight()));
 	//element_->SetVisible(false);
-	ui->GetRoot()->AddChild(element_);
+	ui->GetRoot()->GetChild("Base",true)->AddChild(element_);
 	contentelement_=ui->LoadLayout(cache->GetResource<XMLFile>("UI/AlphaListElement.xml"),style);
 	PopulateList();
 	element_->GetChildDynamicCast<ScrollView>("AlphaList", true)->SetContentElement(contentelement_);
@@ -42,12 +42,12 @@ void AlphaBrushSelectorUI::PopulateList()
 	auto fileSystem=GetSubsystem<FileSystem>();
 	auto cache=GetSubsystem<ResourceCache>();
 	auto ui=GetSubsystem<UI>();
-	
+
 	XMLFile *style=cache->GetResource<XMLFile>("UI/DefaultStyle.xml");
-	
+
 	Vector<String> files;
 	fileSystem->ScanDir(files, fileSystem->GetProgramDir() + "Data/Alphas", "*.png", SCAN_FILES, false);
-	
+
 	// Insert blank first in list
 	Texture2D *thumbtex=cache->GetResource<Texture2D>("Data/Alphas/blank.png");
 	SharedPtr<UIElement> elem=ui->LoadLayout(cache->GetResource<XMLFile>("UI/AlphaEntry.xml"),style);
@@ -57,7 +57,7 @@ void AlphaBrushSelectorUI::PopulateList()
 	contentelement_->AddChild(elem);
 	SubscribeToEvent(thumb, StringHash("Pressed"), URHO3D_HANDLER(AlphaBrushSelectorUI, HandleAlphaSelected));
 	alphas_.push_back({"blank.png", "Data/Alphas/blank.png", elem, thumb, thumbtex, cache->GetResource<Image>(String("Data/Alphas/blank.png"))});
-	
+
 	// Insert remaining alphas
 	for(int c=0; c<files.Size(); ++c)
 	{
@@ -74,7 +74,7 @@ void AlphaBrushSelectorUI::PopulateList()
 			alphas_.push_back({file, String("Data/Alphas/")+file, elem, thumb, thumbtex, cache->GetResource<Image>(String("Data/Alphas/")+file)});
 		}
 	}
-	
+
 	if(alphas_.size()>0)
 	{
 		SetSelected(&alphas_[0]);
@@ -92,7 +92,7 @@ void AlphaBrushSelectorUI::SetSelected(AlphaEntry *e)
 	{
 		DynamicCast<Window>(e->element_)->SetImageRect(IntRect(160,64,176,80));
 	}
-	
+
 	if(materialBuilder_ && selected_)
 	{
 		materialBuilder_->SetAlphaTexture(selected_->tex_);

@@ -1,4 +1,4 @@
-#include "editheightui.h"
+#include "smoothheightui.h"
 
 #include "alphabrushselectorui.h"
 #include "../terrainmaterialbuilder.h"
@@ -15,12 +15,11 @@
 #include <Urho3D/UI/Slider.h>
 #include <Urho3D/UI/CheckBox.h>
 #include <Urho3D/Input/Input.h>
-#include <Urho3D/IO/Log.h>
 
 #include "../format.h"
 
 
-EditHeightUI::EditHeightUI(Context *context) : Object(context),
+SmoothHeightUI::SmoothHeightUI(Context *context) : Object(context),
 	terrainContext_(nullptr),
 	materialBuilder_(nullptr),
 	alphaSelector_(nullptr),
@@ -30,7 +29,7 @@ EditHeightUI::EditHeightUI(Context *context) : Object(context),
 {
 }
 
-void EditHeightUI::Construct(TerrainContext *tc, TerrainMaterialBuilder *tmb, AlphaBrushSelectorUI *abs, EditingCamera *camera)
+void SmoothHeightUI::Construct(TerrainContext *tc, TerrainMaterialBuilder *tmb, AlphaBrushSelectorUI *abs, EditingCamera *camera)
 {
 	terrainContext_=tc;
 	materialBuilder_=tmb;
@@ -53,24 +52,24 @@ void EditHeightUI::Construct(TerrainContext *tc, TerrainMaterialBuilder *tmb, Al
 		GenerateBrushPreview();
 		SetBrushUIFields();
 
-		SubscribeToEvent(element_->GetChild("PowerSlider", true), StringHash("SliderChanged"), URHO3D_HANDLER(EditHeightUI, HandleSliderChanged));
-		SubscribeToEvent(element_->GetChild("RadiusSlider", true), StringHash("SliderChanged"), URHO3D_HANDLER(EditHeightUI, HandleSliderChanged));
-		SubscribeToEvent(element_->GetChild("MaxSlider", true), StringHash("SliderChanged"), URHO3D_HANDLER(EditHeightUI, HandleSliderChanged));
-		SubscribeToEvent(element_->GetChild("HardnessSlider", true), StringHash("SliderChanged"), URHO3D_HANDLER(EditHeightUI, HandleSliderChanged));
+		SubscribeToEvent(element_->GetChild("PowerSlider", true), StringHash("SliderChanged"), URHO3D_HANDLER(SmoothHeightUI, HandleSliderChanged));
+		SubscribeToEvent(element_->GetChild("RadiusSlider", true), StringHash("SliderChanged"), URHO3D_HANDLER(SmoothHeightUI, HandleSliderChanged));
+		SubscribeToEvent(element_->GetChild("MaxSlider", true), StringHash("SliderChanged"), URHO3D_HANDLER(SmoothHeightUI, HandleSliderChanged));
+		SubscribeToEvent(element_->GetChild("HardnessSlider", true), StringHash("SliderChanged"), URHO3D_HANDLER(SmoothHeightUI, HandleSliderChanged));
 	}
 
-	SubscribeToEvent(StringHash("Update"), URHO3D_HANDLER(EditHeightUI, HandleUpdate));
+	SubscribeToEvent(StringHash("Update"), URHO3D_HANDLER(SmoothHeightUI, HandleUpdate));
 }
 
-void EditHeightUI::SetVisible(bool v)
+void SmoothHeightUI::SetVisible(bool v)
 {
 	if(element_) element_->SetVisible(v);
-	if(alphaSelector_) alphaSelector_->SetVisible(v);
+	//if(alphaSelector_) alphaSelector_->SetVisible(v);
 
 	if(!v) materialBuilder_->SetEditingCursor(-100000, -100000, brushSettings_.radius_*100.0f, brushSettings_.hardness_, camera_->GetYaw());
 }
 
-void EditHeightUI::HandleSliderChanged(StringHash eventType, VariantMap &eventData)
+void SmoothHeightUI::HandleSliderChanged(StringHash eventType, VariantMap &eventData)
 {
 	GetBrushUIFields();
 
@@ -95,7 +94,7 @@ void EditHeightUI::HandleSliderChanged(StringHash eventType, VariantMap &eventDa
 	GenerateBrushPreview();
 }
 
-void EditHeightUI::GenerateBrushPreview()
+void SmoothHeightUI::GenerateBrushPreview()
 {
 	unsigned int w=brushPreview_.GetWidth();
 	unsigned int h=brushPreview_.GetHeight();
@@ -119,7 +118,7 @@ void EditHeightUI::GenerateBrushPreview()
 	brushPreviewTex_->SetData(&brushPreview_, false);
 }
 
-void EditHeightUI::SetBrushUIFields()
+void SmoothHeightUI::SetBrushUIFields()
 {
 	if(!element_) return;
 
@@ -151,7 +150,7 @@ void EditHeightUI::SetBrushUIFields()
 	button->SetChecked(maskSettings_.usemask2_);
 }
 
-void EditHeightUI::GetBrushUIFields()
+void SmoothHeightUI::GetBrushUIFields()
 {
 	if(!element_) return;
 
@@ -175,7 +174,7 @@ void EditHeightUI::GetBrushUIFields()
 	maskSettings_.usemask2_=button->IsChecked();
 }
 
-void EditHeightUI::HandleUpdate(StringHash eventType, VariantMap &eventData)
+void SmoothHeightUI::HandleUpdate(StringHash eventType, VariantMap &eventData)
 {
 	float dt=eventData["TimeStep"].GetFloat();
 	if(!element_ || !element_->IsVisible()) return;
@@ -201,13 +200,13 @@ void EditHeightUI::HandleUpdate(StringHash eventType, VariantMap &eventData)
 			else
 			{
 				GetBrushUIFields();
-				terrainContext_->ApplyHeightAlpha(ground.x_, ground.z_, dt, brushSettings_, maskSettings_, *(alphaSelector_->GetAlphaBrush()), -camera_->GetYaw()*3.14159265f/180.0f);
+				terrainContext_->ApplySmoothBrush(ground.x_, ground.z_, dt, brushSettings_, maskSettings_);
 			}
 		}
 	}
 }
 
-void EditHeightUI::SetBrushMax(float ht)
+void SmoothHeightUI::SetBrushMax(float ht)
 {
 	if(!element_) return;
 	Slider *s=element_->GetChildDynamicCast<Slider>("MaxSlider", true);

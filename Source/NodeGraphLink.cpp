@@ -51,8 +51,10 @@ void NodeGraphLinkSource::RemoveLink(NodeGraphLink *link)
     {
         //link->ClearSource();
         //link->ClearTarget();
+		Log::Write(LOG_INFO, "Link removed");
         links_.Erase(i);
     }
+	else Log::Write(LOG_INFO, "Reached the end of links");
 }
 
 int NodeGraphLinkSource::GetNumLinks()
@@ -145,9 +147,6 @@ void NodeGraphLink::SetTarget(NodeGraphLinkDest *t)
 	if(target_) target_->ClearLink();
     target_=t;
     if(t) t->SetLink(this);
-
-    //IntVector2 targetpos=t->GetPosition();
-    //SetSize(targetpos.x_ - position_.x_, targetpos.y_ - position_.y_);
 }
 
 void NodeGraphLink::ClearTarget()
@@ -164,19 +163,19 @@ void NodeGraphLink::SetSource(NodeGraphLinkSource *s)
 
 void NodeGraphLink::ClearSource()
 {
-	if(source_) source_->RemoveLink(this);
-    source_=0;
+	if(source_)
+	{
+		source_->RemoveLink(this);
+		source_=nullptr;
+	}
 }
 
-//void NodeGraphLink::GetBatches(PODVector<UIBatch>& batches, PODVector<float>& vertexData, const IntRect& currentScissor)
 void NodeGraphLink::GetBatch(UIBatch &batch)
 {
-    //UIBatch batch(this, BLEND_ALPHA, currentScissor, texture_, &vertexData);
     float width=4.0f;
 
     if(source_==0)
     {
-        //Log::Write(LOG_INFO, "No source set.");
         return;
     }
 
@@ -189,11 +188,8 @@ void NodeGraphLink::GetBatch(UIBatch &batch)
 
     if(target_==0)
     {
-        //Log::Write(LOG_INFO, "No target set.");
         return;
     }
-
-    //Log::Write(LOG_INFO, "Go.");
 
     size=target_->GetSize();
     pos=target_->GetScreenPosition();

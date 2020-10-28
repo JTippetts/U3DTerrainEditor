@@ -29,7 +29,12 @@
 #include "terrainmaterialbuilder.h"
 #include "UI/alphabrushselectorui.h"
 #include "UI/editheightui.h"
+#include "UI/editwaterui.h"
 #include "UI/terraintexturingui.h"
+#include "UI/maintoolbarui.h"
+#include "UI/smoothheightui.h"
+#include "UI/editmaskui.h"
+#include "UI/nodegraphui.h"
 
 using namespace Urho3D;
 
@@ -56,7 +61,12 @@ private:
 	SharedPtr<TerrainMaterialBuilder> materialBuilder_;
 	SharedPtr<AlphaBrushSelectorUI> alphaSelector_;
 	SharedPtr<EditHeightUI> editHeight_;
+	SharedPtr<EditWaterUI> editWater_;
 	SharedPtr<TerrainTexturingUI> terrainTexturing_;
+	SharedPtr<SmoothHeightUI> smoothHeight_;
+	SharedPtr<EditMaskUI> editMask_;
+	SharedPtr<NodeGraphUI> nodeGraph_;
+	SharedPtr<MainToolbarUI> mainToolbar_;
 	
 	void HandleUpdate(StringHash eventType, VariantMap &eventData);
 };

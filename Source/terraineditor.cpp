@@ -39,6 +39,7 @@
 #include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/Texture2DArray.h>
 #include <Urho3D/Graphics/Graphics.h>
+#include <Urho3D/UI/UI.h>
 
 #include "registercomponents.h"
 #include "terraineditor.h"
@@ -71,6 +72,11 @@ void TerrainEditor::Start()
 	auto input=GetSubsystem<Input>();
 	auto cache=GetSubsystem<ResourceCache>();
 	auto graphics=GetSubsystem<Graphics>();
+	auto ui=GetSubsystem<UI>();
+	
+	// Create some layers
+	ui->GetRoot()->CreateChild<UIElement>("Base")->SetSize(IntVector2(graphics->GetWidth(), graphics->GetHeight()));
+	ui->GetRoot()->CreateChild<UIElement>("OnTop")->SetSize(IntVector2(graphics->GetWidth(), graphics->GetHeight()));
 	
     RegisterComponents(context_);
 	
@@ -103,9 +109,29 @@ void TerrainEditor::Start()
 	editHeight_->Construct(terrainContext_, materialBuilder_, alphaSelector_, camera_);
 	editHeight_->SetVisible(false);
 	
+	editWater_=SharedPtr<EditWaterUI>(new EditWaterUI(context_));
+	editWater_->Construct(terrainContext_, materialBuilder_, camera_);
+	editWater_->SetVisible(false);
+	
 	terrainTexturing_=SharedPtr<TerrainTexturingUI>(new TerrainTexturingUI(context_));
 	terrainTexturing_->Construct(terrainContext_, materialBuilder_, alphaSelector_, camera_);
-	terrainTexturing_->SetVisible(true);
+	terrainTexturing_->SetVisible(false);
+	
+	smoothHeight_=SharedPtr<SmoothHeightUI>(new SmoothHeightUI(context_));
+	smoothHeight_->Construct(terrainContext_, materialBuilder_, alphaSelector_, camera_);
+	smoothHeight_->SetVisible(false);
+	
+	editMask_=SharedPtr<EditMaskUI>(new EditMaskUI(context_));
+	editMask_->Construct(terrainContext_, materialBuilder_, alphaSelector_, camera_);
+	editMask_->SetVisible(false);
+	
+	nodeGraph_=SharedPtr<NodeGraphUI>(new NodeGraphUI(context_));
+	nodeGraph_->Construct(terrainContext_);
+	nodeGraph_->SetVisible(false);
+	
+	mainToolbar_=SharedPtr<MainToolbarUI>(new MainToolbarUI(context_));
+	mainToolbar_->Construct(editHeight_, terrainTexturing_, editWater_, smoothHeight_, editMask_, nodeGraph_);
+	mainToolbar_->SetVisible(true);
 	
 	camera_->SetTerrainContext(terrainContext_);
 	

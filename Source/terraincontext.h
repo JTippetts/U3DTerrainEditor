@@ -66,9 +66,17 @@ class TerrainContext : public Object
 	void SetHeightValue(int x, int y, float val);
 	float GetWaterValue(Vector3 worldpos);
 	float GetWaterValue(int x, int y);
+	void SetWaterValue(int x, int y, float val);
+	
+	void InvertMask(int which);
+    void ClearMask(int which);
+    void ClearAllMasks();
 	
 	void ApplyHeightAlpha(float x, float z, float dt, BrushSettings &brush, MaskSettings &masksettings, Image &alpha, float angle);
 	void ApplyBlendAlpha(float x, float z, int layer, float dt, BrushSettings &brush, MaskSettings &masksettings, Image &alpha, float angle);
+	void ApplyWaterBrush(float x, float z, float dt, BrushSettings &brush, MaskSettings &masksettings);
+	void ApplySmoothBrush(float x, float z, float dt, BrushSettings &brush, MaskSettings &masksettings);
+	void ApplyMaskBrushAlpha(float x, float z, int which, float dt, BrushSettings &brush, MaskSettings &masksettings, Image &alpha, float angle);
 	
 	protected:
 	// Terrain
@@ -91,4 +99,5 @@ class TerrainContext : public Object
 	EditingCamera *camera_;
 	
 	void HandleBeginFrame(StringHash eventType, VariantMap &eventData);
+	float CalcSmooth(Image *height, float *kernel, int kernelsize, int terrainx, int terrainz);
 };
