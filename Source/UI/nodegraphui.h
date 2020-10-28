@@ -15,6 +15,9 @@
 #include <vector>
 
 #include "../NodeGraphLink.h"
+#include "../../ThirdParty/accidental-noise-library/anl.h"
+
+using namespace anl;
 
 using namespace Urho3D;
 
@@ -72,6 +75,9 @@ class NodeGraphUI : public Object
 	SharedPtr<UIElement> CreateNodeType(UIElement *parent, const String &type);
 	SharedPtr<UIElement> BuildNode(NodeGroup *grp, const String &type);
 	NodeTypeDesc *GetNodeTypeDesc(const String &type);
+	UIElement *GetSourceFromNode(UIElement *node, const String &inputname);
+	CInstructionIndex InstanceFunction(CKernel &kernel, NodeTypeDesc *desc, std::vector<CInstructionIndex> &params);
+	void BuildANLFunction(CKernel &kernel, UIElement *output);
 	
 	void HandleMenuSelected(StringHash eventType, VariantMap &eventData);
 	void HandleNewGroup(StringHash eventType, VariantMap &eventData);

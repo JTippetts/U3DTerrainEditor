@@ -1,3 +1,6 @@
+#define ANL_IMPLEMENTATION
+#define ANL_LONG_PERIOD_HASHING
+
 #include "nodegraphui.h"
 
 #include <Urho3D/UI/Text.h>
@@ -786,3 +789,351 @@ void NodeGraphUI::HandleCloseNode(StringHash eventType, VariantMap &eventData)
 		}
 	}
 }
+
+UIElement *NodeGraphUI::GetSourceFromNode(UIElement *node, const String &inputname)
+{
+	NodeGraphLinkDest *c=node->GetChildDynamicCast<NodeGraphLinkDest>(inputname,true);
+	if(c)
+	{
+		NodeGraphLink *link=c->GetLink();
+		if(link)
+		{
+			NodeGraphLinkSource *src=link->GetSource();
+			if(src) return src->GetRoot();
+		}
+	}
+	return nullptr;
+}
+
+CInstructionIndex NodeGraphUI::InstanceFunction(CKernel &kernel, NodeTypeDesc *desc, std::vector<CInstructionIndex> &params)
+{
+	std::vector<CInstructionIndex> n;
+	for(auto &c : desc->instance_)
+	{
+		if(c.op_=="Parameter")
+		{
+			n.push_back(params[c.param_]);
+		}
+		else if(c.op_=="Function")
+		{
+			std::vector<IndicesInputsDesc> &indices=c.indices_;
+			std::vector<ValueInputsDesc> &constants=c.constants_;
+			std::vector<ValueInputsDesc> &seeds=c.seeds_;
+			
+			std::vector<CInstructionIndex> inputs;
+			NodeTypeDesc *fdesc=GetNodeTypeDesc(c.func_);
+			if(!fdesc) return CInstructionIndex(0);  /// TODO: What do I do here?
+			for(unsigned int d=0; d<fdesc->inputs_.size(); ++d)
+			{
+				if(d<indices.size() && indices[d].used_)
+				{
+					inputs.push_back(n[indices[d].index_]);
+				}
+				else if(d<constants.size() && constants[d].used_)
+				{
+					inputs.push_back(kernel.constant(constants[d].value_));
+				}
+				else if(d<seeds.size() && seeds[d].used_)
+				{
+					inputs.push_back(kernel.seed((unsigned int)seeds[d].value_));
+				}
+			}
+			
+			if(c.func_=="add")
+			{
+				n.push_back(kernel.add(inputs[0], inputs[1]));
+			}
+		}
+	}
+	
+	return kernel.lastIndex();
+/*
+function InstanceFunction(k, desc, params)
+	local ins=desc.instance
+	if not ins then return end
+
+	local n={}
+	local c
+	for _,c in ipairs(ins) do
+		if c.op=="Parameter" then
+			table.insert(n, params[c.param])
+		elseif c.op=="Function" then
+			local indices=c.indices
+			local constants=c.constants
+			local seeds=c.seeds
+
+			local inputs={}
+			local d
+
+			local fdesc=GetNodeTypeDesc(c.func) --nodetypes[c.func]
+			print("numinputs for "..c.func..": "..#fdesc.inputs)
+			for d=1,#fdesc.inputs,1 do
+				if indices[d] ~= "nil" then print("index: "..indices[d]) table.insert(inputs,n[indices[d]])
+				elseif constants and constants[d] ~= "nil" then print("constant: "..constants[d]) table.insert(inputs, k:constant(constants[d]))
+				elseif seeds and seeds[d] ~= "nil" then print("seed: "..seeds[d]) table.insert(inputs, k:seed(seeds[d]))
+				end
+			end
+
+			print("Function name: "..c.func)
+			if c.func=="add" then
+				table.insert(n, k:add(inputs[1],inputs[2]))
+			elseif c.func=="subtract" then
+				table.insert(n, k:subtract(inputs[1], inputs[2]))
+			elseif c.func=="multiply" then
+				table.insert(n, k:multiply(inputs[1], inputs[2]))
+			elseif c.func=="divide" then
+				table.insert(n, k:divide(inputs[1], inputs[2]))
+			elseif c.func=="subtract" then
+				table.insert(n, k:subtract(inputs[1], inputs[2]))
+			elseif c.func=="minimum" then
+				table.insert(n, k:minimum(inputs[1], inputs[2]))
+			elseif c.func=="maximum" then
+				table.insert(n, k:maximum(inputs[1], inputs[2]))
+			elseif c.func=="bias" then
+				table.insert(n, k:bias(inputs[1], inputs[2]))
+			elseif c.func=="gain" then
+				table.insert(n, k:gain(inputs[1], inputs[2]))
+			elseif c.func=="step" then
+				table.insert(n, k:step(inputs[1], inputs[2]))
+			elseif c.func=="linearStep" then
+				table.insert(n, k:linearStep(inputs[1], inputs[2], inputs[3]))
+			elseif c.func=="smoothStep" then
+				table.insert(n, k:smoothStep(inputs[1], inputs[2], inputs[3]))
+			elseif c.func=="smootherStep" then
+				table.insert(n, k:smootherStep(inputs[1], inputs[2], inputs[3]))
+			elseif c.func=="curveSection" then
+				table.insert(n, k:curveSection(inputs[1], inputs[2], inputs[3], inputs[4], inputs[5], inputs[6]))
+			elseif c.func=="abs" then
+				table.insert(n, k:abs(inputs[1]))
+			elseif c.func=="sin" then
+				table.insert(n, k:sin(inputs[1]))
+			elseif c.func=="cos" then
+				table.insert(n, k:cos(inputs[1]))
+			elseif c.func=="tan" then
+				table.insert(n, k:tan(inputs[1]))
+			elseif c.func=="asin" then
+				table.insert(n, k:asin(inputs[1]))
+			elseif c.func=="acos" then
+				table.insert(n, k:acos(inputs[1]))
+			elseif c.func=="atan" then
+				table.insert(n, k:atan(inputs[1]))
+			elseif c.func=="x" then
+				table.insert(n, k:x())
+			elseif c.func=="y" then
+				table.insert(n, k:y())
+			elseif c.func=="radial" then
+				table.insert(n, k:radial())
+			elseif c.func=="dX" then
+				table.insert(n, k:dx(inputs[1], inputs[2]))
+			elseif c.func=="dY" then
+				table.insert(n, k:dy(inputs[1], inputs[2]))
+			elseif c.func=="smoothTiers" then
+				table.insert(n, k:smoothTiers(inputs[1], inputs[2]))
+			elseif c.func=="tiers" then
+				table.insert(n, k:tiers(inputs[1], inputs[2]))
+			elseif c.func=="translateDomain" then
+				table.insert(n, k:translateDomain(inputs[1], inputs[2]))
+			elseif c.func=="translateX" then
+				table.insert(n, k:translateX(inputs[1], inputs[2]))
+			elseif c.func=="translateY" then
+				table.insert(n, k:translateY(inputs[1], inputs[2]))
+			elseif c.func=="scaleDomain" then
+				table.insert(n, k:scaleDomain(inputs[1], inputs[2]))
+			elseif c.func=="scaleX" then
+				table.insert(n, k:scaleX(inputs[1], inputs[2]))
+			elseif c.func=="scaleY" then
+				table.insert(n, k:scaleY(inputs[1], inputs[2]))
+			elseif c.func=="rotateDomain" then
+				table.insert(n, k:rotateDomain(inputs[1], inputs[2], inputs[3], inputs[4], inputs[5]))
+			elseif c.func=="mix" then
+				table.insert(n, k:mix(inputs[1], inputs[2], inputs[3]))
+			elseif c.func=="seeder" then
+				table.insert(n, k:seeder(inputs[1], inputs[2]))
+			elseif c.func=="sigmoid" then
+				table.insert(n, k:sigmoid(inputs[1], inputs[2], inputs[3]))
+			elseif c.func=="randomize" then
+				table.insert(n, k:randomize(inputs[1], inputs[2], inputs[3]))
+			elseif c.func=="fractal" then
+				table.insert(n, k:fractal(inputs[1], inputs[2], inputs[3], inputs[4], inputs[5], inputs[6]))
+			elseif c.func=="cellularBasis" then
+				table.insert(n, k:cellularBasis(inputs[1], inputs[2], inputs[3], inputs[4], inputs[5], inputs[6], inputs[7], inputs[8], inputs[9], inputs[10]))
+			elseif c.func=="valueBasis" then
+				table.insert(n, k:valueBasis(inputs[1], inputs[2]))
+			elseif c.func=="gradientBasis" then
+				table.insert(n, k:gradientBasis(inputs[1], inputs[2]))
+			elseif c.func=="simplexBasis" then
+				table.insert(n, k:simplexBasis(inputs[1]))
+			elseif c.func=="combineRGBA" then
+				table.insert(n, k:combineRGBA(inputs[1],inputs[2],inputs[3],inputs[4]))
+			elseif c.func=="combineHSVA" then
+				table.insert(n, k:combineHSVA(inputs[1],inputs[2],inputs[3],inputs[4]))
+			else
+				if nodetypes.library[c.func] then
+					table.insert(n, InstanceFunction(k, nodetypes.library[c.func], inputs))
+				elseif nodetypes.user[c.func] then
+					table.insert(n, InstanceFunction(k, nodetypes.user[c.func], inputs))
+				else
+					print("wut")
+				end
+			end
+		end
+	end
+	print(k:lastIndex())
+	return k:lastIndex()
+end*/
+}
+
+void NodeGraphUI::BuildANLFunction(CKernel &kernel, UIElement *output)
+{
+	std::vector<UIElement *> nodes;
+	std::vector<CInstructionIndex> kernelindices;
+	
+	auto isvisited=[&nodes](UIElement *n)->bool
+	{
+		for(auto c : nodes) if(c==n) return true;
+		return false;
+	};
+	
+	auto nodeindex=[&nodes](UIElement *n)->int
+	{
+		for(int c=0; c<nodes.size(); ++c)
+		{
+			if(nodes[c]==n) return c;
+		}
+		return -1;
+	};
+	
+	auto InstanceANLFunction=[&kernelindices, &nodeindex, this](CKernel &kernel, UIElement *n)->CInstructionIndex
+	{
+		auto GetValue=[&kernelindices, &nodeindex, &kernel, this](UIElement *elem, unsigned int which)->CInstructionIndex
+		{
+			UIElement *s=GetSourceFromNode(elem, String("Input")+String(which));
+			unsigned int s1;
+			if(s)
+			{
+				return kernelindices[nodeindex(s)];
+			}
+			else
+			{
+				String sc=elem->GetChildDynamicCast<Text>(String("Value")+String(which), true)->GetText();
+				float num=ToFloat(sc);
+				kernelindices.push_back(kernel.constant(num));
+				return kernel.lastIndex();
+			}
+		};
+		
+		auto GetSeed=[&kernelindices, &nodeindex, &kernel, this](UIElement *elem, unsigned int which)->CInstructionIndex
+		{
+			UIElement *s=GetSourceFromNode(elem, String("Input")+String(which));
+			unsigned int s1;
+			if(s)
+			{
+				return kernelindices[nodeindex(s)];
+			}
+			else
+			{
+				String sc=elem->GetChildDynamicCast<Text>(String("Value")+String(which), true)->GetText();
+				float num=ToFloat(sc);
+				kernelindices.push_back(kernel.seed(num));
+				return kernel.lastIndex();
+			}
+		};
+		
+		NodeTypeDesc *desc=GetNodeTypeDesc(n->GetName());
+		if(!desc) return 0;
+		unsigned int numinputs=desc->inputs_.size();
+		std::vector<CInstructionIndex> params;
+		for(unsigned int c=0; c<numinputs; ++c)
+		{
+			if(desc->inputs_[c].type_=="value")
+			{
+				params.push_back(GetValue(n,c));
+			}
+			else
+			{
+				params.push_back(GetSeed(n,c));
+			}
+		}
+		
+		if(n->GetName()=="Output")
+		{
+			return GetValue(n,0);
+		}
+		else if(n->GetName()=="constant")
+		{
+			float v=ToFloat(n->GetChildDynamicCast<LineEdit>("Value", true)->GetText());
+			kernelindices.push_back(kernel.constant(v));
+			return kernel.lastIndex();
+		}
+		else if(n->GetName()=="seed")
+		{
+			float v=ToFloat(n->GetChildDynamicCast<LineEdit>("Value", true)->GetText());
+			kernelindices.push_back(kernel.seed(v));
+			return kernel.lastIndex();
+		}
+		else
+		{
+			return InstanceFunction(kernel, desc, params);
+		}
+	};
+}
+/*
+function BuildANLFunction(output)
+
+	function InstanceANLFunction(kernel, n)
+
+
+		if n.name=="Output" then
+			local s1
+			local s1=GetValue(n,0)
+			return s1
+		elseif n.name=="constant" then
+			local v=tonumber(n:GetChild("Value", true).text)
+			return kernel:constant(v)
+		elseif n.name=="seed" then
+			local v=tonumber(n:GetChild("Value", true).text)
+			return kernel:seed(v)
+		else
+			print("Instance function "..n.name)
+			return InstanceFunction(kernel, desc, params)
+		end
+
+	end
+
+	local kernel=CKernel()
+
+
+
+	worker=function(n)
+		local visitnode=function(n,numparms)
+			local s,c
+			for c=0,numparms-1,1 do
+				s=GetSourceFromNode(n,"Input"..c)
+				if s and not isvisited(s) then worker(s) end
+			end
+		end
+
+		if n.name~="Output" then
+			local desc=GetNodeTypeDesc(n.name)--nodetypes[n.name]
+			if not desc then print(n.name.." Doesn't exist") return false end
+
+			local numinputs=#desc.inputs
+			if numinputs>0 then
+				visitnode(n, numinputs)
+			end
+		else
+			visitnode(n,1)
+		end
+
+		table.insert(nodes,n)
+		local ind=InstanceANLFunction(kernel, n)
+		table.insert(kernelindices, ind)
+	end
+	print("Packing node graph.")
+
+	worker(output)
+	local c
+	for _,c in ipairs(nodes) do print(c.name) end
+	return kernel
+end
+*/

@@ -198,17 +198,18 @@ public:
     }
 
 
-private:
+// U3DTerrainEditor hack
     CInstructionIndex()
     {
         index_=0;
     }
 
+
     CInstructionIndex(unsigned int i)
     {
         index_=i;
     }
-
+private:
     unsigned int index_;
     friend class CKernel;
     friend class CNoiseExecutor;
