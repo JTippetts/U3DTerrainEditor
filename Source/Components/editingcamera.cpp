@@ -98,13 +98,8 @@ bool EditingCamera::PickGround(Vector3 &ground, const IntVector2 &mousepos, floa
 	{
 		if(result[i].distance_>=0)
 		{
-			Node *n=TopLevelNodeFromDrawable(result[i].drawable_, scene);
-			bool isworld=n->GetVar("world").GetBool();
-			if(isworld)
-			{
-				ground=ray.origin_+ray.direction_*result[i].distance_;
-				return true;
-			}
+			ground=ray.origin_+ray.direction_*result[i].distance_;
+			return true;
 		}
 	}
 

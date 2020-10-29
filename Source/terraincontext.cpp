@@ -385,6 +385,45 @@ void TerrainContext::SetWaterValue(int x, int y, float val)
     }
 }
 
+float TerrainContext::GetHeightValueFromNormalized(Vector2 nrm)
+{
+	if(terrainMap_.GetComponents()==1) return terrainMap_.GetPixelBilinear(nrm.x_, nrm.y_).r_;
+	else
+	{
+		Color c=terrainMap_.GetPixelBilinear(nrm.x_,nrm.y_);
+		return c.r_+c.g_/255.0f;
+	}
+}
+
+float TerrainContext::GetWaterValueFromNormalized(Vector2 nrm)
+{
+	if(waterMap_.GetComponents()==1) return waterMap_.GetPixelBilinear(nrm.x_, nrm.y_).r_;
+	else
+	{
+		Color c=waterMap_.GetPixelBilinear(nrm.x_,nrm.y_);
+		return c.r_+c.g_/255.0f;
+	}
+}
+
+void TerrainContext::BuildWaterDepthTexture()
+{
+	for(unsigned int x=0; x<waterDepth_.GetWidth(); ++x)
+	{
+		for(unsigned int y=0; y<waterDepth_.GetHeight(); ++y)
+		{
+			float nx=(float)x/(float)(waterDepth_.GetWidth());
+			float ny=(float)y/(float)(waterDepth_.GetHeight());
+			Vector2 nrm(nx,ny);
+			float ht=GetHeightValueFromNormalized(nrm);
+			float wat=GetWaterValueFromNormalized(nrm);
+			float v=std::max(0.0f, std::min(1.0f, (wat-ht)*16.0f));
+			waterDepth_.SetPixel(x,y,Color(v,0,0));
+		}
+	}
+	waterDepthTex_->SetData(&waterDepth_,false);
+}
+
+
 void TerrainContext::InvertMask(int which)
 {
 	for(int x=0; x<mask_.GetWidth(); ++x)
@@ -626,7 +665,7 @@ void TerrainContext::ApplyWaterBrush(float x, float z, float dt, BrushSettings &
                 float i=((d-rad)/(brush.hardness_*rad-rad));
                 i=std::max(0.0f, std::min(1.0f, i));
                 i=(float)std::sin(i*1.57079633);
-                i=i*dt*brush.power_;
+                i=i*dt*brush.power_*10.0f;
                 if(masksettings.usemask0_)
                 {
                     float m=mask_.GetPixelBilinear((float)(hx)/(float)(waterMap_.GetWidth()), (float)(hz)/(float)(waterMap_.GetHeight())).r_;
@@ -801,4 +840,349 @@ void TerrainContext::ApplyMaskBrushAlpha(float x, float z, int which, float dt, 
     }
 
     maskTex_->SetData(&mask_, false);
+}
+
+void TerrainContext::SetHeightBuffer(CArray2Dd &buffer, MaskSettings &masksettings, int blendop)
+{
+    if(!terrain_) return;
+
+    int w=terrainMap_.GetWidth();
+    int h=terrainMap_.GetHeight();
+
+    for(int x=0; x<=w; ++x)
+    {
+        for(int y=0; y<=h; ++y)
+        {
+            float nx=(float)x/(float)(w);
+            float ny=(float)y/(float)(h);
+
+            float v=buffer.getBilinear(nx,ny);
+            Color mask=mask_.GetPixelBilinear(nx,ny);
+            float oldheight=GetHeightValue(x,y);
+            float maskval=1.0f;
+
+            if(masksettings.usemask0_)
+            {
+                float mval=mask.r_;
+                if(masksettings.invert0_) mval=1.0f-mval;
+                maskval*=mval;
+            }
+            if(masksettings.usemask1_)
+            {
+                float mval=mask.g_;
+                if(masksettings.invert1_) mval=1.0f-mval;
+                maskval*=mval;
+            }
+            if(masksettings.usemask2_)
+            {
+                float mval=mask.b_;
+                if(masksettings.invert2_) mval=1.0f-mval;
+                maskval*=mval;
+            }
+
+			float newval=0.0f;
+
+			switch(blendop)
+			{
+				case HeightReplace: newval=v; break;
+				case HeightAdd: newval=oldheight+v; break;
+				case HeightSubtract: newval=oldheight-v; break;
+				case HeightMultiply: newval=oldheight*v; break;
+				case HeightMin: newval=std::min(v, oldheight); break;
+				case HeightMax: newval=std::max(v, oldheight); break;
+				default: newval=v; break;
+			}
+
+            v=oldheight+maskval*(newval-oldheight);
+            SetHeightValue(x,y,(float)v);
+        }
+    }
+    terrain_->ApplyHeightMap();
+	BuildWaterDepthTexture();
+}
+
+void TerrainContext::SetMaskBuffer(CArray2Dd &buffer, int which)
+{
+	int w=mask_.GetWidth();
+	int h=mask_.GetHeight();
+	for(int x=0; x<w; ++x)
+	{
+		for(int y=0; y<h; ++y)
+		{
+			float nx=(float)x/(float)(w);
+            float ny=(float)y/(float)(h);
+
+            double v=buffer.getBilinear(nx,ny);
+            Color mask=mask_.GetPixel(x,y);
+			switch(which)
+			{
+				case 0: mask.r_ = 1.0f-(float)v; break;
+				case 1: mask.g_ = 1.0f- (float)v; break;
+				case 2: mask.b_ = 1.0f- (float)v; break;
+				default: break;
+			}
+			mask_.SetPixel(x,y,mask);
+		}
+	}
+	maskTex_->SetData(&mask_,false);
+}
+
+void TerrainContext::SetLayerBuffer(CArray2Dd &buffer, int layer, MaskSettings &masksettings)
+{
+    if(!terrain_) return;
+
+    //if(buffer.width()!=blend0_.GetWidth() || buffer.height()!=blend0_.GetHeight()) return;
+    int w=blend0_.GetWidth();
+    int h=blend0_.GetHeight();
+
+    for(int x=0; x<w; ++x)
+    {
+        for(int y=0; y<h; ++y)
+        {
+            float nx=(float)x/(float)(w);
+            float ny=(float)y/(float)(h);
+
+            float i=(float)buffer.getBilinear(nx,ny);
+            i=std::max(0.0f, std::min(1.0f, i));
+            Color mask=mask_.GetPixelBilinear(nx,ny);
+
+            if(masksettings.usemask0_)
+            {
+                float m=mask.r_;
+                if(masksettings.invert0_) m=1.0f-m;
+                i*=m;
+            }
+            if(masksettings.usemask1_)
+            {
+                float m=mask.g_;
+                if(masksettings.invert1_) m=1.0f-m;
+                i*=m;
+            }
+            if(masksettings.usemask2_)
+            {
+                float m=mask.b_;
+                if(masksettings.invert2_) m=1.0f-m;
+                i*=m;
+            }
+            Color col0=blend0_.GetPixel(x,y);
+            Color col1=blend1_.GetPixel(x,y);
+            if(layer==0)
+            {
+                col0.r_=i;
+            }
+            else if(layer==1)
+            {
+                col0.g_=i;
+            }
+            else if(layer==2)
+            {
+                col0.b_=i;
+            }
+            else if(layer==3)
+            {
+                col0.a_=i;
+            }
+            else if(layer==4)
+            {
+                col1.r_=i;
+            }
+            else if(layer==5)
+            {
+                col1.g_=i;
+            }
+            else if(layer==6)
+            {
+                col1.b_=i;
+            }
+            else if(layer==7)
+            {
+                col1.a_=i;
+            }
+            BalanceColors(col0, col1, layer);
+            blend0_.SetPixel(x,y,col0);
+            blend1_.SetPixel(x,y,col1);
+        }
+    }
+    blend0Tex_->SetData(&blend0_, false);
+    blend1Tex_->SetData(&blend1_, false);
+}
+
+void TerrainContext::SetLayerBufferMax(CArray2Dd &buffer, int layer, MaskSettings &masksettings)
+{
+    if(!terrain_) return;
+
+    int w=blend0_.GetWidth();
+    int h=blend0_.GetHeight();
+
+    for(int x=0; x<w; ++x)
+    {
+        for(int y=0; y<h; ++y)
+        {
+            float nx=(float)x/(float)(w);
+            float ny=(float)y/(float)(h);
+
+            float i= (float)buffer.getBilinear(nx,ny);
+            i=std::max(0.0f, std::min(1.0f, i));
+            Color mask=mask_.GetPixelBilinear(nx,ny);
+
+            if(masksettings.usemask0_)
+            {
+                float m=mask.r_;
+                if(masksettings.invert0_) m=1.0f-m;
+                i*=m;
+            }
+            if(masksettings.usemask1_)
+            {
+                float m=mask.g_;
+                if(masksettings.invert1_) m=1.0f-m;
+                i*=m;
+            }
+            if(masksettings.usemask2_)
+            {
+                float m=mask.b_;
+                if(masksettings.invert2_) m=1.0f-m;
+                i*=m;
+            }
+            Color col0=blend0_.GetPixel(x,y);
+            Color col1=blend1_.GetPixel(x,y);
+            if(layer==0)
+            {
+                col0.r_=std::max(col0.r_,i);
+            }
+            else if(layer==1)
+            {
+                col0.g_=std::max(col0.g_,i);
+            }
+            else if(layer==2)
+            {
+                col0.b_=std::max(col0.b_,i);
+            }
+            else if(layer==3)
+            {
+                col0.a_=std::max(col0.a_,i);
+            }
+            else if(layer==4)
+            {
+                col1.r_=std::max(col1.r_,i);
+            }
+            else if(layer==5)
+            {
+                col1.g_=std::max(col1.g_,i);
+            }
+            else if(layer==6)
+            {
+                col1.b_=std::max(col1.b_,i);
+            }
+            else if(layer==7)
+            {
+                col1.a_=std::max(col1.a_,i);
+            }
+            BalanceColors(col0, col1, layer);
+            blend0_.SetPixel(x,y,col0);
+            blend1_.SetPixel(x,y,col1);
+        }
+    }
+    blend0Tex_->SetData(&blend0_, false);
+    blend1Tex_->SetData(&blend1_, false);
+}
+
+void TerrainContext::BlendHeightBuffer(CArray2Dd &buffer, CArray2Dd &blend, MaskSettings &masksettings)
+{
+    for(int x=0; x<terrainMap_.GetWidth()-1; ++x)
+    {
+        for(int y=0; y<terrainMap_.GetHeight()-1; ++y)
+        {
+            float nx=(float)x / (float)(terrainMap_.GetWidth());
+            float ny=(float)y / (float)(terrainMap_.GetHeight());
+
+            float v=(float)buffer.getBilinear(nx,ny);
+            float bval=(float)blend.getBilinear(nx,ny);
+            float ht=GetHeightValue(x, y);
+            Color mask=mask_.GetPixelBilinear(nx,ny);
+            float maskval=1.0f;
+
+            if(masksettings.usemask0_)
+            {
+                float m=mask.r_;
+                if(masksettings.invert0_) m=1.0f-m;
+                bval*=m;
+            }
+            if(masksettings.usemask1_)
+            {
+                float m=mask.g_;
+                if(masksettings.invert1_) m=1.0f-m;
+                bval*=m;
+            }
+            if(masksettings.usemask2_)
+            {
+                float m=mask.b_;
+                if(masksettings.invert2_) m=1.0f-m;
+                bval*=m;
+            }
+
+            float newht=ht+bval*(v-ht);
+            SetHeightValue(x,y,newht);
+        }
+    }
+    terrain_->ApplyHeightMap();
+	BuildWaterDepthTexture();
+}
+
+void TerrainContext::SetWaterBuffer(CArray2Dd &buffer, MaskSettings &masksettings, int blendop)
+{
+    if(!water_) return;
+
+	int w=waterMap_.GetWidth();
+    int h=waterMap_.GetHeight();
+
+    for(int x=0; x<=w; ++x)
+    {
+        for(int y=0; y<=h; ++y)
+        {
+            float nx=(float)x/(float)(w);
+            float ny=(float)y/(float)(h);
+
+            float v=buffer.getBilinear(nx,ny);
+            Color mask=mask_.GetPixelBilinear(nx,ny);
+            float oldheight=GetWaterValue(x,y);
+            float maskval=1.0f;
+
+            if(masksettings.usemask0_)
+            {
+                float mval=mask.r_;
+                if(masksettings.invert0_) mval=1.0f-mval;
+                maskval*=mval;
+            }
+            if(masksettings.usemask1_)
+            {
+                float mval=mask.g_;
+                if(masksettings.invert1_) mval=1.0f-mval;
+                maskval*=mval;
+            }
+            if(masksettings.usemask2_)
+            {
+                float mval=mask.b_;
+                if(masksettings.invert2_) mval=1.0f-mval;
+                maskval*=mval;
+            }
+
+			float newval=0.0f;
+
+			switch(blendop)
+			{
+				case HeightReplace: newval=v; break;
+				case HeightAdd: newval=oldheight+v; break;
+				case HeightSubtract: newval=oldheight-v; break;
+				case HeightMultiply: newval=oldheight*v; break;
+				case HeightMin: newval=std::min(v, oldheight); break;
+				case HeightMax: newval=std::max(v, oldheight); break;
+				default: newval=v; break;
+			}
+
+            v=oldheight+maskval*(newval-oldheight);
+            SetWaterValue(x,y,(float)v);
+        }
+    }
+    water_->ApplyHeightMap();
+	BuildWaterDepthTexture();
 }

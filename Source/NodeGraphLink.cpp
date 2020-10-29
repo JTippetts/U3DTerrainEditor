@@ -49,12 +49,8 @@ void NodeGraphLinkSource::RemoveLink(NodeGraphLink *link)
     auto i=links_.Find(SharedPtr<NodeGraphLink>(link));
     if(i!=links_.End())
     {
-        //link->ClearSource();
-        //link->ClearTarget();
-		Log::Write(LOG_INFO, "Link removed");
         links_.Erase(i);
     }
-	else Log::Write(LOG_INFO, "Reached the end of links");
 }
 
 int NodeGraphLinkSource::GetNumLinks()

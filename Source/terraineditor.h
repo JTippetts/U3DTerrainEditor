@@ -35,6 +35,7 @@
 #include "UI/smoothheightui.h"
 #include "UI/editmaskui.h"
 #include "UI/nodegraphui.h"
+#include "UI/waypointgroupui.h"
 
 using namespace Urho3D;
 
@@ -66,6 +67,8 @@ private:
 	SharedPtr<SmoothHeightUI> smoothHeight_;
 	SharedPtr<EditMaskUI> editMask_;
 	SharedPtr<NodeGraphUI> nodeGraph_;
+	SharedPtr<WaypointGroupUI> waypointGroups_;
+	
 	SharedPtr<MainToolbarUI> mainToolbar_;
 	
 	void HandleUpdate(StringHash eventType, VariantMap &eventData);

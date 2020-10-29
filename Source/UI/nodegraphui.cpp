@@ -2,6 +2,7 @@
 #define ANL_LONG_PERIOD_HASHING
 
 #include "nodegraphui.h"
+#include "../anlutilities.h"
 
 #include <Urho3D/UI/Text.h>
 #include <Urho3D/Resource/ResourceCache.h>
@@ -18,12 +19,18 @@
 #include <Urho3D/UI/Font.h>
 #include <Urho3D/UI/LineEdit.h>
 #include <Urho3D/IO/Log.h>
+#include <Urho3D/UI/CheckBox.h>
 
 #include <vector>
 #include <algorithm>
+#include <functional>
+#include <unordered_map>
+
 #include "../terraincontext.h"
 
 #include "nodedescriptors.h"
+#include "../format.h"
+#include "../filesaveload.h"
 
 NodeGraphUI::NodeGraphUI(Context *context) : Object(context),
 	createMenu_(nullptr),
@@ -649,25 +656,144 @@ void NodeGraphUI::HandleEditGroup(StringHash eventType, VariantMap &eventData)
 
 void NodeGraphUI::HandleDeleteGroup(StringHash eventType, VariantMap &eventData)
 {
-}
-
-void NodeGraphUI::HandleGroupSelected(StringHash eventType, VariantMap &eventData)
-{
 	if(!nodeGroupsList_) return;
 
 	int which=nodeGroupsList_->GetChildDynamicCast<ListView>("List", true)->GetSelection();
 	if(which==-1) return;
 	if(which>=nodeGroups_.size()) return;
+	
 	NodeGroup *grp=&nodeGroups_[which];
-	ActivateGroup(grp);
+	
+	HideGroup();
+	selectedNodeGroup_=nullptr;
+	
+	for(auto it=nodeGroups_.begin(); it!=nodeGroups_.end(); ++it)
+	{
+		if(&(*it)==grp)
+		{
+			nodeGroups_.erase(it);
+			ListView *nlist=nodeGroupsList_->GetChildDynamicCast<ListView>("List", true);
+			nlist->RemoveItem(which);
+			if(which>=nlist->GetNumItems()) nlist->SetSelection(nlist->GetNumItems()-1);
+			return;
+		}
+	}
+}
+
+void NodeGraphUI::HandleGroupSelected(StringHash eventType, VariantMap &eventData)
+{
+	ListView *list=nodeGroupsList_->GetChildDynamicCast<ListView>("List", true);
+	unsigned int num=list->GetNumItems();
+	unsigned int sel=list->GetSelection();
+	for(unsigned int c=0; c<num; ++c)
+	{
+		UIElement *i=list->GetItem(c);
+		if(c==sel) i->SetColor(Color(1,1,1));
+		else i->SetColor(Color(0.5,0.5,0.5));
+	}
 }
 
 void NodeGraphUI::HandleGenerate(StringHash eventType, VariantMap &eventData)
 {
+	if(!selectedNodeGroup_) return;
+	CKernel kernel;
+	BuildANLFunction2(kernel, selectedNodeGroup_->output_);
+	Vector2 minmax=RenderANLKernelToImage(selectedNodeGroup_->previewImage_, &kernel, 0, 1, selectedNodeGroup_->histoImage_, SEAMLESS_NONE, false, 0.0, 1.0, 1.0, true);
+	selectedNodeGroup_->previewTex_->SetData(selectedNodeGroup_->previewImage_, false);
+	selectedNodeGroup_->histoTex_->SetData(selectedNodeGroup_->histoImage_, false);
+	selectedNodeGroup_->output_->GetChildDynamicCast<Text>("LowValue", true)->SetText("%.4f"_fmt(minmax.x_));
+	selectedNodeGroup_->output_->GetChildDynamicCast<Text>("HighValue", true)->SetText("%.4f"_fmt(minmax.y_));
 }
 
 void NodeGraphUI::HandleExecute(StringHash eventType, VariantMap &eventData)
 {
+	if(!selectedNodeGroup_) return;
+	
+	unsigned int target=selectedNodeGroup_->output_->GetChildDynamicCast<DropDownList>("TargetList", true)->GetSelection();
+	unsigned int blendop=selectedNodeGroup_->output_->GetChildDynamicCast<DropDownList>("BlendOpList", true)->GetSelection();
+	
+	bool um1=selectedNodeGroup_->output_->GetChildDynamicCast<CheckBox>("UseMask1", true)->IsChecked();
+	bool im1=selectedNodeGroup_->output_->GetChildDynamicCast<CheckBox>("InvertMask1", true)->IsChecked();
+	bool um2=selectedNodeGroup_->output_->GetChildDynamicCast<CheckBox>("UseMask2", true)->IsChecked();
+	bool im2=selectedNodeGroup_->output_->GetChildDynamicCast<CheckBox>("InvertMask2", true)->IsChecked();
+	bool um3=selectedNodeGroup_->output_->GetChildDynamicCast<CheckBox>("UseMask3", true)->IsChecked();
+	bool im3=selectedNodeGroup_->output_->GetChildDynamicCast<CheckBox>("InvertMask3", true)->IsChecked();
+	
+	float low=ToFloat(selectedNodeGroup_->output_->GetChildDynamicCast<LineEdit>("Low", true)->GetText());
+	float high=ToFloat(selectedNodeGroup_->output_->GetChildDynamicCast<LineEdit>("High", true)->GetText());
+	bool rescale=selectedNodeGroup_->output_->GetChildDynamicCast<CheckBox>("Rescale", true)->IsChecked();
+	
+	if(target==0)
+	{
+		CKernel kernel;
+		BuildANLFunction2(kernel, selectedNodeGroup_->output_);
+		IntVector2 size=terrainContext_->GetTerrainMapSize();
+		CArray2Dd arr(size.x_, size.y_);
+		map2DNoZ(SEAMLESS_NONE, arr, kernel, SMappingRanges(0,1,0,1,0,1), kernel.lastIndex());
+		if(rescale) arr.scaleToRange(low, high);
+		MaskSettings ms{um1,im1,um2,im2,um3,im3};
+		terrainContext_->SetHeightBuffer(arr, ms, blendop);
+	}
+	else if(target>=1 && target<=8)
+	{
+		CKernel kernel;
+		BuildANLFunction2(kernel, selectedNodeGroup_->output_);
+		IntVector2 size=terrainContext_->GetTerrainMapSize();
+		CArray2Dd arr(size.x_, size.y_);
+		map2DNoZ(SEAMLESS_NONE, arr, kernel, SMappingRanges(0,1,0,1,0,1), kernel.lastIndex());
+		if(rescale) arr.scaleToRange(low, high);
+		MaskSettings ms{um1,im1,um2,im2,um3,im3};
+		terrainContext_->SetLayerBuffer(arr, target-1, ms);
+	}
+	else if(target>=9 && target<=11)
+	{
+		CKernel kernel;
+		BuildANLFunction2(kernel, selectedNodeGroup_->output_);
+		IntVector2 size=terrainContext_->GetTerrainMapSize();
+		CArray2Dd arr(size.x_, size.y_);
+		map2DNoZ(SEAMLESS_NONE, arr, kernel, SMappingRanges(0,1,0,1,0,1), kernel.lastIndex());
+		if(rescale) arr.scaleToRange(low, high);
+		MaskSettings ms{um1,im1,um2,im2,um3,im3};
+		terrainContext_->SetMaskBuffer(arr, target-9);
+	}
+	else if(target==12)
+	{
+		CKernel kernel;
+		BuildANLFunction2(kernel, selectedNodeGroup_->output_);
+		IntVector2 size=terrainContext_->GetTerrainMapSize();
+		CArray2Dd arr(size.x_, size.y_);
+		map2DNoZ(SEAMLESS_NONE, arr, kernel, SMappingRanges(0,1,0,1,0,1), kernel.lastIndex());
+		if(rescale) arr.scaleToRange(low, high);
+		MaskSettings ms{um1,im1,um2,im2,um3,im3};
+		terrainContext_->SetWaterBuffer(arr, ms, blendop);
+	}
+	/*
+	
+	elseif target>=1 and target<=8 then
+		if not self.nodegroup then return end
+		local kernel=BuildANLFunction(self.nodegroup.output)
+		local arr=CArray2Dd(TerrainState:GetBlendWidth(), TerrainState:GetBlendHeight())
+		map2DNoZ(SEAMLESS_NONE,arr,kernel,SMappingRanges(0,1,0,1,0,1), kernel:lastIndex())
+		if rescale then arr:scaleToRange(low,high) end
+		TerrainState:SetLayerBuffer(arr,target-1,ms)
+		--self.nodemapping.visible=false
+		return
+	elseif target>=9 and target<=11 then
+		if not self.nodegroup then return end
+		local kernel=BuildANLFunction(self.nodegroup.output)
+		local arr=CArray2Dd(TerrainState:GetTerrainWidth(), TerrainState:GetTerrainHeight())
+		map2DNoZ(SEAMLESS_NONE,arr,kernel,SMappingRanges(0,1,0,1,0,1), kernel:lastIndex())
+		if rescale then arr:scaleToRange(low,high) end
+		print("Setting to mask "..target-9)
+		TerrainState:SetMaskBuffer(arr,target-9)
+	elseif target==12 then
+		if not self.nodegroup then return end
+		local kernel=BuildANLFunction(self.nodegroup.output)
+		local arr=CArray2Dd(TerrainState:GetTerrainWidth(), TerrainState:GetTerrainHeight())
+		map2DNoZ(SEAMLESS_NONE,arr,kernel,SMappingRanges(0,1,0,1,0,1), kernel:lastIndex())
+		if rescale then arr:scaleToRange(low,high) end
+		TerrainState:SetWaterBuffer(arr,ms,blendop)
+	end*/
 }
 
 void NodeGraphUI::HandleStore(StringHash eventType, VariantMap &eventData)
@@ -805,6 +931,78 @@ UIElement *NodeGraphUI::GetSourceFromNode(UIElement *node, const String &inputna
 	return nullptr;
 }
 
+void NodeGraphUI::BuildANLFunction2(CKernel &kernel, UIElement *output)
+{
+	std::unordered_map<UIElement *, CInstructionIndex> indices;
+	
+	std::function<CInstructionIndex(UIElement *)> buildIndex=[&](UIElement *elem)->CInstructionIndex
+	{
+		auto it=indices.find(elem);
+		if(it != indices.end())
+		{
+			return it->second;
+		}
+		
+		NodeTypeDesc *desc=GetNodeTypeDesc(elem->GetName());
+		unsigned int numinputs=desc->inputs_.size();
+		std::vector<CInstructionIndex> params;
+		
+		for(unsigned int inp=0; inp<numinputs; ++inp)
+		{
+			UIElement *s=GetSourceFromNode(elem, String("Input")+String(inp));
+			if(s)
+			{
+				params.push_back(buildIndex(s));
+			}
+			else
+			{
+				if(desc->inputs_[inp].type_=="value")
+				{
+					String sc=elem->GetChildDynamicCast<LineEdit>(String("Value")+String(inp), true)->GetText();
+					float num=ToFloat(sc);
+					params.push_back(kernel.constant(num));
+				}
+				else
+				{
+					String sc=elem->GetChildDynamicCast<LineEdit>(String("Value")+String(inp), true)->GetText();
+					unsigned int num=ToUInt(sc);
+					params.push_back(kernel.seed(num));
+				}
+			}
+		}
+		
+		// Instance the function
+		const String &functype=elem->GetName();
+		if(functype=="constant")
+		{
+			float v=ToFloat(elem->GetChildDynamicCast<LineEdit>("Value", true)->GetText());
+			CInstructionIndex index=kernel.constant(v);
+			indices[elem]=index;
+			return index;
+		}
+		else if(functype=="seed")
+		{
+			unsigned int v=ToUInt(elem->GetChildDynamicCast<LineEdit>("Value", true)->GetText());
+			CInstructionIndex index=kernel.seed(v);
+			indices[elem]=index;
+			return index;
+		}
+		else
+		{
+			CInstructionIndex index=desc->instance_(kernel,params);
+			indices[elem]=index;
+			return index;
+		}
+		
+		
+		return kernel.zero();
+	};
+	
+	UIElement *e=GetSourceFromNode(output, String("Input0"));
+	if(e) buildIndex(e);
+}
+
+/*
 CInstructionIndex NodeGraphUI::InstanceFunction(CKernel &kernel, NodeTypeDesc *desc, std::vector<CInstructionIndex> &params)
 {
 	std::vector<CInstructionIndex> n;
@@ -846,7 +1044,7 @@ CInstructionIndex NodeGraphUI::InstanceFunction(CKernel &kernel, NodeTypeDesc *d
 		}
 	}
 	
-	return kernel.lastIndex();
+	return kernel.lastIndex();*/
 /*
 function InstanceFunction(k, desc, params)
 	local ins=desc.instance
@@ -981,6 +1179,7 @@ function InstanceFunction(k, desc, params)
 	print(k:lastIndex())
 	return k:lastIndex()
 end*/
+/*
 }
 
 void NodeGraphUI::BuildANLFunction(CKernel &kernel, UIElement *output)
@@ -988,13 +1187,13 @@ void NodeGraphUI::BuildANLFunction(CKernel &kernel, UIElement *output)
 	std::vector<UIElement *> nodes;
 	std::vector<CInstructionIndex> kernelindices;
 	
-	auto isvisited=[&nodes](UIElement *n)->bool
+	auto isvisited=[&](UIElement *n)->bool
 	{
 		for(auto c : nodes) if(c==n) return true;
 		return false;
 	};
 	
-	auto nodeindex=[&nodes](UIElement *n)->int
+	auto nodeindex=[&](UIElement *n)->int
 	{
 		for(int c=0; c<nodes.size(); ++c)
 		{
@@ -1003,9 +1202,9 @@ void NodeGraphUI::BuildANLFunction(CKernel &kernel, UIElement *output)
 		return -1;
 	};
 	
-	auto InstanceANLFunction=[&kernelindices, &nodeindex, this](CKernel &kernel, UIElement *n)->CInstructionIndex
+	auto InstanceANLFunction=[&](CKernel &kernel, UIElement *n)->CInstructionIndex
 	{
-		auto GetValue=[&kernelindices, &nodeindex, &kernel, this](UIElement *elem, unsigned int which)->CInstructionIndex
+		auto GetValue=[&](UIElement *elem, unsigned int which)->CInstructionIndex
 		{
 			UIElement *s=GetSourceFromNode(elem, String("Input")+String(which));
 			unsigned int s1;
@@ -1022,7 +1221,7 @@ void NodeGraphUI::BuildANLFunction(CKernel &kernel, UIElement *output)
 			}
 		};
 		
-		auto GetSeed=[&kernelindices, &nodeindex, &kernel, this](UIElement *elem, unsigned int which)->CInstructionIndex
+		auto GetSeed=[&](UIElement *elem, unsigned int which)->CInstructionIndex
 		{
 			UIElement *s=GetSourceFromNode(elem, String("Input")+String(which));
 			unsigned int s1;
@@ -1076,33 +1275,46 @@ void NodeGraphUI::BuildANLFunction(CKernel &kernel, UIElement *output)
 			return InstanceFunction(kernel, desc, params);
 		}
 	};
-}
+	
+	std::function<void(UIElement*)> worker;
+	worker=[&](UIElement *n)
+	{
+		auto visitnode=[&](UIElement *nd, unsigned int numparams)
+		{
+			for(unsigned int c=0; c<numparams; ++c)
+			{
+				UIElement*s=GetSourceFromNode(nd, String("Input")+String(c));
+				if(s && !isvisited(s)) worker(s);
+			};
+		};
+		
+		if(n->GetName()!="Output")
+		{
+			NodeTypeDesc *dsc=GetNodeTypeDesc(n->GetName());
+			if(!dsc) return;
+			
+			unsigned ni=dsc->inputs_.size();
+			if(ni>0)
+			{
+				visitnode(n, ni);
+			}
+		}
+		else
+		{
+			visitnode(n,1);
+		}
+		
+		nodes.push_back(n);
+		CInstructionIndex ind=InstanceANLFunction(kernel, n);
+		kernelindices.push_back(ind);
+	};
+	
+	worker(output);
+}*/
 /*
 function BuildANLFunction(output)
 
-	function InstanceANLFunction(kernel, n)
-
-
-		if n.name=="Output" then
-			local s1
-			local s1=GetValue(n,0)
-			return s1
-		elseif n.name=="constant" then
-			local v=tonumber(n:GetChild("Value", true).text)
-			return kernel:constant(v)
-		elseif n.name=="seed" then
-			local v=tonumber(n:GetChild("Value", true).text)
-			return kernel:seed(v)
-		else
-			print("Instance function "..n.name)
-			return InstanceFunction(kernel, desc, params)
-		end
-
-	end
-
-	local kernel=CKernel()
-
-
+	
 
 	worker=function(n)
 		local visitnode=function(n,numparms)

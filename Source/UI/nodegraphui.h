@@ -76,8 +76,9 @@ class NodeGraphUI : public Object
 	SharedPtr<UIElement> BuildNode(NodeGroup *grp, const String &type);
 	NodeTypeDesc *GetNodeTypeDesc(const String &type);
 	UIElement *GetSourceFromNode(UIElement *node, const String &inputname);
-	CInstructionIndex InstanceFunction(CKernel &kernel, NodeTypeDesc *desc, std::vector<CInstructionIndex> &params);
-	void BuildANLFunction(CKernel &kernel, UIElement *output);
+	//CInstructionIndex InstanceFunction(CKernel &kernel, NodeTypeDesc *desc, std::vector<CInstructionIndex> &params);
+	//void BuildANLFunction(CKernel &kernel, UIElement *output);
+	void BuildANLFunction2(CKernel &kernel, UIElement *output);
 	
 	void HandleMenuSelected(StringHash eventType, VariantMap &eventData);
 	void HandleNewGroup(StringHash eventType, VariantMap &eventData);

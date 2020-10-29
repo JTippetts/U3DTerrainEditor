@@ -129,8 +129,12 @@ void TerrainEditor::Start()
 	nodeGraph_->Construct(terrainContext_);
 	nodeGraph_->SetVisible(false);
 	
+	waypointGroups_=SharedPtr<WaypointGroupUI>(new WaypointGroupUI(context_));
+	waypointGroups_->Construct(scene_, terrainContext_, camera_);
+	waypointGroups_->SetVisible(false);
+	
 	mainToolbar_=SharedPtr<MainToolbarUI>(new MainToolbarUI(context_));
-	mainToolbar_->Construct(editHeight_, terrainTexturing_, editWater_, smoothHeight_, editMask_, nodeGraph_);
+	mainToolbar_->Construct(editHeight_, terrainTexturing_, editWater_, smoothHeight_, editMask_, nodeGraph_, waypointGroups_);
 	mainToolbar_->SetVisible(true);
 	
 	camera_->SetTerrainContext(terrainContext_);

@@ -9,6 +9,8 @@
 #include <Urho3D/Scene/Node.h>
 #include <Urho3D/Scene/Scene.h>
 
+#include "../ThirdParty/accidental-noise-library/anl.h"
+using namespace anl;
 using namespace Urho3D;
 
 struct BrushSettings
@@ -25,6 +27,17 @@ struct MaskSettings
 	bool invert0_, invert1_, invert2_;
 	
 	MaskSettings() : usemask0_(false), usemask1_(false), usemask2_(false), invert0_(false), invert1_(false), invert2_(false){}
+	MaskSettings(bool um1, bool im1, bool um2, bool im2, bool um3, bool im3) : usemask0_(um1), invert0_(im1), usemask1_(um2), invert1_(im2), usemask2_(um3), invert2_(im3){}
+};
+
+enum
+{
+	HeightReplace,
+	HeightAdd,
+	HeightSubtract,
+	HeightMultiply,
+	HeightMin,
+	HeightMax
 };
 
 // Terrain context
@@ -67,16 +80,29 @@ class TerrainContext : public Object
 	float GetWaterValue(Vector3 worldpos);
 	float GetWaterValue(int x, int y);
 	void SetWaterValue(int x, int y, float val);
+	float GetHeightValueFromNormalized(Vector2 nrm);
+	float GetWaterValueFromNormalized(Vector2 nrm);
 	
 	void InvertMask(int which);
     void ClearMask(int which);
     void ClearAllMasks();
+	void BuildWaterDepthTexture();
 	
 	void ApplyHeightAlpha(float x, float z, float dt, BrushSettings &brush, MaskSettings &masksettings, Image &alpha, float angle);
 	void ApplyBlendAlpha(float x, float z, int layer, float dt, BrushSettings &brush, MaskSettings &masksettings, Image &alpha, float angle);
 	void ApplyWaterBrush(float x, float z, float dt, BrushSettings &brush, MaskSettings &masksettings);
 	void ApplySmoothBrush(float x, float z, float dt, BrushSettings &brush, MaskSettings &masksettings);
 	void ApplyMaskBrushAlpha(float x, float z, int which, float dt, BrushSettings &brush, MaskSettings &masksettings, Image &alpha, float angle);
+	
+	void SetHeightBuffer(CArray2Dd &buffer, MaskSettings &masksettings, int blendop);
+	void SetWaterBuffer(CArray2Dd &buffer, MaskSettings &masksettings, int blendop);
+    void SetLayerBuffer(CArray2Dd &buffer, int layer, MaskSettings &masksettings);
+    void SetLayerBufferMax(CArray2Dd &buffer, int layer, MaskSettings &masksettings);
+    void BlendHeightBuffer(CArray2Dd &buffer, CArray2Dd &blend, MaskSettings &masksettings);
+	void SetMaskBuffer(CArray2Dd &buffer, int which);
+	
+	IntVector2 GetTerrainMapSize(){return IntVector2(terrainMap_.GetWidth(), terrainMap_.GetHeight());}
+	IntVector2 GetBlendMapSize(){return IntVector2(blend0_.GetWidth(), blend0_.GetHeight());;}
 	
 	protected:
 	// Terrain
