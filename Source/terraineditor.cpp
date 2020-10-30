@@ -133,17 +133,15 @@ void TerrainEditor::Start()
 	waypointGroups_->Construct(scene_, terrainContext_, camera_);
 	waypointGroups_->SetVisible(false);
 	
+	terrainSettings_=SharedPtr<TerrainSettingsUI>(new TerrainSettingsUI(context_));
+	terrainSettings_->Construct(scene_, camera_, terrainContext_, terrainTexturing_, editMask_, nodeGraph_, waypointGroups_);
+	terrainSettings_->SetVisible(false);
+	
 	mainToolbar_=SharedPtr<MainToolbarUI>(new MainToolbarUI(context_));
-	mainToolbar_->Construct(editHeight_, terrainTexturing_, editWater_, smoothHeight_, editMask_, nodeGraph_, waypointGroups_);
+	mainToolbar_->Construct(editHeight_, terrainTexturing_, editWater_, smoothHeight_, editMask_, nodeGraph_, waypointGroups_, terrainSettings_);
 	mainToolbar_->SetVisible(true);
 	
 	camera_->SetTerrainContext(terrainContext_);
-	
-	Node *ln=scene_->CreateChild();
-	Light *l=ln->CreateComponent<Light>();
-	l->SetLightType(LIGHT_DIRECTIONAL);
-	ln->SetDirection(Vector3(1.5,-3.5,-1.5));
-	l->SetCastShadows(true);
 	
 	SubscribeToEvent(StringHash("Update"), URHO3D_HANDLER(TerrainEditor, HandleUpdate));
 }

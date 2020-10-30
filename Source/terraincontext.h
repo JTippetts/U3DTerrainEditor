@@ -73,6 +73,8 @@ class TerrainContext : public Object
 	void SetTerrainDirty(){terraindirty_=true;}
 	void SetWaterDirty(){waterdirty_=true;}
 	
+	BoundingBox GetBoundingBox();
+	
 	float GetHeightValue(Vector3 worldpos);
 	float GetHeight(Vector3 worldpos);
 	float GetHeightValue(int x, int y);

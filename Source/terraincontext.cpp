@@ -187,6 +187,19 @@ Vector3 TerrainContext::NormalizedToWorld(Vector2 normalized)
     return Vector3(patchWorldOrigin.x_+normalized.x_*patchWorldSize.x_, 0, patchWorldOrigin.y_+normalized.y_*patchWorldSize.y_);
 }
 
+BoundingBox TerrainContext::GetBoundingBox()
+{
+	BoundingBox bbox;
+	
+	bbox.Merge(NormalizedToWorld(Vector2(0,0)));
+	bbox.Merge(NormalizedToWorld(Vector2(0,1)));
+	bbox.Merge(NormalizedToWorld(Vector2(1,0)));
+	bbox.Merge(NormalizedToWorld(Vector2(1,1)));
+	bbox.Merge(Vector3(0,1000,0));
+	
+	return bbox;
+}
+
 void TerrainContext::SetHeightMapSize(const IntVector2 &size)
 {
 	if(!terrain_ || !water_) return;

@@ -189,7 +189,7 @@ std::vector<NodeTypeDesc> g_nodeTypes=
 		"scaleDomain",
 		{
 			{"value", "Value", 0.0},
-			{"value", "Scale", 0.0}
+			{"value", "Scale", 1.0}
 		},
 		[](CKernel &k, const std::vector<CInstructionIndex> &params)->CInstructionIndex
 		{
@@ -201,7 +201,7 @@ std::vector<NodeTypeDesc> g_nodeTypes=
 		"scaleX",
 		{
 			{"value", "Value", 0.0},
-			{"value", "Scale", 0.0}
+			{"value", "Scale", 1.0}
 		},
 		[](CKernel &k, const std::vector<CInstructionIndex> &params)->CInstructionIndex
 		{
@@ -213,7 +213,7 @@ std::vector<NodeTypeDesc> g_nodeTypes=
 		"scaleY",
 		{
 			{"value", "Value", 0.0},
-			{"value", "Scale", 0.0}
+			{"value", "Scale", 1.0}
 		},
 		[](CKernel &k, const std::vector<CInstructionIndex> &params)->CInstructionIndex
 		{
@@ -247,7 +247,7 @@ std::vector<NodeTypeDesc> g_nodeTypes=
 	{
 		"valueBasis",
 		{
-			{"value", "Interp", 0.0},
+			{"value", "Interp", 3.0},
 			{"seed", "Seed", 0.0}
 		},
 		[](CKernel &k, const std::vector<CInstructionIndex> &params)->CInstructionIndex
@@ -259,8 +259,8 @@ std::vector<NodeTypeDesc> g_nodeTypes=
 	{
 		"gradientBasis",
 		{
-			{"value", "Interp", 0.0},
-			{"value", "Seed", 0.0}
+			{"value", "Interp", 3.0},
+			{"seed", "Seed", 0.0}
 		},
 		[](CKernel &k, const std::vector<CInstructionIndex> &params)->CInstructionIndex
 		{
@@ -330,7 +330,7 @@ std::vector<NodeTypeDesc> g_nodeTypes=
 	{
 		"seeder",
 		{
-			{"value", "Seed", 0.0},
+			{"seed", "Seed", 0.0},
 			{"value", "Value", 0.0}
 		},
 		[](CKernel &k, const std::vector<CInstructionIndex> &params)->CInstructionIndex
@@ -473,7 +473,7 @@ std::vector<NodeTypeDesc> g_nodeTypes=
 		"mix",
 		{
 			{"value", "Low", 0.0},
-			{"value", "High", 0.0},
+			{"value", "High", 1.0},
 			{"value", "Control", 0.0},
 		},
 		[](CKernel &k, const std::vector<CInstructionIndex> &params)->CInstructionIndex
@@ -486,7 +486,7 @@ std::vector<NodeTypeDesc> g_nodeTypes=
 		"clamp",
 		{
 			{"value", "Low", 0.0},
-			{"value", "High", 0.0},
+			{"value", "High", 1.0},
 			{"value", "Source", 0.0},
 		},
 		[](CKernel &k, const std::vector<CInstructionIndex> &params)->CInstructionIndex
@@ -499,7 +499,7 @@ std::vector<NodeTypeDesc> g_nodeTypes=
 		"linearStep",
 		{
 			{"value", "Low", 0.0},
-			{"value", "High", 0.0},
+			{"value", "High", 1.0},
 			{"value", "Control", 0.0},
 		},
 		[](CKernel &k, const std::vector<CInstructionIndex> &params)->CInstructionIndex
@@ -512,7 +512,7 @@ std::vector<NodeTypeDesc> g_nodeTypes=
 		"smoothStep",
 		{
 			{"value", "Low", 0.0},
-			{"value", "High", 0.0},
+			{"value", "High", 1.0},
 			{"value", "Control", 0.0},
 		},
 		[](CKernel &k, const std::vector<CInstructionIndex> &params)->CInstructionIndex
@@ -525,7 +525,7 @@ std::vector<NodeTypeDesc> g_nodeTypes=
 		"smootherStep",
 		{
 			{"value", "Low", 0.0},
-			{"value", "High", 0.0},
+			{"value", "High", 1.0},
 			{"value", "Control", 0.0},
 		},
 		[](CKernel &k, const std::vector<CInstructionIndex> &params)->CInstructionIndex
@@ -538,7 +538,7 @@ std::vector<NodeTypeDesc> g_nodeTypes=
 		"logistic",
 		{
 			{"value", "Low", 0.0},
-			{"value", "High", 0.0},
+			{"value", "High", 1.0},
 			{"value", "Control", 0.0},
 		},
 		[](CKernel &k, const std::vector<CInstructionIndex> &params)->CInstructionIndex
@@ -550,9 +550,9 @@ std::vector<NodeTypeDesc> g_nodeTypes=
 	{
 		"randomize",
 		{
-			{"value", "Seed", 0.0},
+			{"seed", "Seed", 0.0},
 			{"value", "Low", 0.0},
-			{"value", "High", 0.0},
+			{"value", "High", 1.0},
 		},
 		[](CKernel &k, const std::vector<CInstructionIndex> &params)->CInstructionIndex
 		{
@@ -563,7 +563,7 @@ std::vector<NodeTypeDesc> g_nodeTypes=
 	{
 		"fractal",
 		{
-			{"value", "Seed", 0.0},
+			{"seed", "Seed", 0.0},
 			{"value", "Layer", 0.0},
 			{"value", "Persistence", 0.5},
 			{"value", "Lacunarity", 2.0},
@@ -588,7 +588,7 @@ std::vector<NodeTypeDesc> g_nodeTypes=
 			{"value", "D3", 0.0},
 			{"value", "D4", 0.0},
 			{"value", "Distance", 0.0},
-			{"value", "Seed", 0.0}
+			{"seed", "Seed", 0.0}
 		},
 		[](CKernel &k, const std::vector<CInstructionIndex> &params)->CInstructionIndex
 		{
@@ -596,75 +596,22 @@ std::vector<NodeTypeDesc> g_nodeTypes=
 		}
 	},
 	
-	/*
-	"combine",
-			{
-				
-				"pow",
-				"minimum",
-				"maximum",
-				"bias",
-				"gain",
-				"mix",
-				"dx",
-				"dy",
-				"fractal"
-			}
-		},
+	{
+		"distort",
 		{
-			"scalarmath",
-			{
-				"abs",
-				"sin",
-				"cos",
-				"tan",
-				"asin",
-				"acos",
-				"atan",
-				"sigmoid",
-				"randomize"
-			}
+			{"seed", "Seed", 1234},
+			{"value", "Distort Func", 0},
+			{"value", "Distort Power", 1},
+			{"value", "Input", 0}
 		},
+		[](CKernel &k, const std::vector<CInstructionIndex> &params)->CInstructionIndex
 		{
-			"step",
-			{
-				"step",
-				"linearStep",
-				"smoothStep",
-				"smootherStep",
-				"tiers",
-				"smoothTiers",
-				"curveSection",
-			}
-		},
-		{
-			"basis",
-			{
-				"valueBasis",
-				"gradientBasis",
-				"simplexBasis",
-				"cellularBasis",
-				"x",
-				"y",
-				"radial",
-				"seeder"
-			}
-		},
-		{
-			"transform",
-			{
-				"scaleDomain",
-				"scaleX",
-				"scaleY",
-				"translateDomain",
-				"translateX",
-				"translateY",
-				"rotateDomain"
-			}
-		},
-		{
-			"color",
-			{
-				"combineRGBA",
-				"combineHSVA"*/
+			auto turb0=k.multiply(params[2], k.seeder(k.seed(0), params[1]));
+			auto turb1=k.multiply(params[2], k.seeder(k.seed(1), params[1]));
+			auto ty=k.translateY(params[3], turb0);
+			auto tx=k.translateX(ty, turb1);
+			
+			return k.seeder(params[0], tx);
+		}
+	},
 };

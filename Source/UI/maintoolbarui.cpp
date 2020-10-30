@@ -6,6 +6,7 @@
 #include "editmaskui.h"
 #include "nodegraphui.h"
 #include "waypointgroupui.h"
+#include "terrainsettingsui.h"
 
 #include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/Resource/XMLFile.h>
@@ -30,7 +31,7 @@ MainToolbarUI::MainToolbarUI(Context *context) : Object(context),
 {
 }
 
-void MainToolbarUI::Construct(EditHeightUI *eh, TerrainTexturingUI *tt, EditWaterUI *ew, SmoothHeightUI *sh, EditMaskUI *em, NodeGraphUI *ng, WaypointGroupUI *wp)
+void MainToolbarUI::Construct(EditHeightUI *eh, TerrainTexturingUI *tt, EditWaterUI *ew, SmoothHeightUI *sh, EditMaskUI *em, NodeGraphUI *ng, WaypointGroupUI *wp, TerrainSettingsUI *ts)
 {
 	editHeightUI_=eh;
 	terrainTexturingUI_=tt;
@@ -39,6 +40,7 @@ void MainToolbarUI::Construct(EditHeightUI *eh, TerrainTexturingUI *tt, EditWate
 	editMask_=em;
 	nodeGraph_=ng;
 	waypointGroups_=wp;
+	terrainSettings_=ts;
 
 	auto cache=GetSubsystem<ResourceCache>();
 	auto ui=GetSubsystem<UI>();
@@ -113,6 +115,10 @@ void MainToolbarUI::HandleToggled(StringHash eventType, VariantMap &eventData)
 	else if(name=="EditWaypoints")
 	{
 		waypointGroups_->SetVisible(state);
+	}
+	else if(name=="TerrainSettings")
+	{
+		terrainSettings_->SetVisible(state);
 	}
 
 /*

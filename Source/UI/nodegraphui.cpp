@@ -256,7 +256,8 @@ SharedPtr<UIElement> NodeGraphUI::CreateNodeCreateMenu(UIElement *parent)
 				"translateDomain",
 				"translateX",
 				"translateY",
-				"rotateDomain"
+				"rotateDomain",
+				"distort"
 			}
 		},
 		{
@@ -767,33 +768,6 @@ void NodeGraphUI::HandleExecute(StringHash eventType, VariantMap &eventData)
 		MaskSettings ms{um1,im1,um2,im2,um3,im3};
 		terrainContext_->SetWaterBuffer(arr, ms, blendop);
 	}
-	/*
-	
-	elseif target>=1 and target<=8 then
-		if not self.nodegroup then return end
-		local kernel=BuildANLFunction(self.nodegroup.output)
-		local arr=CArray2Dd(TerrainState:GetBlendWidth(), TerrainState:GetBlendHeight())
-		map2DNoZ(SEAMLESS_NONE,arr,kernel,SMappingRanges(0,1,0,1,0,1), kernel:lastIndex())
-		if rescale then arr:scaleToRange(low,high) end
-		TerrainState:SetLayerBuffer(arr,target-1,ms)
-		--self.nodemapping.visible=false
-		return
-	elseif target>=9 and target<=11 then
-		if not self.nodegroup then return end
-		local kernel=BuildANLFunction(self.nodegroup.output)
-		local arr=CArray2Dd(TerrainState:GetTerrainWidth(), TerrainState:GetTerrainHeight())
-		map2DNoZ(SEAMLESS_NONE,arr,kernel,SMappingRanges(0,1,0,1,0,1), kernel:lastIndex())
-		if rescale then arr:scaleToRange(low,high) end
-		print("Setting to mask "..target-9)
-		TerrainState:SetMaskBuffer(arr,target-9)
-	elseif target==12 then
-		if not self.nodegroup then return end
-		local kernel=BuildANLFunction(self.nodegroup.output)
-		local arr=CArray2Dd(TerrainState:GetTerrainWidth(), TerrainState:GetTerrainHeight())
-		map2DNoZ(SEAMLESS_NONE,arr,kernel,SMappingRanges(0,1,0,1,0,1), kernel:lastIndex())
-		if rescale then arr:scaleToRange(low,high) end
-		TerrainState:SetWaterBuffer(arr,ms,blendop)
-	end*/
 }
 
 void NodeGraphUI::HandleStore(StringHash eventType, VariantMap &eventData)

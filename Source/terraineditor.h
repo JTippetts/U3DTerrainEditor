@@ -36,6 +36,7 @@
 #include "UI/editmaskui.h"
 #include "UI/nodegraphui.h"
 #include "UI/waypointgroupui.h"
+#include "UI/terrainsettingsui.h"
 
 using namespace Urho3D;
 
@@ -68,6 +69,7 @@ private:
 	SharedPtr<EditMaskUI> editMask_;
 	SharedPtr<NodeGraphUI> nodeGraph_;
 	SharedPtr<WaypointGroupUI> waypointGroups_;
+	SharedPtr<TerrainSettingsUI> terrainSettings_;
 	
 	SharedPtr<MainToolbarUI> mainToolbar_;
 	
