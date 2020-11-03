@@ -61,11 +61,14 @@ class TerrainContext : public Object
 	void ClearMask();
 	void ClearWaterMap();
 	void Clear();
+	void Save(const String &path);
+	void Load(const String &path);
 	
 	void SetSpacing(const Vector3 &spacing);
 	
 	Vector2 WorldToNormalized(Vector3 world);
     Vector3 NormalizedToWorld(Vector2 normalized);
+	IntVector2 NormalizedToTerrain(Vector2 norm);
 	
 	Material *GetTerrainMaterial(){return terrainMaterial_;}
 	Image *GetHeightMap(){return &terrainMap_;}
@@ -104,7 +107,9 @@ class TerrainContext : public Object
 	void SetMaskBuffer(CArray2Dd &buffer, int which);
 	
 	IntVector2 GetTerrainMapSize(){return IntVector2(terrainMap_.GetWidth(), terrainMap_.GetHeight());}
-	IntVector2 GetBlendMapSize(){return IntVector2(blend0_.GetWidth(), blend0_.GetHeight());;}
+	IntVector2 GetBlendMapSize(){return IntVector2(blend0_.GetWidth(), blend0_.GetHeight());}
+	void GetSteepness(CArray2Dd &buffer, float threshold, float fade);
+	void GetCavityMap(CArray2Dd &buffer, float sampleradius, float scale, float bias, float intensity, unsigned int iterations);
 	
 	protected:
 	// Terrain
@@ -128,4 +133,6 @@ class TerrainContext : public Object
 	
 	void HandleBeginFrame(StringHash eventType, VariantMap &eventData);
 	float CalcSmooth(Image *height, float *kernel, int kernelsize, int terrainx, int terrainz);
+	bool LoadImage(const String &filename, Image &img);
+	float DoAmbientOcclusion(Vector2 tcoord, Vector2 uv, Vector3 p, Vector3 cnorm, float scale, float bias, float intensity);
 };

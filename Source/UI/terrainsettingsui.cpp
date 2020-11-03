@@ -146,10 +146,31 @@ void TerrainSettingsUI::SetVisible(bool vis)
 
 void TerrainSettingsUI::HandleSaveProject(StringHash eventType, VariantMap &eventData)
 {
+	String path=element_->GetChildDynamicCast<LineEdit>("ProjectPath", true)->GetText();
+	String dirname=element_->GetChildDynamicCast<LineEdit>("ProjectName", true)->GetText();
+	if(path[path.Length()-1] != '/') path=path+"/";
+	String fullpath=path+dirname;
+	
+	auto fs=GetSubsystem<FileSystem>();
+	if(!fs->DirExists(fullpath))
+	{
+		fs->CreateDir(fullpath);
+	}
+	
+	terrainContext_->Save(fullpath);
 }
 
 void TerrainSettingsUI::HandleLoadProject(StringHash eventType, VariantMap &eventData)
 {
+	String path=element_->GetChildDynamicCast<LineEdit>("ProjectPath", true)->GetText();
+	String dirname=element_->GetChildDynamicCast<LineEdit>("ProjectName", true)->GetText();
+	if(path[path.Length()-1] != '/') path=path+"/";
+	String fullpath=path+dirname;
+	
+	auto fs=GetSubsystem<FileSystem>();
+	if(!fs->DirExists(fullpath)) return;
+	
+	terrainContext_->Load(fullpath);
 }
 
 void TerrainSettingsUI::HandleClearProject(StringHash eventType, VariantMap &eventData)
@@ -243,10 +264,12 @@ void TerrainSettingsUI::HandlePickPathConfirm(StringHash eventType, VariantMap &
 
 void TerrainSettingsUI::Save(const String &fullpath)
 {
+	terrainContext_->Save(fullpath);
 }
 
 void TerrainSettingsUI::Load(const String &fullpath)
 {
+	terrainContext_->Load(fullpath);
 }
 
 SharedPtr<FileSelector> TerrainSettingsUI::CreateFileSelector(const String &title, const String &oktext, const String &canceltext, const String &initialPath)

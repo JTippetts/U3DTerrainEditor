@@ -39,6 +39,8 @@ class WaypointGroup : public Object
 	
 	String name_;
 	
+	std::vector<Vector3> GetKnots();
+	
 	protected:
 	Scene *scene_;
 	TerrainContext *terrainContext_;
@@ -60,6 +62,10 @@ class WaypointGroupUI : public Object
 	void Construct(Scene *scene, TerrainContext *tc, EditingCamera *cam);
 	void SetVisible(bool v);
 	bool IsVisible();
+	
+	std::vector<String> GetGroupNames();
+	std::vector<Vector3> GetGroupKnots(const String &group);
+	WaypointGroup *GetGroup(const String &name);
 	
 	protected:
 	Scene *scene_;

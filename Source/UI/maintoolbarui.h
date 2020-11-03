@@ -17,6 +17,7 @@ class EditMaskUI;
 class NodeGraphUI;
 class WaypointGroupUI;
 class TerrainSettingsUI;
+class FiltersUI;
 
 using namespace Urho3D;
 
@@ -26,7 +27,7 @@ class MainToolbarUI : public Object
 	public:
 	MainToolbarUI(Context *context);
 	
-	void Construct(EditHeightUI *eh, TerrainTexturingUI *tt, EditWaterUI *ew, SmoothHeightUI *sh, EditMaskUI *em, NodeGraphUI *ng, WaypointGroupUI *wp, TerrainSettingsUI *ts);
+	void Construct(EditHeightUI *eh, TerrainTexturingUI *tt, EditWaterUI *ew, SmoothHeightUI *sh, EditMaskUI *em, NodeGraphUI *ng, WaypointGroupUI *wp, TerrainSettingsUI *ts, FiltersUI *f);
 	void SetVisible(bool v);
 	bool IsVisible(){if(element_) return element_->IsVisible(); return false;}
 	
@@ -39,6 +40,7 @@ class MainToolbarUI : public Object
 	NodeGraphUI *nodeGraph_;
 	WaypointGroupUI *waypointGroups_;
 	TerrainSettingsUI *terrainSettings_;
+	FiltersUI *filters_;
 	
 	SharedPtr<UIElement> element_;
 	

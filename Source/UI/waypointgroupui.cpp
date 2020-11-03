@@ -113,6 +113,16 @@ void WaypointGroup::UpdateKnotHeights()
 	}
 }
 
+std::vector<Vector3> WaypointGroup::GetKnots()
+{
+	std::vector<Vector3> knots;
+	for(auto &c : knots_)
+	{
+		knots.push_back(c->GetPosition());
+	}
+	return knots;
+}
+
 void WaypointGroup::BuildRibbon()
 {
 	if(knots_.size()<2)
@@ -223,6 +233,38 @@ void WaypointGroupUI::SetVisible(bool v)
 bool WaypointGroupUI::IsVisible()
 {
 	return element_->IsVisible();
+}
+
+std::vector<String> WaypointGroupUI::GetGroupNames()
+{
+	std::vector<String> names;
+	for(auto &g : groups_)
+	{
+		names.push_back(g->name_);
+	}
+	return names;
+}
+
+std::vector<Vector3> WaypointGroupUI::GetGroupKnots(const String &group)
+{
+	for(auto &g : groups_)
+	{
+		if(g->name_==group)
+		{
+			return g->GetKnots();
+		}
+	}
+	
+	return std::vector<Vector3>();
+}
+
+WaypointGroup *WaypointGroupUI::GetGroup(const String &name)
+{
+	for(auto &g : groups_)
+	{
+		if(g->name_==name) return g;
+	}
+	return nullptr;
 }
 
 SharedPtr<WaypointGroup> WaypointGroupUI::CreateWaypointGroup(const String &name)

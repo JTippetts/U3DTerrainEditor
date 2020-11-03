@@ -2,6 +2,13 @@
 #include "Components/editingcamera.h"
 #include <Urho3D/IO/Log.h>
 #include <Urho3D/Resource/ResourceCache.h>
+#include <Urho3D/IO/File.h>
+#include <Urho3D/Math/Random.h>
+
+float rnd01()
+{
+	return (float)Rand() / 32767.0f;
+}
 
 void BalanceColors(Color &col0, Color &col1, int layer)
 {
@@ -187,6 +194,13 @@ Vector3 TerrainContext::NormalizedToWorld(Vector2 normalized)
     return Vector3(patchWorldOrigin.x_+normalized.x_*patchWorldSize.x_, 0, patchWorldOrigin.y_+normalized.y_*patchWorldSize.y_);
 }
 
+IntVector2 TerrainContext::NormalizedToTerrain(Vector2 norm)
+{
+    if(!terrain_) return IntVector2();
+
+    return IntVector2((int)(norm.x_ * (float)terrainMap_.GetWidth()), (int)(norm.y_ * (float)terrainMap_.GetHeight()));
+}
+
 BoundingBox TerrainContext::GetBoundingBox()
 {
 	BoundingBox bbox;
@@ -329,6 +343,49 @@ void TerrainContext::Clear()
 	ClearHeightMap();
 	ClearBlendMaps();
 	ClearMask();
+}
+void TerrainContext::Save(const String &path)
+{
+	terrainMap_.SavePNG(path+"/elevation.png");
+	blend0_.SavePNG(path+"/blend0.png");
+	blend1_.SavePNG(path+"/blend1.png");
+	mask_.SavePNG(path+"/mask.png");
+	waterMap_.SavePNG(path+"/water.png");
+	
+	// Export normalmap
+
+	Image img(context_);
+	img.SetSize(terrainMap_.GetWidth(), terrainMap_.GetHeight(),3);
+
+	for(int x=0; x<terrainMap_.GetWidth(); ++x)
+	{
+		for(int y=0; y<terrainMap_.GetHeight(); ++y)
+		{
+			float nx=(float)x/(float)(terrainMap_.GetWidth());
+			float ny=(float)y/(float)(terrainMap_.GetHeight());
+
+			Vector3 world=NormalizedToWorld(Vector2(nx,ny));
+			Vector3 norm=terrain_->GetNormal(world);
+			img.SetPixel(x,y,Color(norm.x_*0.5f + 0.5f, norm.z_*0.5f+0.5f, 1.0));
+		}
+	}
+	img.SavePNG(path+"/normalmap.png"); 
+}
+
+void TerrainContext::Load(const String &path)
+{
+	LoadImage(path+"/elevation.png", terrainMap_);
+	LoadImage(path+"/blend0.png", blend0_);
+	LoadImage(path+"/blend1.png", blend1_);
+	LoadImage(path+"/mask.png", mask_);
+	LoadImage(path+"/water.png", waterMap_);
+	
+	terrain_->ApplyHeightMap();
+	water_->ApplyHeightMap();
+	blend0Tex_->SetData(&blend0_, true);
+	blend1Tex_->SetData(&blend1_, true);
+	maskTex_->SetData(&mask_, true);
+	BuildWaterDepthTexture();
 }
 
 float TerrainContext::GetHeightValue(Vector3 worldpos)
@@ -1198,4 +1255,105 @@ void TerrainContext::SetWaterBuffer(CArray2Dd &buffer, MaskSettings &masksetting
     }
     water_->ApplyHeightMap();
 	BuildWaterDepthTexture();
+}
+
+bool TerrainContext::LoadImage(const String &filename, Image &img)
+{
+	File file(context_, filename);
+	return img.Load(file);
+}
+
+Vector2 reflect(Vector2 iv, Vector2 normal)
+{
+	return iv - normal*iv.DotProduct(normal)*2.0f;
+}
+
+Vector2 rot(Vector2 iv, Vector2 normal)
+{
+	return Vector2(iv.x_*normal.x_-iv.y_*normal.y_, iv.x_*normal.y_ + iv.y_*normal.x_);
+}
+
+float TerrainContext::DoAmbientOcclusion(Vector2 tcoord, Vector2 uv, Vector3 p, Vector3 cnorm, float scale, float bias, float intensity)
+{
+	//Vector3 diff=NormalizedToWorld(tcoord + uv) - p;
+	Vector2 np=tcoord+uv;
+	IntVector2 terr=NormalizedToTerrain(np);
+	Vector3 diff=Vector3(np.x_,np.y_,GetHeightValue(std::max(0,std::min(terrainMap_.GetWidth()-1,terr.x_)),std::max(0,std::min(terrainMap_.GetHeight()-1,terr.y_))))-p;
+	Vector3 v=diff;
+	v.Normalize();
+	float d=diff.Length()*scale;
+	return std::max(0.0f, cnorm.DotProduct(v)-bias)*(1.0f/(1.0f+d))*intensity;
+}
+
+void TerrainContext::GetCavityMap(CArray2Dd &buffer, float sampleradius, float scale, float bias, float intensity, unsigned int iterations)
+{
+	unsigned int tw=terrainMap_.GetWidth();
+    unsigned int th=terrainMap_.GetHeight();
+
+	buffer.resize(tw,th);
+	Vector2 vecs[4]={{0,1},{0,-1},{1,0},{-1,0}};
+	KISS rnd;
+	float pixsize=1.0f/(float)tw;
+
+    for(unsigned int y=0; y<th; ++y)
+    {
+        for(unsigned int x=0; x<tw; ++x)
+        {
+			float nx=(float)x/(float)tw;
+			float ny=(float)y/(float)th;
+			Vector2 nrm(nx,ny);
+			// Calculate position and normal
+			Vector3 pos=Vector3(nx,ny,GetHeightValue(x,y));
+			float p1=GetHeightValue(std::max(0,std::min((int)terrainMap_.GetWidth()-1, (int)x-1)), y);
+			float p2=GetHeightValue(std::max(0,std::min((int)terrainMap_.GetWidth()-1, (int)x+1)), y);
+			float p3=GetHeightValue(x, std::max(0,std::min((int)terrainMap_.GetHeight()-1, (int)y-1)));
+			float p4=GetHeightValue(x, std::max(0,std::min((int)terrainMap_.GetHeight()-1, (int)y+1)));
+			Vector3 normal((p1-p2)/(pixsize*10.0f),(p3-p4)/(pixsize*10.0f),1.0);
+			normal.Normalize();
+			float ao=0.0f;
+
+			for(unsigned int in=0; in<iterations; ++in)
+			{
+				float theta=(2.0f*3.141592f)*(float)rnd01();
+				Vector2 randvec(std::cos(theta), std::sin(theta));
+				for(unsigned int j=0; j<4; ++j)
+				{
+					Vector2 coord1=rot(vecs[j],randvec)*sampleradius;
+					Vector2 coord2=Vector2(coord1.x_*0.707f-coord1.y_*0.707f, coord1.x_*0.707f+coord1.y_*0.707f);
+
+					ao += DoAmbientOcclusion(nrm,coord1*0.25, pos, normal, scale, bias, intensity);
+					ao += DoAmbientOcclusion(nrm,coord2*0.5, pos, normal, scale, bias, intensity);
+					ao += DoAmbientOcclusion(nrm,coord1*0.75, pos, normal, scale, bias, intensity);
+					ao += DoAmbientOcclusion(nrm,coord2, pos, normal, scale, bias, intensity);
+				}
+			}
+			ao/=(float)iterations*16.0f;
+			buffer.set(x,y,ao);
+		}
+	}
+}
+
+void TerrainContext::GetSteepness(CArray2Dd &buffer, float threshold, float fade)
+{
+    unsigned int bw=blend0_.GetWidth();
+    unsigned int bh=blend0_.GetHeight();
+    float halffade=fade*0.5f;
+
+    buffer.resize(bw,bh);
+
+    for(unsigned int y=0; y<bh; ++y)
+    {
+        for(unsigned int x=0; x<bw; ++x)
+        {
+            Vector2 nworld=Vector2((float)(x)/(float)(bw-1), (float)(y)/(float)(bh-1));
+            Vector3 world=NormalizedToWorld(nworld);
+            Vector3 normal=terrain_->GetNormal(world);
+
+            float steep=std::abs(normal.y_);
+            float i=(steep-(threshold-halffade))/fade;
+            i=std::max(0.0f, std::min(1.0f, i));
+            i=1.0f-i;
+            buffer.set(x,(bh-1)-y, i);
+        }
+    }
 }
