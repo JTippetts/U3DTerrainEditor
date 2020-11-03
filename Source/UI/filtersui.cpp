@@ -23,6 +23,9 @@
 #include <Urho3D/IO/FileSystem.h>
 
 #include "../Filters/cavity.h"
+#include "../Filters/erosion.h"
+#include "../Filters/cliffify.h"
+#include "../Filters/fillbasins.h"
 
 FiltersUI::FiltersUI(Context *context) : Object(context),
 	selectedFilter_(nullptr)
@@ -57,7 +60,10 @@ void FiltersUI::Construct(TerrainContext *tc, WaypointGroupUI *wg)
 	
 	
 	// Add filters here
+	AddFilter<ErosionFilter>();
 	AddFilter<CavityFilter>();
+	AddFilter<CliffifyFilter>();
+	AddFilter<FillBasinsFilter>();
 	
 	BuildFilterList();
 }

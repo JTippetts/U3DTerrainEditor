@@ -72,6 +72,7 @@ class TerrainContext : public Object
 	
 	Material *GetTerrainMaterial(){return terrainMaterial_;}
 	Image *GetHeightMap(){return &terrainMap_;}
+	void GetHeightMap(CArray2Dd &buffer);
 	Image *GetWaterHeightMap(){return &waterMap_;}
 	void SetTerrainDirty(){terraindirty_=true;}
 	void SetWaterDirty(){waterdirty_=true;}
@@ -110,6 +111,7 @@ class TerrainContext : public Object
 	IntVector2 GetBlendMapSize(){return IntVector2(blend0_.GetWidth(), blend0_.GetHeight());}
 	void GetSteepness(CArray2Dd &buffer, float threshold, float fade);
 	void GetCavityMap(CArray2Dd &buffer, float sampleradius, float scale, float bias, float intensity, unsigned int iterations);
+	void FillBasins(CArray2Dd &arr, float E);
 	
 	protected:
 	// Terrain

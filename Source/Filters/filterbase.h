@@ -10,6 +10,7 @@
 
 #include "../UI/waypointgroupui.h"
 #include "../terraincontext.h"
+#include "../../ThirdParty/accidental-noise-library/anl.h"
 
 using namespace Urho3D;
 
