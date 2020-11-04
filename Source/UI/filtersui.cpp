@@ -27,6 +27,7 @@
 #include "../Filters/cliffify.h"
 #include "../Filters/fillbasins.h"
 #include "../Filters/roadbuilder.h"
+#include "../Filters/riverbuilder.h"
 
 FiltersUI::FiltersUI(Context *context) : Object(context),
 	selectedFilter_(nullptr)
@@ -66,6 +67,7 @@ void FiltersUI::Construct(TerrainContext *tc, WaypointGroupUI *wg)
 	AddFilter<CliffifyFilter>();
 	AddFilter<FillBasinsFilter>();
 	AddFilter<RoadBuilderFilter>();
+	AddFilter<RiverBuilderFilter>();
 	
 	BuildFilterList();
 }
@@ -73,6 +75,10 @@ void FiltersUI::Construct(TerrainContext *tc, WaypointGroupUI *wg)
 void FiltersUI::SetVisible(bool vis)
 {
 	if(element_) element_->SetVisible(vis);
+	if(vis)
+	{
+		if(selectedFilter_) selectedFilter_->RebuildSplineLists();
+	}
 }
 
 void FiltersUI::BuildFilterList()

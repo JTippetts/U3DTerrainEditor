@@ -102,7 +102,7 @@ void ApplyBedFunction(CArray2Dd *buffer, float hardness, bool quintic)
         for(int y=0; y<buffer->height(); ++y)
         {
             float v=(float)buffer->get(x,y);
-            float h=std::max(0.0f, std::min(1.0f,hardness));
+            float h=std::max(0.0f, std::min(0.9999f,hardness));
             v=std::abs(v*2.0f-1.0f);
             v=std::max(0.0f, std::min(1.0f, (v-1.0f)/(h-1.0f)));
             if(quintic) v=v*v*v*(v*(v*6.0f-15.0f)+10.0f);

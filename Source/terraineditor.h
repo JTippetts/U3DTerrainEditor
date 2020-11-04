@@ -49,6 +49,7 @@ class TerrainEditor : public Application
 public:
     /// Construct.
     TerrainEditor(Context* context);
+	~TerrainEditor()=default;
 
     /// Setup before engine initialization. Verify that a script file has been specified.
     virtual void Setup();

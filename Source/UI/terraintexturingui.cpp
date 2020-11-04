@@ -100,6 +100,87 @@ void TerrainTexturingUI::Construct(TerrainContext *tc, TerrainMaterialBuilder *t
 	SelectLayer(0);
 }
 
+void TerrainTexturingUI::Save(JSONObject &json)
+{
+	// Save settings
+	JSONObject settings;
+	
+	JSONArray diffuseLayers;
+	for(auto &l : diffuseLayerNames_)
+	{
+		diffuseLayers.Push(JSONValue(l));
+	}
+	settings["DiffuseLayers"]=diffuseLayers;
+	
+	JSONArray normalLayers;
+	for(auto &n : normalLayerNames_)
+	{
+		normalLayers.Push(JSONValue(n));
+	}
+	settings["NormalLayers"]=normalLayers;
+	
+	JSONArray layerScales;
+	for(auto s : layerScales_)
+	{
+		layerScales.Push(JSONValue(s));
+	}
+	settings["LayerScales"]=layerScales;
+	
+	json["TerrainTextureSettings"]=settings;
+}
+
+void TerrainTexturingUI::Load(const JSONObject &json)
+{
+	auto cache=GetSubsystem<ResourceCache>();
+	
+	if(json["TerrainTextureSettings"] && json["TerrainTextureSettings"]->IsObject())
+	{
+		const JSONObject &settings=json["TerrainTextureSettings"]->GetObject();
+		if(settings["DiffuseLayers"] && settings["DiffuseLayers"]->IsArray())
+		{
+			const JSONArray &diff=settings["DiffuseLayers"]->GetArray();
+			for(unsigned int c=0; c<std::min((int)diffuseLayerNames_.size(), (int)diff.Size()); c++)
+			{
+				diffuseLayerNames_[c]=diff[c].GetString();
+				Image *img=cache->GetResource<Image>(diff[c].GetString());
+				Image thumb(context_);
+				GenerateThumbnailImage(thumb, *img);
+				materialBuilder_->SetDiffuseTexture(c, *img);
+				CopyImage(thumb, *diffThumbnailImages_[c]);
+				layerThumbnailTex_[c]->SetData(diffThumbnailImages_[c], false);
+			}
+		}
+		
+		if(settings["NormalLayers"] && settings["NormalLayers"]->IsArray())
+		{
+			const JSONArray &normal=settings["NormalLayers"]->GetArray();
+			
+			for(unsigned int c=0; c<std::min((int)normalLayerNames_.size(), (int)normal.Size()); c++)
+			{
+				normalLayerNames_[c]=normal[c].GetString();
+				Image *img=cache->GetResource<Image>(normal[c].GetString());
+				Image thumb(context_);
+				GenerateThumbnailImage(thumb, *img);
+				materialBuilder_->SetNormalTexture(c, *img);
+				CopyImage(thumb, *normalThumbnailImages_[c]);
+			}
+		}
+		
+		if(settings["LayerScales"] && settings["LayerScales"]->IsArray())
+		{
+			const JSONArray &scales=settings["LayerScales"]->GetArray();
+			for(unsigned int c=0; c<std::min((int)layerScales_.size(), (int)scales.Size()); c++)
+			{
+				layerScales_[c]=scales[c].GetFloat();
+			}
+			SetLayerScales();
+		}
+	}
+	else
+	{
+	}
+}
+
 void TerrainTexturingUI::InitializeTextures()
 {
 	if(!materialBuilder_ || !element_) return;

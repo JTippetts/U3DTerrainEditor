@@ -1,16 +1,18 @@
-#include "roadbuilder.h"
+#include "riverbuilder.h"
 #include "../rasterization.h"
 
-RoadBuilderFilter::RoadBuilderFilter(Context *context,TerrainContext *tc, WaypointGroupUI *wg) : FilterBase(context, tc, wg)
+RiverBuilderFilter::RiverBuilderFilter(Context *context,TerrainContext *tc, WaypointGroupUI *wg) : FilterBase(context, tc, wg)
 {
-	name_="Road Builder";
-	description_="Construct a road along a spline strip.";
+	name_="River Builder";
+	description_="Construct a river bed along a spline strip.";
 	options_=
 	{
 		{"Spline: ", (unsigned int)OT_SPLINE},
-		{"Bed width: ", 16.0f},
+		{"Starting bed width: ", 32.0f},
+		{"Ending bed width: ", 64.f},
+		{"Starting depth: ", 0.1f},
+		{"Ending depth: ", 0.2f},
 		{"Bed hardness: ", 0.5f},
-		{"Paving width: ", 6.f},
 		{"Paving hardness: ", 0.5f},
 		{"Segment steps: ", 10.f},
 		{"Paving layer: ", {"Layer 0", "Layer 1", "Layer 2", "Layer 3", "Layer 4", "Layer 5", "Layer 6", "Layer 7"}},
@@ -23,15 +25,17 @@ RoadBuilderFilter::RoadBuilderFilter(Context *context,TerrainContext *tc, Waypoi
 	};
 }
 
-void RoadBuilderFilter::Execute()
+void RiverBuilderFilter::Execute()
 {
-	float bedwidth=options_[1].value_;
-	float bedhardness=options_[2].value_;
-	float pavingwidth=options_[3].value_;
-	float pavinghardness=options_[4].value_;
-	int segments=(int)options_[5].value_;
+	float startingbedwidth=options_[1].value_;
+	float endingbedwidth=options_[2].value_;
+	float startingdepth=options_[3].value_;
+	float endingdepth=options_[4].value_;
+	float bedhardness=options_[5].value_;
+	float pavinghardness=options_[6].value_;
+	int segments=(int)options_[7].value_;
 	
-	const String &sel=options_[6].listSelection_;
+	const String &sel=options_[8].listSelection_;
 	unsigned int which=0;
 	if(sel=="Layer 1") which=1;
 	else if(sel=="Layer 2") which=2;
@@ -41,7 +45,7 @@ void RoadBuilderFilter::Execute()
 	else if(sel=="Layer 6") which=6;
 	else if(sel=="Layer 7") which=7;
 	
-	MaskSettings ms(options_[6].flag_, options_[7].flag_, options_[8].flag_, options_[9].flag_, options_[10].flag_, options_[11].flag_);
+	MaskSettings ms(options_[9].flag_, options_[10].flag_, options_[11].flag_, options_[12].flag_, options_[13].flag_, options_[14].flag_);
 	
 	IntVector2 tsize=terrainContext_->GetTerrainMapSize();
 	CArray2Dd buffer(tsize.x_, tsize.y_);
@@ -62,8 +66,25 @@ void RoadBuilderFilter::Execute()
 	RasterVertexList curve;
 	TessellateLineList(&plist, &curve, segments);
 	
+	if(curve.size()==0) return;
+	float lastht=curve[0].val_;
+	for(unsigned int c=0; c<curve.size(); ++c)
+	{
+		auto &v=curve[c];
+		v.val_=std::min(lastht, v.val_);
+		lastht=v.val_;
+	}
+	
+	for(unsigned int c=0; c<curve.size(); ++c)
+	{
+		auto &v=curve[c];
+		float t=(float)c/(float)(curve.size()-1);
+		float deep=startingdepth+t*(endingdepth-startingdepth);
+		v.val_=std::max(0.0f, v.val_-deep);
+	}
+	
 	RasterVertexList quad;
-	BuildQuadStrip(&curve, &quad, bedwidth);
+	BuildQuadStripVarying(&curve, &quad, startingbedwidth, endingbedwidth);
 	RasterizeQuadStrip(&buffer, &quad);
 	
 	for(unsigned int c=0; c<quad.size(); ++c)
@@ -76,7 +97,7 @@ void RoadBuilderFilter::Execute()
 	terrainContext_->BlendHeightBuffer(buffer, blend, ms);
 	
 	quad.clear();
-	BuildQuadStrip(&curve, &quad, pavingwidth);
+	BuildQuadStripVarying(&curve, &quad, startingbedwidth, endingbedwidth);
 	blend.fill(0);
 
 	for(unsigned int c=0; c<quad.size(); ++c)

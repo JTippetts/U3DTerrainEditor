@@ -65,15 +65,16 @@ class TerrainContext : public Object
 	void Load(const String &path);
 	
 	void SetSpacing(const Vector3 &spacing);
+	Vector3 GetSpacing(){return spacing_;}
 	
 	Vector2 WorldToNormalized(Vector3 world);
     Vector3 NormalizedToWorld(Vector2 normalized);
 	IntVector2 NormalizedToTerrain(Vector2 norm);
 	
 	Material *GetTerrainMaterial(){return terrainMaterial_;}
-	Image *GetHeightMap(){return &terrainMap_;}
+	Image *GetHeightMap(){return terrainMap_;}
 	void GetHeightMap(CArray2Dd &buffer);
-	Image *GetWaterHeightMap(){return &waterMap_;}
+	Image *GetWaterHeightMap(){return waterMap_;}
 	void SetTerrainDirty(){terraindirty_=true;}
 	void SetWaterDirty(){waterdirty_=true;}
 	
@@ -107,7 +108,7 @@ class TerrainContext : public Object
     void BlendHeightBuffer(CArray2Dd &buffer, CArray2Dd &blend, MaskSettings &masksettings);
 	void SetMaskBuffer(CArray2Dd &buffer, int which);
 	
-	IntVector2 GetTerrainMapSize(){return IntVector2(terrainMap_.GetWidth(), terrainMap_.GetHeight());}
+	IntVector2 GetTerrainMapSize(){return (terrainMap_) ? IntVector2(terrainMap_->GetWidth(), terrainMap_->GetHeight()) : IntVector2(0,0);}
 	IntVector2 GetBlendMapSize(){return IntVector2(blend0_.GetWidth(), blend0_.GetHeight());}
 	void GetSteepness(CArray2Dd &buffer, float threshold, float fade);
 	void GetCavityMap(CArray2Dd &buffer, float sampleradius, float scale, float bias, float intensity, unsigned int iterations);
@@ -115,13 +116,13 @@ class TerrainContext : public Object
 	
 	protected:
 	// Terrain
-	Node *terrainNode_;
-	Terrain *terrain_;
+	SharedPtr<Node> terrainNode_;
+	SharedPtr<Terrain> terrain_;
 	Material *terrainMaterial_;
 	
 	// Water
-	Node *waterNode_;
-	Terrain *water_;
+	SharedPtr<Node> waterNode_;
+	SharedPtr<Terrain> water_;
 	Material *waterMaterial_;
 	
 	bool materialdirty_, watermaterialdirty_;
@@ -129,7 +130,8 @@ class TerrainContext : public Object
 	
 	Vector3 spacing_;
 	// Images
-	Image terrainMap_, waterMap_, blend0_, blend1_, mask_, waterDepth_;
+	SharedPtr<Image> terrainMap_, waterMap_;
+	Image blend0_, blend1_, mask_, waterDepth_;
 	SharedPtr<Texture2D> blend0Tex_, blend1Tex_, maskTex_, waterDepthTex_;
 	EditingCamera *camera_;
 	

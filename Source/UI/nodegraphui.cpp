@@ -31,6 +31,7 @@
 #include "nodedescriptors.h"
 #include "../format.h"
 #include "../filesaveload.h"
+#include "../jsonutilities.h"
 
 NodeGraphUI::NodeGraphUI(Context *context) : Object(context),
 	createMenu_(nullptr),
@@ -77,6 +78,256 @@ void NodeGraphUI::Construct(TerrainContext *tc)
 	element_->SetPosition(IntVector2(nodeGroupsList_->GetWidth(), 64));
 
 	SubscribeToEvent(StringHash("Update"), URHO3D_HANDLER(NodeGraphUI, HandleUpdate));
+}
+
+void NodeGraphUI::Save(JSONObject &json)
+{
+	auto graphics=GetSubsystem<Graphics>();
+	
+	JSONObject settings;
+	
+	auto FindSourceIndex=[&](const NodeGroup &group, NodeGraphLinkSource *e)->unsigned int
+	{
+		UIElement *s=e->GetRoot();
+		
+		for(unsigned int c=0; c<group.nodes_.size(); ++c)
+		{
+			if(s==group.nodes_[c]) return c;
+		}
+		return 0;
+	};
+	
+	JSONArray grouparr;
+	for(auto &g : nodeGroups_)
+	{
+		JSONObject jgrp;
+		jgrp["Name"]=g.name_;
+		JSONArray jnodes;
+		for(auto &n : g.nodes_)
+		{
+			// Store Type, Position, and Input Value constants.
+			JSONObject jnd;
+			IntVector2 cpos(-g.pane_->GetPosition().x_ + graphics->GetWidth()/2, -g.pane_->GetPosition().y_ + graphics->GetHeight()/2);
+			jnd["Position"]=JSONFromIntVector2(n->GetPosition());
+			jnd["Type"]=n->GetName();
+			
+			JSONArray jcons;
+			UIElement *inputs=n->GetChild("Inputs", true);
+			if(inputs)
+			{
+				const Vector<SharedPtr<UIElement>> &children=inputs->GetChildren();
+				for(int c=0; c<children.Size(); ++c)
+				{
+					LineEdit *val=children[c]->GetChildDynamicCast<LineEdit>(1);
+					if(val)
+					{
+						jcons.Push(JSONValue(val->GetText()));
+					}
+				}
+			}
+			jnd["InputValues"]=jcons;
+			jnodes.Push(jnd);
+		}
+		jgrp["Nodes"]=jnodes;
+		
+		// Save links
+		JSONArray jlinks;
+		//for(auto &n : g.nodes_)
+		for(unsigned int nd=0; nd<g.nodes_.size(); ++nd)
+		{
+			UIElement *n=g.nodes_[nd];
+			UIElement *inputs=n->GetChild("Inputs", true);
+			if(inputs)
+			{
+				const Vector<SharedPtr<UIElement>> &children=inputs->GetChildren();
+				for(int c=0; c<children.Size(); ++c)
+				{
+					NodeGraphLinkDest *input=children[c]->GetChildDynamicCast<NodeGraphLinkDest>(0);
+					if(input)
+					{
+						NodeGraphLink *lnk=input->GetLink();
+						if(lnk)
+						{
+							NodeGraphLinkSource *src=lnk->GetSource();
+							if(src)
+							{
+								JSONObject jlnk;
+								jlnk["DestNodeIndex"]=nd;
+								jlnk["DestNodeValueIndex"]=c;
+								jlnk["SourceNodeIndex"]=FindSourceIndex(g, src);
+								jlinks.Push(jlnk);
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		jgrp["Links"]=jlinks;
+		
+		JSONObject outputlink;
+		NodeGraphLinkDest *op=g.output_->GetChildDynamicCast<NodeGraphLinkDest>("Input0", true);
+		if(op)
+		{
+			NodeGraphLink *lnk=op->GetLink();
+			if(lnk)
+			{
+				NodeGraphLinkSource *src=lnk->GetSource();
+				if(src)
+				{
+					outputlink["SourceNodeIndex"]=FindSourceIndex(g, src);
+				}
+			}
+			else URHO3D_LOGINFO("No link on output node.");
+		}
+		else URHO3D_LOGINFO("Could not obtain input for output node.");
+		
+		jgrp["OutputLink"]=outputlink;
+		grouparr.Push(jgrp);
+	}
+	
+	settings["Groups"]=grouparr;
+	
+	json["NodeGroups"]=settings;
+}
+
+void NodeGraphUI::Load(const JSONObject &json)
+{
+	auto ui=GetSubsystem<UI>();
+	auto graphics=GetSubsystem<Graphics>();
+	// Remove groups
+	ListView *nlist=nodeGroupsList_->GetChildDynamicCast<ListView>("List", true);
+	nlist->RemoveAllItems();
+	nodeGroups_.clear();
+	
+	if(json["NodeGroups"] && json["NodeGroups"]->IsObject())
+	{
+		const JSONObject &settings=json["NodeGroups"]->GetObject();
+		if(settings["Groups"] && settings["Groups"]->IsArray())
+		{
+			const JSONArray &grouparr=settings["Groups"]->GetArray();
+			for(unsigned int c=0; c<grouparr.Size(); ++c)
+			{
+				if(grouparr[c].IsObject())
+				{
+					const JSONObject &jgrp=grouparr[c].GetObject();
+					const String &groupname=jgrp["Name"]->GetString();
+					NodeGroup *group=CreateNodeGroup(groupname);
+					if(group)
+					{
+						if(jgrp["Nodes"] && jgrp["Nodes"]->IsArray())
+						{
+							const JSONArray &jnodes=jgrp["Nodes"]->GetArray();
+							for(unsigned int d=0; d<jnodes.Size(); ++d)
+							{
+								const JSONObject &jnd=jnodes[d].GetObject();
+								IntVector2 pos=IntVector2FromJSON(*jnd["Position"]);
+								const String &type=jnd["Type"]->GetString();
+								
+								SharedPtr<UIElement> node=BuildNode(group, type);
+								if(node)
+								{
+									group->nodes_.push_back(node);
+									node->SetPosition(pos);
+									URHO3D_LOGINFO(String("pos: ") + String(pos.x_) + ", " + String(pos.y_));
+									//IntVector2 cpos(-group->pane_->GetPosition().x_ + graphics->GetWidth()/2, -group->pane_->GetPosition().y_ + graphics->GetHeight()/2);
+									//node->SetPosition(pos+cpos);
+									const JSONArray &jcons=jnd["InputValues"]->GetArray();
+									for(unsigned int e=0; e<jcons.Size(); ++e)
+									{
+										LineEdit *val=node->GetChildDynamicCast<LineEdit>(String("Value")+String(e), true);
+										if(val)
+										{
+											val->SetText(String(jcons[e].GetString()));
+										}
+										else URHO3D_LOGINFO(String("Could not obtain input ") + String(e));
+									}
+								}
+								else URHO3D_LOGINFO(String("Could not create node of type ")+type);
+							}
+						}
+						else URHO3D_LOGINFO("Nodes is not an array.");
+						
+						// Load links
+						if(jgrp["Links"] && jgrp["Links"]->IsArray())
+						{
+							const JSONArray &jlinks=jgrp["Links"]->GetArray();
+							for(unsigned int d=0; d<jlinks.Size(); ++d)
+							{
+								const JSONObject &jlnk=jlinks[d].GetObject();
+								int dest=jlnk["DestNodeIndex"]->GetInt();
+								int src=jlnk["SourceNodeIndex"]->GetInt();
+								int destval=jlnk["DestNodeValueIndex"]->GetInt();
+								
+								if(dest>=0 && dest<group->nodes_.size() && src>=0 && src<group->nodes_.size())
+								{
+									UIElement *srce=group->nodes_[src];
+									UIElement *dste=group->nodes_[dest];
+									
+									if(srce && dste)
+									{
+										NodeGraphLinkSource *ngls=srce->GetChildDynamicCast<NodeGraphLinkSource>("Output0", true);
+										if(ngls)
+										{
+											NodeGraphLinkDest *ngld=dste->GetChildDynamicCast<NodeGraphLinkDest>(String("Input")+String(destval), true);
+											if(ngld)
+											{
+												NodeGraphLink *link=group->linkPane_->CreateLink(ngls, ngld);
+												link->SetImageRect(IntRect(193,81,207,95));
+											}
+											else
+											{
+												URHO3D_LOGINFO(String("Could not obtain source input ") + String(destval) + " of node type " + dste->GetName());
+												URHO3D_LOGINFO(String("node has ") + String(dste->GetChild("Inputs", true)->GetNumChildren()) + " children. Their names are:");
+												for(unsigned int m=0; m<dste->GetChild("Inputs", true)->GetNumChildren(); ++m)
+												{
+													URHO3D_LOGINFO(dste->GetChild("Inputs", true)->GetChild(m)->GetChild(0)->GetName());
+												}
+											}
+										}
+										else URHO3D_LOGINFO("Could not get Output0");
+									}
+								}
+								else URHO3D_LOGINFO(String("node index out of bounds.") + String(src) + " " + String(dest));
+							}
+						}
+						else URHO3D_LOGINFO("No links array.");
+						
+						// Load output link
+						if(jgrp["OutputLink"] && jgrp["OutputLink"]->IsObject())
+						{
+							const JSONObject &jlink=jgrp["OutputLink"]->GetObject();
+							int src=jlink["SourceNodeIndex"]->GetInt();
+							if(src>=0 && src<group->nodes_.size())
+							{
+								UIElement *srce=group->nodes_[src];
+								if(srce)
+								{
+									NodeGraphLinkSource *ngls=srce->GetChildDynamicCast<NodeGraphLinkSource>("Output0", true);
+									if(ngls)
+									{
+										NodeGraphLinkDest *ngld=group->output_->GetChildDynamicCast<NodeGraphLinkDest>(String("Input0"), true);
+										if(ngld)
+										{
+											NodeGraphLink *link=group->linkPane_->CreateLink(ngls, ngld);
+											link->SetImageRect(IntRect(193,81,207,95));
+										}
+									}
+								}
+								else URHO3D_LOGINFO("Could not get output linked source.");
+							}
+						}
+						else URHO3D_LOGINFO("No output link setting.");
+					}
+					else URHO3D_LOGINFO("Could not create group.");
+				}
+				else URHO3D_LOGINFO("Group def is not an object.");
+			}
+		}
+		else URHO3D_LOGINFO("Groups is not an array.");
+	}
+	else URHO3D_LOGINFO("NodeGroups is not an object.");
+	
 }
 
 void NodeGraphUI::SetVisible(bool vis)

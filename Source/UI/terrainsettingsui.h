@@ -52,9 +52,7 @@ class TerrainSettingsUI : public Object
 	void HandleSaveProject(StringHash eventType, VariantMap &eventData);
 	void HandleLoadProject(StringHash eventType, VariantMap &eventData);
 	void HandleClearProject(StringHash eventType, VariantMap &eventData);
-	void HandleApplyTerrainSpacing(StringHash eventType, VariantMap &eventData);
-	void HandleApplyTerrainHeight(StringHash eventType, VariantMap &eventData);
-	void HandleApplyTerrainSize(StringHash eventType, VariantMap &eventData);
+	void HandleApplyTerrainSettings(StringHash eventType, VariantMap &eventData);
 	void HandleShowColorChooser(StringHash eventType, VariantMap &eventData);
 	void HandleHideColorChooser(StringHash eventType, VariantMap &eventData);
 	void HandleUpdate(StringHash eventType, VariantMap &eventData);

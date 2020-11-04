@@ -82,7 +82,7 @@ void TerrainEditor::Start()
 	
 	input->SetMouseVisible(true);
 	
-	scene_=new Scene(context_);
+	scene_=SharedPtr<Scene>(new Scene(context_));
 	scene_->CreateComponent<Octree>();
 	
 	// Setup camera
@@ -152,7 +152,7 @@ void TerrainEditor::Start()
 
 void TerrainEditor::Stop()
 {
-
+	terrainContext_.Reset();
 }
 
 void TerrainEditor::HandleUpdate(StringHash eventType, VariantMap &eventData)

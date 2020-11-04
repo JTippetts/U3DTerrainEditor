@@ -19,6 +19,8 @@
 #include <Urho3D/UI/Button.h>
 #include <Urho3D/UI/Slider.h>
 #include <Urho3D/IO/FileSystem.h>
+#include <Urho3D/Resource/JSONFile.h>
+#include <Urho3D/Resource/JSONValue.h>
 
 #include "../terraincontext.h"
 #include "nodegraphui.h"
@@ -26,6 +28,8 @@
 #include "../Components/editingcamera.h"
 #include "terraintexturingui.h"
 #include "editmaskui.h"
+
+#include "../jsonutilities.h"
 
 TerrainSettingsUI::TerrainSettingsUI(Context *context) : Object(context),
 	scene_(nullptr),
@@ -134,6 +138,8 @@ void TerrainSettingsUI::Construct(Scene *scene, EditingCamera *cam, TerrainConte
 	
 	SubscribeToEvent(element_->GetChild("PickPath", true), StringHash("Pressed"), URHO3D_HANDLER(TerrainSettingsUI, HandlePickPath));
 	
+	SubscribeToEvent(element_->GetChild("ApplyTerrainSettings", true), StringHash("Pressed"), URHO3D_HANDLER(TerrainSettingsUI, HandleApplyTerrainSettings));
+	
 	element_->GetChildDynamicCast<LineEdit>("ProjectPath", true)->SetText(GetSubsystem<FileSystem>()->GetUserDocumentsDir());
 	
 	SubscribeToEvent(StringHash("Update"), URHO3D_HANDLER(TerrainSettingsUI, HandleUpdate));
@@ -157,7 +163,8 @@ void TerrainSettingsUI::HandleSaveProject(StringHash eventType, VariantMap &even
 		fs->CreateDir(fullpath);
 	}
 	
-	terrainContext_->Save(fullpath);
+	//terrainContext_->Save(fullpath);
+	Save(fullpath);
 }
 
 void TerrainSettingsUI::HandleLoadProject(StringHash eventType, VariantMap &eventData)
@@ -170,23 +177,28 @@ void TerrainSettingsUI::HandleLoadProject(StringHash eventType, VariantMap &even
 	auto fs=GetSubsystem<FileSystem>();
 	if(!fs->DirExists(fullpath)) return;
 	
-	terrainContext_->Load(fullpath);
+	//terrainContext_->Load(fullpath);
+	Load(fullpath);
 }
 
 void TerrainSettingsUI::HandleClearProject(StringHash eventType, VariantMap &eventData)
 {
 }
 
-void TerrainSettingsUI::HandleApplyTerrainSpacing(StringHash eventType, VariantMap &eventData)
+void TerrainSettingsUI::HandleApplyTerrainSettings(StringHash eventType, VariantMap &eventData)
 {
-}
-
-void TerrainSettingsUI::HandleApplyTerrainHeight(StringHash eventType, VariantMap &eventData)
-{
-}
-
-void TerrainSettingsUI::HandleApplyTerrainSize(StringHash eventType, VariantMap &eventData)
-{
+	if(!terrainContext_ || !element_) return;
+	
+	int size=ToInt(element_->GetChildDynamicCast<LineEdit>("TerrainSize", true)->GetText());
+	int layersize=ToInt(element_->GetChildDynamicCast<LineEdit>("LayerSize", true)->GetText());
+	float spacing=ToFloat(element_->GetChildDynamicCast<LineEdit>("TerrainSpacing", true)->GetText());
+	float height=ToFloat(element_->GetChildDynamicCast<LineEdit>("TerrainHeight", true)->GetText());
+	
+	Vector3 space(spacing,height,spacing);
+	terrainContext_->SetSpacing(space);
+	terrainContext_->SetHeightMapSize(IntVector2(size,size));
+	terrainContext_->SetBlendMapSize(IntVector2(layersize,layersize));
+	terrainContext_->SetMaskSize(IntVector2(layersize,layersize));
 }
 
 void TerrainSettingsUI::HandleShowColorChooser(StringHash eventType, VariantMap &eventData)
@@ -265,11 +277,99 @@ void TerrainSettingsUI::HandlePickPathConfirm(StringHash eventType, VariantMap &
 void TerrainSettingsUI::Save(const String &fullpath)
 {
 	terrainContext_->Save(fullpath);
+	JSONFile jfile(context_);
+	
+	JSONObject json;
+	
+	// Save settings
+	terrainTexturing_->Save(json);
+	nodeGraph_->Save(json);
+	
+	JSONObject lighting;
+	
+	lighting["MainLightColor"]=JSONFromColor(mainLight_->GetColor());
+	lighting["BackLightColor"]=JSONFromColor(backLight_->GetColor());
+	lighting["AmbientColor"]=JSONFromColor(zone_->GetAmbientColor());
+	lighting["FogColor"]=JSONFromColor(zone_->GetFogColor());
+	lighting["FogNear"]=JSONValue(zone_->GetFogStart());
+	lighting["FogFar"]=JSONValue(zone_->GetFogEnd());
+	
+	json["LightingSettings"]=lighting;
+	
+	json["TerrainSpacing"]=JSONFromVector3(terrainContext_->GetSpacing());
+	
+	File settings(context_);
+	if(settings.Open(fullpath+"/settings.json", FILE_WRITE))
+	{
+		jfile.GetRoot()=json;
+		jfile.Save(settings);
+	}
+	settings.Close();
 }
 
 void TerrainSettingsUI::Load(const String &fullpath)
 {
+	auto cache=GetSubsystem<ResourceCache>();
+	
 	terrainContext_->Load(fullpath);
+	
+	JSONFile jfile(context_);
+	
+	File settings(context_);
+	if(settings.Open(fullpath+"/settings.json", FILE_READ))
+	{
+		jfile.Load(settings);
+		
+		const JSONObject &json=jfile.GetRoot().GetObject();
+		
+		terrainTexturing_->Load(json);
+		nodeGraph_->Load(json);
+		
+		if(json["LightingSettings"] && json["LightingSettings"]->IsObject())
+		{
+			const JSONObject &lighting=json["LightingSettings"]->GetObject();
+			Color mlc=(lighting["MainLightColor"]) ? ColorFromJSON(*lighting["MainLightColor"]) : mainLight_->GetColor();
+			Color blc=(lighting["BackLightColor"]) ? ColorFromJSON(*lighting["BackLightColor"]) : backLight_->GetColor();
+			Color ac=(lighting["AmbientColor"]) ? ColorFromJSON(*lighting["AmbientColor"]) : zone_->GetAmbientColor();
+			Color fc=(lighting["FogColor"]) ? ColorFromJSON(*lighting["FogColor"]) : zone_->GetFogColor();
+			float fn=(lighting["FogNear"]) ? lighting["FogNear"]->GetFloat() : zone_->GetFogStart();
+			float ff=(lighting["FogFar"]) ? lighting["FogFar"]->GetFloat() : zone_->GetFogEnd();
+			
+			mainLight_->SetColor(mlc);
+			backLight_->SetColor(blc);
+			zone_->SetAmbientColor(ac);
+			zone_->SetFogColor(fc);
+			zone_->SetFogStart(fn);
+			zone_->SetFogEnd(ff);
+			camera_->SetFarClip(ff);
+			
+			Button *mainLightButton=element_->GetChildDynamicCast<Button>("MainLight", true);
+			Button *backLightButton=element_->GetChildDynamicCast<Button>("BackLight", true);
+			Button *ambientLightButton=element_->GetChildDynamicCast<Button>("Ambient", true);
+			Button *fogLightButton=element_->GetChildDynamicCast<Button>("Fog", true);
+			
+			mainLightButton->SetColor(mlc);
+			backLightButton->SetColor(blc);
+			ambientLightButton->SetColor(ac);
+			fogLightButton->SetColor(fc);
+			
+			mainChooser_.SetColor(mlc);
+			backChooser_.SetColor(blc);
+			ambientChooser_.SetColor(ac);
+			fogChooser_.SetColor(fc);
+			
+			Slider *nearfog=element_->GetChildDynamicCast<Slider>("NearFog", true);
+			Slider *farfog=element_->GetChildDynamicCast<Slider>("FarFog", true);
+			
+			nearfog->SetValue((fn/1024.f)*nearfog->GetRange());
+			farfog->SetValue((ff/512.f)*farfog->GetRange());
+		}
+		if(json["TerrainSpacing"] && json["TerrainSpacing"]->IsArray())
+		{
+			Vector3 spc=Vector3FromJSON(json["TerrainSpacing"]->GetArray());
+			terrainContext_->SetSpacing(spc);
+		}
+	}
 }
 
 SharedPtr<FileSelector> TerrainSettingsUI::CreateFileSelector(const String &title, const String &oktext, const String &canceltext, const String &initialPath)

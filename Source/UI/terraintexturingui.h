@@ -9,6 +9,7 @@
 #include <Urho3D/Resource/Image.h>
 #include <Urho3D/Graphics/Texture2D.h>
 #include <Urho3D/UI/FileSelector.h>
+#include <Urho3D/Resource/JSONValue.h>
 #include <vector>
 
 #include "../terraincontext.h"
@@ -27,6 +28,9 @@ class TerrainTexturingUI : public Object
 	void Construct(TerrainContext *tc, TerrainMaterialBuilder *tmb, AlphaBrushSelectorUI *abs, EditingCamera *camera);
 	void SetVisible(bool v);
 	bool IsVisible(){if(element_) return element_->IsVisible(); return false;}
+	
+	void Save(JSONObject &json);
+	void Load(const JSONObject &json);
 	
 	protected:
 	TerrainContext *terrainContext_;

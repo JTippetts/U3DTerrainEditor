@@ -12,6 +12,7 @@
 #include <Urho3D/UI/Menu.h>
 #include <Urho3D/UI/UIElement.h>
 #include <Urho3D/Graphics/Texture2D.h>
+#include <Urho3D/Resource/JSONValue.h>
 #include <vector>
 
 #include "../NodeGraphLink.h"
@@ -44,6 +45,8 @@ class NodeGraphUI : public Object
 	void Construct(TerrainContext *tc);
 	void SetVisible(bool vis);
 	bool IsVisible(){if(element_) return element_->IsVisible(); return false;}
+	void Save(JSONObject &json);
+	void Load(const JSONObject &json);
 	
 	protected:
 	

@@ -5,6 +5,7 @@
 #include <Urho3D/Core/Object.h>
 #include <Urho3D/Core/Context.h>
 #include <Urho3D/UI/UIElement.h>
+#include <Urho3D/UI/DropDownList.h>
 
 #include <vector>
 
@@ -36,12 +37,14 @@ struct FilterOption
 	String listSelection_;
 	std::vector<Vector3> splineKnots_;
 	
-	FilterOption() : type_(OT_VALUE), value_(0){}
-	FilterOption(const String &name, unsigned int type) : type_(type), name_(name), value_(0), flag_(false){}
-	FilterOption(const String &name, float value) : type_(OT_VALUE), name_(name), value_(value){}
-	FilterOption(const String &name, bool flag) : type_(OT_FLAG), name_(name), flag_(flag){}
-	FilterOption(const String &name, const String &s) : type_(OT_STRING), name_(name), string_(s){}
-	FilterOption(const String &name, const std::vector<String> &s) : type_(OT_LIST), name_(name), listEntries_(s){}
+	DropDownList *splinelist_;
+	
+	FilterOption() : type_(OT_VALUE), value_(0), splinelist_(nullptr){}
+	FilterOption(const String &name, unsigned int type) : type_(type), name_(name), value_(0), flag_(false), splinelist_(nullptr){}
+	FilterOption(const String &name, float value) : type_(OT_VALUE), name_(name), value_(value), splinelist_(nullptr){}
+	FilterOption(const String &name, bool flag) : type_(OT_FLAG), name_(name), flag_(flag), splinelist_(nullptr){}
+	FilterOption(const String &name, const String &s) : type_(OT_STRING), name_(name), string_(s), splinelist_(nullptr){}
+	FilterOption(const String &name, const std::vector<String> &s) : type_(OT_LIST), name_(name), listEntries_(s), splinelist_(nullptr){}
 };
 
 class FilterBase : public Object
@@ -54,6 +57,7 @@ class FilterBase : public Object
 	virtual void Execute()=0;
 	const String &GetName(){return name_;}
 	const String &GetDescription(){return description_;}
+	void RebuildSplineLists();
 	void GatherOptions();
 	
 	protected:
