@@ -3,6 +3,8 @@
 // Rasterization
 
 #include <vector>
+#include "../ThirdParty/accidental-noise-library/anl.h"
+using namespace anl;
 
 struct RasterVertex
 {
@@ -65,3 +67,6 @@ typedef std::vector<RasterVertex> RasterVertexList;
 void TessellateLineList(RasterVertexList *in, RasterVertexList *out, int steps);
 void BuildQuadStrip(RasterVertexList *in, RasterVertexList *out, float width);
 void BuildQuadStripVarying(RasterVertexList *in, RasterVertexList *out, float startwidth, float endwidth);
+void RasterizeQuadStrip(CArray2Dd *buffer, RasterVertexList *strip);
+void RasterizeTriangle(CArray2Dd *buffer, RasterVertex v0, RasterVertex v1, RasterVertex v2);
+void ApplyBedFunction(CArray2Dd *buffer, float hardness, bool quintic);

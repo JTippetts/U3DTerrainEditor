@@ -26,6 +26,7 @@
 #include "../Filters/erosion.h"
 #include "../Filters/cliffify.h"
 #include "../Filters/fillbasins.h"
+#include "../Filters/roadbuilder.h"
 
 FiltersUI::FiltersUI(Context *context) : Object(context),
 	selectedFilter_(nullptr)
@@ -64,6 +65,7 @@ void FiltersUI::Construct(TerrainContext *tc, WaypointGroupUI *wg)
 	AddFilter<CavityFilter>();
 	AddFilter<CliffifyFilter>();
 	AddFilter<FillBasinsFilter>();
+	AddFilter<RoadBuilderFilter>();
 	
 	BuildFilterList();
 }
