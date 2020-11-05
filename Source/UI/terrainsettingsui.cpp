@@ -63,10 +63,12 @@ void TerrainSettingsUI::Construct(Scene *scene, EditingCamera *cam, TerrainConte
 	
 	auto ui=GetSubsystem<UI>();
 	auto cache=GetSubsystem<ResourceCache>();
+	auto graphics=GetSubsystem<Graphics>();
 	
 	element_=ui->LoadLayout(cache->GetResource<XMLFile>("UI/TerrainSettings.xml"), cache->GetResource<XMLFile>("UI/DefaultStyle.xml"));
 	element_->SetVisible(false);
 	ui->GetRoot()->GetChild("Base", true)->AddChild(element_);
+	element_->SetPosition(IntVector2(0, graphics->GetHeight()-element_->GetHeight()));
 	
 	mainLightNode_=scene->CreateChild();
 	backLightNode_=scene->CreateChild();

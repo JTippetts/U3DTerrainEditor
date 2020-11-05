@@ -51,6 +51,7 @@ void SmoothHeightUI::Construct(TerrainContext *tc, TerrainMaterialBuilder *tmb, 
 		element_->GetChildDynamicCast<BorderImage>("BrushPreview", true)->SetTexture(brushPreviewTex_);
 		GenerateBrushPreview();
 		SetBrushUIFields();
+		element_->SetPosition(IntVector2(0, graphics->GetHeight()-element_->GetHeight()));
 
 		SubscribeToEvent(element_->GetChild("PowerSlider", true), StringHash("SliderChanged"), URHO3D_HANDLER(SmoothHeightUI, HandleSliderChanged));
 		SubscribeToEvent(element_->GetChild("RadiusSlider", true), StringHash("SliderChanged"), URHO3D_HANDLER(SmoothHeightUI, HandleSliderChanged));

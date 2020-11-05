@@ -55,7 +55,6 @@ void FiltersUI::Construct(TerrainContext *tc, WaypointGroupUI *wg)
 	optionswindow_->SetMinWidth(element_->GetChildDynamicCast<ScrollView>("OptionsWindow", true)->GetWidth()-16);
 	
 	SubscribeToEvent(element_->GetChild("ExecuteButton", true), StringHash("Pressed"), URHO3D_HANDLER(FiltersUI, HandleExecuteButton));
-	SubscribeToEvent(element_->GetChild("CloseButton", true), StringHash("Pressed"), URHO3D_HANDLER(FiltersUI, HandleCloseButton));
 	SubscribeToEvent(element_->GetChild("List", true), StringHash("ItemSelected"), URHO3D_HANDLER(FiltersUI, HandleItemSelected));
 	
 	element_->SetPosition(IntVector2(graphics->GetWidth()/2-element_->GetWidth()/2, graphics->GetHeight()/2-element_->GetHeight()/2));

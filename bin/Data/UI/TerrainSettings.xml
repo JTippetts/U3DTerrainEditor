@@ -21,18 +21,6 @@
 			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
 			<attribute name="Text" value="Terrain and Light Settings" />
 		</element>
-		<element type="Button" style="CloseButton">
-			<attribute name="Name" value="Close" />
-			<attribute name="Min Size" value="16 16" />
-			<attribute name="Max Size" value="16 16" />
-			<attribute name="Pivot" value="0 0" />
-			<attribute name="Focus Mode" value="NotFocusable" />
-			<attribute name="Image Rect" value="144 0 160 16" />
-			<attribute name="Border" value="4 4 4 4" />
-			<attribute name="Hover Image Offset" value="0 16" />
-			<attribute name="Pressed Image Offset" value="16 0" />
-			<attribute name="Pressed Child Offset" value="-1 1" />
-		</element>
 	</element>
 	<element>
 		<attribute name="Name" value="Spacer" />

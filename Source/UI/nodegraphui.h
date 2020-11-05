@@ -99,4 +99,5 @@ class NodeGraphUI : public Object
 	void HandleDragEnd(StringHash eventType, VariantMap &eventData);
 	void HandleUpdate(StringHash eventType, VariantMap &eventData);
 	void HandleCloseNode(StringHash eventType, VariantMap &eventData);
+	void HandleMapGroup(StringHash eventType, VariantMap &eventData);
 };

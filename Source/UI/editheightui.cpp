@@ -52,6 +52,8 @@ void EditHeightUI::Construct(TerrainContext *tc, TerrainMaterialBuilder *tmb, Al
 		element_->GetChildDynamicCast<BorderImage>("BrushPreview", true)->SetTexture(brushPreviewTex_);
 		GenerateBrushPreview();
 		SetBrushUIFields();
+		
+		element_->SetPosition(IntVector2(104, graphics->GetHeight()-element_->GetHeight()));
 
 		SubscribeToEvent(element_->GetChild("PowerSlider", true), StringHash("SliderChanged"), URHO3D_HANDLER(EditHeightUI, HandleSliderChanged));
 		SubscribeToEvent(element_->GetChild("RadiusSlider", true), StringHash("SliderChanged"), URHO3D_HANDLER(EditHeightUI, HandleSliderChanged));

@@ -68,6 +68,7 @@ void NodeGraphUI::Construct(TerrainContext *tc)
 	SubscribeToEvent(nodeGroupsList_->GetChild("New", true), StringHash("Pressed"), URHO3D_HANDLER(NodeGraphUI, HandleNewGroup));
 	SubscribeToEvent(nodeGroupsList_->GetChild("Edit", true), StringHash("Pressed"), URHO3D_HANDLER(NodeGraphUI, HandleEditGroup));
 	SubscribeToEvent(nodeGroupsList_->GetChild("Delete", true), StringHash("Pressed"), URHO3D_HANDLER(NodeGraphUI, HandleDeleteGroup));
+	SubscribeToEvent(nodeGroupsList_->GetChild("Map", true), StringHash("Pressed"), URHO3D_HANDLER(NodeGraphUI, HandleMapGroup));
 
 	SubscribeToEvent(nodeGroupsList_->GetChild("List", true), StringHash("ItemSelected"), URHO3D_HANDLER(NodeGraphUI, HandleGroupSelected));
 	nodeGroupsList_->SetPosition(IntVector2(0,graphics->GetHeight()-nodeGroupsList_->GetHeight()));
@@ -961,6 +962,11 @@ void NodeGraphUI::HandleGenerate(StringHash eventType, VariantMap &eventData)
 	selectedNodeGroup_->histoTex_->SetData(selectedNodeGroup_->histoImage_, false);
 	selectedNodeGroup_->output_->GetChildDynamicCast<Text>("LowValue", true)->SetText("%.4f"_fmt(minmax.x_));
 	selectedNodeGroup_->output_->GetChildDynamicCast<Text>("HighValue", true)->SetText("%.4f"_fmt(minmax.y_));
+}
+
+void NodeGraphUI::HandleMapGroup(StringHash eventType, VariantMap &eventData)
+{
+	HandleExecute(eventType, eventData);
 }
 
 void NodeGraphUI::HandleExecute(StringHash eventType, VariantMap &eventData)

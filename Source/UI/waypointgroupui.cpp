@@ -200,7 +200,7 @@ void WaypointGroupUI::Construct(Scene *scene, TerrainContext *tc, EditingCamera 
 	
 	element_=ui->LoadLayout(cache->GetResource<XMLFile>("UI/SplineGroups.xml"), style);
 	element_->SetVisible(false);
-	element_->SetPosition(IntVector2(graphics->GetWidth()-element_->GetWidth(), graphics->GetHeight()-element_->GetHeight()));
+	element_->SetPosition(IntVector2(0, graphics->GetHeight()-element_->GetHeight()));
 	ui->GetRoot()->GetChild("Base", true)->AddChild(element_);
 	
 	

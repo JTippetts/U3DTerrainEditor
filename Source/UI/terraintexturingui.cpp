@@ -62,6 +62,7 @@ void TerrainTexturingUI::Construct(TerrainContext *tc, TerrainMaterialBuilder *t
 		element_->GetChildDynamicCast<BorderImage>("BrushPreview", true)->SetTexture(brushPreviewTex_);
 		GenerateBrushPreview();
 		SetBrushUIFields();
+		element_->SetPosition(IntVector2(104, graphics->GetHeight()-element_->GetHeight()));
 
 		SubscribeToEvent(element_->GetChild("PowerSlider", true), StringHash("SliderChanged"), URHO3D_HANDLER(TerrainTexturingUI, HandleSliderChanged));
 		SubscribeToEvent(element_->GetChild("RadiusSlider", true), StringHash("SliderChanged"), URHO3D_HANDLER(TerrainTexturingUI, HandleSliderChanged));
