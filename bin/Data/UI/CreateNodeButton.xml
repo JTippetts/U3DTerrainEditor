@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<element type="Window">
+	<attribute name="Position" value="512 384" />
+	<attribute name="Size" value="64 64" />
+	<attribute name="Pivot" value="0 0" />
+	<attribute name="Layout Mode" value="Horizontal" />
+	<element type="Menu">
+		<attribute name="Name" value="Menu" />
+		<attribute name="Min Size" value="64 64" />
+		<attribute name="Max Size" value="64 64" />
+		<attribute name="Pivot" value="0 0" />
+		<attribute name="Texture" value="Texture2D;Textures/toolbar.png" />
+		<attribute name="Image Rect" value="256 128 320 192" />
+		<attribute name="Hover Image Offset" value="0 64" />
+		<attribute name="Pressed Image Offset" value="0 0" />
+	</element>
+</element>

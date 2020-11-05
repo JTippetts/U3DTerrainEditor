@@ -1,0 +1,10 @@
+<material>
+    <technique name="Techniques/TerrainEdit8TriPlanarSmoothReduce.xml" />
+	
+    <parameter name="MatSpecColor" value="0.5 0.5 0.5 16" />
+    <parameter name="DetailTiling" value="4 4 4" />
+	<parameter name="BumpStrength" value="128" />
+	<parameter name="LayerScaling1" value="1 1 1 1" />
+	<parameter name="LayerScaling2" value="1 1 1 0.125" />
+	<shadowcull value="cw" />
+</material>
