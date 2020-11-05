@@ -1,4 +1,0 @@
-<material>
-	<technique name="Techniques/NoTextureVColMultiply.xml" />
-	<parameter name="MatSpecColor" value="0.1 0.1 0.1 16" />
-</material>

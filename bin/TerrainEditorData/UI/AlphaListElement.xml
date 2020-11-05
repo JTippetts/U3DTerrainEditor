@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-<element>
-	<attribute name="Size" value="80 400" />
-	<attribute name="Min Size" value="80 400" />
-	<attribute name="Max Size" value="80 10000000" />
-	<attribute name="Pivot" value="0 0" />
-	<attribute name="Layout Mode" value="Vertical" />
-</element>

@@ -1,8 +1,0 @@
-<material>
-    <technique name="Techniques/NoTextureGrass.xml" />
-    <parameter name="MatDiffColor" value="1 1 1 0.25" />
-    <parameter name="MatSpecColor" value="1 1 1 16" />
-	<cull value="none" />
-    <shadowcull value="none" />
-	<texture unit="diffuse" name="Textures/grass4.png" />
-</material>

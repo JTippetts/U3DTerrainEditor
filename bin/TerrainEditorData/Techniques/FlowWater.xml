@@ -1,3 +1,0 @@
-<technique vs="FlowWater" ps="FlowWater">
-    <pass name="refract" />
-</technique>
