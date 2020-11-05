@@ -196,9 +196,7 @@ void NodeGraphUI::Load(const JSONObject &json)
 	auto ui=GetSubsystem<UI>();
 	auto graphics=GetSubsystem<Graphics>();
 	// Remove groups
-	ListView *nlist=nodeGroupsList_->GetChildDynamicCast<ListView>("List", true);
-	nlist->RemoveAllItems();
-	nodeGroups_.clear();
+	Clear();
 	
 	if(json["NodeGroups"] && json["NodeGroups"]->IsObject())
 	{
@@ -328,6 +326,14 @@ void NodeGraphUI::Load(const JSONObject &json)
 	}
 	else URHO3D_LOGINFO("NodeGroups is not an object.");
 	
+}
+
+void NodeGraphUI::Clear()
+{
+	ListView *nlist=nodeGroupsList_->GetChildDynamicCast<ListView>("List", true);
+	nlist->RemoveAllItems();
+	nodeGroups_.clear();
+	selectedNodeGroup_=nullptr;
 }
 
 void NodeGraphUI::SetVisible(bool vis)

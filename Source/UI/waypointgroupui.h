@@ -67,6 +67,10 @@ class WaypointGroupUI : public Object
 	std::vector<Vector3> GetGroupKnots(const String &group);
 	WaypointGroup *GetGroup(const String &name);
 	
+	void Save(JSONObject &json);
+	void Load(const JSONObject &json);
+	void Clear();
+	
 	protected:
 	Scene *scene_;
 	TerrainContext *terrainContext_;

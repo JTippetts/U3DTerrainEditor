@@ -29,6 +29,8 @@
 #include "../terraincontext.h"
 #include "../Components/editingcamera.h"
 
+#include "../jsonutilities.h"
+
 WaypointGroup::WaypointGroup(Context *context) : Object(context),
 	terrainContext_(nullptr),
 	visible_(false),
@@ -207,6 +209,71 @@ void WaypointGroupUI::Construct(Scene *scene, TerrainContext *tc, EditingCamera 
 	SubscribeToEvent(element_->GetChild("List", true), StringHash("ItemSelected"), URHO3D_HANDLER(WaypointGroupUI, HandleGroupSelected));
 	
 	SubscribeToEvent(StringHash("Update"), URHO3D_HANDLER(WaypointGroupUI, HandleUpdate));
+}
+
+void WaypointGroupUI::Save(JSONObject &json)
+{
+	//JSONObject settings;
+	JSONArray jgroups;
+	for(auto & g : groups_)
+	{
+		JSONObject jgrp;
+		jgrp["Name"]=g->name_;
+		
+		JSONArray jknots;
+		const std::vector<Vector3> knots=g->GetKnots();
+		for(auto k : knots)
+		{
+			jknots.Push(JSONFromVector3(k));
+		}
+		jgrp["Knots"]=jknots;
+		
+		jgroups.Push(jgrp);
+	}
+	
+	//settings["Groups"]=jgroups;
+	json["WaypointGroups"]=jgroups;
+}
+
+void WaypointGroupUI::Load(const JSONObject &json)
+{
+	// Delete groups
+	
+	Clear();
+	
+	if(json["WaypointGroups"] && json["WaypointGroups"]->IsArray())
+	{
+		const JSONArray &jgroups=json["WaypointGroups"]->GetArray();
+		for(unsigned int c=0; c<jgroups.Size(); ++c)
+		{
+			const JSONObject &jgrp=jgroups[c].GetObject();
+			
+			SharedPtr<WaypointGroup> grp=CreateWaypointGroup(jgrp["Name"]->GetString());
+			if(grp)
+			{
+				grp->name_=jgrp["Name"]->GetString();
+				if(jgrp["Knots"] && jgrp["Knots"]->IsArray())
+				{
+					const JSONArray &jknots=jgrp["Knots"]->GetArray();
+					for(unsigned int d=0; d<jknots.Size(); ++d)
+					{
+						grp->AddKnot(Vector3FromJSON(jknots[d]));
+					}
+				}
+				grp->BuildRibbon();
+				grp->SetVisible(false);
+			}
+		}
+	}
+}
+
+void WaypointGroupUI::Clear()
+{
+	ListView *nlist=element_->GetChildDynamicCast<ListView>("List", true);
+	nlist->RemoveAllItems();
+	
+	selectedGroup_=nullptr;
+	groups_.clear();
 }
 
 void WaypointGroupUI::SetVisible(bool v)

@@ -183,6 +183,10 @@ void TerrainSettingsUI::HandleLoadProject(StringHash eventType, VariantMap &even
 
 void TerrainSettingsUI::HandleClearProject(StringHash eventType, VariantMap &eventData)
 {
+	terrainContext_->Clear();
+	
+	waypointGroups_->Clear();
+	nodeGraph_->Clear();
 }
 
 void TerrainSettingsUI::HandleApplyTerrainSettings(StringHash eventType, VariantMap &eventData)
@@ -284,6 +288,7 @@ void TerrainSettingsUI::Save(const String &fullpath)
 	// Save settings
 	terrainTexturing_->Save(json);
 	nodeGraph_->Save(json);
+	waypointGroups_->Save(json);
 	
 	JSONObject lighting;
 	
@@ -324,6 +329,7 @@ void TerrainSettingsUI::Load(const String &fullpath)
 		
 		terrainTexturing_->Load(json);
 		nodeGraph_->Load(json);
+		waypointGroups_->Load(json);
 		
 		if(json["LightingSettings"] && json["LightingSettings"]->IsObject())
 		{

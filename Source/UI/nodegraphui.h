@@ -47,6 +47,7 @@ class NodeGraphUI : public Object
 	bool IsVisible(){if(element_) return element_->IsVisible(); return false;}
 	void Save(JSONObject &json);
 	void Load(const JSONObject &json);
+	void Clear();
 	
 	protected:
 	
