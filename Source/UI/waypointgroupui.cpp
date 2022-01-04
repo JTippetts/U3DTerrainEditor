@@ -52,7 +52,7 @@ void WaypointGroup::Construct(Scene *scene, TerrainContext *tc)
 	auto cache=GetSubsystem<ResourceCache>();
 	ribbonNode_=scene->CreateChild();
 	ribbon_=ribbonNode_->CreateComponent<CustomGeometry>();
-	ribbonColor_=Color(rndColorComp(), rndColorComp(), rndColorComp());
+	ribbonColor_=Color(rndColorComp(), rndColorComp(), rndColorComp(), 0.5f);
 	ribbonMat_=cache->GetResource<Material>("Materials/WaypointPreview.xml");
 	knotMat_=cache->GetResource<Material>("Materials/Flag.xml");
 }
@@ -91,7 +91,7 @@ void WaypointGroup::AddKnot(const Vector3 &pos)
 	
 	float ht=terrainContext_->GetHeight(pos);
 	knot->SetPosition(Vector3(pos.x_, ht, pos.z_));
-	knot->SetScale(Vector3(0.25,0.25,0.25));
+	knot->SetScale(Vector3(0.0625,0.0625,0.0625));
 	knots_.push_back(knot);
 }
 
