@@ -24,13 +24,13 @@ FillBasinsFilter::FillBasinsFilter(Context *context,TerrainContext *tc, Waypoint
 void FillBasinsFilter::Execute()
 {
 	CArray2Dd arr;
-	const String &sel=options_[0].listSelection_;
+	const ea::string &sel=options_[0].listSelection_;
 	MaskSettings ms(options_[3].flag_, options_[4].flag_, options_[5].flag_, options_[6].flag_, options_[7].flag_, options_[8].flag_);
-	
+
 	float E=options_[1].value_;
 	terrainContext_->GetHeightMap(arr);
 	terrainContext_->FillBasins(arr, E);
-	
+
 	if(sel=="Terrain")
 	{
 		terrainContext_->SetHeightBuffer(arr, ms, 0);
@@ -42,7 +42,7 @@ void FillBasinsFilter::Execute()
 		terrainContext_->GetHeightMap(ter);
 		arr.subtractArray(&ter);
 		CArray2Dd buf(arr.width(), arr.height());
-		
+
 		auto neighborIsNonZero=[](CArray2Dd &a, int x, int y)->bool
 		{
 			for(int j=-1; j<=1; ++j)
@@ -59,7 +59,7 @@ void FillBasinsFilter::Execute()
 			}
 			return false;
 		};
-		
+
 		for(int y=0; y<arr.height(); ++y)
 		{
 			for(int x=0; x<arr.width(); ++x)
@@ -69,20 +69,20 @@ void FillBasinsFilter::Execute()
 				buf.set(x,y,msk);
 			}
 		}
-		
+
 		CArray2Dd buf2(arr.width(), arr.height());
 		for(int y=0; y<arr.height(); ++y)
 		{
 			for(int x=0; x<arr.width(); ++x)
 			{
-				//URHO3D_LOGINFO(String("x: ")+String(x) + " y: " + String(y) + " w: " + String(buf.width()) + " h: " + String(buf.height()));
+				//URHO3D_LOGINFO(ea::string("x: ")+String(x) + " y: " + String(y) + " w: " + String(buf.width()) + " h: " + String(buf.height()));
 				float msk=buf.get(x,y);
 				if(neighborIsNonZero(buf, x, y)) msk=1.0f;
 				buf2.set(x,y,msk);
 			}
 		}
-		
-		
+
+
 		for(int y=0; y<arr.height(); ++y)
 		{
 			for(int x=0; x<arr.width(); ++x)
@@ -98,7 +98,7 @@ void FillBasinsFilter::Execute()
 		CArray2Dd ter;
 		terrainContext_->GetHeightMap(ter);
 		arr.subtractArray(&ter);
-		
+
 		arr.scaleToRange(0,1);
 		if(sel=="Mask0") terrainContext_->SetMaskBuffer(arr,0);
 		else if(sel=="Mask1") terrainContext_->SetMaskBuffer(arr,1);
@@ -114,11 +114,11 @@ void FillBasinsFilter::Execute()
 		else if(sel=="Layer 5") which=5;
 		else if(sel=="Layer 6") which=6;
 		else if(sel=="Layer 7") which=7;
-		
+
 		CArray2Dd ter;
 		terrainContext_->GetHeightMap(ter);
 		arr.subtractArray(&ter);
-		
+
 		arr.scaleToRange(0,1);
 		terrainContext_->SetLayerBuffer(arr, which, ms);
 	}

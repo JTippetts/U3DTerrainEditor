@@ -21,6 +21,11 @@ float2 GetTexCoord(float2 iTexCoord)
     return float2(dot(iTexCoord, cUOffset.xy) + cUOffset.w, dot(iTexCoord, cVOffset.xy) + cVOffset.w);
 };
 
+float2 GetLightMapTexCoord(float2 texCoord)
+{
+    return texCoord * cLMOffset.xy + cLMOffset.zw;
+}
+
 float4 GetClipPos(float3 worldPos)
 {
     return mul(float4(worldPos, 1.0), cViewProj);
@@ -154,6 +159,8 @@ float3 GetTrailNormal(float4 iPos, float3 iParentPos, float3 iForward)
 #define OUTCOLOR1 SV_TARGET1
 #define OUTCOLOR2 SV_TARGET2
 #define OUTCOLOR3 SV_TARGET3
+#define OUTCOLOR4 SV_TARGET4
+#define OUTCOLOR5 SV_TARGET5
 #else
 #define OUTCOLOR0 COLOR0
 #define OUTCOLOR1 COLOR1

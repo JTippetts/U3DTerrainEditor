@@ -24,7 +24,7 @@
 #include <Urho3D/Core/StringUtils.h>
 #include <Urho3D/IO/Log.h>
 
-#include "../format.h"
+
 
 MainToolbarUI::MainToolbarUI(Context *context) : Object(context),
 	editHeightUI_(nullptr),
@@ -73,7 +73,7 @@ void MainToolbarUI::SetVisible(bool v)
 void MainToolbarUI::HandleToggled(StringHash eventType, VariantMap &eventData)
 {
 	UIElement *e=static_cast<UIElement *>(eventData["Element"].GetPtr());
-	String name=e->GetName();
+	ea::string name=e->GetName();
 	bool state=eventData["State"].GetBool();
 
 	if(state)
@@ -195,7 +195,7 @@ local e=eventData["Element"]:GetPtr("UIElement")
 	end*/
 }
 
-void MainToolbarUI::UncheckToolbar(const String &except)
+void MainToolbarUI::UncheckToolbar(const ea::string &except)
 {
 	if(except!="EditHeight")
 	{

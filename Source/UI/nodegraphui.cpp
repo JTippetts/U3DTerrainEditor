@@ -29,7 +29,7 @@
 #include "../terraincontext.h"
 
 #include "nodedescriptors.h"
-#include "../format.h"
+
 #include "../filesaveload.h"
 #include "../jsonutilities.h"
 
@@ -84,20 +84,20 @@ void NodeGraphUI::Construct(TerrainContext *tc)
 void NodeGraphUI::Save(JSONObject &json)
 {
 	auto graphics=GetSubsystem<Graphics>();
-	
+
 	JSONObject settings;
-	
+
 	auto FindSourceIndex=[&](const NodeGroup &group, NodeGraphLinkSource *e)->unsigned int
 	{
 		UIElement *s=e->GetRoot();
-		
+
 		for(unsigned int c=0; c<group.nodes_.size(); ++c)
 		{
 			if(s==group.nodes_[c]) return c;
 		}
 		return 0;
 	};
-	
+
 	JSONArray grouparr;
 	for(auto &g : nodeGroups_)
 	{
@@ -111,26 +111,26 @@ void NodeGraphUI::Save(JSONObject &json)
 			IntVector2 cpos(-g.pane_->GetPosition().x_ + graphics->GetWidth()/2, -g.pane_->GetPosition().y_ + graphics->GetHeight()/2);
 			jnd["Position"]=JSONFromIntVector2(n->GetPosition());
 			jnd["Type"]=n->GetName();
-			
+
 			JSONArray jcons;
 			UIElement *inputs=n->GetChild("Inputs", true);
 			if(inputs)
 			{
-				const Vector<SharedPtr<UIElement>> &children=inputs->GetChildren();
-				for(int c=0; c<children.Size(); ++c)
+				const ea::vector<SharedPtr<UIElement>> &children=inputs->GetChildren();
+				for(int c=0; c<children.size(); ++c)
 				{
 					LineEdit *val=children[c]->GetChildDynamicCast<LineEdit>(1);
 					if(val)
 					{
-						jcons.Push(JSONValue(val->GetText()));
+						jcons.push_back(JSONValue(val->GetText()));
 					}
 				}
 			}
 			jnd["InputValues"]=jcons;
-			jnodes.Push(jnd);
+			jnodes.push_back(jnd);
 		}
 		jgrp["Nodes"]=jnodes;
-		
+
 		// Save links
 		JSONArray jlinks;
 		//for(auto &n : g.nodes_)
@@ -140,8 +140,8 @@ void NodeGraphUI::Save(JSONObject &json)
 			UIElement *inputs=n->GetChild("Inputs", true);
 			if(inputs)
 			{
-				const Vector<SharedPtr<UIElement>> &children=inputs->GetChildren();
-				for(int c=0; c<children.Size(); ++c)
+				const ea::vector<SharedPtr<UIElement>> &children=inputs->GetChildren();
+				for(int c=0; c<children.size(); ++c)
 				{
 					NodeGraphLinkDest *input=children[c]->GetChildDynamicCast<NodeGraphLinkDest>(0);
 					if(input)
@@ -156,16 +156,16 @@ void NodeGraphUI::Save(JSONObject &json)
 								jlnk["DestNodeIndex"]=nd;
 								jlnk["DestNodeValueIndex"]=c;
 								jlnk["SourceNodeIndex"]=FindSourceIndex(g, src);
-								jlinks.Push(jlnk);
+								jlinks.push_back(jlnk);
 							}
 						}
 					}
 				}
 			}
 		}
-		
+
 		jgrp["Links"]=jlinks;
-		
+
 		JSONObject outputlink;
 		NodeGraphLinkDest *op=g.output_->GetChildDynamicCast<NodeGraphLinkDest>("Input0", true);
 		if(op)
@@ -182,93 +182,97 @@ void NodeGraphUI::Save(JSONObject &json)
 			else URHO3D_LOGINFO("No link on output node.");
 		}
 		else URHO3D_LOGINFO("Could not obtain input for output node.");
-		
+
 		jgrp["OutputLink"]=outputlink;
-		grouparr.Push(jgrp);
+		grouparr.push_back(jgrp);
 	}
-	
+
 	settings["Groups"]=grouparr;
-	
+
 	json["NodeGroups"]=settings;
 }
 
-void NodeGraphUI::Load(const JSONObject &json)
+void NodeGraphUI::Load(const JSONValue &json)
 {
 	auto ui=GetSubsystem<UI>();
 	auto graphics=GetSubsystem<Graphics>();
 	// Remove groups
 	Clear();
-	
-	if(json["NodeGroups"] && json["NodeGroups"]->IsObject())
+
+	if(json["NodeGroups"].IsObject())
 	{
-		const JSONObject &settings=json["NodeGroups"]->GetObject();
-		if(settings["Groups"] && settings["Groups"]->IsArray())
+		const JSONValue &settings=json["NodeGroups"];
+		if(settings["Groups"].IsArray())
+		//if(settings.find("Groups") != settings.end())
 		{
-			const JSONArray &grouparr=settings["Groups"]->GetArray();
+			const JSONValue &grouparr=settings["Groups"];
 			for(unsigned int c=0; c<grouparr.Size(); ++c)
 			{
 				if(grouparr[c].IsObject())
 				{
-					const JSONObject &jgrp=grouparr[c].GetObject();
-					const String &groupname=jgrp["Name"]->GetString();
+					const JSONValue &jgrp=grouparr[c];
+					const ea::string &groupname=jgrp["Name"].GetString();
 					NodeGroup *group=CreateNodeGroup(groupname);
 					if(group)
 					{
-						if(jgrp["Nodes"] && jgrp["Nodes"]->IsArray())
+						if(jgrp["Nodes"].IsArray())
+						//if(jgrp.find("Nodes") != jgrp.end())
 						{
-							const JSONArray &jnodes=jgrp["Nodes"]->GetArray();
+							const JSONValue &jnodes=jgrp["Nodes"];
 							for(unsigned int d=0; d<jnodes.Size(); ++d)
 							{
-								const JSONObject &jnd=jnodes[d].GetObject();
-								IntVector2 pos=IntVector2FromJSON(*jnd["Position"]);
-								const String &type=jnd["Type"]->GetString();
-								
+								const JSONValue &jnd=jnodes[d];
+								//IntVector2 pos=IntVector2FromJSON(*jnd["Position"]);
+								IntVector2 pos=IntVector2FromJSON(jnd["Position"]);
+								const ea::string &type=jnd["Type"].GetString();
+
 								SharedPtr<UIElement> node=BuildNode(group, type);
 								if(node)
 								{
 									group->nodes_.push_back(node);
 									node->SetPosition(pos);
-									URHO3D_LOGINFO(String("pos: ") + String(pos.x_) + ", " + String(pos.y_));
+									//URHO3D_LOGINFO(ea::string("pos: ") + ea::string(pos.x_) + ", " + ea::string(pos.y_));
 									//IntVector2 cpos(-group->pane_->GetPosition().x_ + graphics->GetWidth()/2, -group->pane_->GetPosition().y_ + graphics->GetHeight()/2);
 									//node->SetPosition(pos+cpos);
-									const JSONArray &jcons=jnd["InputValues"]->GetArray();
+									const JSONValue &jcons=jnd["InputValues"];
 									for(unsigned int e=0; e<jcons.Size(); ++e)
 									{
-										LineEdit *val=node->GetChildDynamicCast<LineEdit>(String("Value")+String(e), true);
+										LineEdit *val=node->GetChildDynamicCast<LineEdit>(ea::string("Value")+ea::to_string(e), true);
 										if(val)
 										{
-											val->SetText(String(jcons[e].GetString()));
+											val->SetText(ea::string(jcons[e].GetString()));
 										}
-										else URHO3D_LOGINFO(String("Could not obtain input ") + String(e));
+										else URHO3D_LOGINFO(ea::string("Could not obtain input ") + ea::to_string(e));
 									}
 								}
-								else URHO3D_LOGINFO(String("Could not create node of type ")+type);
+								else URHO3D_LOGINFO(ea::string("Could not create node of type ")+type);
 							}
 						}
 						else URHO3D_LOGINFO("Nodes is not an array.");
-						
+
 						// Load links
-						if(jgrp["Links"] && jgrp["Links"]->IsArray())
+						//if(jgrp["Links"] && jgrp["Links"]->IsArray())
+						if(jgrp["Links"].IsArray())
 						{
-							const JSONArray &jlinks=jgrp["Links"]->GetArray();
+							const JSONValue &jlinks=jgrp["Links"];
 							for(unsigned int d=0; d<jlinks.Size(); ++d)
 							{
-								const JSONObject &jlnk=jlinks[d].GetObject();
-								int dest=jlnk["DestNodeIndex"]->GetInt();
-								int src=jlnk["SourceNodeIndex"]->GetInt();
-								int destval=jlnk["DestNodeValueIndex"]->GetInt();
-								
+								const JSONValue &jlnk=jlinks[d];
+								int dest=jlnk["DestNodeIndex"].GetInt();
+								int src=jlnk["SourceNodeIndex"].GetInt();
+								int destval=jlnk["DestNodeValueIndex"].GetInt();
+
 								if(dest>=0 && dest<group->nodes_.size() && src>=0 && src<group->nodes_.size())
 								{
 									UIElement *srce=group->nodes_[src];
 									UIElement *dste=group->nodes_[dest];
-									
+
 									if(srce && dste)
 									{
 										NodeGraphLinkSource *ngls=srce->GetChildDynamicCast<NodeGraphLinkSource>("Output0", true);
 										if(ngls)
 										{
-											NodeGraphLinkDest *ngld=dste->GetChildDynamicCast<NodeGraphLinkDest>(String("Input")+String(destval), true);
+											NodeGraphLinkDest *ngld=dste->GetChildDynamicCast<NodeGraphLinkDest>(ea::string("Input")+ea::to_string(destval), true);
 											if(ngld)
 											{
 												NodeGraphLink *link=group->linkPane_->CreateLink(ngls, ngld);
@@ -276,27 +280,28 @@ void NodeGraphUI::Load(const JSONObject &json)
 											}
 											else
 											{
-												URHO3D_LOGINFO(String("Could not obtain source input ") + String(destval) + " of node type " + dste->GetName());
-												URHO3D_LOGINFO(String("node has ") + String(dste->GetChild("Inputs", true)->GetNumChildren()) + " children. Their names are:");
-												for(unsigned int m=0; m<dste->GetChild("Inputs", true)->GetNumChildren(); ++m)
-												{
-													URHO3D_LOGINFO(dste->GetChild("Inputs", true)->GetChild(m)->GetChild(0)->GetName());
-												}
+												//URHO3D_LOGINFO(ea::string("Could not obtain source input ") + ea::string(destval) + " of node type " + dste->GetName());
+												//URHO3D_LOGINFO(ea::string("node has ") + ea::string(dste->GetChild("Inputs", true)->GetNumChildren()) + " children. Their names are:");
+												//for(unsigned int m=0; m<dste->GetChild("Inputs", true)->GetNumChildren(); ++m)
+												//{
+													//URHO3D_LOGINFO(dste->GetChild("Inputs", true)->GetChild(m)->GetChild(0)->GetName());
+												//}
 											}
 										}
-										else URHO3D_LOGINFO("Could not get Output0");
+										//else URHO3D_LOGINFO("Could not get Output0");
 									}
 								}
-								else URHO3D_LOGINFO(String("node index out of bounds.") + String(src) + " " + String(dest));
+								//else URHO3D_LOGINFO(ea::string("node index out of bounds.") + ea::string(src) + " " + ea::string(dest));
 							}
 						}
-						else URHO3D_LOGINFO("No links array.");
-						
+						//else URHO3D_LOGINFO("No links array.");
+
 						// Load output link
-						if(jgrp["OutputLink"] && jgrp["OutputLink"]->IsObject())
+						if(jgrp["OutputLink"].IsObject())
+						//if(jgrp.find("OutputLink") != jgrp.end())
 						{
-							const JSONObject &jlink=jgrp["OutputLink"]->GetObject();
-							int src=jlink["SourceNodeIndex"]->GetInt();
+							const JSONValue &jlink=jgrp["OutputLink"];
+							int src=jlink["SourceNodeIndex"].GetInt();
 							if(src>=0 && src<group->nodes_.size())
 							{
 								UIElement *srce=group->nodes_[src];
@@ -305,7 +310,7 @@ void NodeGraphUI::Load(const JSONObject &json)
 									NodeGraphLinkSource *ngls=srce->GetChildDynamicCast<NodeGraphLinkSource>("Output0", true);
 									if(ngls)
 									{
-										NodeGraphLinkDest *ngld=group->output_->GetChildDynamicCast<NodeGraphLinkDest>(String("Input0"), true);
+										NodeGraphLinkDest *ngld=group->output_->GetChildDynamicCast<NodeGraphLinkDest>(ea::string("Input0"), true);
 										if(ngld)
 										{
 											NodeGraphLink *link=group->linkPane_->CreateLink(ngls, ngld);
@@ -313,20 +318,20 @@ void NodeGraphUI::Load(const JSONObject &json)
 										}
 									}
 								}
-								else URHO3D_LOGINFO("Could not get output linked source.");
+								//else URHO3D_LOGINFO("Could not get output linked source.");
 							}
 						}
-						else URHO3D_LOGINFO("No output link setting.");
+						//else URHO3D_LOGINFO("No output link setting.");
 					}
-					else URHO3D_LOGINFO("Could not create group.");
+					//else URHO3D_LOGINFO("Could not create group.");
 				}
-				else URHO3D_LOGINFO("Group def is not an object.");
+				//else URHO3D_LOGINFO("Group def is not an object.");
 			}
 		}
-		else URHO3D_LOGINFO("Groups is not an array.");
+		//else URHO3D_LOGINFO("Groups is not an array.");
 	}
-	else URHO3D_LOGINFO("NodeGroups is not an object.");
-	
+	//else URHO3D_LOGINFO("NodeGroups is not an object.");
+
 }
 
 void NodeGraphUI::Clear()
@@ -363,7 +368,7 @@ SharedPtr<Text> NodeGraphUI::CreateAccelKeyText(int accelKey)
 	accelKeyText->SetStyle("EditorMenuText", style);
 	accelKeyText->SetTextAlignment(HA_RIGHT);
 
-	String text;
+	ea::string text;
 	if(accelKey==KEY_DELETE) text="Del";
 	else if(accelKey==KEY_SPACE) text="Space";
 	else if(accelKey==KEY_F1) text="F1";
@@ -379,12 +384,12 @@ SharedPtr<Text> NodeGraphUI::CreateAccelKeyText(int accelKey)
 	else if(accelKey==KEY_F11) text="F11";
 	else if(accelKey==KEY_F12) text="F12";
 	else if(accelKey==-1) text=">";
-	else if(accelKey!=0) text.AppendUTF8(accelKey);
+	else if(accelKey!=0) text += ea::to_string(accelKey); //text.Append(accelKey);
 	accelKeyText->SetText(text);
 	return accelKeyText;
 }
 
-SharedPtr<Menu> NodeGraphUI::CreateMenuItem(const String &title, int accelKey)
+SharedPtr<Menu> NodeGraphUI::CreateMenuItem(const ea::string &title, int accelKey)
 {
 	auto cache=GetSubsystem<ResourceCache>();
 	XMLFile *style=cache->GetResource<XMLFile>("UI/DefaultStyle.xml");
@@ -420,7 +425,7 @@ SharedPtr<Window> NodeGraphUI::CreatePopup(Menu *baseMenu)
 	return popup;
 }
 
-SharedPtr<Menu> NodeGraphUI::CreateMenu(const String &title)
+SharedPtr<Menu> NodeGraphUI::CreateMenu(const ea::string &title)
 {
 	auto menu=CreateMenuItem(title);
 	CreatePopup(menu);
@@ -440,8 +445,8 @@ SharedPtr<UIElement> NodeGraphUI::CreateNodeCreateMenu(UIElement *parent)
 
 	struct NodeCategory
 	{
-		String name_;
-		std::vector<String> entries_;
+		ea::string name_;
+		std::vector<ea::string> entries_;
 	};
 
 	std::vector<NodeCategory> nodecategories
@@ -529,8 +534,8 @@ SharedPtr<UIElement> NodeGraphUI::CreateNodeCreateMenu(UIElement *parent)
 
 	for(auto &nc : nodecategories)
 	{
-		String i=nc.name_;
-		const std::vector<String> &c=nc.entries_;
+		ea::string i=nc.name_;
+		const std::vector<ea::string> &c=nc.entries_;
 		SharedPtr<Menu> mi=CreateMenuItem(i, -1);
 		pop->AddChild(mi);
 
@@ -559,7 +564,7 @@ void NodeGraphUI::SubscribeLinkPoints(UIElement *e, int numinputs)
 
 	for(int c=0; c<numinputs; ++c)
 	{
-		NodeGraphLinkDest *input=e->GetChildDynamicCast<NodeGraphLinkDest>(String("Input")+String(c), true);
+		NodeGraphLinkDest *input=e->GetChildDynamicCast<NodeGraphLinkDest>(ea::string("Input")+ea::to_string(c), true);
 		if(input)
 		{
 			SubscribeToEvent(input, StringHash("DragBegin"), URHO3D_HANDLER(NodeGraphUI, HandleInputDragBegin));
@@ -578,8 +583,8 @@ void NodeGraphUI::RemoveLinkPoints(UIElement *e)
 	UIElement *inputs=e->GetChild("Inputs", true);
 	if(inputs)
 	{
-		const Vector<SharedPtr<UIElement>> &children=inputs->GetChildren();
-		for(int c=0; c<children.Size(); ++c)
+		const ea::vector<SharedPtr<UIElement>> &children=inputs->GetChildren();
+		for(int c=0; c<children.size(); ++c)
 		{
 			NodeGraphLinkDest *input=children[c]->GetChildDynamicCast<NodeGraphLinkDest>(0);
 			if(input)
@@ -636,7 +641,7 @@ void NodeGraphUI::ActivateGroup(NodeGroup *grp)
 	}
 }
 
-NodeGroup *NodeGraphUI::CreateNodeGroup(const String &name)
+NodeGroup *NodeGraphUI::CreateNodeGroup(const ea::string &name)
 {
 	auto cache=GetSubsystem<ResourceCache>();
 	XMLFile *style=cache->GetResource<XMLFile>("UI/NodeStyle.xml");
@@ -682,7 +687,7 @@ NodeGroup *NodeGraphUI::CreateNodeGroup(const String &name)
 	grp.output_->GetChildDynamicCast<BorderImage>("Histogram", true)->SetTexture(grp.histoTex_);
 	grp.output_->SetPosition(IntVector2(-grp.pane_->GetPosition().x_ + graphics->GetWidth()-grp.output_->GetWidth(), -grp.pane_->GetPosition().y_ + graphics->GetHeight()/4));
 
-	std::vector<String> smtypes
+	std::vector<ea::string> smtypes
 	{
 		"Terrain",
 		"Layer 1",
@@ -711,7 +716,7 @@ NodeGroup *NodeGraphUI::CreateNodeGroup(const String &name)
 	list->SetSelection(0);
 
 	list=grp.output_->GetChildDynamicCast<DropDownList>("BlendOpList", true);
-	std::vector<String> bops
+	std::vector<ea::string> bops
 	{
 		"Replace",
 		"Add",
@@ -749,12 +754,12 @@ NodeGroup *NodeGraphUI::CreateNodeGroup(const String &name)
 	return &nodeGroups_[nodeGroups_.size()-1];
 }
 
-SharedPtr<UIElement> NodeGraphUI::CreateNodeType(UIElement *parent, const String &type)
+SharedPtr<UIElement> NodeGraphUI::CreateNodeType(UIElement *parent, const ea::string &type)
 {
 	auto ui=GetSubsystem<UI>();
 	auto cache=GetSubsystem<ResourceCache>();
 	XMLFile *style=cache->GetResource<XMLFile>("UI/DefaultStyle.xml");
-	
+
 	if(type=="seed")
 	{
 		SharedPtr<UIElement> n=ui->LoadLayout(cache->GetResource<XMLFile>("UI/SeedNode.xml"),style);
@@ -767,33 +772,33 @@ SharedPtr<UIElement> NodeGraphUI::CreateNodeType(UIElement *parent, const String
 		parent->AddChild(n);
 		return n;
 	}
-	
+
 	NodeTypeDesc *d=GetNodeTypeDesc(type);
 	if(!d) return SharedPtr<UIElement>();
-	
+
 	SharedPtr<UIElement> node=ui->LoadLayout(cache->GetResource<XMLFile>("UI/NodeTemplate.xml"),style);
 	node->SetName(type);
 	parent->AddChild(node);
 	node->GetChildDynamicCast<Text>("Title", true)->SetText(type);
 	UIElement *inputs=node->GetChild("Inputs", true);
-	
+
 	for(unsigned int c=0; c<d->inputs_.size(); ++c)
 	{
 		UIElement *input=inputs->CreateChild<UIElement>(d->inputs_[c].type_);
 		input->SetLayout(LM_HORIZONTAL);
-		NodeGraphLinkDest *e=input->CreateChild<NodeGraphLinkDest>(String("Input")+String(c));
+		NodeGraphLinkDest *e=input->CreateChild<NodeGraphLinkDest>(ea::string("Input")+ea::to_string(c));
 		e->SetMinSize(IntVector2(12,12));
 		e->SetMaxSize(IntVector2(12,12));
 		e->SetImageRect(IntRect(16,0,32,16));
 		e->SetTexture(cache->GetResource<Texture2D>("Textures/UI_modified.png"));
-		
-		LineEdit *le=input->CreateChild<LineEdit>(String("Value")+String(c));
+
+		LineEdit *le=input->CreateChild<LineEdit>(ea::string("Value")+ea::to_string(c));
 		le->SetStyleAuto(style);
 		le->GetTextElement()->SetFontSize(9);
-		le->SetText(String(d->inputs_[c].value_));
+		le->SetText(ea::to_string(d->inputs_[c].value_));
 		le->SetMinSize(IntVector2(40,12));
 		le->SetMaxSize(IntVector2(40,12));
-		
+
 		Text *t=input->CreateChild<Text>();
 		t->SetStyleAuto(style);
 		t->SetFontSize(9);
@@ -802,12 +807,12 @@ SharedPtr<UIElement> NodeGraphUI::CreateNodeType(UIElement *parent, const String
 	return node;
 }
 
-SharedPtr<UIElement> NodeGraphUI::BuildNode(NodeGroup *grp, const String &type)
+SharedPtr<UIElement> NodeGraphUI::BuildNode(NodeGroup *grp, const ea::string &type)
 {
 	auto e=CreateNodeType(grp->pane_, type);
 	NodeTypeDesc *d=GetNodeTypeDesc(type);
 	if(!d) return SharedPtr<UIElement>();
-	
+
 	if(e)
 	{
 		SubscribeLinkPoints(e, d->inputs_.size());
@@ -816,7 +821,7 @@ SharedPtr<UIElement> NodeGraphUI::BuildNode(NodeGroup *grp, const String &type)
 	return e;
 }
 
-NodeTypeDesc *NodeGraphUI::GetNodeTypeDesc(const String &type)
+NodeTypeDesc *NodeGraphUI::GetNodeTypeDesc(const ea::string &type)
 {
 	for(unsigned int c=0; c<g_nodeTypes.size(); ++c)
 	{
@@ -830,16 +835,16 @@ void NodeGraphUI::HandleMenuSelected(StringHash eventType, VariantMap &eventData
 	auto graphics=GetSubsystem<Graphics>();
 	Menu *menu=static_cast<Menu *>(eventData["Element"].GetPtr());
 	if(!menu) return;
-	
+
 	Text *text=menu->GetChildDynamicCast<Text>("Text", true);
 	if(text)
 	{
 		createMenu_->GetChildDynamicCast<Menu>("Menu", true)->ShowPopup(false);
 		if(!selectedNodeGroup_) return;
-		
+
 		SharedPtr<UIElement> n=BuildNode(selectedNodeGroup_, text->GetText());
 		if(!n) return;
-		
+
 		n->SetPosition(IntVector2(-selectedNodeGroup_->pane_->GetPosition().x_ + graphics->GetWidth()/2, -selectedNodeGroup_->pane_->GetPosition().y_ + graphics->GetHeight()/2));
 		selectedNodeGroup_->nodes_.push_back(n);
 	}
@@ -867,7 +872,7 @@ void NodeGraphUI::HandleNewGroup(StringHash eventType, VariantMap &eventData)
 void NodeGraphUI::HandleNewGroupAccept(StringHash eventType, VariantMap &eventData)
 {
 	NodeGroup *g;
-	String name=newNodeGroupDlg_->GetChildDynamicCast<LineEdit>("GroupName", true)->GetText();
+	ea::string name=newNodeGroupDlg_->GetChildDynamicCast<LineEdit>("GroupName", true)->GetText();
 	for(unsigned int c=0; c<nodeGroups_.size(); ++c)
 	{
 		NodeGroup *g=&nodeGroups_[c];
@@ -920,12 +925,12 @@ void NodeGraphUI::HandleDeleteGroup(StringHash eventType, VariantMap &eventData)
 	int which=nodeGroupsList_->GetChildDynamicCast<ListView>("List", true)->GetSelection();
 	if(which==-1) return;
 	if(which>=nodeGroups_.size()) return;
-	
+
 	NodeGroup *grp=&nodeGroups_[which];
-	
+
 	HideGroup();
 	selectedNodeGroup_=nullptr;
-	
+
 	for(auto it=nodeGroups_.begin(); it!=nodeGroups_.end(); ++it)
 	{
 		if(&(*it)==grp)
@@ -960,8 +965,8 @@ void NodeGraphUI::HandleGenerate(StringHash eventType, VariantMap &eventData)
 	Vector2 minmax=RenderANLKernelToImage(selectedNodeGroup_->previewImage_, &kernel, 0, 1, selectedNodeGroup_->histoImage_, SEAMLESS_NONE, false, 0.0, 1.0, 1.0, true);
 	selectedNodeGroup_->previewTex_->SetData(selectedNodeGroup_->previewImage_, false);
 	selectedNodeGroup_->histoTex_->SetData(selectedNodeGroup_->histoImage_, false);
-	selectedNodeGroup_->output_->GetChildDynamicCast<Text>("LowValue", true)->SetText("%.4f"_fmt(minmax.x_));
-	selectedNodeGroup_->output_->GetChildDynamicCast<Text>("HighValue", true)->SetText("%.4f"_fmt(minmax.y_));
+	selectedNodeGroup_->output_->GetChildDynamicCast<Text>("LowValue", true)->SetText(ToString("%.4f", minmax.x_));
+	selectedNodeGroup_->output_->GetChildDynamicCast<Text>("HighValue", true)->SetText(ToString("%.4f", minmax.y_));
 }
 
 void NodeGraphUI::HandleMapGroup(StringHash eventType, VariantMap &eventData)
@@ -972,21 +977,21 @@ void NodeGraphUI::HandleMapGroup(StringHash eventType, VariantMap &eventData)
 void NodeGraphUI::HandleExecute(StringHash eventType, VariantMap &eventData)
 {
 	if(!selectedNodeGroup_) return;
-	
+
 	unsigned int target=selectedNodeGroup_->output_->GetChildDynamicCast<DropDownList>("TargetList", true)->GetSelection();
 	unsigned int blendop=selectedNodeGroup_->output_->GetChildDynamicCast<DropDownList>("BlendOpList", true)->GetSelection();
-	
+
 	bool um1=selectedNodeGroup_->output_->GetChildDynamicCast<CheckBox>("UseMask1", true)->IsChecked();
 	bool im1=selectedNodeGroup_->output_->GetChildDynamicCast<CheckBox>("InvertMask1", true)->IsChecked();
 	bool um2=selectedNodeGroup_->output_->GetChildDynamicCast<CheckBox>("UseMask2", true)->IsChecked();
 	bool im2=selectedNodeGroup_->output_->GetChildDynamicCast<CheckBox>("InvertMask2", true)->IsChecked();
 	bool um3=selectedNodeGroup_->output_->GetChildDynamicCast<CheckBox>("UseMask3", true)->IsChecked();
 	bool im3=selectedNodeGroup_->output_->GetChildDynamicCast<CheckBox>("InvertMask3", true)->IsChecked();
-	
+
 	float low=ToFloat(selectedNodeGroup_->output_->GetChildDynamicCast<LineEdit>("Low", true)->GetText());
 	float high=ToFloat(selectedNodeGroup_->output_->GetChildDynamicCast<LineEdit>("High", true)->GetText());
 	bool rescale=selectedNodeGroup_->output_->GetChildDynamicCast<CheckBox>("Rescale", true)->IsChecked();
-	
+
 	if(target==0)
 	{
 		CKernel kernel;
@@ -1044,7 +1049,7 @@ void NodeGraphUI::HandleInputDragBegin(StringHash eventType, VariantMap &eventDa
 		// Destroy stale link
 		selectedNodeGroup_->linkPane_->RemoveLink(link_);
 	}
-	
+
 	NodeGraphLinkDest *element=static_cast<NodeGraphLinkDest *>(eventData["Element"].GetPtr());
 	if(element)
 	{
@@ -1065,11 +1070,11 @@ void NodeGraphUI::HandleOutputDragBegin(StringHash eventType, VariantMap &eventD
 		// Destroy stale link
 		selectedNodeGroup_->linkPane_->RemoveLink(link_);
 	}
-	
+
 	if(!selectedNodeGroup_) return;
 	NodeGraphLinkSource *element=static_cast<NodeGraphLinkSource *>(eventData["Element"].GetPtr());
 	if(!element) return;
-	
+
 	link_=selectedNodeGroup_->linkPane_->CreateLink(element, cursorTarget_);
 	link_->SetImageRect(IntRect(193,81,207,95));
 }
@@ -1078,16 +1083,16 @@ void NodeGraphUI::HandleDragEnd(StringHash eventType, VariantMap &eventData)
 {
 	auto ui=GetSubsystem<UI>();
 	auto input=GetSubsystem<Input>();
-	
+
 	if(!link_) return;
 	if(!selectedNodeGroup_) return;
-	
+
 	IntVector2 mousepos=input->GetMousePosition();
 	UIElement *at=ui->GetElementAt(mousepos);
 	if(at)
 	{
-		String atname=at->GetName();
-		if(atname.Substring(0,5)=="Input")
+		ea::string atname=at->GetName();
+		if(atname.substr(0,5)=="Input")
 		{
 			NodeGraphLinkDest *atld=dynamic_cast<NodeGraphLinkDest *>(at);
 			if(!atld)
@@ -1096,7 +1101,7 @@ void NodeGraphUI::HandleDragEnd(StringHash eventType, VariantMap &eventData)
 				link_=nullptr;
 				return;
 			}
-			
+
 			NodeGraphLink *thislink=atld->GetLink();
 			if(thislink)
 			{
@@ -1107,7 +1112,7 @@ void NodeGraphUI::HandleDragEnd(StringHash eventType, VariantMap &eventData)
 			return;
 		}
 	}
-	
+
 	selectedNodeGroup_->linkPane_->RemoveLink(link_);
 	link_=nullptr;
 }
@@ -1131,7 +1136,7 @@ void NodeGraphUI::HandleUpdate(StringHash eventType, VariantMap &eventData)
 void NodeGraphUI::HandleCloseNode(StringHash eventType, VariantMap &eventData)
 {
 	if(!selectedNodeGroup_) return;
-	
+
 	UIElement *e=static_cast<UIElement *>(eventData["Element"].GetPtr());
 	if(!e) return;
 	e=e->GetParent()->GetParent(); // Get owning node widget
@@ -1139,7 +1144,7 @@ void NodeGraphUI::HandleCloseNode(StringHash eventType, VariantMap &eventData)
 	{
 		RemoveLinkPoints(e);
 	}
-	
+
 	for(unsigned int c=0; c<selectedNodeGroup_->nodes_.size(); ++c)
 	{
 		auto i=selectedNodeGroup_->nodes_[c];
@@ -1153,7 +1158,7 @@ void NodeGraphUI::HandleCloseNode(StringHash eventType, VariantMap &eventData)
 	}
 }
 
-UIElement *NodeGraphUI::GetSourceFromNode(UIElement *node, const String &inputname)
+UIElement *NodeGraphUI::GetSourceFromNode(UIElement *node, const ea::string &inputname)
 {
 	NodeGraphLinkDest *c=node->GetChildDynamicCast<NodeGraphLinkDest>(inputname,true);
 	if(c)
@@ -1171,7 +1176,7 @@ UIElement *NodeGraphUI::GetSourceFromNode(UIElement *node, const String &inputna
 void NodeGraphUI::BuildANLFunction2(CKernel &kernel, UIElement *output)
 {
 	std::unordered_map<UIElement *, CInstructionIndex> indices;
-	
+
 	std::function<CInstructionIndex(UIElement *)> buildIndex=[&](UIElement *elem)->CInstructionIndex
 	{
 		auto it=indices.find(elem);
@@ -1179,14 +1184,14 @@ void NodeGraphUI::BuildANLFunction2(CKernel &kernel, UIElement *output)
 		{
 			return it->second;
 		}
-		
+
 		NodeTypeDesc *desc=GetNodeTypeDesc(elem->GetName());
 		unsigned int numinputs=desc->inputs_.size();
 		std::vector<CInstructionIndex> params;
-		
+
 		for(unsigned int inp=0; inp<numinputs; ++inp)
 		{
-			UIElement *s=GetSourceFromNode(elem, String("Input")+String(inp));
+			UIElement *s=GetSourceFromNode(elem, ea::string("Input")+ea::to_string(inp));
 			if(s)
 			{
 				params.push_back(buildIndex(s));
@@ -1195,21 +1200,21 @@ void NodeGraphUI::BuildANLFunction2(CKernel &kernel, UIElement *output)
 			{
 				if(desc->inputs_[inp].type_=="value")
 				{
-					String sc=elem->GetChildDynamicCast<LineEdit>(String("Value")+String(inp), true)->GetText();
+					ea::string sc=elem->GetChildDynamicCast<LineEdit>(ea::string("Value")+ea::to_string(inp), true)->GetText();
 					float num=ToFloat(sc);
 					params.push_back(kernel.constant(num));
 				}
 				else
 				{
-					String sc=elem->GetChildDynamicCast<LineEdit>(String("Value")+String(inp), true)->GetText();
+					ea::string sc=elem->GetChildDynamicCast<LineEdit>(ea::string("Value")+ea::to_string(inp), true)->GetText();
 					unsigned int num=ToUInt(sc);
 					params.push_back(kernel.seed(num));
 				}
 			}
 		}
-		
+
 		// Instance the function
-		const String &functype=elem->GetName();
+		const ea::string &functype=elem->GetName();
 		if(functype=="constant")
 		{
 			float v=ToFloat(elem->GetChildDynamicCast<LineEdit>("Value", true)->GetText());
@@ -1230,12 +1235,12 @@ void NodeGraphUI::BuildANLFunction2(CKernel &kernel, UIElement *output)
 			indices[elem]=index;
 			return index;
 		}
-		
-		
+
+
 		return kernel.zero();
 	};
-	
-	UIElement *e=GetSourceFromNode(output, String("Input0"));
+
+	UIElement *e=GetSourceFromNode(output, ea::string("Input0"));
 	if(e) buildIndex(e);
 }
 
@@ -1254,7 +1259,7 @@ CInstructionIndex NodeGraphUI::InstanceFunction(CKernel &kernel, NodeTypeDesc *d
 			std::vector<IndicesInputsDesc> &indices=c.indices_;
 			std::vector<ValueInputsDesc> &constants=c.constants_;
 			std::vector<ValueInputsDesc> &seeds=c.seeds_;
-			
+
 			std::vector<CInstructionIndex> inputs;
 			NodeTypeDesc *fdesc=GetNodeTypeDesc(c.func_);
 			if(!fdesc) return CInstructionIndex(0);  /// TODO: What do I do here?
@@ -1273,14 +1278,14 @@ CInstructionIndex NodeGraphUI::InstanceFunction(CKernel &kernel, NodeTypeDesc *d
 					inputs.push_back(kernel.seed((unsigned int)seeds[d].value_));
 				}
 			}
-			
+
 			if(c.func_=="add")
 			{
 				n.push_back(kernel.add(inputs[0], inputs[1]));
 			}
 		}
 	}
-	
+
 	return kernel.lastIndex();*/
 /*
 function InstanceFunction(k, desc, params)
@@ -1423,13 +1428,13 @@ void NodeGraphUI::BuildANLFunction(CKernel &kernel, UIElement *output)
 {
 	std::vector<UIElement *> nodes;
 	std::vector<CInstructionIndex> kernelindices;
-	
+
 	auto isvisited=[&](UIElement *n)->bool
 	{
 		for(auto c : nodes) if(c==n) return true;
 		return false;
 	};
-	
+
 	auto nodeindex=[&](UIElement *n)->int
 	{
 		for(int c=0; c<nodes.size(); ++c)
@@ -1438,12 +1443,12 @@ void NodeGraphUI::BuildANLFunction(CKernel &kernel, UIElement *output)
 		}
 		return -1;
 	};
-	
+
 	auto InstanceANLFunction=[&](CKernel &kernel, UIElement *n)->CInstructionIndex
 	{
 		auto GetValue=[&](UIElement *elem, unsigned int which)->CInstructionIndex
 		{
-			UIElement *s=GetSourceFromNode(elem, String("Input")+String(which));
+			UIElement *s=GetSourceFromNode(elem, ea::string("Input")+ea::to_string(which));
 			unsigned int s1;
 			if(s)
 			{
@@ -1451,16 +1456,16 @@ void NodeGraphUI::BuildANLFunction(CKernel &kernel, UIElement *output)
 			}
 			else
 			{
-				String sc=elem->GetChildDynamicCast<Text>(String("Value")+String(which), true)->GetText();
+				ea::string sc=elem->GetChildDynamicCast<Text>(ea::string("Value")+ea::to_string(which), true)->GetText();
 				float num=ToFloat(sc);
 				kernelindices.push_back(kernel.constant(num));
 				return kernel.lastIndex();
 			}
 		};
-		
+
 		auto GetSeed=[&](UIElement *elem, unsigned int which)->CInstructionIndex
 		{
-			UIElement *s=GetSourceFromNode(elem, String("Input")+String(which));
+			UIElement *s=GetSourceFromNode(elem, ea::string("Input")+ea::to_string(which));
 			unsigned int s1;
 			if(s)
 			{
@@ -1468,13 +1473,13 @@ void NodeGraphUI::BuildANLFunction(CKernel &kernel, UIElement *output)
 			}
 			else
 			{
-				String sc=elem->GetChildDynamicCast<Text>(String("Value")+String(which), true)->GetText();
+				ea::string sc=elem->GetChildDynamicCast<Text>(ea::string("Value")+ea::to_string(which), true)->GetText();
 				float num=ToFloat(sc);
 				kernelindices.push_back(kernel.seed(num));
 				return kernel.lastIndex();
 			}
 		};
-		
+
 		NodeTypeDesc *desc=GetNodeTypeDesc(n->GetName());
 		if(!desc) return 0;
 		unsigned int numinputs=desc->inputs_.size();
@@ -1490,7 +1495,7 @@ void NodeGraphUI::BuildANLFunction(CKernel &kernel, UIElement *output)
 				params.push_back(GetSeed(n,c));
 			}
 		}
-		
+
 		if(n->GetName()=="Output")
 		{
 			return GetValue(n,0);
@@ -1512,7 +1517,7 @@ void NodeGraphUI::BuildANLFunction(CKernel &kernel, UIElement *output)
 			return InstanceFunction(kernel, desc, params);
 		}
 	};
-	
+
 	std::function<void(UIElement*)> worker;
 	worker=[&](UIElement *n)
 	{
@@ -1520,16 +1525,16 @@ void NodeGraphUI::BuildANLFunction(CKernel &kernel, UIElement *output)
 		{
 			for(unsigned int c=0; c<numparams; ++c)
 			{
-				UIElement*s=GetSourceFromNode(nd, String("Input")+String(c));
+				UIElement*s=GetSourceFromNode(nd, ea::string("Input")+ea::to_string(c));
 				if(s && !isvisited(s)) worker(s);
 			};
 		};
-		
+
 		if(n->GetName()!="Output")
 		{
 			NodeTypeDesc *dsc=GetNodeTypeDesc(n->GetName());
 			if(!dsc) return;
-			
+
 			unsigned ni=dsc->inputs_.size();
 			if(ni>0)
 			{
@@ -1540,18 +1545,18 @@ void NodeGraphUI::BuildANLFunction(CKernel &kernel, UIElement *output)
 		{
 			visitnode(n,1);
 		}
-		
+
 		nodes.push_back(n);
 		CInstructionIndex ind=InstanceANLFunction(kernel, n);
 		kernelindices.push_back(ind);
 	};
-	
+
 	worker(output);
 }*/
 /*
 function BuildANLFunction(output)
 
-	
+
 
 	worker=function(n)
 		local visitnode=function(n,numparms)

@@ -10,12 +10,12 @@ using ANLInstanceFuncType=CInstructionIndex (*)(CKernel &, const std::vector<CIn
 
 struct InputsDesc
 {
-	String type_;
-	String name_;
+	ea::string type_;
+	ea::string name_;
 	double value_;
-	
+
 	InputsDesc() : value_(0.0){}
-	InputsDesc(const String &type, const String &name, double value) : type_(type), name_(name), value_(value){}
+	InputsDesc(const ea::string &type, const ea::string &name, double value) : type_(type), name_(name), value_(value){}
 };
 
 struct IndicesInputsDesc
@@ -36,20 +36,20 @@ struct ValueInputsDesc
 
 struct InstanceDesc
 {
-	String op_;
+	ea::string op_;
 	unsigned int param_;
-	String func_;
+	ea::string func_;
 	std::vector<IndicesInputsDesc> indices_;
 	std::vector<ValueInputsDesc> constants_;
 	std::vector<ValueInputsDesc> seeds_;
-	
-	InstanceDesc(const String &op, unsigned int param) : op_(op), param_(param){}
-	InstanceDesc(const String &op, const String &func, const std::vector<IndicesInputsDesc> &ind, const std::vector<ValueInputsDesc> &constants, const std::vector<ValueInputsDesc> &seeds) : op_(op), func_(func), indices_(ind), constants_(constants), seeds_(seeds){}
+
+	InstanceDesc(const ea::string &op, unsigned int param) : op_(op), param_(param){}
+	InstanceDesc(const ea::string &op, const ea::string &func, const std::vector<IndicesInputsDesc> &ind, const std::vector<ValueInputsDesc> &constants, const std::vector<ValueInputsDesc> &seeds) : op_(op), func_(func), indices_(ind), constants_(constants), seeds_(seeds){}
 };
 
 struct NodeTypeDesc
 {
-	String name_;
+	ea::string name_;
 	std::vector<InputsDesc> inputs_;
 	//std::vector<InstanceDesc> instance_;
 	ANLInstanceFuncType instance_;
@@ -66,7 +66,7 @@ std::vector<NodeTypeDesc> g_nodeTypes=
 			return CInstructionIndex();
 		}
 	},
-	
+
 	{
 		"seed",
 		{
@@ -76,7 +76,7 @@ std::vector<NodeTypeDesc> g_nodeTypes=
 			return CInstructionIndex();
 		}
 	},
-	
+
 	{
 		"add",
 		{
@@ -88,7 +88,7 @@ std::vector<NodeTypeDesc> g_nodeTypes=
 			return k.add(params[0], params[1]);
 		}
 	},
-	
+
 	{
 		"subtract",
 		{
@@ -100,7 +100,7 @@ std::vector<NodeTypeDesc> g_nodeTypes=
 			return k.subtract(params[0], params[1]);
 		}
 	},
-	
+
 	{
 		"multiply",
 		{
@@ -112,7 +112,7 @@ std::vector<NodeTypeDesc> g_nodeTypes=
 			return k.multiply(params[0], params[1]);
 		}
 	},
-	
+
 	{
 		"divide",
 		{
@@ -124,7 +124,7 @@ std::vector<NodeTypeDesc> g_nodeTypes=
 			return k.divide(params[0], params[1]);
 		}
 	},
-	
+
 	{
 		"pow",
 		{
@@ -136,7 +136,7 @@ std::vector<NodeTypeDesc> g_nodeTypes=
 			return k.pow(params[0], params[1]);
 		}
 	},
-	
+
 	{
 		"minimum",
 		{
@@ -148,7 +148,7 @@ std::vector<NodeTypeDesc> g_nodeTypes=
 			return k.minimum(params[0], params[1]);
 		}
 	},
-	
+
 	{
 		"maximum",
 		{
@@ -160,7 +160,7 @@ std::vector<NodeTypeDesc> g_nodeTypes=
 			return k.maximum(params[0], params[1]);
 		}
 	},
-	
+
 	{
 		"bias",
 		{
@@ -172,7 +172,7 @@ std::vector<NodeTypeDesc> g_nodeTypes=
 			return k.bias(params[0], params[1]);
 		}
 	},
-	
+
 	{
 		"gain",
 		{
@@ -184,7 +184,7 @@ std::vector<NodeTypeDesc> g_nodeTypes=
 			return k.gain(params[0], params[1]);
 		}
 	},
-	
+
 	{
 		"scaleDomain",
 		{
@@ -196,7 +196,7 @@ std::vector<NodeTypeDesc> g_nodeTypes=
 			return k.scaleDomain(params[0], params[1]);
 		}
 	},
-	
+
 	{
 		"scaleX",
 		{
@@ -208,7 +208,7 @@ std::vector<NodeTypeDesc> g_nodeTypes=
 			return k.scaleX(params[0], params[1]);
 		}
 	},
-	
+
 	{
 		"scaleY",
 		{
@@ -220,7 +220,7 @@ std::vector<NodeTypeDesc> g_nodeTypes=
 			return k.scaleY(params[0], params[1]);
 		}
 	},
-	
+
 	{
 		"translateDomain",
 		{
@@ -232,7 +232,7 @@ std::vector<NodeTypeDesc> g_nodeTypes=
 			return k.translateDomain(params[0], params[1]);
 		}
 	},
-	
+
 	{
 		"translateX",
 		{
@@ -255,7 +255,7 @@ std::vector<NodeTypeDesc> g_nodeTypes=
 			return k.valueBasis(params[0], params[1]);
 		}
 	},
-	
+
 	{
 		"gradientBasis",
 		{
@@ -267,7 +267,7 @@ std::vector<NodeTypeDesc> g_nodeTypes=
 			return k.gradientBasis(params[0], params[1]);
 		}
 	},
-	
+
 	{
 		"simplexBasis",
 		{
@@ -278,7 +278,7 @@ std::vector<NodeTypeDesc> g_nodeTypes=
 			return k.simplexBasis(params[0]);
 		}
 	},
-	
+
 	{
 		"tiers",
 		{
@@ -290,7 +290,7 @@ std::vector<NodeTypeDesc> g_nodeTypes=
 			return k.tiers(params[0], params[1]);
 		}
 	},
-	
+
 	{
 		"smoothTiers",
 		{
@@ -302,7 +302,7 @@ std::vector<NodeTypeDesc> g_nodeTypes=
 			return k.smoothTiers(params[0], params[1]);
 		}
 	},
-	
+
 	{
 		"dx",
 		{
@@ -314,7 +314,7 @@ std::vector<NodeTypeDesc> g_nodeTypes=
 			return k.dx(params[0], params[1]);
 		}
 	},
-	
+
 	{
 		"dy",
 		{
@@ -326,7 +326,7 @@ std::vector<NodeTypeDesc> g_nodeTypes=
 			return k.dy(params[0], params[1]);
 		}
 	},
-	
+
 	{
 		"seeder",
 		{
@@ -338,7 +338,7 @@ std::vector<NodeTypeDesc> g_nodeTypes=
 			return k.seeder(params[0], params[1]);
 		}
 	},
-	
+
 	{
 		"step",
 		{
@@ -350,7 +350,7 @@ std::vector<NodeTypeDesc> g_nodeTypes=
 			return k.step(params[0], params[1]);
 		}
 	},
-	
+
 	{
 		"abs",
 		{
@@ -361,7 +361,7 @@ std::vector<NodeTypeDesc> g_nodeTypes=
 			return k.abs(params[0]);
 		}
 	},
-	
+
 	{
 		"sin",
 		{
@@ -372,7 +372,7 @@ std::vector<NodeTypeDesc> g_nodeTypes=
 			return k.sin(params[0]);
 		}
 	},
-	
+
 	{
 		"cos",
 		{
@@ -383,7 +383,7 @@ std::vector<NodeTypeDesc> g_nodeTypes=
 			return k.cos(params[0]);
 		}
 	},
-	
+
 	{
 		"tan",
 		{
@@ -394,7 +394,7 @@ std::vector<NodeTypeDesc> g_nodeTypes=
 			return k.tan(params[0]);
 		}
 	},
-	
+
 	{
 		"asin",
 		{
@@ -405,7 +405,7 @@ std::vector<NodeTypeDesc> g_nodeTypes=
 			return k.asin(params[0]);
 		}
 	},
-	
+
 	{
 		"acos",
 		{
@@ -416,7 +416,7 @@ std::vector<NodeTypeDesc> g_nodeTypes=
 			return k.acos(params[0]);
 		}
 	},
-	
+
 	{
 		"atan",
 		{
@@ -427,7 +427,7 @@ std::vector<NodeTypeDesc> g_nodeTypes=
 			return k.atan(params[0]);
 		}
 	},
-	
+
 	{
 		"sigmoid",
 		{
@@ -438,7 +438,7 @@ std::vector<NodeTypeDesc> g_nodeTypes=
 			return k.sigmoid(params[0]);
 		}
 	},
-	
+
 	{
 		"x",
 		{
@@ -448,7 +448,7 @@ std::vector<NodeTypeDesc> g_nodeTypes=
 			return k.x();
 		}
 	},
-	
+
 	{
 		"y",
 		{
@@ -458,7 +458,7 @@ std::vector<NodeTypeDesc> g_nodeTypes=
 			return k.y();
 		}
 	},
-	
+
 	{
 		"radial",
 		{
@@ -468,7 +468,7 @@ std::vector<NodeTypeDesc> g_nodeTypes=
 			return k.radial();
 		}
 	},
-	
+
 	{
 		"mix",
 		{
@@ -481,7 +481,7 @@ std::vector<NodeTypeDesc> g_nodeTypes=
 			return k.mix(params[0], params[1], params[2]);
 		}
 	},
-	
+
 	{
 		"clamp",
 		{
@@ -494,7 +494,7 @@ std::vector<NodeTypeDesc> g_nodeTypes=
 			return k.clamp(params[2], params[0], params[1]);
 		}
 	},
-	
+
 	{
 		"linearStep",
 		{
@@ -507,7 +507,7 @@ std::vector<NodeTypeDesc> g_nodeTypes=
 			return k.linearStep(params[0], params[1], params[2]);
 		}
 	},
-	
+
 	{
 		"smoothStep",
 		{
@@ -520,7 +520,7 @@ std::vector<NodeTypeDesc> g_nodeTypes=
 			return k.smoothStep(params[0], params[1], params[2]);
 		}
 	},
-	
+
 	{
 		"smootherStep",
 		{
@@ -533,7 +533,7 @@ std::vector<NodeTypeDesc> g_nodeTypes=
 			return k.smootherStep(params[0], params[1], params[2]);
 		}
 	},
-	
+
 	{
 		"logistic",
 		{
@@ -546,7 +546,7 @@ std::vector<NodeTypeDesc> g_nodeTypes=
 			return k.sigmoid(params[0], params[1], params[2]);
 		}
 	},
-	
+
 	{
 		"randomize",
 		{
@@ -559,7 +559,7 @@ std::vector<NodeTypeDesc> g_nodeTypes=
 			return k.randomize(params[0], params[1], params[2]);
 		}
 	},
-	
+
 	{
 		"fractal",
 		{
@@ -575,7 +575,7 @@ std::vector<NodeTypeDesc> g_nodeTypes=
 			return k.fractal(params[0], params[1], params[2], params[3], params[4], params[5]);
 		}
 	},
-	
+
 	{
 		"cellularBasis",
 		{
@@ -595,7 +595,7 @@ std::vector<NodeTypeDesc> g_nodeTypes=
 			return k.cellularBasis(params[0], params[1], params[2], params[3], params[4], params[5], params[6], params[7], params[8], params[9]);
 		}
 	},
-	
+
 	{
 		"distort",
 		{
@@ -610,7 +610,7 @@ std::vector<NodeTypeDesc> g_nodeTypes=
 			auto turb1=k.multiply(params[2], k.seeder(k.seed(1), params[1]));
 			auto ty=k.translateY(params[3], turb0);
 			auto tx=k.translateX(ty, turb1);
-			
+
 			return k.seeder(params[0], tx);
 		}
 	},

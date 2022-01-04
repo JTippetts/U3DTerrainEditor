@@ -1,9 +1,9 @@
 <material>
-    <technique name="Techniques/TerrainEdit8TriPlanarBumpReduce.xml" />
-	
+    <technique name="Techniques/TerrainEdit8.xml" />
     <parameter name="MatSpecColor" value="0.5 0.5 0.5 16" />
-    <parameter name="DetailTiling" value="4 4 4" />
-	<parameter name="BumpStrength" value="128" />
-	
-	<shadowcull value="cw" />
+    <parameter name="DetailTiling" value="0.1 0.1 0.1" />
+	<parameter name="LayerScaling1" value="1 1 1 1" />
+	<parameter name="LayerScaling2" value="1 1 1 0.125" />
+	<shadowcull value="none" />
+	<shader vsdefines="" psdefines="USEMASKTEXTURE EDITING TRIPLANAR REDUCETILING NORMALMAP" />
 </material>

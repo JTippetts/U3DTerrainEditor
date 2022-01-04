@@ -11,9 +11,9 @@ class Formatter {
 	constexpr Formatter(char const * const fmt) : fmt{fmt} {}
 
 	template <typename... ArgTs>
-	String operator ()(ArgTs const &... args) const {
+	ea::string operator ()(ArgTs const &... args) const {
 		char buf[BufSize];
-		String ret;
+		ea::string ret;
 		auto size = snprintf(buf, BufSize, this->fmt, args...);
 		if (size < 0) {
 			/* encoding error */

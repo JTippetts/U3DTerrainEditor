@@ -130,12 +130,12 @@ TerrainContext::TerrainContext(Context *context) : Object(context),
 void TerrainContext::Construct(Scene *scene, EditingCamera *camera)
 {
 	auto cache=GetSubsystem<ResourceCache>();
-	
+
 	camera_=camera;
 	if(!terrainNode_) terrainNode_=scene->CreateChild("TerrainNode");
 	if(!waterNode_) waterNode_=scene->CreateChild("WaterNode");
 	waterNode_->SetPosition(Vector3(0,-0.1f,0));
-	
+
 	if(!terrain_)
 	{
 		terrain_=terrainNode_->CreateComponent<Terrain>();
@@ -147,21 +147,21 @@ void TerrainContext::Construct(Scene *scene, EditingCamera *camera)
 		water_=waterNode_->CreateComponent<Terrain>();
 		water_->SetSpacing(spacing_);
 	}
-	
+
 	if(!blend0Tex_) blend0Tex_=SharedPtr<Texture2D>(new Texture2D(context_));
 	if(!blend1Tex_) blend1Tex_=SharedPtr<Texture2D>(new Texture2D(context_));
 	if(!maskTex_) maskTex_=SharedPtr<Texture2D>(new Texture2D(context_));
 	if(!waterDepthTex_) waterDepthTex_=SharedPtr<Texture2D>(new Texture2D(context_));
-	
+
 	Material *watermat=cache->GetResource<Material>("Materials/FlowWater.xml");
 	watermat->SetTexture(TU_SPECULAR, waterDepthTex_);
 	water_->SetMaterial(watermat);
-	
+
 	blend0Tex_->SetNumLevels(1);
 	blend1Tex_->SetNumLevels(1);
 	maskTex_->SetNumLevels(1);
 	waterDepthTex_->SetNumLevels(1);
-	
+
 	SubscribeToEvent(StringHash("BeginFrame"), URHO3D_HANDLER(TerrainContext, HandleBeginFrame)); // Update materials and textures here
 }
 
@@ -218,13 +218,13 @@ void TerrainContext::GetHeightMap(CArray2Dd &buffer)
 BoundingBox TerrainContext::GetBoundingBox()
 {
 	BoundingBox bbox;
-	
+
 	bbox.Merge(NormalizedToWorld(Vector2(0,0)));
 	bbox.Merge(NormalizedToWorld(Vector2(0,1)));
 	bbox.Merge(NormalizedToWorld(Vector2(1,0)));
 	bbox.Merge(NormalizedToWorld(Vector2(1,1)));
 	bbox.Merge(Vector3(0,1000,0));
-	
+
 	return bbox;
 }
 
@@ -236,30 +236,30 @@ void TerrainContext::SetHeightMapSize(const IntVector2 &size)
 		terrainMap_=SharedPtr<Image>(new Image(context_));
 		waterMap_=SharedPtr<Image>(new Image(context_));
 	}
-	
+
 	if(IntVector2(terrainMap_->GetWidth(), terrainMap_->GetHeight()) != size)
 	{
 		terrainMap_->SetSize(size.x_, size.y_, 3);
 		waterMap_->SetSize(size.x_, size.y_, 3);
-	
+
 		terrainMap_->Clear(Color(0,0,0));
 		waterMap_->Clear(Color(0,0,0));
-	
+
 		waterDepth_.SetSize(size.x_, size.y_, 1);
 		waterDepth_.Clear(Color(0,0,0));
 		waterDepthTex_->SetData(&waterDepth_, false);
 	}
-	
+
 	terrain_->SetHeightMap(terrainMap_);
 	water_->SetHeightMap(waterMap_);
-	
+
 	// Calculate map area
 	Vector3 spacing=terrain_->GetSpacing();
     int patchSize=terrain_->GetPatchSize();
     IntVector2 numPatches=IntVector2((terrainMap_->GetWidth()-1) / patchSize, (terrainMap_->GetHeight()-1) / patchSize);
     Vector2 patchWorldSize=Vector2(spacing.x_*(float)(patchSize*numPatches.x_), spacing.z_*(float)(patchSize*numPatches.y_));
     Vector2 patchWorldOrigin=Vector2(-0.5f * patchWorldSize.x_, -0.5f * patchWorldSize.y_);
-	
+
 	if(camera_)
 	{
 		camera_->SetCameraBounds(patchWorldOrigin, patchWorldOrigin+patchWorldSize);
@@ -269,7 +269,7 @@ void TerrainContext::SetHeightMapSize(const IntVector2 &size)
 void TerrainContext::SetBlendMapSize(const IntVector2 &size)
 {
 	if(!blend0Tex_ || !blend1Tex_) return;
-	
+
 	if (IntVector2(blend0_.GetWidth(), blend0_.GetHeight()) != size)
 	{
 		blend0_.SetSize(size.x_, size.y_, 4);
@@ -277,23 +277,23 @@ void TerrainContext::SetBlendMapSize(const IntVector2 &size)
 		blend0_.Clear(Color(1,0,0,0));
 		blend1_.Clear(Color(0,0,0,0));
 	}
-	
+
 	blend0Tex_->SetData(&blend0_, false);
 	blend1Tex_->SetData(&blend1_, false);
-	
+
 	materialdirty_=true;
 }
 
 void TerrainContext::SetMaskSize(const IntVector2 &size)
 {
 	if(!maskTex_) return;
-	
+
 	if(IntVector2(mask_.GetWidth(), mask_.GetHeight()) != size)
 	{
 		mask_.SetSize(size.x_, size.y_, 3);
 		mask_.Clear(Color(1,1,1));
 	}
-	
+
 	maskTex_->SetData(&mask_, false);
 	materialdirty_=true;
 }
@@ -324,7 +324,7 @@ void TerrainContext::HandleBeginFrame(StringHash eventType, VariantMap &eventDat
 		if(terrain_) terrain_->SetMaterial(terrainMaterial_);
 		materialdirty_=false;
 	}
-	
+
 	if(waterMaterial_ && watermaterialdirty_)
 	{
 		// nothing for now, do I even need this?
@@ -337,7 +337,7 @@ void TerrainContext::ClearHeightMap()
 {
 	terrainMap_->Clear(Color(0,0,0));
 	if(terrain_) terrain_->ApplyHeightMap();
-	
+
 	// Clear water map as well
 	waterMap_->Clear(Color(0,0,0));
 	if(water_) water_->ApplyHeightMap();
@@ -346,7 +346,7 @@ void TerrainContext::ClearHeightMap()
 void TerrainContext::ClearBlendMaps()
 {
 	if(!blend0Tex_ || !blend1Tex_) return;
-	
+
 	blend0_.Clear(Color(1,0,0,0));
 	blend1_.Clear(Color(0,0,0,0));
 	blend0Tex_->SetData(&blend0_, false);
@@ -372,14 +372,14 @@ void TerrainContext::Clear()
 	ClearBlendMaps();
 	ClearMask();
 }
-void TerrainContext::Save(const String &path)
+void TerrainContext::Save(const ea::string &path)
 {
 	terrainMap_->SavePNG(path+"/elevation.png");
 	blend0_.SavePNG(path+"/blend0.png");
 	blend1_.SavePNG(path+"/blend1.png");
 	mask_.SavePNG(path+"/mask.png");
 	waterMap_->SavePNG(path+"/water.png");
-	
+
 	// Export normalmap
 
 	Image img(context_);
@@ -397,17 +397,17 @@ void TerrainContext::Save(const String &path)
 			img.SetPixel(x,y,Color(norm.x_*0.5f + 0.5f, norm.z_*0.5f+0.5f, 1.0));
 		}
 	}
-	img.SavePNG(path+"/normalmap.png"); 
+	img.SavePNG(path+"/normalmap.png");
 }
 
-void TerrainContext::Load(const String &path)
+void TerrainContext::Load(const ea::string &path)
 {
 	LoadImage(path+"/elevation.png", *terrainMap_);
 	LoadImage(path+"/blend0.png", blend0_);
 	LoadImage(path+"/blend1.png", blend1_);
 	LoadImage(path+"/mask.png", mask_);
 	LoadImage(path+"/water.png", *waterMap_);
-	
+
 	terrain_->ApplyHeightMap();
 	water_->ApplyHeightMap();
 	blend0Tex_->SetData(&blend0_, true);
@@ -428,7 +428,7 @@ float TerrainContext::GetHeightValue(Vector3 worldpos)
 float TerrainContext::GetHeight(Vector3 worldpos)
 {
 	if(!terrain_) return 0.0f;
-	
+
 	return terrain_->GetHeight(worldpos);
 }
 
@@ -571,14 +571,14 @@ void TerrainContext::ClearAllMasks()
 void TerrainContext::ApplyHeightAlpha(float x, float z, float dt, BrushSettings &brush, MaskSettings &masksettings, Image &alpha, float angle)
 {
 	if(!terrain_) return;
-	
+
 	Vector3 world=Vector3(x,0,z);
     IntVector2 ht=terrain_->WorldToHeightMap(world);
-	
+
 	float radius=brush.radius_*100.0f;
     int sz=(int)radius+1;
     int comp=terrainMap_->GetComponents();
-	
+
 	for(int hx=ht.x_-sz; hx<=ht.x_+sz; ++hx)
     {
         for(int hz=ht.y_-sz; hz<=ht.y_+sz; ++hz)
@@ -601,13 +601,13 @@ void TerrainContext::ApplyHeightAlpha(float x, float z, float dt, BrushSettings 
 				alphanx=std::max(0.0f, std::min(1.0f, alphanx));
 				alphany=std::max(0.0f, std::min(1.0f, alphany));
 				float alphapower=alpha.GetPixelBilinear(alphanx,alphany).r_;
-				
+
                 i=i*dt*brush.power_*alphapower*10.0f;
-				
+
 				if(masksettings.usemask0_ || masksettings.usemask1_ || masksettings.usemask2_)
 				{
 					Color mask=mask_.GetPixelBilinear((float)(hx)/(float)(terrainMap_->GetWidth()), (float)(hz)/(float)(terrainMap_->GetHeight()));
-				
+
 					if(masksettings.usemask0_)
 					{
 						float m=mask.r_;
@@ -747,7 +747,7 @@ void TerrainContext::ApplyWaterBrush(float x, float z, float dt, BrushSettings &
 
     Vector3 world=Vector3(x,0,z);
     IntVector2 ht=water_->WorldToHeightMap(world);
-	
+
 	float rad=brush.radius_*100.0f;
     int sz=(int)rad+1;
     int comp=waterMap_->GetComponents();
@@ -844,7 +844,7 @@ void TerrainContext::ApplySmoothBrush(float x, float z, float dt, BrushSettings 
 
     Vector3 world=Vector3(x,0,z);
     IntVector2 ht=terrain_->WorldToHeightMap(world);
-	
+
 	float rad=brush.radius_*100.0f;
     int sz=(int)rad+1;
     int comp=terrainMap_->GetComponents();
@@ -1285,7 +1285,7 @@ void TerrainContext::SetWaterBuffer(CArray2Dd &buffer, MaskSettings &masksetting
 	BuildWaterDepthTexture();
 }
 
-bool TerrainContext::LoadImage(const String &filename, Image &img)
+bool TerrainContext::LoadImage(const ea::string &filename, Image &img)
 {
 	File file(context_, filename);
 	return img.Load(file);

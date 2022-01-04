@@ -27,11 +27,11 @@ class TerrainSettingsUI : public Object
 	URHO3D_OBJECT(TerrainSettingsUI, Object);
 	public:
 	TerrainSettingsUI(Context *context);
-	
+
 	void Construct(Scene *scene, EditingCamera *cam, TerrainContext *tc, TerrainTexturingUI *tt, EditMaskUI *em, NodeGraphUI *ng, WaypointGroupUI *wg);
 	void SetVisible(bool v);
 	bool IsVisible(){if(element_) return element_->IsVisible(); return false;}
-	
+
 	protected:
 	Scene *scene_;
 	EditingCamera *camera_;
@@ -40,15 +40,15 @@ class TerrainSettingsUI : public Object
 	WaypointGroupUI *waypointGroups_;
 	EditMaskUI *editMask_;
 	TerrainTexturingUI *terrainTexturing_;
-	
+
 	SharedPtr<UIElement> element_;
 	SharedPtr<FileSelector> fileSelector_;
 	ColorChooser mainChooser_, backChooser_, ambientChooser_, fogChooser_;
-	
+
 	Node *mainLightNode_, *backLightNode_, *zoneNode_;
 	Light *mainLight_, *backLight_;
 	Zone *zone_;
-	
+
 	void HandleSaveProject(StringHash eventType, VariantMap &eventData);
 	void HandleLoadProject(StringHash eventType, VariantMap &eventData);
 	void HandleClearProject(StringHash eventType, VariantMap &eventData);
@@ -58,9 +58,9 @@ class TerrainSettingsUI : public Object
 	void HandleUpdate(StringHash eventType, VariantMap &eventData);
 	void HandlePickPath(StringHash eventType, VariantMap &eventData);
 	void HandlePickPathConfirm(StringHash eventType, VariantMap &eventData);
-	
-	void Save(const String &fullpath);
-	void Load(const String &fullpath);
-	
-	SharedPtr<FileSelector> CreateFileSelector(const String &title, const String &oktext, const String &canceltext, const String &initialPath);
+
+	void Save(const ea::string &fullpath);
+	void Load(const ea::string &fullpath);
+
+	SharedPtr<FileSelector> CreateFileSelector(const ea::string &title, const ea::string &oktext, const ea::string &canceltext, const ea::string &initialPath);
 };

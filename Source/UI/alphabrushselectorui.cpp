@@ -45,7 +45,7 @@ void AlphaBrushSelectorUI::PopulateList()
 
 	XMLFile *style=cache->GetResource<XMLFile>("UI/DefaultStyle.xml");
 
-	Vector<String> files;
+	ea::vector<ea::string> files;
 	fileSystem->ScanDir(files, fileSystem->GetProgramDir() + "Data/Alphas", "*.png", SCAN_FILES, false);
 
 	// Insert blank first in list
@@ -56,22 +56,22 @@ void AlphaBrushSelectorUI::PopulateList()
 	thumb->SetImageRect(IntRect(0,0,thumbtex->GetWidth()-1,thumbtex->GetHeight()-1));
 	contentelement_->AddChild(elem);
 	SubscribeToEvent(thumb, StringHash("Pressed"), URHO3D_HANDLER(AlphaBrushSelectorUI, HandleAlphaSelected));
-	alphas_.push_back({"blank.png", "Data/Alphas/blank.png", elem, thumb, thumbtex, cache->GetResource<Image>(String("Data/Alphas/blank.png"))});
+	alphas_.push_back({"blank.png", "Data/Alphas/blank.png", elem, thumb, thumbtex, cache->GetResource<Image>(ea::string("Data/Alphas/blank.png"))});
 
 	// Insert remaining alphas
-	for(int c=0; c<files.Size(); ++c)
+	for(int c=0; c<files.size(); ++c)
 	{
-		String &file=files[c];
+		ea::string &file=files[c];
 		if(file!="blank.png")
 		{
-			thumbtex=cache->GetResource<Texture2D>(String("Data/Alphas/")+file);
+			thumbtex=cache->GetResource<Texture2D>(ea::string("Data/Alphas/")+file);
 			elem=ui->LoadLayout(cache->GetResource<XMLFile>("UI/AlphaEntry.xml"),style);
 			thumb=elem->GetChildDynamicCast<Button>("Thumb", true);
 			thumb->SetTexture(thumbtex);
 			thumb->SetImageRect(IntRect(0,0,thumbtex->GetWidth()-1,thumbtex->GetHeight()-1));
 			contentelement_->AddChild(elem);
 			SubscribeToEvent(thumb, StringHash("Pressed"), URHO3D_HANDLER(AlphaBrushSelectorUI, HandleAlphaSelected));
-			alphas_.push_back({file, String("Data/Alphas/")+file, elem, thumb, thumbtex, cache->GetResource<Image>(String("Data/Alphas/")+file)});
+			alphas_.push_back({file, ea::string("Data/Alphas/")+file, elem, thumb, thumbtex, cache->GetResource<Image>(ea::string("Data/Alphas/")+file)});
 		}
 	}
 

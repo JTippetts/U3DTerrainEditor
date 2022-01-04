@@ -30,7 +30,7 @@ void FilterBase::BuildOption(FilterOption &option)
 	if(!optionwindow_) return;
 	auto cache=GetSubsystem<ResourceCache>();
 	auto style=cache->GetResource<XMLFile>("UI/DefaultStyle.xml");
-	
+
 	UIElement *window=optionwindow_->CreateChild<UIElement>();
 	window->SetStyleAuto(style);
 	window->SetDefaultStyle(style);
@@ -39,9 +39,9 @@ void FilterBase::BuildOption(FilterOption &option)
 	Text *title=window->CreateChild<Text>();
 	title->SetStyleAuto(style);
 	title->SetText(option.name_);
-	
+
 	//option.optionelement_=window;
-	
+
 	switch(option.type_)
 	{
 		case OT_VALUE:
@@ -49,7 +49,7 @@ void FilterBase::BuildOption(FilterOption &option)
 			LineEdit *edit=window->CreateChild<LineEdit>();
 			edit->SetName(option.name_);
 			edit->SetStyleAuto(style);
-			edit->SetText(String(option.value_));
+			edit->SetText(ea::to_string(option.value_));
 		} break;
 		case OT_FLAG:
 		{
@@ -90,8 +90,8 @@ void FilterBase::BuildOption(FilterOption &option)
 			dlist->SetName(option.name_);
 			dlist->SetResizePopup(true);
 			option.splinelist_=dlist;
-			
-			std::vector<String> splines=waypointGroups_->GetGroupNames();
+
+			std::vector<ea::string> splines=waypointGroups_->GetGroupNames();
 			if(splines.size()==0)
 			{
 				SharedPtr<Text> t(new Text(context_));
@@ -112,10 +112,10 @@ void FilterBase::BuildOption(FilterOption &option)
 				}
 			}
 		} break;
-		
+
 		default: break;
 	};
-	
+
 	window->SetWidth(optionwindow_->GetWidth());
 }
 
@@ -123,14 +123,14 @@ void FilterBase::RebuildSplineLists()
 {
 	auto cache=GetSubsystem<ResourceCache>();
 	auto style=cache->GetResource<XMLFile>("UI/DefaultStyle.xml");
-	
+
 	for(auto &o : options_)
 	{
 		if(o.type_==OT_SPLINE)
 		{
 			DropDownList *dlist=o.splinelist_;
 			dlist->RemoveAllItems();
-			std::vector<String> splines=waypointGroups_->GetGroupNames();
+			std::vector<ea::string> splines=waypointGroups_->GetGroupNames();
 			if(splines.size()==0)
 			{
 				SharedPtr<Text> t(new Text(context_));
@@ -165,11 +165,11 @@ void FilterBase::BuildOptionList()
 void FilterBase::GatherOptions()
 {
 	if(!optionwindow_) return;
-	
+
 	for(unsigned int c=0; c<options_.size(); ++c)
 	{
 		FilterOption &option=options_[c];
-		
+
 		switch(option.type_)
 		{
 			case OT_VALUE:

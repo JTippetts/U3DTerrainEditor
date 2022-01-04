@@ -30,8 +30,8 @@ void RoadBuilderFilter::Execute()
 	float pavingwidth=options_[3].value_;
 	float pavinghardness=options_[4].value_;
 	int segments=(int)options_[5].value_;
-	
-	const String &sel=options_[6].listSelection_;
+
+	const ea::string &sel=options_[6].listSelection_;
 	unsigned int which=0;
 	if(sel=="Layer 1") which=1;
 	else if(sel=="Layer 2") which=2;
@@ -40,14 +40,14 @@ void RoadBuilderFilter::Execute()
 	else if(sel=="Layer 5") which=5;
 	else if(sel=="Layer 6") which=6;
 	else if(sel=="Layer 7") which=7;
-	
+
 	MaskSettings ms(options_[6].flag_, options_[7].flag_, options_[8].flag_, options_[9].flag_, options_[10].flag_, options_[11].flag_);
-	
+
 	IntVector2 tsize=terrainContext_->GetTerrainMapSize();
 	CArray2Dd buffer(tsize.x_, tsize.y_);
 	CArray2Dd blend(tsize.x_, tsize.y_);
 	blend.fill(0);
-	
+
 	std::vector<Vector3> &knots=options_[0].splineKnots_;
 	RasterVertexList plist;
 	for(auto k : knots)
@@ -58,14 +58,14 @@ void RoadBuilderFilter::Execute()
 		float ht=terrainContext_->GetHeightValue(hx, (tsize.y_-1)-hy);
 		plist.push_back(RasterVertex(hx, hy, ht));
 	}
-	
+
 	RasterVertexList curve;
 	TessellateLineList(&plist, &curve, segments);
-	
+
 	RasterVertexList quad;
 	BuildQuadStrip(&curve, &quad, bedwidth);
 	RasterizeQuadStrip(&buffer, &quad);
-	
+
 	for(unsigned int c=0; c<quad.size(); ++c)
 	{
 		RasterVertex &v=quad[c];
@@ -74,7 +74,7 @@ void RoadBuilderFilter::Execute()
 	RasterizeQuadStrip(&blend, &quad);
 	ApplyBedFunction(&blend, bedhardness, true);
 	terrainContext_->BlendHeightBuffer(buffer, blend, ms);
-	
+
 	quad.clear();
 	BuildQuadStrip(&curve, &quad, pavingwidth);
 	blend.fill(0);

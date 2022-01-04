@@ -16,8 +16,6 @@
 #include <Urho3D/UI/CheckBox.h>
 #include <Urho3D/Input/Input.h>
 
-#include "../format.h"
-
 
 EditWaterUI::EditWaterUI(Context *context) : Object(context),
 	terrainContext_(nullptr),
@@ -75,19 +73,19 @@ void EditWaterUI::HandleSliderChanged(StringHash eventType, VariantMap &eventDat
 
 	slider=element_->GetChildDynamicCast<Slider>("PowerSlider", true);
 	slider->SetValue(brushSettings_.power_ * slider->GetRange());
-	element_->GetChildDynamicCast<Text>("PowerText", true)->SetText("%.2f"_fmt(brushSettings_.power_));
+	element_->GetChildDynamicCast<Text>("PowerText", true)->SetText(ToString("%.2f", (brushSettings_.power_)));
 
 	slider=element_->GetChildDynamicCast<Slider>("RadiusSlider", true);
 	slider->SetValue(brushSettings_.radius_ * slider->GetRange());
-	element_->GetChildDynamicCast<Text>("RadiusText", true)->SetText("%.2f"_fmt(brushSettings_.radius_));
+	element_->GetChildDynamicCast<Text>("RadiusText", true)->SetText(ToString("%.2f", (brushSettings_.radius_)));
 
 	slider=element_->GetChildDynamicCast<Slider>("MaxSlider", true);
 	slider->SetValue(brushSettings_.max_ * slider->GetRange());
-	element_->GetChildDynamicCast<Text>("MaxText", true)->SetText("%.2f"_fmt(brushSettings_.max_));
+	element_->GetChildDynamicCast<Text>("MaxText", true)->SetText(ToString("%.2f", (brushSettings_.max_)));
 
 	slider=element_->GetChildDynamicCast<Slider>("HardnessSlider", true);
 	slider->SetValue(brushSettings_.hardness_ * slider->GetRange());
-	element_->GetChildDynamicCast<Text>("HardnessText", true)->SetText("%.2f"_fmt(brushSettings_.hardness_));
+	element_->GetChildDynamicCast<Text>("HardnessText", true)->SetText(ToString("%.2f", (brushSettings_.hardness_)));
 
 	GenerateBrushPreview();
 }
@@ -124,19 +122,19 @@ void EditWaterUI::SetBrushUIFields()
 
 	slider=element_->GetChildDynamicCast<Slider>("PowerSlider", true);
 	slider->SetValue(brushSettings_.power_ * slider->GetRange());
-	element_->GetChildDynamicCast<Text>("PowerText", true)->SetText("%.2f"_fmt(brushSettings_.power_));
+	element_->GetChildDynamicCast<Text>("PowerText", true)->SetText(ToString("%.2f", (brushSettings_.power_)));
 
 	slider=element_->GetChildDynamicCast<Slider>("RadiusSlider", true);
 	slider->SetValue(brushSettings_.radius_ * slider->GetRange());
-	element_->GetChildDynamicCast<Text>("RadiusText", true)->SetText("%.2f"_fmt(brushSettings_.radius_));
+	element_->GetChildDynamicCast<Text>("RadiusText", true)->SetText(ToString("%.2f", (brushSettings_.radius_)));
 
 	slider=element_->GetChildDynamicCast<Slider>("MaxSlider", true);
 	slider->SetValue(brushSettings_.max_ * slider->GetRange());
-	element_->GetChildDynamicCast<Text>("MaxText", true)->SetText("%.2f"_fmt(brushSettings_.max_));
+	element_->GetChildDynamicCast<Text>("MaxText", true)->SetText(ToString("%.2f", (brushSettings_.max_)));
 
 	slider=element_->GetChildDynamicCast<Slider>("HardnessSlider", true);
 	slider->SetValue(brushSettings_.hardness_ * slider->GetRange());
-	element_->GetChildDynamicCast<Text>("HardnessText", true)->SetText("%.2f"_fmt(brushSettings_.hardness_));
+	element_->GetChildDynamicCast<Text>("HardnessText", true)->SetText(ToString("%.2f", (brushSettings_.hardness_)));
 
 
 	CheckBox *button;

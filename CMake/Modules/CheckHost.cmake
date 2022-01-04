@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2008-2019 the Urho3D project.
+# Copyright (c) 2008-2020 the Urho3D project.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -78,13 +78,5 @@ else ()
         if (CCACHE_EXIT_CODE EQUAL 0)
            set (CCACHE_VERSION ${CCACHE_VERSION} CACHE INTERNAL "ccache version")
        endif ()
-    endif ()
-endif ()
-
-# Temporary workaround - test if PCH could be enabled when using Clang compiler toolchain
-if (CMAKE_CXX_COMPILER_ID MATCHES Clang)
-    # Turn off PCH when building on macOS host with ccache 3.3.1+ (the last known bad version) and when targeting Android and Web platforms
-    if ((APPLE AND NOT CCACHE_VERSION VERSION_LESS 3.3.1) OR ANDROID OR WEB)
-        set (URHO3D_PCH FALSE CACHE INTERNAL "" FORCE)
     endif ()
 endif ()

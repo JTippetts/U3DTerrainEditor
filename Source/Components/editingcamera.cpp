@@ -30,7 +30,7 @@ void EditingCamera::DelayedStart()
 	camera_ = cameranode_->CreateComponent<Camera>();
 	viewport_ = new Viewport(context_, node_->GetScene(), camera_);
 	GetSubsystem<Renderer>()->SetViewport(0, viewport_);
-	
+
 	node_->SetRotation(Quaternion(yaw_, Vector3(0,1,0)));
 	cameranode_->SetPosition(Vector3(0,0,-follow_));
 	anglenode_->SetRotation(Quaternion(pitch_, Vector3(1,0,0)));
@@ -40,7 +40,7 @@ void EditingCamera::DelayedStart()
 Ray EditingCamera::GetScreenRay(const IntVector2 &mousepos)
 {
 	auto graphics=GetSubsystem<Graphics>();
-	
+
 	if(!camera_) return Ray();
 	return camera_->GetScreenRay((float)mousepos.x_ / (float)graphics->GetWidth(), (float)mousepos.y_/(float)graphics->GetHeight());
 }
@@ -50,7 +50,7 @@ Ray EditingCamera::GetMouseRay()
 	if(!camera_) return Ray();
 	auto input=GetSubsystem<Input>();
 	auto ui=GetSubsystem<UI>();
-	
+
 	if(input->IsMouseVisible()) return GetScreenRay(input->GetMousePosition());
 	else return GetScreenRay(ui->GetCursor()->GetPosition());
 }
@@ -70,7 +70,7 @@ bool EditingCamera::GetMouseGround(Vector3 &out)
 	if(!camera_) return false;
 	auto input=GetSubsystem<Input>();
 	auto ui=GetSubsystem<UI>();
-	
+
 	if(input->IsMouseVisible()) return GetScreenGround(out, input->GetMousePosition());
 	else return GetScreenGround(out, ui->GetCursorPosition());
 }
@@ -79,22 +79,22 @@ bool EditingCamera::PickGround(Vector3 &ground, const IntVector2 &mousepos, floa
 {
 	auto ui=GetSubsystem<UI>();
 	auto input=GetSubsystem<Input>();
-	
+
 	Scene *scene=node_->GetScene();
 	Octree *octree=node_->GetScene()->GetComponent<Octree>();
-	
+
 	float hitpos=0;
 	Drawable *hitdrawable=nullptr;
 	//if(ui->GetCursor() && ui->GetCursor()->IsVisible()==false && input->IsMouseVisible()==false) return false;
-	
+
 	Ray ray=GetScreenRay(mousepos);
-	static PODVector<RayQueryResult> result;
-	result.Clear();
+	static ea::vector<RayQueryResult> result;
+	result.clear();
 	RayOctreeQuery query(result, ray, RAY_TRIANGLE, maxdistance, DRAWABLE_GEOMETRY);
 	octree->Raycast(query);
-	if(result.Size()==0) return false;
+	if(result.size()==0) return false;
 
-	for(unsigned int i=0; i<result.Size(); ++i)
+	for(unsigned int i=0; i<result.size(); ++i)
 	{
 		if(result[i].distance_>=0)
 		{
@@ -112,11 +112,11 @@ void EditingCamera::Update(float dt)
 	auto ui=GetSubsystem<UI>();
 	auto input=GetSubsystem<Input>();
 	auto graphics=GetSubsystem<Graphics>();
-	
+
 	IntVector2 mousepos;
 	if(ui->GetCursor()) mousepos=ui->GetCursor()->GetPosition();
 	else mousepos=input->GetMousePosition();
-	
+
 	if(allowzoom_ && !ui->GetElementAt(mousepos))
 	{
 		float wheel=input->GetMouseMoveWheel();
@@ -128,7 +128,7 @@ void EditingCamera::Update(float dt)
 	{
 		if(ui->GetCursor()) ui->GetCursor()->SetVisible(false);
 		else input->SetMouseVisible(false);
-		
+
 		if(allowpitch_)
 		{
 			float mmovey=(float)input->GetMouseMoveY() / (float)graphics->GetHeight();
@@ -148,14 +148,14 @@ void EditingCamera::Update(float dt)
 		if(ui->GetCursor()) ui->GetCursor()->SetVisible(true);
 		else input->SetMouseVisible(true);
 	}
-	
+
 	Vector3 trans(0,0,0);
-	
+
 	if(input->GetMouseButtonPress(MOUSEB_RIGHT))
 	{
 		lastmouse_=mousepos;
 	}
-	
+
 	if(input->GetMouseButtonDown(MOUSEB_RIGHT))
 	{
 		trans=Vector3(0,0,0);
@@ -179,31 +179,31 @@ void EditingCamera::Update(float dt)
 		if(input->GetKeyDown(KEY_S)) trans.z_-=1.0f;
 		if(input->GetKeyDown(KEY_A)) trans.x_-=1.0f;
 		if(input->GetKeyDown(KEY_D)) trans.x_+=1.0f;
-		
+
 		trans=quat*trans*dt*scrollspeed_;
 	}
-	
+
 	Vector3 mypos=node_->GetPosition();
 	Vector3 np=mypos+trans;
 	np.x_=std::max(minbounds_.x_, std::min(maxbounds_.x_, np.x_));
 	np.z_=std::max(minbounds_.y_, std::min(maxbounds_.y_, np.z_));
-	
+
 	if(tracksurface_ && terrainContext_)
 	{
 		float ht=terrainContext_->GetHeight(np);
 		np.y_=ht+offset_;
 	}
-	
+
 	node_->SetPosition(np);
 	SpringFollow(dt);
-	
+
 	if(clipsolid_)
 	{
 		Ray ray=camera_->GetScreenRay(0.5f, 0.5f);
 		Ray revray=Ray(node_->GetPosition(), ray.direction_*Vector3(-1,-1,-1));
 		curfollow_=CameraClipPick(revray, curfollow_);
 	}
-	
+
 	node_->SetRotation(Quaternion(yaw_, Vector3(0,1,0)));
 	cameranode_->SetPosition(Vector3(0,0,-curfollow_));
 	anglenode_->SetRotation(Quaternion(pitch_, Vector3(1,0,0)));
@@ -215,13 +215,13 @@ float EditingCamera::CameraClipPick(const Ray &ray, float followdist)
 	Scene *scene=node_->GetScene();
 	Octree *octree=scene->GetComponent<Octree>();
 
-	static PODVector<RayQueryResult> result;
-	result.Clear();
+	static ea::vector<RayQueryResult> result;
+	result.clear();
 	RayOctreeQuery query(result, ray, RAY_TRIANGLE, followdist, DRAWABLE_GEOMETRY);
 	octree->Raycast(query);
-	if(result.Size()==0) return followdist;
+	if(result.size()==0) return followdist;
 
-	for(unsigned int i=0; i<result.Size(); ++i)
+	for(unsigned int i=0; i<result.size(); ++i)
 	{
 		Node *n=TopLevelNodeFromDrawable(result[i].drawable_, scene);
 		return std::min(result[i].distance_-0.0f, followdist);

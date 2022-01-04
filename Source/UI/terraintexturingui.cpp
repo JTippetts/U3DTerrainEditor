@@ -18,7 +18,7 @@
 #include <Urho3D/Core/StringUtils.h>
 #include <Urho3D/IO/Log.h>
 
-#include "../format.h"
+
 
 void CopyImage(Image &in, Image &out)
 {
@@ -80,8 +80,8 @@ void TerrainTexturingUI::Construct(TerrainContext *tc, TerrainMaterialBuilder *t
 
 		for(unsigned int c=0; c<8; ++c)
 		{
-			SubscribeToEvent(element_->GetChild(String("EditTerrain")+String(c), true), StringHash("Pressed"), URHO3D_HANDLER(TerrainTexturingUI, HandleEditLayerButton));
-			SubscribeToEvent(element_->GetChild(String("Terrain")+String(c), true), StringHash("Pressed"), URHO3D_HANDLER(TerrainTexturingUI, HandleTextureButton));
+			SubscribeToEvent(element_->GetChild(ea::string("EditTerrain")+ea::to_string(c), true), StringHash("Pressed"), URHO3D_HANDLER(TerrainTexturingUI, HandleEditLayerButton));
+			SubscribeToEvent(element_->GetChild(ea::string("Terrain")+ea::to_string(c), true), StringHash("Pressed"), URHO3D_HANDLER(TerrainTexturingUI, HandleTextureButton));
 		}
 	}
 
@@ -104,42 +104,42 @@ void TerrainTexturingUI::Construct(TerrainContext *tc, TerrainMaterialBuilder *t
 void TerrainTexturingUI::Save(JSONObject &json)
 {
 	// Save settings
-	JSONObject settings;
-	
-	JSONArray diffuseLayers;
+	JSONValue settings;
+
+	JSONValue diffuseLayers;
 	for(auto &l : diffuseLayerNames_)
 	{
 		diffuseLayers.Push(JSONValue(l));
 	}
 	settings["DiffuseLayers"]=diffuseLayers;
-	
-	JSONArray normalLayers;
+
+	JSONValue normalLayers;
 	for(auto &n : normalLayerNames_)
 	{
 		normalLayers.Push(JSONValue(n));
 	}
 	settings["NormalLayers"]=normalLayers;
-	
-	JSONArray layerScales;
+
+	JSONValue layerScales;
 	for(auto s : layerScales_)
 	{
 		layerScales.Push(JSONValue(s));
 	}
 	settings["LayerScales"]=layerScales;
-	
+
 	json["TerrainTextureSettings"]=settings;
 }
 
-void TerrainTexturingUI::Load(const JSONObject &json)
+void TerrainTexturingUI::Load(const JSONValue &json)
 {
 	auto cache=GetSubsystem<ResourceCache>();
-	
-	if(json["TerrainTextureSettings"] && json["TerrainTextureSettings"]->IsObject())
+
+	if(json["TerrainTextureSettings"].IsObject())
 	{
-		const JSONObject &settings=json["TerrainTextureSettings"]->GetObject();
-		if(settings["DiffuseLayers"] && settings["DiffuseLayers"]->IsArray())
+		const JSONValue &settings=json["TerrainTextureSettings"];
+		if(settings["DiffuseLayers"].IsArray())
 		{
-			const JSONArray &diff=settings["DiffuseLayers"]->GetArray();
+			const JSONValue &diff=settings["DiffuseLayers"];
 			for(unsigned int c=0; c<std::min((int)diffuseLayerNames_.size(), (int)diff.Size()); c++)
 			{
 				diffuseLayerNames_[c]=diff[c].GetString();
@@ -151,11 +151,11 @@ void TerrainTexturingUI::Load(const JSONObject &json)
 				layerThumbnailTex_[c]->SetData(diffThumbnailImages_[c], false);
 			}
 		}
-		
-		if(settings["NormalLayers"] && settings["NormalLayers"]->IsArray())
+
+		if(settings["NormalLayers"].IsArray())
 		{
-			const JSONArray &normal=settings["NormalLayers"]->GetArray();
-			
+			const JSONValue &normal=settings["NormalLayers"];
+
 			for(unsigned int c=0; c<std::min((int)normalLayerNames_.size(), (int)normal.Size()); c++)
 			{
 				normalLayerNames_[c]=normal[c].GetString();
@@ -166,10 +166,10 @@ void TerrainTexturingUI::Load(const JSONObject &json)
 				CopyImage(thumb, *normalThumbnailImages_[c]);
 			}
 		}
-		
-		if(settings["LayerScales"] && settings["LayerScales"]->IsArray())
+
+		if(settings["LayerScales"].IsArray())
 		{
-			const JSONArray &scales=settings["LayerScales"]->GetArray();
+			const JSONValue &scales=settings["LayerScales"];
 			for(unsigned int c=0; c<std::min((int)layerScales_.size(), (int)scales.Size()); c++)
 			{
 				layerScales_[c]=scales[c].GetFloat();
@@ -187,7 +187,7 @@ void TerrainTexturingUI::InitializeTextures()
 	if(!materialBuilder_ || !element_) return;
 	auto cache=GetSubsystem<ResourceCache>();
 
-	std::vector<String> diffuse{
+	std::vector<ea::string> diffuse{
 		"Textures/pebbles.png",
 		"Textures/sand.png",
 		"Textures/tiletexturegrass.png",
@@ -198,7 +198,7 @@ void TerrainTexturingUI::InitializeTextures()
 		"Textures/cliff2.png",
 	};
 
-	std::vector<String> normal{
+	std::vector<ea::string> normal{
 		"Textures/pebbles_normal.png",
 		"Textures/sand_normal.png",
 		"Textures/tiletexturegrass_normal.png",
@@ -225,7 +225,7 @@ void TerrainTexturingUI::InitializeTextures()
 		tex->SetData(thumb, false);
 		layerThumbnailTex_.push_back(tex);
 
-		element_->GetChildDynamicCast<Button>(String("Terrain")+String(c), true)->SetTexture(tex);
+		element_->GetChildDynamicCast<Button>(ea::string("Terrain")+ea::to_string(c), true)->SetTexture(tex);
 
 		i=cache->GetResource<Image>(normal[c]);
 		thumb=SharedPtr<Image>(new Image(context_));
@@ -258,19 +258,19 @@ void TerrainTexturingUI::HandleSliderChanged(StringHash eventType, VariantMap &e
 
 	slider=element_->GetChildDynamicCast<Slider>("PowerSlider", true);
 	slider->SetValue(brushSettings_.power_ * slider->GetRange());
-	element_->GetChildDynamicCast<Text>("PowerText", true)->SetText("%.2f"_fmt(brushSettings_.power_));
+	element_->GetChildDynamicCast<Text>("PowerText", true)->SetText(ToString("%.2f", brushSettings_.power_));
 
 	slider=element_->GetChildDynamicCast<Slider>("RadiusSlider", true);
 	slider->SetValue(brushSettings_.radius_ * slider->GetRange());
-	element_->GetChildDynamicCast<Text>("RadiusText", true)->SetText("%.2f"_fmt(brushSettings_.radius_));
+	element_->GetChildDynamicCast<Text>("RadiusText", true)->SetText(ToString("%.2f", brushSettings_.radius_));
 
 	slider=element_->GetChildDynamicCast<Slider>("MaxSlider", true);
 	slider->SetValue(brushSettings_.max_ * slider->GetRange());
-	element_->GetChildDynamicCast<Text>("MaxText", true)->SetText("%.2f"_fmt(brushSettings_.max_));
+	element_->GetChildDynamicCast<Text>("MaxText", true)->SetText(ToString("%.2f", brushSettings_.max_));
 
 	slider=element_->GetChildDynamicCast<Slider>("HardnessSlider", true);
 	slider->SetValue(brushSettings_.hardness_ * slider->GetRange());
-	element_->GetChildDynamicCast<Text>("HardnessText", true)->SetText("%.2f"_fmt(brushSettings_.hardness_));
+	element_->GetChildDynamicCast<Text>("HardnessText", true)->SetText(ToString("%.2f", brushSettings_.hardness_));
 
 	GenerateBrushPreview();
 }
@@ -307,19 +307,19 @@ void TerrainTexturingUI::SetBrushUIFields()
 
 	slider=element_->GetChildDynamicCast<Slider>("PowerSlider", true);
 	slider->SetValue(brushSettings_.power_ * slider->GetRange());
-	element_->GetChildDynamicCast<Text>("PowerText", true)->SetText("%.2f"_fmt(brushSettings_.power_));
+	element_->GetChildDynamicCast<Text>("PowerText", true)->SetText(ToString("%.2f", brushSettings_.power_));
 
 	slider=element_->GetChildDynamicCast<Slider>("RadiusSlider", true);
 	slider->SetValue(brushSettings_.radius_ * slider->GetRange());
-	element_->GetChildDynamicCast<Text>("RadiusText", true)->SetText("%.2f"_fmt(brushSettings_.radius_));
+	element_->GetChildDynamicCast<Text>("RadiusText", true)->SetText(ToString("%.2f", brushSettings_.radius_));
 
 	slider=element_->GetChildDynamicCast<Slider>("MaxSlider", true);
 	slider->SetValue(brushSettings_.max_ * slider->GetRange());
-	element_->GetChildDynamicCast<Text>("MaxText", true)->SetText("%.2f"_fmt(brushSettings_.max_));
+	element_->GetChildDynamicCast<Text>("MaxText", true)->SetText(ToString("%.2f", brushSettings_.max_));
 
 	slider=element_->GetChildDynamicCast<Slider>("HardnessSlider", true);
 	slider->SetValue(brushSettings_.hardness_ * slider->GetRange());
-	element_->GetChildDynamicCast<Text>("HardnessText", true)->SetText("%.2f"_fmt(brushSettings_.hardness_));
+	element_->GetChildDynamicCast<Text>("HardnessText", true)->SetText(ToString("%.2f", brushSettings_.hardness_));
 
 
 	CheckBox *button;
@@ -450,7 +450,7 @@ void TerrainTexturingUI::HandleEditLayerButton(StringHash eventType, VariantMap 
 	if(!element_ || !editLayerElement_) return;
 	UIElement *elem=static_cast<UIElement *>(eventData["Element"].GetPtr());
 
-	String name=elem->GetName();
+	ea::string name=elem->GetName();
 
 	if(name=="EditTerrain0") editingLayer_=0;
 	else if(name=="EditTerrain1") editingLayer_=1;
@@ -467,13 +467,13 @@ void TerrainTexturingUI::HandleEditLayerButton(StringHash eventType, VariantMap 
 	editLayerNormalTex_->SetData(normalThumbnailImages_[editingLayer_], false);
 	editLayerElement_->GetChildDynamicCast<LineEdit>("DiffuseName", true)->SetText(diffuseLayerNames_[editingLayer_]);
 	editLayerElement_->GetChildDynamicCast<LineEdit>("NormalName", true)->SetText(normalLayerNames_[editingLayer_]);
-	editLayerElement_->GetChildDynamicCast<LineEdit>("LayerScale", true)->SetText(String(layerScales_[editingLayer_]));;
+	editLayerElement_->GetChildDynamicCast<LineEdit>("LayerScale", true)->SetText(ea::to_string(layerScales_[editingLayer_]));;
 }
 
 void TerrainTexturingUI::HandleTextureButton(StringHash eventType, VariantMap &eventData)
 {
 	UIElement *elem=static_cast<UIElement *>(eventData["Element"].GetPtr());
-	String name=elem->GetName();
+	ea::string name=elem->GetName();
 	if(name=="Terrain0") SelectLayer(0);
 	else if(name=="Terrain1") SelectLayer(1);
 	else if(name=="Terrain2") SelectLayer(2);
@@ -500,12 +500,12 @@ void TerrainTexturingUI::HandleSelectDiffuseFile(StringHash eventType, VariantMa
 {
 	auto cache=GetSubsystem<ResourceCache>();
 
-	String name=eventData["FileName"].GetString();
-	String fname=GetFilenameFromPath(name);
-	Log::Write(LOG_INFO, String("Path: ") + name + " filename: " + fname);
+	ea::string name=eventData["FileName"].GetString();
+	ea::string fname=GetFilenameFromPath(name);
+	//Log::Write(LOG_INFO, String("Path: ") + name + " filename: " + fname);
 	if(fname=="")
 	{
-		Log::Write(LOG_INFO, "Bailing out for no filename");
+		//Log::Write(LOG_INFO, "Bailing out for no filename");
 		fileSelector_.Reset();
 		return;
 	}
@@ -522,12 +522,12 @@ void TerrainTexturingUI::HandleSelectNormalFile(StringHash eventType, VariantMap
 {
 	auto cache=GetSubsystem<ResourceCache>();
 
-	String name=eventData["FileName"].GetString();
-	String fname=GetFilenameFromPath(name);
-	Log::Write(LOG_INFO, String("Path: ") + name + " filename: " + fname);
+	ea::string name=eventData["FileName"].GetString();
+	ea::string fname=GetFilenameFromPath(name);
+	//Log::Write(LOG_INFO, String("Path: ") + name + " filename: " + fname);
 	if(fname=="")
 	{
-		Log::Write(LOG_INFO, "Bailing out for no filename");
+		//Log::Write(LOG_INFO, "Bailing out for no filename");
 		fileSelector_.Reset();
 		return;
 	}
@@ -573,7 +573,7 @@ void TerrainTexturingUI::SetLayerScales()
 }
 
 
-SharedPtr<FileSelector> TerrainTexturingUI::CreateFileSelector(const String &title, const String &oktext, const String &canceltext, const String &initialPath, const Vector<String> &filters, unsigned int initialFilter)
+SharedPtr<FileSelector> TerrainTexturingUI::CreateFileSelector(const ea::string &title, const ea::string &oktext, const ea::string &canceltext, const ea::string &initialPath, const ea::vector<ea::string> &filters, unsigned int initialFilter)
 {
 	auto cache=GetSubsystem<ResourceCache>();
 	XMLFile *style=cache->GetResource<XMLFile>("UI/DefaultStyle.xml");
@@ -587,23 +587,23 @@ SharedPtr<FileSelector> TerrainTexturingUI::CreateFileSelector(const String &tit
 	return fs;
 }
 
-String TerrainTexturingUI::GetFilenameFromPath(const String &path)
+ea::string TerrainTexturingUI::GetFilenameFromPath(const ea::string &path)
 {
 	auto cache=GetSubsystem<ResourceCache>();
 
-	const Vector<String> &resourceDirs=cache->GetResourceDirs();
-	String pl=path.ToLower();
+	const ea::vector<ea::string> &resourceDirs=cache->GetResourceDirs();
+	ea::string pl=path.to_lower();
 
-	for(unsigned int c=0; c<resourceDirs.Size(); ++c)
+	for(unsigned int c=0; c<resourceDirs.size(); ++c)
 	{
-		String rl=resourceDirs[c].ToLower();
-		unsigned idx=pl.Find(rl);
-		if(idx!=String::NPOS)
+		ea::string rl=resourceDirs[c].to_lower();
+		unsigned idx=pl.find(rl);
+		if(idx!=ea::string::npos)
 		{
-			String sub=path.Substring(idx+resourceDirs[c].Length());
+			ea::string sub=path.substr(idx+resourceDirs[c].length());
 			return sub;
 		}
 	}
 
-	return String("");
+	return ea::string("");
 }

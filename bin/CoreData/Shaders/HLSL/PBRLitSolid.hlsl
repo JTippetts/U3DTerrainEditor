@@ -30,6 +30,17 @@ void VS(float4 iPos : POSITION,
     #endif
     #ifdef INSTANCED
         float4x3 iModelInstance : TEXCOORD4,
+        #ifdef SPHERICALHARMONICS
+            float4 iSHArInstance : TEXCOORD7,
+            float4 iSHAgInstance : TEXCOORD8,
+            float4 iSHAbInstance : TEXCOORD9,
+            float4 iSHBrInstance : TEXCOORD10,
+            float4 iSHBgInstance : TEXCOORD11,
+            float4 iSHBbInstance : TEXCOORD12,
+            float4 iSHCInstance  : TEXCOORD13,
+        #else
+            float4 iAmbientInstance : TEXCOORD7,
+        #endif
     #endif
     #if defined(BILLBOARD) || defined(DIRBILLBOARD)
         float2 iSize : TEXCOORD1,
@@ -42,24 +53,24 @@ void VS(float4 iPos : POSITION,
     #endif
     out float3 oNormal : TEXCOORD1,
     out float4 oWorldPos : TEXCOORD2,
+    #if defined(LIGHTMAP)
+        out float2 oTexCoord2 : TEXCOORD4,
+    #endif
+    out float3 oVertexLight : TEXCOORD5,
     #ifdef PERPIXEL
         #ifdef SHADOW
-            out float4 oShadowPos[NUMCASCADES] : TEXCOORD4,
+            out float4 oShadowPos[NUMCASCADES] : TEXCOORD6,
         #endif
         #ifdef SPOTLIGHT
-            out float4 oSpotPos : TEXCOORD5,
+            out float4 oSpotPos : TEXCOORD7,
         #endif
         #ifdef POINTLIGHT
-            out float3 oCubeMaskVec : TEXCOORD5,
+            out float3 oCubeMaskVec : TEXCOORD7,
         #endif
     #else
-        out float3 oVertexLight : TEXCOORD4,
-        out float4 oScreenPos : TEXCOORD5,
+        out float4 oScreenPos : TEXCOORD6,
         #ifdef ENVCUBEMAP
-            out float3 oReflectionVec : TEXCOORD6,
-        #endif
-        #if defined(LIGHTMAP)
-            out float2 oTexCoord2 : TEXCOORD7,
+            out float3 oReflectionVec : TEXCOORD7,
         #endif
     #endif
     #ifdef VERTEXCOLOR
@@ -98,6 +109,16 @@ void VS(float4 iPos : POSITION,
         oTexCoord = GetTexCoord(iTexCoord);
     #endif
 
+    // Ambient & per-vertex lighting
+    #if defined(LIGHTMAP)
+        // If using lightmap, disregard zone ambient light
+        // If using AO, calculate ambient in the PS
+        oVertexLight = float3(0.0, 0.0, 0.0);
+        oTexCoord2 = GetLightMapTexCoord(iTexCoord2);
+    #else
+        oVertexLight = GetAmbientLight(float4(oNormal, 1.0)) + GetAmbient(0.0);
+    #endif
+
     #ifdef PERPIXEL
         // Per-pixel forward lighting
         const float4 projWorldPos = float4(worldPos.xyz, 1.0);
@@ -116,18 +137,6 @@ void VS(float4 iPos : POSITION,
             oCubeMaskVec = mul(worldPos - cLightPos.xyz, (float3x3)cLightMatrices[0]);
         #endif
     #else
-        // Ambient & per-vertex lighting
-        #if defined(LIGHTMAP)
-            // If using lightmap, disregard zone ambient light
-            oVertexLight = float3(0.0, 0.0, 0.0);
-            oTexCoord2 = iTexCoord2;
-        #elif defined(AO)
-            // If using AO, calculate ambient in the PS
-            oVertexLight = float3(0.0, 0.0, 0.0);
-        #else
-            oVertexLight = GetAmbient(GetZonePos(worldPos));
-        #endif
-
         #ifdef NUMVERTEXLIGHTS
             for (int i = 0; i < NUMVERTEXLIGHTS; ++i)
                 oVertexLight += GetVertexLight(i, worldPos, oNormal) * cVertexLights[i * 3].rgb;
@@ -150,24 +159,24 @@ void PS(
     #endif
     float3 iNormal : TEXCOORD1,
     float4 iWorldPos : TEXCOORD2,
+    #if defined(LIGHTMAP)
+        float2 iTexCoord2 : TEXCOORD4,
+    #endif
+    float3 iVertexLight : TEXCOORD5,
     #ifdef PERPIXEL
         #ifdef SHADOW
-            float4 iShadowPos[NUMCASCADES] : TEXCOORD4,
+            float4 iShadowPos[NUMCASCADES] : TEXCOORD6,
         #endif
         #ifdef SPOTLIGHT
-            float4 iSpotPos : TEXCOORD5,
+            float4 iSpotPos : TEXCOORD7,
         #endif
         #ifdef POINTLIGHT
-            float3 iCubeMaskVec : TEXCOORD5,
+            float3 iCubeMaskVec : TEXCOORD7,
         #endif
     #else
-        float3 iVertexLight : TEXCOORD4,
-        float4 iScreenPos : TEXCOORD5,
+        float4 iScreenPos : TEXCOORD6,
         #ifdef ENVCUBEMAP
-            float3 iReflectionVec : TEXCOORD6,
-        #endif
-        #if defined(LIGHTMAP)
-            float2 iTexCoord2 : TEXCOORD7,
+            float3 iReflectionVec : TEXCOORD7,
         #endif
     #endif
     #ifdef VERTEXCOLOR
@@ -287,8 +296,14 @@ void PS(
         finalColor.rgb = BRDF * lightColor * (atten * shadow) / M_PI;
 
         #ifdef AMBIENT
-            finalColor += cAmbientColor.rgb * diffColor.rgb;
-            finalColor += cMatEmissiveColor;
+            finalColor += iVertexLight * diffColor.rgb;
+            #ifdef LIGHTMAP
+                finalColor += (Sample2D(EmissiveMap, iTexCoord2).rgb * 2.0 + cAmbientColor.rgb) * diffColor.rgb;
+            #elif defined(EMISSIVEMAP)
+                finalColor += cMatEmissiveColor * Sample2D(EmissiveMap, iTexCoord.xy).rgb;
+            #else
+                finalColor += cMatEmissiveColor;
+            #endif
             oColor = float4(GetFog(finalColor, fogFactor), diffColor.a);
         #else
             oColor = float4(GetLitFog(finalColor, fogFactor), diffColor.a);
@@ -300,6 +315,9 @@ void PS(
         oAlbedo = float4(diffColor.rgb, spareData.g);
         oNormal = float4(normalize(normal) * roughness, spareData.b);
         oDepth = iWorldPos.w;
+        #ifdef LIGHTMAP
+            #error Lightmaps are not supported for PBR Deferred
+        #endif
     #else
         // Ambient & per-vertex lighting
         float3 finalColor = iVertexLight * diffColor.rgb;
@@ -333,9 +351,8 @@ void PS(
             finalColor += cMatEnvMapColor * SampleCube(EnvCubeMap, reflect(iReflectionVec, normal)).rgb;
         #endif
         #ifdef LIGHTMAP
-            finalColor += Sample2D(EmissiveMap, iTexCoord2).rgb * diffColor.rgb;
-        #endif
-        #ifdef EMISSIVEMAP
+            finalColor += (Sample2D(EmissiveMap, iTexCoord2).rgb * 2.0 + cAmbientColor.rgb) * diffColor.rgb;
+        #elif defined(EMISSIVEMAP)
             finalColor += cMatEmissiveColor * Sample2D(EmissiveMap, iTexCoord.xy).rgb;
         #else
             finalColor += cMatEmissiveColor;

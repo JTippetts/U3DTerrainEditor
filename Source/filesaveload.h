@@ -11,7 +11,7 @@ using namespace Urho3D;
 
 struct FileEntry
 {
-	String name_;
+	ea::string name_;
 	unsigned offset_{};
 	unsigned size_{};
 	unsigned checksum_{};
@@ -23,13 +23,13 @@ class ZipFileWriter : public Object
 	URHO3D_OBJECT(ZipFileWriter, Object);
 	public:
 	ZipFileWriter(Context *context);
-	
-	VectorBuffer &RequestFile(const String &name);
-	void Write(const String &filename);
-	
+
+	VectorBuffer &RequestFile(const ea::string &name);
+	void Write(const ea::string &filename);
+
 	protected:
-	Vector<FileEntry> files_;
+	ea::vector<FileEntry> files_;
 	unsigned int checksum_;
-	
+
 	void WriteHeader(File &dest);
 };

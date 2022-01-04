@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2008-2019 the Urho3D project.
+# Copyright (c) 2008-2020 the Urho3D project.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -53,14 +53,23 @@ set (CMAKE_SYSTEM_NAME Linux)
 # This one not so much
 set (CMAKE_SYSTEM_VERSION 1)
 
-# System root
+# Emscripten root
 if (NOT IN_TRY_COMPILE)
     if (NOT SAVED_EMSCRIPTEN_ROOT_PATH)
         if (NOT EMSCRIPTEN_ROOT_PATH)
             if (DEFINED ENV{EMSCRIPTEN_ROOT_PATH})
                 file (TO_CMAKE_PATH $ENV{EMSCRIPTEN_ROOT_PATH} EMSCRIPTEN_ROOT_PATH)
-            elseif (DEFINED ENV{EMSCRIPTEN})
-                file (TO_CMAKE_PATH $ENV{EMSCRIPTEN} EMSCRIPTEN_ROOT_PATH)
+            elseif (DEFINED ENV{EM_CONFIG})
+                # Attempt to auto detect the Emscripten root path from the config file
+                file (STRINGS $ENV{EM_CONFIG} EMSCRIPTEN_ROOT_PATH REGEX "^EMSCRIPTEN_ROOT = '.*'$")
+                if (EMSCRIPTEN_ROOT_PATH)
+                    string (REGEX REPLACE "^EMSCRIPTEN_ROOT = '(.*)'$" \\1 EMSCRIPTEN_ROOT_PATH ${EMSCRIPTEN_ROOT_PATH})
+                else ()
+                    # Newer config file requires Python to actually evaluate it, basically, `cat $EM_CONFIG <(echo 'print(EMSCRIPTEN_ROOT)') |python -`
+                    file (STRINGS $ENV{EM_CONFIG} EM_CONFIG NEWLINE_CONSUME)
+                    execute_process (COMMAND ${CMAKE_COMMAND} -E echo "${EM_CONFIG}\nprint(EMSCRIPTEN_ROOT)"
+                                     COMMAND python - OUTPUT_VARIABLE EMSCRIPTEN_ROOT_PATH OUTPUT_STRIP_TRAILING_WHITESPACE ERROR_QUIET)
+                endif ()
             endif ()
         endif ()
         set (EMSCRIPTEN_ROOT_PATH ${EMSCRIPTEN_ROOT_PATH} CACHE STRING "Root path to Emscripten cross-compiler tools (Emscripten only)")
@@ -70,12 +79,37 @@ if (NOT IN_TRY_COMPILE)
                 "Or use the canonical EMSCRIPTEN environment variable by calling emsdk_env script.")
         endif ()
     endif ()
+endif ()
+
+# Cross compiler tools version
+if (CMAKE_HOST_WIN32)
+    set (TOOL_EXT .bat)
+endif ()
+if (NOT EMSCRIPTEN_EMCC_VERSION)
+    execute_process (COMMAND ${EMSCRIPTEN_ROOT_PATH}/emcc${TOOL_EXT} --version RESULT_VARIABLE EXIT_CODE OUTPUT_VARIABLE EMSCRIPTEN_EMCC_VERSION ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE)
+    if (EXIT_CODE EQUAL 0)
+        message (${EMSCRIPTEN_EMCC_VERSION})
+        string (REGEX MATCH "[^ .]+\\.[^.]+\\.[^ ]+" EMSCRIPTEN_EMCC_VERSION "${EMSCRIPTEN_EMCC_VERSION}")
+    else ()
+        message (FATAL_ERROR "Could not determine the emcc version. Make sure you have installed and activated the Emscripten SDK correctly.")
+    endif ()
+    set (EMSCRIPTEN_EMCC_VERSION ${EMSCRIPTEN_EMCC_VERSION} CACHE INTERNAL "emcc version being used in this build tree")
+    string(REGEX REPLACE "-.+$" "" EMSCRIPTEN_EMCC_VERSION "${EMSCRIPTEN_EMCC_VERSION}")    # Remove suffixes like "-git".
+    if (EMSCRIPTEN_EMCC_VERSION VERSION_LESS 1.39.0)
+        message (FATAL_ERROR "Emscripten SDK 1.39.0 or later is required.")
+    endif ()
+endif ()
+
+# System root
+if (NOT IN_TRY_COMPILE)
     if (NOT SAVED_EMSCRIPTEN_SYSROOT)
         if (NOT EMSCRIPTEN_SYSROOT)
             if (DEFINED ENV{EMSCRIPTEN_SYSROOT})
                 file (TO_CMAKE_PATH $ENV{EMSCRIPTEN_SYSROOT} EMSCRIPTEN_SYSROOT)
-            else ()
+            elseif (EMSCRIPTEN_EMCC_VERSION VERSION_LESS 2.0.13)
                 set (EMSCRIPTEN_SYSROOT ${EMSCRIPTEN_ROOT_PATH}/system)
+            else ()
+                set (EMSCRIPTEN_SYSROOT ${EMSCRIPTEN_ROOT_PATH}/cache/sysroot)
             endif ()
         endif ()
         set (EMSCRIPTEN_SYSROOT ${EMSCRIPTEN_SYSROOT} CACHE PATH "Path to Emscripten system root (Emscripten only)")
@@ -91,24 +125,9 @@ set (CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 set (CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 set (CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 
-# Cross compiler tools
-if (CMAKE_HOST_WIN32)
-    set (TOOL_EXT .bat)
-endif ()
-if (NOT EMSCRIPTEN_EMCC_VERSION)
-    execute_process (COMMAND ${EMSCRIPTEN_ROOT_PATH}/emcc${TOOL_EXT} --version RESULT_VARIABLE EXIT_CODE OUTPUT_VARIABLE EMSCRIPTEN_EMCC_VERSION ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE)
-    if (EXIT_CODE EQUAL 0)
-        string (REGEX MATCH "[^ .]+\\.[^.]+\\.[^ ]+" EMSCRIPTEN_EMCC_VERSION "${EMSCRIPTEN_EMCC_VERSION}")
-    else ()
-        message (FATAL_ERROR "Could not determine the emcc version. Make sure you have installed and activated the Emscripten SDK correctly.")
-    endif ()
-    set (EMSCRIPTEN_EMCC_VERSION ${EMSCRIPTEN_EMCC_VERSION} CACHE INTERNAL "emcc version being used in this build tree")
-endif ()
-# ccache support could only be enabled for emcc prior to 1.31.3 when the CCACHE_CPP2 env var is also set to 1, newer emcc version could enable ccache support without this caveat (see https://github.com/kripken/emscripten/issues/3365 for more detail)
-# The CCACHE_CPP2 env var tells ccache to fallback to use original input source file instead of preprocessed one when passing on the compilation task to the compiler proper
 if (NOT EMSCRIPTEN_COMPILER_PATH)
     set (EMSCRIPTEN_COMPILER_PATH ${EMSCRIPTEN_ROOT_PATH})
-    if ("$ENV{USE_CCACHE}" AND NOT CMAKE_HOST_WIN32 AND ("$ENV{CCACHE_CPP2}" OR NOT EMSCRIPTEN_EMCC_VERSION VERSION_LESS 1.31.3))
+    if ("$ENV{USE_CCACHE}" AND NOT CMAKE_HOST_WIN32)
         execute_process (COMMAND whereis -b ccache COMMAND grep -o \\S*lib\\S* OUTPUT_VARIABLE CCACHE_SYMLINK ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE)
         if (CCACHE_SYMLINK AND EXISTS ${CCACHE_SYMLINK}/emcc AND EXISTS ${CCACHE_SYMLINK}/em++)
             set (EMSCRIPTEN_COMPILER_PATH ${CCACHE_SYMLINK})
@@ -155,8 +174,6 @@ foreach (LANG C CXX)
     set (CMAKE_${LANG}_SIZEOF_DATA_PTR 4)   # Assume it is always 32-bit for now (we could have used our CheckCompilerToolChains.cmake module here)
     # We could not set CMAKE_EXECUTABLE_SUFFIX directly because CMake processes platform configuration files after the toolchain file and since we tell CMake that we are cross-compiling for 'Linux' platform (Emscripten is not a valid platform yet in CMake) via CMAKE_SYSTEM_NAME variable, as such CMake force initializes the CMAKE_EXECUTABLE_SUFFIX to empty string (as expected for Linux platform); To workaround it we have to use CMAKE_EXECUTABLE_SUFFIX_C and CMAKE_EXECUTABLE_SUFFIX_CXX instead, which are fortunately not being touched by platform configuration files
     set (CMAKE_EXECUTABLE_SUFFIX_${LANG} .js)
-    set (CMAKE_SHARED_LIBRARY_SUFFIX_${LANG} .bc)   # "linked" LLVM bitcode
-    set (CMAKE_SHARED_MODULE_SUFFIX_${LANG} .js)    # side module
 endforeach ()
 
 # Set required compiler flags for various internal CMake checks which rely on the compiler/linker error to be occured for the check to be performed correctly
@@ -185,3 +202,4 @@ if (NOT IN_TRY_COMPILE)
 endif ()
 
 set (EMSCRIPTEN 1)
+set (WEB 1)

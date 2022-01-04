@@ -23,8 +23,8 @@ CliffifyFilter::CliffifyFilter(Context *context,TerrainContext *tc, WaypointGrou
 void CliffifyFilter::Execute()
 {
 	CArray2Dd arr;
-	
-	const String &sel=options_[0].listSelection_;
+
+	const ea::string &sel=options_[0].listSelection_;
 	unsigned int which=0;
 	if(sel=="Layer 1") which=1;
 	else if(sel=="Layer 2") which=2;
@@ -33,14 +33,14 @@ void CliffifyFilter::Execute()
 	else if(sel=="Layer 5") which=5;
 	else if(sel=="Layer 6") which=6;
 	else if(sel=="Layer 7") which=7;
-	
+
 	MaskSettings ms(options_[4].flag_, options_[5].flag_, options_[6].flag_, options_[7].flag_, options_[8].flag_, options_[9].flag_);
-	
+
 	float fade=options_[2].value_;
 	float threshold=options_[1].value_;
-	
+
 	terrainContext_->GetSteepness(arr, threshold, fade);
-	
+
 	if(options_[3].flag_)
 	{
 		terrainContext_->SetLayerBuffer(arr, which, ms);

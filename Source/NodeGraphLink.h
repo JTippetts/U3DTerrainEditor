@@ -3,7 +3,6 @@
 
 #include <Urho3D/UI/BorderImage.h>
 #include <Urho3D/UI/Button.h>
-#include <Urho3D/Container/Vector.h>
 
 using namespace Urho3D;
 
@@ -29,7 +28,7 @@ public:
     UIElement *GetRoot();
 
 protected:
-    Vector<SharedPtr<NodeGraphLink>> links_;
+    ea::vector<SharedPtr<NodeGraphLink>> links_;
     UIElement *root_;
 };
 
@@ -74,7 +73,7 @@ public:
         return target_;
     }
 
-    //void GetBatches(PODVector<UIBatch>& batches, PODVector<float>& vertexData, const IntRect& currentScissor);
+    //void GetBatches(ea::vector<UIBatch>& batches, ea::vector<float>& vertexData, const IntRect& currentScissor);
     void GetBatch(UIBatch &batch);
     void SetImageRect(const IntRect &rect);
 
@@ -95,10 +94,10 @@ public:
     void RemoveLink(NodeGraphLink *link);
 
 
-    virtual void GetBatches(PODVector<UIBatch>& batches, PODVector<float>& vertexData, const IntRect& currentScissor) override;
+    virtual void GetBatches(ea::vector<UIBatch>& batches, ea::vector<float>& vertexData, const IntRect& currentScissor) override;
 
 protected:
-    Vector<SharedPtr<NodeGraphLink>> links_;
+    ea::vector<SharedPtr<NodeGraphLink>> links_;
 };
 
 #endif

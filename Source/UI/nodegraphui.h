@@ -26,7 +26,7 @@ class NodeTypeDesc;
 
 struct NodeGroup
 {
-	String name_;
+	ea::string name_;
 	SharedPtr<Window> pane_;
 	SharedPtr<NodeGraphLinkPane> linkPane_;
 	SharedPtr<Texture2D> previewTex_, histoTex_;
@@ -41,49 +41,49 @@ class NodeGraphUI : public Object
 	URHO3D_OBJECT(NodeGraphUI, Object);
 	public:
 	NodeGraphUI(Context *context);
-	
+
 	void Construct(TerrainContext *tc);
 	void SetVisible(bool vis);
 	bool IsVisible(){if(element_) return element_->IsVisible(); return false;}
 	void Save(JSONObject &json);
-	void Load(const JSONObject &json);
+	void Load(const JSONValue &json);
 	void Clear();
-	
+
 	protected:
-	
+
 	TerrainContext *terrainContext_;
-	
+
 	SharedPtr<UIElement> element_;
 	SharedPtr<UIElement> createMenu_;
 	SharedPtr<NodeGraphLinkDest> cursorTarget_;
 	SharedPtr<UIElement> nodeGroupsList_;
 	SharedPtr<Window> newNodeGroupDlg_;
-	
-	
+
+
 	unsigned int nodeGroupCounter_;
 	std::vector<NodeGroup> nodeGroups_;
 	NodeGroup *selectedNodeGroup_;
 	NodeGraphLink *link_;
-	
+
 	SharedPtr<Text> CreateAccelKeyText(int accelKey=0);
-	SharedPtr<Menu> CreateMenuItem(const String &title, int accelKey=0);
+	SharedPtr<Menu> CreateMenuItem(const ea::string &title, int accelKey=0);
 	SharedPtr<Window> CreatePopup(Menu *baseMenu);
-	SharedPtr<Menu> CreateMenu(const String &title);
+	SharedPtr<Menu> CreateMenu(const ea::string &title);
 	SharedPtr<UIElement> CreateNodeCreateMenu(UIElement *parent);
-	
+
 	void HideGroup();
-	NodeGroup *CreateNodeGroup(const String &name);
+	NodeGroup *CreateNodeGroup(const ea::string &name);
 	void ActivateGroup(NodeGroup *grp);
 	void SubscribeLinkPoints(UIElement *e, int numinputs);
 	void RemoveLinkPoints(UIElement *e);
-	SharedPtr<UIElement> CreateNodeType(UIElement *parent, const String &type);
-	SharedPtr<UIElement> BuildNode(NodeGroup *grp, const String &type);
-	NodeTypeDesc *GetNodeTypeDesc(const String &type);
-	UIElement *GetSourceFromNode(UIElement *node, const String &inputname);
+	SharedPtr<UIElement> CreateNodeType(UIElement *parent, const ea::string &type);
+	SharedPtr<UIElement> BuildNode(NodeGroup *grp, const ea::string &type);
+	NodeTypeDesc *GetNodeTypeDesc(const ea::string &type);
+	UIElement *GetSourceFromNode(UIElement *node, const ea::string &inputname);
 	//CInstructionIndex InstanceFunction(CKernel &kernel, NodeTypeDesc *desc, std::vector<CInstructionIndex> &params);
 	//void BuildANLFunction(CKernel &kernel, UIElement *output);
 	void BuildANLFunction2(CKernel &kernel, UIElement *output);
-	
+
 	void HandleMenuSelected(StringHash eventType, VariantMap &eventData);
 	void HandleNewGroup(StringHash eventType, VariantMap &eventData);
 	void HandleNewGroupAccept(StringHash eventType, VariantMap &eventData);

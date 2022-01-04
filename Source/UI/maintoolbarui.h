@@ -26,11 +26,11 @@ class MainToolbarUI : public Object
 	URHO3D_OBJECT(MainToolbarUI, Object);
 	public:
 	MainToolbarUI(Context *context);
-	
+
 	void Construct(EditHeightUI *eh, TerrainTexturingUI *tt, EditWaterUI *ew, SmoothHeightUI *sh, EditMaskUI *em, NodeGraphUI *ng, WaypointGroupUI *wp, TerrainSettingsUI *ts, FiltersUI *f);
 	void SetVisible(bool v);
 	bool IsVisible(){if(element_) return element_->IsVisible(); return false;}
-	
+
 	protected:
 	EditHeightUI *editHeightUI_;
 	TerrainTexturingUI *terrainTexturingUI_;
@@ -41,10 +41,10 @@ class MainToolbarUI : public Object
 	WaypointGroupUI *waypointGroups_;
 	TerrainSettingsUI *terrainSettings_;
 	FiltersUI *filters_;
-	
+
 	SharedPtr<UIElement> element_;
-	
+
 	void HandleToggled(StringHash eventType, VariantMap &eventData);
-	
-	void UncheckToolbar(const String &except);
+
+	void UncheckToolbar(const ea::string &except);
 };

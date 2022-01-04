@@ -21,24 +21,24 @@ NodeGraphLinkSource::NodeGraphLinkSource(Context *context) : Button(context), ro
 	SharedPtr<NodeGraphLink> e = DynamicCast<NodeGraphLink>(context_->CreateObject("NodeGraphLink"));
 	e->SetSource(this);
 	e->SetTarget(target);
-	links_.Push(e);
+	links_.push_back(e);
 	return e;
 }*/
 void NodeGraphLinkSource::AddLink(NodeGraphLink *link)
 {
-    links_.Push(SharedPtr<NodeGraphLink>(link));
+    links_.push_back(SharedPtr<NodeGraphLink>(link));
 }
 
 void NodeGraphLinkSource::RemoveLink(NodeGraphLinkDest *target)
 {
-    for(auto i=links_.Begin(); i!=links_.End(); ++i)
+    for(auto i=links_.begin(); i!=links_.end(); ++i)
     {
         NodeGraphLink *link=*i;
         if(link->GetTarget()==target)
         {
             //link->ClearSource();
             //link->ClearTarget();
-            links_.Erase(i);
+            links_.erase(i);
             return;
         }
     }
@@ -46,26 +46,26 @@ void NodeGraphLinkSource::RemoveLink(NodeGraphLinkDest *target)
 
 void NodeGraphLinkSource::RemoveLink(NodeGraphLink *link)
 {
-    auto i=links_.Find(SharedPtr<NodeGraphLink>(link));
-    if(i!=links_.End())
+    auto i=links_.find(SharedPtr<NodeGraphLink>(link));
+    if(i!=links_.end())
     {
-        links_.Erase(i);
+        links_.erase(i);
     }
 }
 
 int NodeGraphLinkSource::GetNumLinks()
 {
-    return links_.Size();
+    return links_.size();
 }
 
 NodeGraphLink *NodeGraphLinkSource::GetLink(int which)
 {
-    return (which>=0 && which<(int)links_.Size()) ? links_[which] : 0;
+    return (which>=0 && which<(int)links_.size()) ? links_[which] : 0;
 }
 
 NodeGraphLink *NodeGraphLinkSource::GetLink(NodeGraphLinkDest *target)
 {
-    for(auto i=links_.Begin(); i!=links_.End(); ++i)
+    for(auto i=links_.begin(); i!=links_.end(); ++i)
     {
         NodeGraphLink *link=*i;
         if(link->GetTarget()==target) return link;
@@ -193,8 +193,8 @@ void NodeGraphLink::GetBatch(UIBatch &batch)
     Vector3 p2((float)middle.x_-50.0f, (float)middle.y_, 0);
     Vector3 p3(p2.x_+50.0f, p2.y_, 0);
 
-    Vector<Vector3> quadlist;
-    Vector<Vector3> linelist;
+    ea::vector<Vector3> quadlist;
+    ea::vector<Vector3> linelist;
 
     int numsegments=20;
     float step=1.0f/(float)numsegments;
@@ -206,13 +206,13 @@ void NodeGraphLink::GetBatch(UIBatch &batch)
         float w1=3*u*u*t;
         float w2=3*u*t*t;
         float w3=t*t*t;
-        linelist.Push(Vector3(p0*w0+p1*w1+p2*w2+p3*w3));
+        linelist.push_back(Vector3(p0*w0+p1*w1+p2*w2+p3*w3));
     }
 
 
     BuildQuadStripA(linelist,quadlist,width);
 
-    for(unsigned int c=0; c<quadlist.Size()-3; c+=2)
+    for(unsigned int c=0; c<quadlist.size()-3; c+=2)
     {
         Matrix3x4 mat;
         batch.AddQuad(mat,
@@ -250,27 +250,27 @@ NodeGraphLink *NodeGraphLinkPane::CreateLink(NodeGraphLinkSource *source, NodeGr
     SharedPtr<NodeGraphLink> e = DynamicCast<NodeGraphLink>(context_->CreateObject("NodeGraphLink"));
     e->SetSource(source);
     e->SetTarget(target);
-    links_.Push(e);
+    links_.push_back(e);
     return e;
 }
 
 void NodeGraphLinkPane::RemoveLink(NodeGraphLink *link)
 {
-    auto i=links_.Find(SharedPtr<NodeGraphLink>(link));
-    if(i!=links_.End())
+    auto i=links_.find(SharedPtr<NodeGraphLink>(link));
+    if(i!=links_.end())
     {
         link->ClearSource();
         link->ClearTarget();
-        links_.Erase(i);
+        links_.erase(i);
     }
 }
 
-void NodeGraphLinkPane::GetBatches(PODVector<UIBatch>& batches, PODVector<float>& vertexData, const IntRect& currentScissor)
+void NodeGraphLinkPane::GetBatches(ea::vector<UIBatch>& batches, ea::vector<float>& vertexData, const IntRect& currentScissor)
 {
 
     UIBatch batch(this, BLEND_ALPHA, currentScissor, texture_, &vertexData);
 
-    for(auto i=links_.Begin(); i!=links_.End(); ++i)
+    for(auto i=links_.begin(); i!=links_.end(); ++i)
     {
         (*i)->GetBatch(batch);
     }

@@ -4,6 +4,70 @@ vec3 GetAmbient(float zonePos)
     return cAmbientStartColor + zonePos * cAmbientEndColor;
 }
 
+vec3 GammaToLinearSpace(vec3 color)
+{
+    return color * (color * (color * 0.305306011 + 0.682171111) + 0.012522878);
+}
+
+vec3 LinearToGammaSpace(vec3 color)
+{
+    const float p = 0.416666667;
+    color = max(color, vec3(0.0, 0.0, 0.0));
+    return max(1.055 * pow(color, vec3(p, p, p)) - 0.055, 0.0);
+}
+
+vec3 EvaluateSH01(vec4 normal, vec4 SHAr, vec4 SHAg, vec4 SHAb)
+{
+    vec3 value;
+    value.r = dot(normal, SHAr);
+    value.g = dot(normal, SHAg);
+    value.b = dot(normal, SHAb);
+    return value;
+}
+
+vec3 EvaluateSH2(vec4 normal, vec4 SHBr, vec4 SHBg, vec4 SHBb, vec4 SHC)
+{
+    vec4 b = normal.xyzz * normal.yzzx;
+    float c = normal.x * normal.x - normal.y * normal.y;
+
+    vec3 value;
+    value.r = dot(b, SHBr);
+    value.g = dot(b, SHBg);
+    value.b = dot(b, SHBb);
+    value += c * SHC.rgb;
+    return value;
+}
+
+#ifdef SPHERICALHARMONICS
+    #ifdef INSTANCED
+        #define iSHAr iTexCoord7
+        #define iSHAg iTexCoord8
+        #define iSHAb iTexCoord9
+        #define iSHBr iTexCoord10
+        #define iSHBg iTexCoord11
+        #define iSHBb iTexCoord12
+        #define iSHC iTexCoord13
+    #else
+        #define iSHAr cSHAr
+        #define iSHAg cSHAg
+        #define iSHAb cSHAb
+        #define iSHBr cSHBr
+        #define iSHBg cSHBg
+        #define iSHBb cSHBb
+        #define iSHC cSHC
+    #endif
+
+    #define GetAmbientLight(normal) LinearToGammaSpace(EvaluateSH01(normal, iSHAr, iSHAg, iSHAb) + EvaluateSH2(normal, iSHBr, iSHBg, iSHBb, iSHC))
+#else
+    #ifdef INSTANCED
+        #define iAmbient iTexCoord7
+    #else
+        #define iAmbient cAmbient
+    #endif
+
+    #define GetAmbientLight(normal) iAmbient.rgb
+#endif
+
 #ifdef NUMVERTEXLIGHTS
 float GetVertexLight(int index, vec3 worldPos, vec3 normal)
 {

@@ -19,16 +19,16 @@ class AlphaBrushSelectorUI : public Object
 	public:
 	struct AlphaEntry
 	{
-		String name_;
-		String path_;
+		ea::string name_;
+		ea::string path_;
 		SharedPtr<UIElement> element_;
 		Button *thumb_;
 		Texture2D *tex_;
 		Image *image_;
 	};
-	
+
 	AlphaBrushSelectorUI(Context *context);
-	
+
 	void Construct(TerrainMaterialBuilder *tmb);
 	void SetVisible(bool v){if(element_) element_->SetVisible(v);}
 	bool IsVisible(){if(element_) return element_->IsVisible(); return false;}
@@ -38,9 +38,8 @@ class AlphaBrushSelectorUI : public Object
 	SharedPtr<UIElement> element_, contentelement_;
 	std::vector<AlphaEntry> alphas_;
 	AlphaEntry *selected_;
-	
+
 	void PopulateList();
 	void SetSelected(AlphaEntry *e);
 	void HandleAlphaSelected(StringHash eventType, VariantMap &eventData);
 };
-	

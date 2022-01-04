@@ -28,7 +28,7 @@ Vector2 RenderANLKernelToImage(Image *buffer, CKernel *kernel, float lowrange, f
 	{
 		const int numdivs=histogram->GetWidth();
 		//int counts[numdivs];
-		Vector<int> counts(numdivs);
+		ea::vector<int> counts(numdivs);
 		for(int c=0; c<numdivs; ++c) counts[c]=0;
 		th(1.5);
 		th(w);
