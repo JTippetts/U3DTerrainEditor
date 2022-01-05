@@ -4,10 +4,10 @@
 CliffifyFilter::CliffifyFilter(Context *context,TerrainContext *tc, WaypointGroupUI *wg) : FilterBase(context, tc, wg)
 {
 	name_="Cliffify";
-	description_="Set cliffs to a specified terrain texture.";
+	description_="Set cliffs to a specified terrain texture or mask.";
 	options_=
 	{
-		{"Layer", {"Layer 0", "Layer 1", "Layer 2", "Layer 3", "Layer 4", "Layer 5", "Layer 6", "Layer 7"}},
+		{"Layer", {"Layer 0", "Layer 1", "Layer 2", "Layer 3", "Layer 4", "Layer 5", "Layer 6", "Layer 7", "Mask 0", "Mask 1", "Mask 2"}},
 		{"Steepness: ", 0.7f},
 		{"Fade: ", 0.4f},
 		{"Replace value? ", false},
@@ -33,6 +33,9 @@ void CliffifyFilter::Execute()
 	else if(sel=="Layer 5") which=5;
 	else if(sel=="Layer 6") which=6;
 	else if(sel=="Layer 7") which=7;
+	else if(sel=="Mask 0") which=8;
+	else if(sel=="Mask 1") which=9;
+	else if(sel=="Mask 2") which=10;
 
 	MaskSettings ms(options_[4].flag_, options_[5].flag_, options_[6].flag_, options_[7].flag_, options_[8].flag_, options_[9].flag_);
 
@@ -40,13 +43,21 @@ void CliffifyFilter::Execute()
 	float threshold=options_[1].value_;
 
 	terrainContext_->GetSteepness(arr, threshold, fade);
-
-	if(options_[3].flag_)
+	
+	// Handle setting to mask
+	if(which >=8 && which <=10)
 	{
-		terrainContext_->SetLayerBuffer(arr, which, ms);
+		terrainContext_->SetMaskBuffer(arr, which-8);
 	}
 	else
 	{
-		terrainContext_->SetLayerBufferMax(arr, which, ms);
+		if(options_[3].flag_)
+		{
+			terrainContext_->SetLayerBuffer(arr, which, ms);
+		}
+		else
+		{
+			terrainContext_->SetLayerBufferMax(arr, which, ms);
+		}
 	}
 }

@@ -4,10 +4,10 @@
 CavityFilter::CavityFilter(Context *context,TerrainContext *tc, WaypointGroupUI *wg) : FilterBase(context, tc, wg)
 {
 	name_="Cavity Map";
-	description_="Set cavities to a specified terrain texture.";
+	description_="Set cavities to a specified terrain texture or mask.";
 	options_=
 	{
-		{"Layer", {"Layer 0", "Layer 1", "Layer 2", "Layer 3", "Layer 4", "Layer 5", "Layer 6", "Layer 7"}},
+		{"Layer", {"Layer 0", "Layer 1", "Layer 2", "Layer 3", "Layer 4", "Layer 5", "Layer 6", "Layer 7", "Mask 0", "Mask 1", "Mask 2"}},
 		{"Sample radius: ", 0.01f},
 		{"Min scale: ", 0.0f},
 		{"Max scale: ", 1.0f},
@@ -35,14 +35,25 @@ void CavityFilter::Execute()
 	else if(sel=="Layer 5") which=5;
 	else if(sel=="Layer 6") which=6;
 	else if(sel=="Layer 7") which=7;
+	else if(sel=="Mask 0") which=8;
+	else if(sel=="Mask 1") which=9;
+	else if(sel=="Mask 2") which=10;
 
 	MaskSettings ms(options_[5].flag_, options_[6].flag_, options_[7].flag_, options_[8].flag_, options_[9].flag_, options_[10].flag_);
-	if(options_[4].flag_)
+	
+	if(which >=8 && which <=10)
 	{
-		terrainContext_->SetLayerBuffer(arr, which, ms);
+		terrainContext_->SetMaskBuffer(arr, which-8);
 	}
 	else
 	{
-		terrainContext_->SetLayerBufferMax(arr, which, ms);
+		if(options_[4].flag_)
+		{
+			terrainContext_->SetLayerBuffer(arr, which, ms);
+		}
+		else
+		{
+			terrainContext_->SetLayerBufferMax(arr, which, ms);
+		}
 	}
 }
