@@ -1025,6 +1025,32 @@ void TerrainContext::SetMaskBuffer(CArray2Dd &buffer, int which)
 	maskTex_->SetData(&mask_,false);
 }
 
+void TerrainContext::SetMaskBufferMax(CArray2Dd &buffer, int which)
+{
+	int w=mask_.GetWidth();
+	int h=mask_.GetHeight();
+	for(int x=0; x<w; ++x)
+	{
+		for(int y=0; y<h; ++y)
+		{
+			float nx=(float)x/(float)(w);
+            float ny=(float)y/(float)(h);
+
+            double v=buffer.getBilinear(nx,ny);
+            Color mask=mask_.GetPixel(x,y);
+			switch(which)
+			{
+				case 0: mask.r_ = std::min(1.0f-(float)v, mask.r_); break;
+				case 1: mask.g_ = std::min(1.0f-(float)v, mask.g_); break;
+				case 2: mask.b_ = std::min(1.0f-(float)v, mask.b_); break;
+				default: break;
+			}
+			mask_.SetPixel(x,y,mask);
+		}
+	}
+	maskTex_->SetData(&mask_,false);
+}
+
 void TerrainContext::SetLayerBuffer(CArray2Dd &buffer, int layer, MaskSettings &masksettings)
 {
     if(!terrain_) return;

@@ -8,7 +8,7 @@
 
 TerrainMaterialBuilder::TerrainMaterialBuilder(Context *context) : Object(context),
 	terraincontext_(nullptr),
-	triplanar_(true), smooth_(false), bump_(true), reduce_(false),
+	triplanar_(true), smooth_(true), bump_(true), reduce_(true),
 	alpha_(nullptr),
 	material_(nullptr),
 	cursorx_(-100000), cursory_(-100000), cursorradius_(0.01), cursorhardness_(0.1), cursorangle_(0),

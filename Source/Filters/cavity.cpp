@@ -43,7 +43,8 @@ void CavityFilter::Execute()
 	
 	if(which >=8 && which <=10)
 	{
-		terrainContext_->SetMaskBuffer(arr, which-8);
+		if(options_[3].flag_) terrainContext_->SetMaskBuffer(arr, which-8);
+		else terrainContext_->SetMaskBufferMax(arr, which-8);
 	}
 	else
 	{

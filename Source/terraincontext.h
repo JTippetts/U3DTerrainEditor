@@ -108,6 +108,7 @@ class TerrainContext : public Object
     void SetLayerBufferMax(CArray2Dd &buffer, int layer, MaskSettings &masksettings);
     void BlendHeightBuffer(CArray2Dd &buffer, CArray2Dd &blend, MaskSettings &masksettings);
 	void SetMaskBuffer(CArray2Dd &buffer, int which);
+	void SetMaskBufferMax(CArray2Dd &buffer, int which);
 
 	IntVector2 GetTerrainMapSize(){return (terrainMap_) ? IntVector2(terrainMap_->GetWidth(), terrainMap_->GetHeight()) : IntVector2(0,0);}
 	IntVector2 GetBlendMapSize(){return IntVector2(blend0_.GetWidth(), blend0_.GetHeight());}

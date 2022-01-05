@@ -244,6 +244,19 @@ std::vector<NodeTypeDesc> g_nodeTypes=
 			return k.translateX(params[0], params[1]);
 		}
 	},
+	
+	{
+		"translateY",
+		{
+			{"value", "Value", 0.0},
+			{"value", "Translate", 0.0}
+		},
+		[](CKernel &k, const std::vector<CInstructionIndex> &params)->CInstructionIndex
+		{
+			return k.translateY(params[0], params[1]);
+		}
+	},
+	
 	{
 		"valueBasis",
 		{
