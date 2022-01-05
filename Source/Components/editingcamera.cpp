@@ -13,7 +13,7 @@
 EditingCamera::EditingCamera(Context *context) : LogicComponent(context),
 	pitch_(30), yaw_(180),
 	follow_(10), minfollow_(0), maxfollow_(20), curfollow_(10), followvel_(0), zoomspeed_(1000.0f),
-	offset_(2), clipdistance_(600), scrollspeed_(64.0f),
+	offset_(6.0f), clipdistance_(600), scrollspeed_(64.0f),
 	allowpitch_(true), allowspin_(true), allowzoom_(true),
 	clipsolid_(false), tracksurface_(true),
 	anglenode_(nullptr), cameranode_(nullptr),
