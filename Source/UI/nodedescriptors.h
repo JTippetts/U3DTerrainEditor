@@ -258,6 +258,21 @@ std::vector<NodeTypeDesc> g_nodeTypes=
 	},
 	
 	{
+		"rotateDomain",
+		{
+			{"value", "Value", 0.0},
+			{"value", "Angle", 0.0},
+			{"value", "ax", 0.0},
+			{"value", "ay", 0.0},
+			{"value", "az", 0.0},
+		},
+		[](CKernel &k, const std::vector<CInstructionIndex> &params)->CInstructionIndex
+		{
+			return k.rotateDomain(params[0], params[1], params[2], params[3], params[4]);
+		}
+	},
+	
+	{
 		"valueBasis",
 		{
 			{"value", "Interp", 3.0},
