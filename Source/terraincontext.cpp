@@ -1456,5 +1456,61 @@ void TerrainContext::FillBasins(CArray2Dd &arr, float E)
 			arr.set(x,y,W.get(x,y));
 		}
 	}
+}
 
+void TerrainContext::ApplySmoothing(float i, MaskSettings &masksettings)
+{
+    static float kernel[81]=
+    {
+        0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0.0058874471228999, 0.012503642863169, 0.014925760324933, 0.012503642863169, 0.0058874471228999, 0, 0,
+        0, 0.0058874471228999, 0.017486615939231, 0.026328026597312, 0.029851520649865, 0.026328026597312, 0.017486615939231, 0.0058874471228999, 0,
+        0, 0.012503642863169, 0.026328026597312, 0.038594828619481, 0.044777280974798, 0.038594828619481, 0.026328026597312, 0.012503642863169, 0,
+        0, 0.014925760324933, 0.029851520649865, 0.044777280974798, 0.059703041299731, 0.044777280974798, 0.029851520649865, 0.014925760324933, 0,
+        0, 0.012503642863169, 0.026328026597312, 0.038594828619481, 0.044777280974798, 0.038594828619481, 0.026328026597312, 0.012503642863169, 0,
+        0, 0.0058874471228999, 0.017486615939231, 0.026328026597312, 0.029851520649865, 0.026328026597312, 0.017486615939231, 0.0058874471228999, 0,
+        0, 0, 0.0058874471228999, 0.012503642863169, 0.014925760324933, 0.012503642863169, 0.0058874471228999, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0,
+    };
+
+    if(!terrain_) return;
+	
+	unsigned int tw=terrainMap_->GetWidth();
+    unsigned int th=terrainMap_->GetHeight();
+	i=std::max(0.0f, std::min(1.0f, i));
+
+    int comp=terrainMap_->GetComponents();
+    for(unsigned int hx=0; hx<tw; ++hx)
+    {
+        for(unsigned int hz=0; hz<th; ++hz)
+        {
+            //if(hx>=0 && hx<terrainMap_->GetWidth() && hz>=0 && hz<terrainMap_->GetHeight())
+            {
+				
+                if(masksettings.usemask0_)
+                {
+                    float m=mask_.GetPixelBilinear((float)(hx)/(float)(terrainMap_->GetWidth()), (float)(hz)/(float)(terrainMap_->GetHeight())).r_;
+                    if(masksettings.invert0_) m=1.0f-m;
+                    i=i*m;
+                }
+                if(masksettings.usemask1_)
+                {
+                    float m=mask_.GetPixelBilinear((float)(hx)/(float)(terrainMap_->GetWidth()), (float)(hz)/(float)(terrainMap_->GetHeight())).g_;
+                    if(masksettings.invert1_) m=1.0f-m;
+                    i=i*m;
+                }
+                if(masksettings.usemask2_)
+                {
+                    float m=mask_.GetPixelBilinear((float)(hx)/(float)(terrainMap_->GetWidth()), (float)(hz)/(float)(terrainMap_->GetHeight())).b_;
+                    if(masksettings.invert2_) m=1.0f-m;
+                    i=i*m;
+                }
+                float hval=GetHeightValue(hx,hz);
+                float smooth=CalcSmooth(terrainMap_,kernel,9,hx,hz);
+                float newhval=hval+(smooth-hval)*i;
+                SetHeightValue(hx,hz,newhval);
+            }
+        }
+    }
+    terrain_->ApplyHeightMap();
 }

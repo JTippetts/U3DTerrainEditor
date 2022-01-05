@@ -114,6 +114,7 @@ class TerrainContext : public Object
 	void GetSteepness(CArray2Dd &buffer, float threshold, float fade);
 	void GetCavityMap(CArray2Dd &buffer, float sampleradius, float scale, float bias, float intensity, unsigned int iterations);
 	void FillBasins(CArray2Dd &arr, float E);
+	void ApplySmoothing(float i, MaskSettings &masksettings);
 
 	protected:
 	// Terrain
