@@ -162,14 +162,14 @@ void main()
 			vec4 tex7=(texture(sDetailMap2, vec3(vDetailTexCoord.xz*cLayerScaling2.b, 6))+texture(sDetailMap2, vec3(vDetailTexCoord.xz*cLayerScaling2.b*0.27, 6)))*0.5;
 			vec4 tex8=(texture(sDetailMap2, vec3(vDetailTexCoord.xz*cLayerScaling2.a, 7))+texture(sDetailMap2, vec3(vDetailTexCoord.xz*cLayerScaling2.a*0.27, 7)))*0.5;
 		#else
-			vec4 tex1=texture(sDetailMap2, vec3(vDetailTexCoord.xz*cLayerScaling.r, 0));
-			vec4 tex2=texture(sDetailMap2, vec3(vDetailTexCoord.xz*cLayerScaling.g, 1));
-			vec4 tex3=texture(sDetailMap2, vec3(vDetailTexCoord.xz*cLayerScaling.b, 2));
-			vec4 tex4=texture(sDetailMap2, vec3(vDetailTexCoord.xz*cLayerScaling.a, 3));
-			vec4 tex5=texture(sDetailMap2, vec3(vDetailTexCoord.xz*cLayerScaling.r, 4));
-			vec4 tex6=texture(sDetailMap2, vec3(vDetailTexCoord.xz*cLayerScaling.g, 5));
-			vec4 tex7=texture(sDetailMap2, vec3(vDetailTexCoord.xz*cLayerScaling.b, 6));
-			vec4 tex8=texture(sDetailMap2, vec3(vDetailTexCoord.xz*cLayerScaling.a, 7));
+			vec4 tex1=texture(sDetailMap2, vec3(vDetailTexCoord.xz*cLayerScaling1.r, 0));
+			vec4 tex2=texture(sDetailMap2, vec3(vDetailTexCoord.xz*cLayerScaling1.g, 1));
+			vec4 tex3=texture(sDetailMap2, vec3(vDetailTexCoord.xz*cLayerScaling1.b, 2));
+			vec4 tex4=texture(sDetailMap2, vec3(vDetailTexCoord.xz*cLayerScaling1.a, 3));
+			vec4 tex5=texture(sDetailMap2, vec3(vDetailTexCoord.xz*cLayerScaling2.r, 4));
+			vec4 tex6=texture(sDetailMap2, vec3(vDetailTexCoord.xz*cLayerScaling2.g, 5));
+			vec4 tex7=texture(sDetailMap2, vec3(vDetailTexCoord.xz*cLayerScaling2.b, 6));
+			vec4 tex8=texture(sDetailMap2, vec3(vDetailTexCoord.xz*cLayerScaling2.a, 7));
 		#endif
 	#endif
 	
