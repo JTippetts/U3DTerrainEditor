@@ -11,6 +11,9 @@
 #include <Urho3D/UI/ListView.h>
 #include <Urho3D/UI/DropDownList.h>
 #include <Urho3D/Graphics/Graphics.h>
+#include <Urho3D/Graphics/Skybox.h>
+#include <Urho3D/Graphics/StaticModel.h>
+#include <Urho3D/Graphics/Model.h>
 #include <Urho3D/UI/BorderImage.h>
 #include <Urho3D/UI/Font.h>
 #include <Urho3D/UI/LineEdit.h>
@@ -78,12 +81,20 @@ void TerrainSettingsUI::Construct(Scene *scene, EditingCamera *cam, TerrainConte
 	mainLight_->SetLightType(LIGHT_DIRECTIONAL);
 	mainLight_->SetCastShadows(true);
 	mainLightNode_->SetDirection(Vector3(1.5,-3.5,-1.5));
+	mainLight_->SetShadowBias(BiasParameters(0.00025f, 0.5f));
+	mainLight_->SetShadowCascade(CascadeParameters(10.0f, 50.0f, 200.0f, 0.0f, 0.8f));
 
 	backLight_=backLightNode_->CreateComponent<Light>();
 	backLight_->SetLightType(LIGHT_DIRECTIONAL);
 	backLightNode_->SetDirection(Vector3(-1.5,-3.5,1.5));
 
 	zone_=zoneNode_->CreateComponent<Zone>();
+	
+	Node *n=scene_->CreateChild();
+	StaticModel *skybox=n->CreateComponent<Skybox>();
+	skybox->SetModel(cache->GetResource<Model>("Models/Icosphere.mdl"));
+	skyboxmaterial_=cache->GetResource<Material>("Materials/ProcSkybox.xml");
+	skybox->SetMaterial(skyboxmaterial_);
 
 	Color mainColor(1,0.8,0.8);
 	Color backColor(0.5,0.5,0.6);
@@ -122,7 +133,8 @@ void TerrainSettingsUI::Construct(Scene *scene, EditingCamera *cam, TerrainConte
 	ambientLightButton->SetColor(ambientColor);
 	fogLightButton->SetColor(fogColor);
 
-	zone_->SetBoundingBox(terrainContext_->GetBoundingBox());
+	//zone_->SetBoundingBox(terrainContext_->GetBoundingBox());
+	zone_->SetBoundingBox(BoundingBox(-1000.f, 1000.f));
 
 	SubscribeToEvent(element_->GetChild("SaveProject",true), StringHash("Pressed"), URHO3D_HANDLER(TerrainSettingsUI, HandleSaveProject));
 	SubscribeToEvent(element_->GetChild("LoadProject",true), StringHash("Pressed"), URHO3D_HANDLER(TerrainSettingsUI, HandleLoadProject));
@@ -231,6 +243,11 @@ void TerrainSettingsUI::HandleHideColorChooser(StringHash eventType, VariantMap 
 
 void TerrainSettingsUI::HandleUpdate(StringHash eventType, VariantMap &eventData)
 {
+	float timeStep=eventData["TimeStep"].GetFloat();
+	
+	cloudtime_ += timeStep * 0.1f;
+	skyboxmaterial_->SetShaderParameter("CloudTime", Variant(cloudtime_));
+	
 	Button *mainLightButton=element_->GetChildDynamicCast<Button>("MainLight", true);
 	Button *backLightButton=element_->GetChildDynamicCast<Button>("BackLight", true);
 	Button *ambientLightButton=element_->GetChildDynamicCast<Button>("Ambient", true);

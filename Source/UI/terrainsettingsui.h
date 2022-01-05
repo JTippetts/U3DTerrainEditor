@@ -10,6 +10,7 @@
 #include <Urho3D/Graphics/Light.h>
 #include <Urho3D/Graphics/Zone.h>
 #include <Urho3D/UI/FileSelector.h>
+#include <Urho3D/Graphics/Material.h>
 
 #include "colorchooser.h"
 
@@ -48,6 +49,8 @@ class TerrainSettingsUI : public Object
 	Node *mainLightNode_, *backLightNode_, *zoneNode_;
 	Light *mainLight_, *backLight_;
 	Zone *zone_;
+	Material *skyboxmaterial_;
+	float timeofday_{0.0f}, cloudtime_{0.f};
 
 	void HandleSaveProject(StringHash eventType, VariantMap &eventData);
 	void HandleLoadProject(StringHash eventType, VariantMap &eventData);

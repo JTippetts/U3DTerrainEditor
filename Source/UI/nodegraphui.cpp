@@ -795,7 +795,8 @@ SharedPtr<UIElement> NodeGraphUI::CreateNodeType(UIElement *parent, const ea::st
 		LineEdit *le=input->CreateChild<LineEdit>(ea::string("Value")+ea::to_string(c));
 		le->SetStyleAuto(style);
 		le->GetTextElement()->SetFontSize(9);
-		le->SetText(ea::to_string(d->inputs_[c].value_));
+		//le->SetText(ea::to_string(d->inputs_[c].value_));
+		le->SetText(ToString("%.2f", d->inputs_[c].value_));
 		le->SetMinSize(IntVector2(40,12));
 		le->SetMaxSize(IntVector2(40,12));
 
@@ -965,8 +966,8 @@ void NodeGraphUI::HandleGenerate(StringHash eventType, VariantMap &eventData)
 	Vector2 minmax=RenderANLKernelToImage(selectedNodeGroup_->previewImage_, &kernel, 0, 1, selectedNodeGroup_->histoImage_, SEAMLESS_NONE, false, 0.0, 1.0, 1.0, true);
 	selectedNodeGroup_->previewTex_->SetData(selectedNodeGroup_->previewImage_, false);
 	selectedNodeGroup_->histoTex_->SetData(selectedNodeGroup_->histoImage_, false);
-	selectedNodeGroup_->output_->GetChildDynamicCast<Text>("LowValue", true)->SetText(ToString("%.4f", minmax.x_));
-	selectedNodeGroup_->output_->GetChildDynamicCast<Text>("HighValue", true)->SetText(ToString("%.4f", minmax.y_));
+	selectedNodeGroup_->output_->GetChildDynamicCast<Text>("LowValue", true)->SetText(ToString("%.2f", minmax.x_));
+	selectedNodeGroup_->output_->GetChildDynamicCast<Text>("HighValue", true)->SetText(ToString("%.2f", minmax.y_));
 }
 
 void NodeGraphUI::HandleMapGroup(StringHash eventType, VariantMap &eventData)

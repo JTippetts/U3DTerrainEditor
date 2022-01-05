@@ -1,0 +1,12 @@
+<material>
+    <technique name="Techniques/DiffProcSkybox.xml" />
+    <cull value="none" />
+	<parameter name="TimeOfDay" value="10" />
+	<parameter name="CloudTime" value="0" />
+	<parameter name="Cirrus" value="2.1" />
+	<parameter name="Cumulus" value="1.4" />
+	<parameter name="CumulusBrightness" value="1.1575" />
+	<parameter name="Br" value="0.001" />
+	<parameter name="Bm" value="0.0023" />
+	<parameter name="G" value="0.9749" />
+</material>

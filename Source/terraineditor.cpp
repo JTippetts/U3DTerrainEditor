@@ -65,6 +65,7 @@ void TerrainEditor::Setup()
 	engineParameters_[EP_LOG_LEVEL]     = LOG_DEBUG;
 	engineParameters_[EP_WINDOW_WIDTH] = 1024;
 	engineParameters_[EP_WINDOW_HEIGHT] = 768;
+	engineParameters_[EP_WINDOW_MAXIMIZE] = true;
 }
 
 void TerrainEditor::Start()
