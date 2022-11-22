@@ -49,6 +49,7 @@ void main()
     FillVertexOutputs(vertexTransform);
     vDetailTexCoord = vertexTransform.position.xyz * cDetailTiling;
 	vWorldPos = vertexTransform.position.xyz;
+	vTexCoord = iTexCoord;
 }
 #endif
 
@@ -126,6 +127,7 @@ void main()
     SurfaceData surfaceData;
 
     FillSurfaceCommon(surfaceData);
+	
     FillSurfaceNormal(surfaceData);
     FillSurfaceMetallicRoughnessOcclusion(surfaceData);
     FillSurfaceReflectionColor(surfaceData);
