@@ -20,6 +20,8 @@ UNIFORM_BUFFER_BEGIN(4, Material)
 	UNIFORM(float cAngle)
 UNIFORM_BUFFER_END(4, Material)
 
+VERTEX_OUTPUT_HIGHP(vec2 vTexCoord)
+
 #include "_Material.glsl"
 
 VERTEX_OUTPUT_HIGHP(vec3 vDetailTexCoord)
@@ -249,9 +251,13 @@ void main()
 		surfaceData.emission = GammaToLightSpace(cMatEmissiveColor);
 	#endif
 	
-	half3 finalColor = GetFinalColor(surfaceData);
-	gl_FragColor.rgb = ApplyFog(finalColor, surfaceData.fogFactor);
-	gl_FragColor.a = GetFinalAlpha(surfaceData);
+	//half3 finalColor = GetFinalColor(surfaceData);
+	//gl_FragColor.rgb = ApplyFog(finalColor, surfaceData.fogFactor);
+	//gl_FragColor.a = GetFinalAlpha(surfaceData);
+	
+	half3 surfaceColor = GetSurfaceColor(surfaceData);
+    half surfaceAlpha = GetSurfaceAlpha(surfaceData);
+    gl_FragColor = GetFragmentColorAlpha(surfaceColor, surfaceAlpha, surfaceData.fogFactor);
 	
 	#ifdef EDITING
 		float j=calcCursor(cCursor, vWorldPos);

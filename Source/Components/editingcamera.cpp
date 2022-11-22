@@ -72,7 +72,7 @@ bool EditingCamera::GetMouseGround(Vector3 &out)
 	auto ui=GetSubsystem<UI>();
 
 	if(input->IsMouseVisible()) return GetScreenGround(out, input->GetMousePosition());
-	else return GetScreenGround(out, ui->GetCursorPosition());
+	else return GetScreenGround(out, ui->GetUICursorPosition());
 }
 
 bool EditingCamera::PickGround(Vector3 &ground, const IntVector2 &mousepos, float maxdistance)

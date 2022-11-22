@@ -7,7 +7,6 @@
 #include "_GammaCorrection.glsl"
 
 VERTEX_OUTPUT_HIGHP(vec2 vTexCoord)
-VERTEX_OUTPUT_HIGHP(vec2 vScreenPos)
 
 #ifdef URHO3D_PIXEL_SHADER
 
@@ -37,7 +36,6 @@ void main()
     VertexTransform vertexTransform = GetVertexTransform();
     gl_Position = WorldToClipSpace(vertexTransform.position.xyz);
     vTexCoord = GetQuadTexCoord(gl_Position);
-    vScreenPos = GetScreenPosPreDiv(gl_Position);
 }
 #endif
 
@@ -69,8 +67,7 @@ void main()
 
 #ifdef COMBINE
     half3 bloom = cIntensity * texture2D(sDiffMap, vTexCoord).rgb;
-    half brightness = clamp(dot(bloom, cLuminanceWeights), 0.0, 1.0);
-    gl_FragColor = vec4(bloom, brightness);
+    gl_FragColor = vec4(bloom, 1.0);
 #endif
 }
 #endif

@@ -1,3 +1,4 @@
+#define URHO3D_PIXEL_NEED_TEXCOORD
 #define URHO3D_CUSTOM_MATERIAL_UNIFORMS
 
 #include "_Config.glsl"
@@ -56,9 +57,9 @@ void main()
     FillSurfaceAlbedoSpecular(surfaceData);
     FillSurfaceEmission(surfaceData);
 
-    half3 finalColor = GetFinalColor(surfaceData);
-    gl_FragColor.rgb = ApplyFog(finalColor, surfaceData.fogFactor);
-    gl_FragColor.a = GetFinalAlpha(surfaceData);
+    half3 surfaceColor = GetSurfaceColor(surfaceData);
+    half surfaceAlpha = GetSurfaceAlpha(surfaceData);
+    gl_FragColor = GetFragmentColorAlpha(surfaceColor, surfaceAlpha, surfaceData.fogFactor);
 #endif
 }
 #endif

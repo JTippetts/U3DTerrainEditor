@@ -1,0 +1,5 @@
+<cubemap>
+<srgb enable="false" />
+<image name="DefaultSkybox.dds" />
+<filter mode="bilinear" />
+</cubemap>
